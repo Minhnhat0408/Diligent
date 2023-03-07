@@ -1,0 +1,111 @@
+
+
+ .search {
+    height: var(--search-height);
+    background-color: rgba(22, 24, 35, 0.06);
+    border: 1px solid transparent;
+    position: relative;
+    border-radius: var(--search-border-radius);
+    padding-left: 16px;
+    display: flex;
+  
+    input {
+      height: 100%;
+      color: var(--input-text-color);
+      font-size: 1.6rem;
+      border: none;
+      background-color: transparent;
+      outline: none;
+      line-height: 22px;
+      padding: 12px 40px 12px 0;
+      caret-color: var(--primary);
+      flex: 1;
+      font-family:var(--default-font-family)
+    }
+  
+    input:not(:placeholder-shown) ~ .search-button .search-icon {
+      color: rgba(22, 24, 35, 0.75);
+    }
+  
+    &:focus-within {
+      border: 1px solid rgb(210, 211, 213);
+    }
+  }
+  
+  .search,
+  .search-result {
+    width: 361px;
+  }
+  
+  .search-title {
+    padding: 5px 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: rgba(22, 24, 35, 0.5);
+  }
+  
+  .clear,
+  .spinner {
+    color: rgba(22, 24, 35, 0.34);
+
+    position: absolute;
+    right: calc(var(--search-button-width) + 16px);
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  
+ 
+  .spinner {
+    // display: none;
+    // padding: 0;
+    // position: absolute; 
+    // right: 60px;
+    // top: 30%;
+    // transform: translateY(-30%);
+    animation: spin 1s linear infinite;
+    
+    
+  
+    @keyframes spin {
+      from {
+        transform: translateY(-50%) rotate(0deg);
+      }
+      to {
+        transform:translateY(-50%)  rotate(360deg);
+      }
+    }
+  }
+  
+  .search-button {
+    position: relative;
+    width: var(--search-button-width);
+    height: 100%;
+    border-top-right-radius: var(--search-border-radius);
+    border-bottom-right-radius: var(--search-border-radius);
+  
+    &:hover {
+      background-color: rgba(22, 24, 35, 0.03);
+    }
+  
+    &:active {
+      background-color: rgba(22, 24, 35, 0.06);
+    }
+  
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      display: block;
+      width: 1px;
+      height: calc(var(--search-height) - 18px);
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: rgb(215, 215, 217);
+    }
+  
+    .search-icon {
+      font-size: 1.8rem;
+      color: rgba(22, 24, 35, 0.34);
+    }
+  }
+  
