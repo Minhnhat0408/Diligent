@@ -1,23 +1,26 @@
-
 @import 'normalize.css';
 :root {
-  --primary: #fe2c55;
+    --primary: #fe2c55;
 
-  // Default Layout
-  --defaultLayout-header-height: 60px;
-  --defaultLayout-header-width: 1150px;
-  --defaultLayout-horizontal-spacer: 20px;
-  --black: #000;
-  --input-text-color:rgba(22, 24, 35, 1);
-  --text-color: rgba(22, 24, 35, 1);
-  --default-font-family: 'ProximaNova', sans-serif;
-  --font-family:'SofiaPro', sans-serif;
+    // Default Layout
+    --defaultLayout-header-height: 60px;
+    --defaultLayout-header-width: 1150px;
+    --defaultLayout-horizontal-spacer: 20px;
+    --defaultLayout-sidebar-width: 348px;
+    --default-font-family: 'ProximaNova', sans-serif;
+    --font-family: 'SofiaPro', sans-serif;
+
+    //Color
+    --black: #000;
+    --input-text-color: rgba(22, 24, 35, 1);
+    --text-color: rgba(22, 24, 35, 1);
+    --light-grey: #adb5bd;
 }
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 //Font embed
@@ -47,62 +50,62 @@
 
 // Global CSS
 body {
-  font-family: var(--default-font-family);
-  font-size: 1.6rem;
-  line-height: 1.5;
-  color: var(--text-color);
-  text-rendering: optimizeSpeed;
-  height: 5000px;
-  overflow-y: overlay;
+    font-family: var(--default-font-family);
+    font-size: 1.6rem;
+    line-height: 1.5;
+    color: var(--text-color);
+    text-rendering: optimizeSpeed;
+    height: 5000px;
+    overflow-y: overlay;
 }
 
 html {
-  font-size: 62.5%;
+    font-size: 62.5%;
 }
 
 button,
 input,
 [tabindex] {
-  border: none;
-  outline: none;
+    border: none;
+    outline: none;
 }
 
 a[href] {
-  color: var(--text-color);
-  text-decoration: none;
+    color: var(--text-color);
+    text-decoration: none;
 }
 // scrolbar css
 html *::-webkit-scrollbar {
-  border-radius: 0;
-  width: 8px;
+    border-radius: 0;
+    width: 8px;
 }
 html *::-webkit-scrollbar-thumb {
-  border-radius: 4px;
-  background-color: rgba(22, 24, 35, .06);
+    border-radius: 4px;
+    background-color: rgba(22, 24, 35, 0.06);
 }
 html *::-webkit-scrollbar-track {
-  border-radius: 0;
-  background-color: rgba(0, 0, 0, 0);
+    border-radius: 0;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 // Custom Tippy Tooltip
 body {
-  .tippy-box {
-    background-color: rgba(84, 84, 84, 0.92);
-    min-height: 38px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-    font-size: 1.6rem;
-    line-height: 22px;
-  }
+    .tippy-box {
+        background-color: rgba(84, 84, 84, 0.92);
+        min-height: 38px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+        font-size: 1.6rem;
+        line-height: 22px;
+    }
 
-  .tippy-arrow {
-    color: rgba(84, 84, 84, 0.92) !important;
-  }
+    .tippy-arrow {
+        color: rgba(84, 84, 84, 0.92) !important;
+    }
 
-  .tippy-box[data-placement^='bottom'] > .tippy-arrow {
-    top: -1px;
-  }
+    .tippy-box[data-placement^='bottom'] > .tippy-arrow {
+        top: -1px;
+    }
 }
