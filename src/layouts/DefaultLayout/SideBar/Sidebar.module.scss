@@ -1,14 +1,21 @@
 .wrapper {
     width: var(--defaultLayout-sidebar-width);
     padding:  20px 0px 26px 8px;
-    background-color: #f8f9fb;
+    background-color: var(--sidebar-color);
+    position: fixed;
+    top: var(--defaultLayout-header-height);
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
     
 
 .menu-wrapper {
-    width: calc(var(--defaultLayout-sidebar-width) - 18px);
+    width: calc(var(--defaultLayout-sidebar-width) - 30px);
     min-height: 100px;
     background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgb(0 0 0 / 5%);
 }
 
 .menu-header {

@@ -6,15 +6,23 @@
     --defaultLayout-header-height: 60px;
     --defaultLayout-header-width: 1150px;
     --defaultLayout-horizontal-spacer: 20px;
-    --defaultLayout-sidebar-width: 348px;
+    --defaultLayout-sidebar-width: 280px;
     --default-font-family: 'ProximaNova', sans-serif;
     --font-family: 'SofiaPro', sans-serif;
 
     //Color
     --black: #000;
+    --dark-theme: #1f2029;
+    --light-theme: var(--white);
+    --blue: #102770;
     --input-text-color: rgba(22, 24, 35, 1);
-    --text-color: rgba(22, 24, 35, 1);
-    --light-grey: #adb5bd;
+    --text-color: #c4c3ca;
+    --icon-color: #adb5bd;
+    --sidebar-color: #f8f9fb;
+
+    //Font family
+    --default-font-family: 'ProximaNova', sans-serif;
+    --font-family: 'SofiaPro', sans-serif;
 }
 
 * {
