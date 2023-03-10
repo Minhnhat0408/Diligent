@@ -2,8 +2,8 @@ import { HeaderOnly } from '../layouts';
 import routes from '../config/routes';
 
 // Page
-import Home from '../pages/Home';
-import NotFounded from '../pages/NotFounded';
+import Home from '~/pages/Home';
+import NotFounded from '~/pages/NotFounded';
 
 
 // Router khong can dang nhap cung xem duoc

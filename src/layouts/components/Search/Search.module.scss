@@ -2,7 +2,7 @@
 
  .search {
     height: var(--search-height);
-    background-color: rgba(22, 24, 35, 0.06);
+    background-color: #eee !important;
     border: 1px solid transparent;
     position: relative;
     border-radius: var(--search-border-radius);
@@ -35,6 +35,7 @@
   .search,
   .search-result {
     width: 361px;
+    
   }
   
   .search-title {
