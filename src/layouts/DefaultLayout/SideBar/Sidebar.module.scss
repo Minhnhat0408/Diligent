@@ -1,5 +1,28 @@
 .wrapper {
-    width: 348px;
+    width: var(--defaultLayout-sidebar-width);
     padding:  20px 0px 26px 8px;
+    background-color: var(--sidebar-color);
+    position: fixed;
+    top: var(--defaultLayout-header-height);
+    bottom: 0;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
     
+
+.menu-wrapper {
+    width: calc(var(--defaultLayout-sidebar-width) - 30px);
+    min-height: 100px;
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgb(0 0 0 / 5%);
+}
+
+.menu-header {
+    color: var(--light-grey);
+    margin-left: 25px;
+    font-size: 1.2rem;
+    padding-top: 10px;
+    margin-bottom: 5px;
+    font-weight: 600;
+}
