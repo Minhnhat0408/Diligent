@@ -1,17 +1,26 @@
 @import 'src/assets/font-awesome-pro-v6-6.2.0/css/all.min.css';
 @import 'normalize.css';
 :root {
+    // Default Layout
+    --defaultLayout-header-height: 96px;
+    --defaultLayout-header-width: 1150px;
+    --defaultLayout-horizontal-spacer: 20px;
+    --defaultLayout-sidebar-width: 280px;
+
+    //Color
     --primary: #ffeba7;
-    --primary-light:#102770 ;
-  // Default Layout
-  --defaultLayout-header-height: 96px;
-  --defaultLayout-header-width: 1150px;
-  --defaultLayout-horizontal-spacer: 20px;
-  --black: #000;
-  --input-text-color:rgba(22, 24, 35, 1);
-  --text-color: rgba(22, 24, 35, 1);
-  --default-font-family: 'ProximaNova', sans-serif;
-  --font-family:'SofiaPro', sans-serif;
+    --primary-light: #102770;
+    --black: #000;
+    --dark-theme: #1f2029;
+    --light-theme: var(--white);
+    --blue: #102770;
+    --input-text-color: rgba(22, 24, 35, 1);
+    --text-color: #c4c3ca;
+    --icon-color: #adb5bd;
+
+    //Font
+    --default-font-family: 'ProximaNova', sans-serif;
+    --font-family: 'SofiaPro', sans-serif;
 }
 
 * {
@@ -68,8 +77,8 @@ input,
 }
 
 a[href] {
-  color: var(--text-color);
-  text-decoration: none;
+    color: var(--text-color);
+    text-decoration: none;
 }
 // scrolbar css
 html *::-webkit-scrollbar {
