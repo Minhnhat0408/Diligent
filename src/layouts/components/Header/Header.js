@@ -7,17 +7,18 @@ import Search from '../Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBell, faHouseChimney, faUserGroup } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
+import Button from '~/component/Button';
 import { useState } from 'react';
 const cx = classNames.bind(styles);
 
 function Header() {
-    const [currentUser, setCurrentUser] = useState(true);
-
+    const [currentUser, setCurrentUser] = useState(false);
+    const [theme,setTheme] = useState('dark');
     return (
-        <header className={cx('wrapper')}>
+        <header className={cx('wrapper',{[theme]:(theme === 'dark')})}>
             <div className={cx('inner')}>
                 <Link to={routes.home} className={cx('start')}>
-                    <img src={image.logo} className={cx('logo')} alt="tikTok"></img>
+                    <img src={theme ==='dark' ? image.logo : image.logoLight} className={cx('logo')} alt="tikTok"></img>
                 </Link>
 
                 <div className={cx('middle')}>
@@ -47,13 +48,18 @@ function Header() {
                             <Link className={cx('end-btn')}>
                                 <i className="fa-regular fa-message"></i>
                             </Link>
-                            <span className={cx('end-btn')}>
-                            <i class="fa-brands fa-affiliatetheme"></i>
+                            <span onClick={() =>{theme === 'dark' ? setTheme('light'):setTheme('dark')}} className={cx('end-btn')}>
+                                {theme === 'dark' ? <i class="fa-solid fa-sun"></i>:<i class="fa-duotone fa-moon"></i>}
                             </span>
                         </>
                     ) : (
-                        <></>
+                        <>
+                        <Button primary large onClick={() => setCurrentUser(true)}>
+                                Log in
+                            </Button>
+                        </>
                     )}
+                    
                 </div>
             </div>
         </header>

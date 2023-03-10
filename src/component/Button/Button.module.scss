@@ -1,0 +1,102 @@
+.wrapper {
+  font-size: 16px;
+  font-weight: 700;
+  font-family: 'ProximaNova', sans-serif;
+  padding: 9px 16px;
+  min-width: 100px;
+  min-height: 36px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  text-decoration: none;
+  background-color: var(--white);
+  border: 1px solid transparent;
+  user-select: none;
+  + .wrapper {
+    margin-left: 8px;
+  }
+
+  &.disabled {
+    pointer-events: none;
+    opacity: 0.5;
+    user-select: none;
+    cursor: default;
+  }
+}
+
+.icon + .title,
+.title + .icon {
+  margin-left: 8px;
+}
+
+.icon {
+  display: inline-block;
+  width: 24px;
+  text-align: center;
+}
+
+// Button types
+.text {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.rounded {
+  box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+  border-color: rgba(22, 24, 35, 0.12);
+  color: rgba(22, 24, 35, 0.55);
+  border-radius: 99999px;
+  font-weight: 700;
+
+  &:hover {
+    border-color: rgba(22, 24, 35, 0.2);
+
+    background-color: rgba(22, 24, 35, 0.03);
+  }
+}
+
+.primary {
+  background-color: var(--primary);
+  color: var(--primary-light);
+  border-color: var(--primary);
+
+  &:hover {
+    border-color: var(--primary);
+    box-shadow: 0 0 15px 0 var(--primary);
+  }
+
+  &:active {
+    background-color: var(--primary-light);
+    color: var(--primary);
+  }
+}
+
+.outline {
+  color: var(--primary);
+  border-color: rgba(254, 44, 85, 1);
+  background-color: rgba(255, 255, 255, 1);
+
+  &:hover {
+    background-color: rgba(254, 44, 85, 0.06);
+    border-color: var(--primary);
+  }
+
+  &:active {
+    background-color: rgba(254, 44, 85, 0.16);
+  }
+}
+
+// Button size
+.small {
+  min-width: 100px;
+  // min-width: 88px // if error in UI
+  padding: 4px 16px;
+}
+
+.large {
+  padding: 14px 16px;
+  min-width: 168px;
+  font-size: 18px;
+}

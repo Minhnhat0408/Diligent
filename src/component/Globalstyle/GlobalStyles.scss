@@ -2,7 +2,7 @@
 @import 'normalize.css';
 :root {
   --primary: #ffeba7;
-  --white:white;
+  --primary-light:#102770 ;
   // Default Layout
   --defaultLayout-header-height: 96px;
   --defaultLayout-header-width: 1150px;
@@ -13,7 +13,7 @@
   --blue:#102770;
   --input-text-color:rgba(22, 24, 35, 1);
   --text-color: #c4c3ca;
-  --icon-color: #adb5bd ;
+  --icon-color: #adb5bd;
   --default-font-family: 'ProximaNova', sans-serif;
   --font-family:'SofiaPro', sans-serif;
 }
