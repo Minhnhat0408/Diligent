@@ -27,6 +27,7 @@ function Button({
   disabled = false,
   rounded = false,
   separate = false,
+  dark = false,
   ...passProps
   
 }) {
@@ -54,6 +55,7 @@ function Button({
     disabled,
     rounded,
     separate,
+    dark,
     [className]: className,
   });
 

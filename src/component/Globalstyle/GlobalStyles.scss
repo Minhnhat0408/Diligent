@@ -11,11 +11,12 @@
     --primary: #ffeba7;
     --primary-light: #102770;
     --black: #000;
-    --dark-theme: #1f2029;
-    --light-theme: var(--white);
+    --dark-theme: #222536;
+    --bg-dark-theme:#20222b;
+    --light-theme:white;
     --blue: #102770;
     --input-text-color: rgba(22, 24, 35, 1);
-    --text-color: #c4c3ca;
+    --text-color: #5a5a5a;
     --icon-color: #adb5bd;
 
     //Font
@@ -77,7 +78,7 @@ input,
 }
 
 a[href] {
-    color: var(--text-color);
+
     text-decoration: none;
 }
 // scrolbar css

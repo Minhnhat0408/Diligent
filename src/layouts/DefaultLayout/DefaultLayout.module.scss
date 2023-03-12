@@ -5,7 +5,7 @@
 }
 
 .container {
-  width: var(--defaultLayout-header-width);
+  width: 100%;
   margin-top: var(--defaultLayout-header-height);
   max-width: 100%;
   display: flex;
@@ -13,4 +13,8 @@
 
 .content {
   flex: 1;
+  background-color: var(--bg-dark-theme);
+  padding-top: 10px;
+  padding-left: var(--defaultLayout-sidebar-width) ;
+  
 }

@@ -15,12 +15,15 @@ import {
     faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { useContext } from 'react';
+import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
+    const context = useContext(ThemeContext);
     return (
-        <aside className={cx('wrapper')}>
+        <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>New Feeds</h4>

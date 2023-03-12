@@ -58,18 +58,34 @@
 }
 
 .primary {
-  background-color: var(--primary);
-  color: var(--primary-light);
+  background-color: var(--primary-light);
+      color: var(--primary);
+  
   border-color: var(--primary);
 
   &:hover {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 15px 0 var(--primary-light);
+    
+  }
+
+  &:active {
+    background-color: var(--primary);
+  color: var(--primary-light);  
+  }
+}
+
+.dark{
+  background-color: var(--primary);
+  color: var(--primary-light);
+  &:hover{
     border-color: var(--primary);
     box-shadow: 0 0 15px 0 var(--primary);
   }
 
   &:active {
     background-color: var(--primary-light);
-    color: var(--primary);
+    color: var(--primary); 
   }
 }
 
