@@ -11,10 +11,25 @@
 
 .menu-popper {
   padding-bottom: 8px;
-}
+  background-color: var(--light-theme);
+  transition: all 0.8s;
+  &.dark{
+    background-color: var(--dark-theme);
+  }
+  &.dark .menu-item {
+    color: var(--text-color-dark);
+  }
+  &.dark .header-title{
+    color: var(--text-color-dark);
+  }
+  &.dark .back-btn{
+    color: var(--text-color-dark);
+  }
+ 
+} 
 .menu-body{
   overflow: auto;
-
+  
 }
 .menu-item {
   line-height: 1.8rem;
@@ -24,9 +39,9 @@
   font-weight: 600;
   font-size: 16px;
   padding: 11px 16px;
-  color: var(--text-color);
   cursor: pointer;
-
+  color: var(--text-color);
+ 
   &:hover {
     background-color: rgba(22, 24, 35, 0.03);
   }
@@ -43,12 +58,14 @@
 }
 
 .back-btn {
+  color: var(--text-color);
   width: 50px;
   height: 100%;
   background-color: transparent;
 }
 
 .header-title {
+  color: var(--text-color);
   position: absolute;
   top: 50%;
   left: 50%;

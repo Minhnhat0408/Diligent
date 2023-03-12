@@ -8,13 +8,18 @@
     overflow-y: scroll;
     overflow-x: hidden;
     transition:all 0.8s;
+    color:var(--text-color); 
     &.dark .menu-wrapper{
         
         background-color: var(--dark-theme);
+        color:var(--text-color-dark);   
     }
 
     &.dark {
         background-color: var(--bg-dark-theme);
+    }
+    &.dark .menu-header{
+        color:var(--text-color-dark); 
     }
 }
     

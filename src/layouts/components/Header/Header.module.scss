@@ -14,9 +14,10 @@
     background-color:var(--light-theme) ;
     z-index: 10;  
     transition: all 0.8s;
-   
+    color: var(--text-color);
     &.dark{
       background-color: var(--dark-theme);
+      color:var(--text-color-dark);
     }
 
     &.dark .end-btn{
@@ -120,4 +121,9 @@
   margin-left: 24px;
   background-color: transparent;
   padding: 4px 8px;
+}
+
+.menu{
+  color: var(--text-color);
+  
 }

@@ -159,7 +159,7 @@ function Header() {
                             <i className="fa-duotone fa-moon"></i>
                         )}
                     </span>
-                    <Menu item={currentUser ? USER_MENU : MENU_ITEM} >
+                    <Menu item={currentUser ? USER_MENU : MENU_ITEM} className={cx('menu',{ [context.theme]: context.theme === 'dark' })} >
                         {currentUser ? (
                             <Image
                                 className={cx('user-avatar')}
