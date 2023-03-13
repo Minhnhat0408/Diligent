@@ -1,0 +1,53 @@
+.form {
+
+    width: 500px ; 
+    min-height: 100px;
+    padding: 32px 24px;
+
+    background-color: #2a2b38;
+      background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: 300%;
+      border-radius: 6px;
+    margin:0 auto;
+    border-radius: 10px;
+    backface-visibility: hidden;
+    transform: translateZ(70px)      scale(0.90);
+    color: #c4c3ca;
+    & .heading {
+        font-size: 3rem;
+        }
+    & .desc {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: lighter;
+    line-height: 2.4rem;
+    margin: 16px 0;
+    margin-bottom: 24px;
+    font-weight: 300;   
+    }
+  }
+  
+
+.gg-btn{
+    display: flex;
+    font-size: 3rem;
+    color: #f33a58;
+    background-color:transparent;
+    align-items: center;
+    margin-bottom: 24px;
+    & .gg-signup{
+        font-size: 1.6rem;
+        margin-right: 1.6rem;
+        text-align: center;
+        color:#c4c3ca;
+        font-weight: bold;
+    }
+
+    & .gg-icon{
+        width: 40px;
+        height:40px;
+    }
+}
+

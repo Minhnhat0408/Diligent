@@ -76,7 +76,7 @@
   &:first-of-type{
     margin-left: 24px ;
   }
-  &:focus{
+  &.active{
 
     background-color: var(--blue);
     color: var(--primary);

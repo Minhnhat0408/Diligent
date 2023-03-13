@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import Globalstyle from './component/Globalstyle';
 import { ThemeProvider } from './contexts';
+import { AuthContextProvider } from './contexts/authContext';
 import reportWebVitals from './reportWebVitals';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -10,7 +11,9 @@ root.render(
     <React.StrictMode>
         <Globalstyle>
             <ThemeProvider>
-                <App />
+                <AuthContextProvider>
+                    <App />
+                </AuthContextProvider>
             </ThemeProvider>
         </Globalstyle>
     </React.StrictMode>,

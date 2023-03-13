@@ -4,7 +4,9 @@ const routes = {
     chat:'/chat',
     friend:'/friend',
     setting:'/setting',
-    story:'/story'
+    story:'/story',
+    login:'/login',
+    flashcard:'/flashcard'
 }
 
 export default routes

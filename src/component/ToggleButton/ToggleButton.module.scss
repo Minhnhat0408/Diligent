@@ -1,0 +1,92 @@
+
+.btn-box{
+    width: 120px;
+    margin:35px auto ;
+    margin-top: 60px;
+    height: 30px;
+    
+    display: block;
+    position: relative;
+    background-color: var(--primary);
+    border-radius: 40px;
+    box-shadow: inset 3px 3px 5px  rgba(0,0,0,0.4)   ;
+  }
+  .btn {
+    left: 0px;  
+    top:-7.5px;
+    color: var(--primary);
+    font-size: 3rem;
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-light);
+    border-radius: 30px;
+    box-shadow:  2px 2px 5px  rgba(0,0,0,0.6)   ;
+    line-height: 5rem;
+ 
+
+  }
+  @keyframes fadeout {
+    from{
+      display: block;
+    }
+    to{
+      display: none;
+    }
+  }
+  
+  .btn-choice{
+    font-size: 1.3rem;
+    height: 30px;
+    font-weight: 700;
+    text-decoration: none;
+    border: none;
+    background-color: transparent;
+    padding: 8px 0;
+    outline: none;
+    transition: all 0.8s cubic-bezier(0.8, 0.3, 0.3, 1);
+    &.btn-left{
+    padding-left: 50px;
+
+   }
+   &.btn-right{
+    padding-right: 50px;
+   }
+   &.flip{
+      opacity: 0;
+      font-size: 0;
+      padding: 0;
+     
+   }
+   
+   
+  
+  }
+  
+  @keyframes slideLeft {
+ 
+    to{
+      left: 70px;
+      rotate: 180deg;
+    }
+  }
+
+  @keyframes slideRight {
+    from{
+        left: 70px;
+        rotate: 180deg;
+    }
+    to{
+      left: 0px;
+      rotate: 0;
+    }
+  }
+  .slideleft{
+    animation: slideLeft .8s cubic-bezier(0.8, 0.3, 0.3, 1) forwards;
+  }
+  
+  
+  .slideright{
+    animation: slideRight .8s cubic-bezier(0.8, 0.3, 0.3, 1) forwards;
+  }
+  

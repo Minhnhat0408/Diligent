@@ -8,7 +8,10 @@
     overflow-y: scroll;
     overflow-x: hidden;
     transition:all 0.8s;
-    color:var(--text-color); 
+    & .menu-wrapper{
+        color:var(--text-color) ; 
+    }
+    
     &.dark .menu-wrapper{
         
         background-color: var(--dark-theme);

@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import routes from '~/config/routes';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import image from '~/assets/images';
 import Search from '../Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -18,10 +18,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
-import { useContext, useState } from 'react';
+import { useContext, useState ,useRef, useEffect} from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Menu from '~/component/Popper/Menu';
 import Image from '~/component/Image';
+import { UserAuth } from '~/contexts/authContext';
+import { signOut } from 'firebase/auth';
+import { db } from '~/firebase';
+import { getDoc, onSnapshot,doc } from 'firebase/firestore';
+import { collection, query, where, getDocs } from "firebase/firestore";
+
 const cx = classNames.bind(styles);
 
 
@@ -97,45 +103,59 @@ const USER_MENU = [
     { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
 ];
 function Header() {
-    const [currentUser, setCurrentUser] = useState(false);
     const context = useContext(ThemeContext);
+    const currentRoute = useLocation();
+    const {user,logOut, userData}= UserAuth();
+    const handleMenuChange = (menuItem) => {
+        // xu li khi 1 item trong menu khong co children
+        switch (menuItem.type) {
+            case 'logOut':
+                logOut();
+                break;
+
+            default:
+                break;
+        }
+    };
+
+        
+
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             <div className={cx('inner')}>
-                <Link to={routes.home} className={cx('start')}>
+                <Link to={routes.home}  className={cx('start')}>
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
                         className={cx('logo')}
                         alt="tikTok"
                     ></img>
                 </Link>
-
                 <div className={cx('middle')}>
                     <Search />
-                    <Link to={routes.home} className={cx('middle-btn')}>
+                    <Link to={routes.home} className={cx('middle-btn',{'active': currentRoute.pathname === routes.home})}>
                         <i className={`${styles.icon} fa-regular fa-house`}></i>
                     </Link>
-                    <Link to={routes.home} className={cx('middle-btn')}>
+                    <Link to={routes.friend}  className={cx('middle-btn',{'active': currentRoute.pathname === routes.friend})}>
                         <i className={`${styles.icon} fa-regular fa-user-group`}></i>
                     </Link>
-                    <Link to={routes.home} className={cx('middle-btn')}>
+                    <Link to={routes.flashcard}  className={cx('middle-btn',{'active': currentRoute.pathname === routes.flashcard})}>
                         <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
                     </Link>
-                    <Link to={routes.home} className={cx('middle-btn')}>
+                    <Link to={routes.story}   className={cx('middle-btn',{'active': currentRoute.pathname === routes.story})}>
                         <i className={`${styles.icon} fa-regular fa-folder-arrow-up`}></i>
                     </Link>
                 </div>
 
                 <div className={cx('end')}>
                     
-                    {currentUser ? (
+                    {user ? (
                         <>
                             <span className={cx('end-btn')}>
                                 <Tippy content="notification" placement="bottom">
                                     <i className="fa-solid fa-bell"></i>
                                 </Tippy>
                             </span>
-                            <Link className={cx('end-btn')}>
+                            <Link to={routes.chat} className={cx('end-btn')}>
                                 <i className="fa-regular fa-message"></i>
                             </Link>
                         </>
@@ -146,7 +166,7 @@ function Header() {
                                 dark={context.theme === 'dark'}
                                 primary
                                 large
-                                onClick={() => setCurrentUser(true)}
+                                to={routes.login}
                             >
                                 Log in
                             </Button>
@@ -159,12 +179,12 @@ function Header() {
                             <i className="fa-duotone fa-moon"></i>
                         )}
                     </span>
-                    <Menu item={currentUser ? USER_MENU : MENU_ITEM} className={cx('menu',{ [context.theme]: context.theme === 'dark' })} >
-                        {currentUser ? (
+                    <Menu item={user ? USER_MENU : MENU_ITEM} className={cx('menu',{ [context.theme]: context.theme === 'dark' })} onChange={handleMenuChange} >
+                        {user ? (
                             <Image
                                 className={cx('user-avatar')}
-                                src="https://scontent.fhan14-3.fna.fbcdn.net/v/t39.30808-1/277751572_1315302068964376_895612620486881878_n.jpg?stp=dst-jpg_p240x240&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=tQd0KyAhsr8AX9e_Lj_&_nc_ht=scontent.fhan14-3.fna&oh=00_AfAuh1k4QyqFLu9ZRjTAQJkDGeDAbEinzhIs5xq5X9pacw&oe=63FB6280"
-                                alt="Nguyen Nhat Minh"
+                                src={userData?.user_avatar}
+                                alt={userData?.user_name}
                             ></Image>
                         ): (
                             <button className={cx('more-button')}>
