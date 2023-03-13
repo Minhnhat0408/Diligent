@@ -1,0 +1,86 @@
+// define variables
+:root {
+    --background-color: #f2f3f5;
+    --text-color: #000;
+    --story-height: 200px;
+    --stories-width: 838px;
+    --arrow-size: 50px;
+    --arrow-border-radius: 50%;
+    --arrow-font-size: 2.4rem;
+    --arrow-box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.wrapper {
+    background-color: var(--background-color);
+    width: 100%;
+    min-height: 1000px;
+    margin-top: 28px;
+    display: flex;
+    transform: translateZ(0);
+}
+
+.newsfeed {
+    width: 66.67%;
+    margin-left: 60px;
+}
+
+.card-info {
+    background-color: #fff;
+    min-height: 100px;
+    width: 33.33%;
+    margin-right: 60px;
+    margin-left: 20px;
+}
+
+.create-post,
+.stories .arrow {
+  background-color: #fff;
+}
+
+.stories {
+    width: 100%;
+    max-width: var(--stories-width);
+    margin-bottom: 20px;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+
+    .arrow {
+        position: absolute;
+        color: var(--text-color);
+        top: calc(var(--story-height) / 2 - var(--arrow-size) / 2);
+        width: var(--arrow-size);
+        height: var(--arrow-size);
+        border-radius: var(--arrow-border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: var(--arrow-font-size);
+        z-index: 999;
+        box-shadow: var(--arrow-box-shadow);
+    }
+
+    .arrow-left {
+        left: 20px;
+    }
+
+    .arrow-right {
+        right: 20px;
+    }
+
+    .arrow:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+
+    .arrow:active {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+.stories-wrapper {
+    display: flex;
+    will-change: transform;
+    transition: transform 0.3s ease-in-out;
+}

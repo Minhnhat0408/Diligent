@@ -7,16 +7,20 @@
     --defaultLayout-horizontal-spacer: 20px;
     --defaultLayout-sidebar-width: 280px;
 
+    --story-height: 200px;
+    --story-width: 125px;
+
     //Color
     --primary: #ffeba7;
     --primary-light: #102770;
     --black: #000;
     --dark-theme: #1f2029;
-    --light-theme: var(--white);
+    --light-theme: #f7f8fa;
     --blue: #102770;
     --input-text-color: rgba(22, 24, 35, 1);
     --text-color: #c4c3ca;
     --icon-color: #adb5bd;
+    // --background-color: #f7f8fa; 
 
     //Font
     --default-font-family: 'ProximaNova', sans-serif;

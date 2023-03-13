@@ -9,7 +9,7 @@
         cursor: pointer;
         
         .title {
-            color: #0575e6;
+            color: var(--primary-light);
         }
     }
 
@@ -31,7 +31,8 @@
 
 .title {
     padding: 12px;
-    color: #888;
+    color: #777;
+    font-weight: 500;    
 }
 
 .notification {

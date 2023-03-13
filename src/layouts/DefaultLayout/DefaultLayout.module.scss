@@ -7,10 +7,14 @@
 .container {
   width: var(--defaultLayout-header-width);
   margin-top: var(--defaultLayout-header-height);
+  width: 100%;
   max-width: 100%;
   display: flex;
+  background-color: var(--light-theme);
+  overflow: hidden;
 }
 
 .content {
-  flex: 1;
+  margin-left: var(--defaultLayout-sidebar-width);
+  width: 100%;
 }

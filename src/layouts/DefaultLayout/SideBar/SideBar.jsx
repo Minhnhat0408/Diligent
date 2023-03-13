@@ -24,7 +24,7 @@ function Sidebar() {
             {/* New feed  */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>New Feeds</h4>
-                {/* prop color de xet background cho icon  */}
+                {/* prop backgroundcolor de xet background cho icon, color xet color cho icon */}
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faTvAlt} />}
                     title="Newsfeed"
