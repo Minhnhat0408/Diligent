@@ -11,6 +11,7 @@ import image from '~/assets/images';
 import Image from '~/component/Image';
 import Button from '~/component/Button';
 import routes from '~/config/routes';
+import RingLoader from 'react-spinners/RingLoader';
 const cx = classNames.bind(styles);
 function FormSignIn() {
     const defaultValidate = {
@@ -66,12 +67,13 @@ function FormSignIn() {
                 setError('');
                 setLoading(true);
                 await signIn(email.current.value, password.current.value);
+                
                 navigate(routes.home);
             } catch (err) {
                 console.log(err);
                 setError(err.message.slice(10, -1));
             }
-            setLoading(false);
+        setLoading(false)   
         }
     };
     const handleGoogleSignIn = async (e) => {
@@ -82,40 +84,56 @@ function FormSignIn() {
             setLoading(true);
             await googleSignIn().then(() => {
                 console.log('successfull');
+                setLoading(false);
                 navigate(routes.home);
             });
         } catch (err) {
             console.log(err);
             setError(err.message.slice(10, -1));
         }
-        setLoading(false);
     };
     return (
-        <div ref={form} className={cx('form')}>
-            <h2 className={cx('heading')}>Sign in</h2>
-            <p className={cx('desc')}>Your next generation of education</p>
-            {/* css this error */}
-            {error && <div><span>{error}</span></div>} 
-            {inputs.map((input, id) => {
-                return <FormInput invalid={validated[input.name]} key={id} {...input} />;
-            })}
-            <div className={cx('gg-btn')}>
-                <span className={cx('gg-signup')}>Or sign in with google account ?</span>
-                <Image onClick={handleGoogleSignIn} src={image.google} alt="Google sign in" className={cx('gg-icon')} />
-            </div>
-            <Button
-                primary
-                dark
-                large
-
-                onClick={(e) => {
-                    console.log(loading);
-                    return !loading && handleSubmit(e);
-                }}
-            >
-                Sign in
-            </Button>
-        </div>
+        <>
+            {loading ? (
+                <div>
+                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                </div>
+            ) : (
+                <div ref={form} className={cx('form')}>
+                    <h2 className={cx('heading')}>Sign in</h2>
+                    <p className={cx('desc')}>Your next generation of education</p>
+                    {/* css this error */}
+                    {error && (
+                        <div>
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    {inputs.map((input, id) => {
+                        return <FormInput  invalid={validated[input.name]} key={id} {...input} />;
+                    })}
+                    <div className={cx('gg-btn')}>
+                        <span className={cx('gg-signup')}>Or sign in with google account ?</span>
+                        <Image
+                            onClick={handleGoogleSignIn}
+                            src={image.google}
+                            alt="Google sign in"
+                            className={cx('gg-icon')}
+                        />
+                    </div>
+                    <Button
+                        primary
+                        dark
+                        large
+                        onClick={(e) => {
+                            console.log(loading);
+                            return !loading && handleSubmit(e);
+                        }}
+                    >
+                        Sign in
+                    </Button>
+                </div>
+            )}
+        </>
     );
 }
 

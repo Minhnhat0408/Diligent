@@ -11,18 +11,20 @@ import Profile from '~/pages/Profile';
 import Friend from '~/pages/Friend';
 import Login from '~/pages/Login';
 import FlashCard from '~/pages/FlashCard';
+import UpdateProfile from '~/pages/UpdateProfile/UpdateProfile';
 
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
     { path: routes.home, component: Home },
     { path: routes.login, component: Login, layout: null },
+    { path: routes.updateInfo, component: UpdateProfile, layout: null },
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story },
     { path: routes.flashcard,component:FlashCard,layout: HeaderOnly},
     { path: '/*', component: NotFounded, layout: null },
 ];
 
-// Router dang nhap moi xem duoc
+// Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
     { path: routes.profile, component: Profile },
     { path: routes.friend, component: Friend },

@@ -36,7 +36,7 @@ function FormSignUp({ classes = [] }) {
             icon: faAt,
             name: 'email',
             type: 'text',
-            placeholder: 'Ex: abc@gmail.com',
+            placeholder: 'Email',
             msg: !!validatorMsg.email ? validatorMsg.email : '',
         },
         {
@@ -45,7 +45,7 @@ function FormSignUp({ classes = [] }) {
             name: 'password',
             type: 'password',
             password,
-            placeholder: 'Ex: 01203fefd@13',
+            placeholder: 'Password',
             msg: !!validatorMsg.password ? validatorMsg.password : '',
         },
         {
@@ -54,7 +54,7 @@ function FormSignUp({ classes = [] }) {
             name: 'confirmPass',
             type: 'password',
             password,
-            placeholder: 'Ex: 01203fefd@13',
+            placeholder: 'Password Confirmation',
             msg: !!validatorMsg.confirmPass ? validatorMsg.confirmPass : '',
         },
     ];
@@ -78,7 +78,8 @@ function FormSignUp({ classes = [] }) {
                 await createUser(email.current.value, password.current.value, confirmPass.current.value)
                 .then(() => {
                     console.log('successfull');
-                    navigate(routes.home);
+                    
+                    navigate(routes.updateInfo);
                 });
             } catch (err) {
                 console.log(err);
@@ -105,8 +106,8 @@ function FormSignUp({ classes = [] }) {
     };
     return (
         <div className={cx('form', ...classes)}>
-            <h3 className={cx('heading')}> Đăng ký</h3>
-            <p className={cx('desc')}>Join our club for free education</p>
+            <h3 className={cx('heading')}>Sign up</h3>
+            <p className={cx('desc')}>Sign up to improve your learning journey</p>
             {error && <div><span>{error}</span></div>}
             {inputs.map((input, id) => {
                 return <FormInput invalid={validated[input.name]} key={id} {...input} />;

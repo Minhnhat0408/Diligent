@@ -1,0 +1,142 @@
+.wrapper{
+    display: flex;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+background-color: var(--bg-dark-theme);
+text-align: center;
+}
+
+
+.form {
+
+    width: 600px ; 
+    min-height: 100px;
+    padding: 32px 32px;
+    text-align: center;
+    background-color: #2a2b38;
+      background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: 300%;
+      border-radius: 6px;
+    border-radius: 10px;
+    color: #c4c3ca;
+    &.form-back{
+        padding: 26px 24px;
+    }
+    
+    & .heading {
+        font-size: 3rem;
+        }
+    & .desc {
+    text-align: center;
+    font-size: 2rem;
+    font-weight: lighter;
+    line-height: 2.4rem;
+    margin: 16px 0;
+    margin-bottom: 24px;
+    font-weight: 300;   
+    }
+  }
+  
+
+  .row{
+    display: flex;
+    
+    
+  }
+  .dob{
+    flex: 1;
+  }
+
+  .gender{
+    
+    flex: 1;
+    font-size: 2rem;
+    padding: 24px;
+    & input + label {
+        margin-right: 20px;
+        margin-left: 20px;
+
+    }
+    & input[type='radio']:after {
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        top: -2px;
+        left: -1px;
+        position: relative;
+        background-color: #d1d3d1;
+        content: '';
+        display: inline-block;
+        visibility: visible;
+        border: 2px solid white;
+    }
+    & input[type='radio']:checked:after {
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        top: -2px;
+        left: -1px;
+        position: relative;
+        background-color: var(--primary);
+        content: '';
+        display: inline-block;
+        visibility: visible;
+        border: 2px solid white;
+    }
+
+  }
+
+  .phone{
+    width: 50%;
+  }
+
+  .avatar{
+    width: 38%;
+    overflow: hidden;
+    &.invalid .msg {
+      font-size: 1.6rem;
+    line-height: 1.6rem;
+    padding: 4px 0 0;
+    color: #f33a58;
+    }
+    &.invalid .custom-file-input::before {
+      background:#f33a58 ;
+     
+    }
+
+  }
+  .custom-file-input::-webkit-file-upload-button {
+    visibility: hidden;
+    ;
+    padding: 0;
+    width: 150px;
+    height: 56px;
+
+  }
+  .custom-file-input::before {
+    content: 'Select avatar';
+    display: inline-block;
+    border: 1px solid #c4c3ca;
+    border-radius: 3px;
+    margin: 10px 24px;
+    padding: 16px;
+    outline: none;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 2rem;
+    
+  }
+  .custom-file-input.selected::before  {
+    background: var(--primary);
+    color: var(--primary-light)
+  }
+  .custom-file-input:hover::before {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px 0 var(--primary);
+   
+  }

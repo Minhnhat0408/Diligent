@@ -19,12 +19,14 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
+    const {user} = UserAuth();
     return (
         <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
@@ -72,8 +74,7 @@ function Sidebar() {
                     backGroundColor="linear-gradient(135deg, #05f, #09f)"
                     color="#fff"
                     onClick={() => {
-                        
-                        navigate(routes.profile)}
+                        navigate(routes.user+user.uid)}
                     }
                 />
             </div>

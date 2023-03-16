@@ -5,7 +5,7 @@
     position: relative;
     margin-bottom: 1.8rem;
     flex-direction: column;
- 
+
     &.invalid .form-control {
         border: 2px solid #f33a58 !important  ;
         border-color: #f33a58;
@@ -24,6 +24,30 @@
 
     &.invalid .form-label{
         color: #f33a58;
+    }
+    &.small .form-label{
+
+    height: 48px;
+    line-height: 48px;
+ 
+    font-size: 2rem;
+    }
+    &.small .form-control{
+        padding-left: 55px;
+        height: 48px;
+         font-size: 1.4rem;
+    }
+
+    &.small .form-message{
+        font-size: 1.2rem;
+        line-height: 1.6rem;
+        padding: 4px 0 0;
+    }
+    &.small .eye{
+        height: 48px;
+        line-height: 48px;
+        font-size: 2rem;
+     
     }
 }
 
@@ -72,7 +96,7 @@
         border-color: #f33a58;
     }
     &.invalid>.form-message{
-        color: red;
+        color: #f33a58;
     }
     &::placeholder{
 
@@ -80,14 +104,19 @@
     
     }
 
+
 }
 
 
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
+  }
 
 .form-message {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     line-height: 1.6rem;
-    padding: 4px 0 0;
+    margin-top:8px;
 }
 
 .eye{
@@ -96,9 +125,10 @@
     color: var(--primary) ;
     right: 24px;
     top: 0;
-    opacity:.8s;
+    opacity:.6;
     height: 80px;
     line-height: 80px;
     text-align: left;
     font-size: 2.6rem;
+    cursor:pointer
 }

@@ -97,8 +97,8 @@ const MENU_ITEM = [
 ];
 
 const USER_MENU = [
-    { icon: <FontAwesomeIcon icon={faUser} />, title: 'View profile', to: '/@hoa' },
-    { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/settings' },
+    { icon: <FontAwesomeIcon icon={faUser} />, title: 'View profile', to: '/profile' },
+    { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
     ...MENU_ITEM,
     { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
 ];
