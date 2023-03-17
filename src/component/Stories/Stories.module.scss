@@ -12,7 +12,7 @@
 }
 
 .wrapper {
-    width: 100%;
+    min-width: 100%;
     max-width: var(--stories-width);
     margin-bottom: 20px;
     display: flex;
