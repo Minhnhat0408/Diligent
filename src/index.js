@@ -9,13 +9,13 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <React.StrictMode>
-        <Globalstyle>
-            <ThemeProvider>
-                <AuthContextProvider>
+        <AuthContextProvider>
+            <Globalstyle>
+                <ThemeProvider>
                     <App />
-                </AuthContextProvider>
-            </ThemeProvider>
-        </Globalstyle>
+                </ThemeProvider>
+            </Globalstyle>
+        </AuthContextProvider>
     </React.StrictMode>,
 );
 

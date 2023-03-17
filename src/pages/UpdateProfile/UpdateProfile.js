@@ -1,15 +1,10 @@
 import classNames from 'classnames/bind';
 import styles from './UpdateProfile.module.scss';
 import { useRef } from 'react';
-import {  useState } from 'react';
-import {  useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '~/contexts/authContext';
-import {
-    faCalendar,
-    faCommentDots,
-    faPhone,
-    faUser,
-} from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faCommentDots, faPhone, faUser } from '@fortawesome/free-solid-svg-icons';
 import { FormInput } from '~/component/Form';
 import Button from '~/component/Button';
 import { RingLoader } from 'react-spinners';
@@ -29,7 +24,8 @@ function UpdateProfile() {
         bio: false,
         avatar: false,
     };
-    const fullname= useRef();
+    
+    const fullname = useRef();
     const dob = useRef();
     const phone = useRef();
     const address = useRef();
@@ -73,51 +69,56 @@ function UpdateProfile() {
         e.preventDefault();
         setValidated(defaultValidate);
         if (!validateAll()) {
-            if (!file) return;
-
+            const data = {
+                dob: dob.current.value,
+                fullname: fullname.current.value,
+                gender: gender,
+                phone: phone.current.value,
+                address: address.current.value,
+                bio: bio.current.value,
+                avatar: null,
+            };
             try {
-                console.log(loading);
                 setError('');
                 setLoading(true);
-                const storageRef = ref(storage, `images/${file.name}`);
-                const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
-                await uploadTask.on(
-                    'state_changed',
-                    (snapshot) => {
-                        const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                        console.log('Upload is ' + progress + '% done');
-                        switch (snapshot.state) {
-                            case 'paused':
-                                console.log('Upload is paused');
-                                break;
-                            case 'running':
-                                console.log('Upload is running');
-                                break;
-                            default:
-                                break;
-                        }
-                    },
-                    (error) => {
-                        alert(error);
-                    },
-                    async () => {
-                        await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                            const data = {
-                                dob: dob.current.value,
-                                fullname: fullname.current.value,
-                                gender: gender,
-                                phone: phone.current.value,
-                                address: address.current.value,
-                                bio: bio.current.value,
-                                avatar: downloadURL,
-                            };
-                            updateProfile(data).then(() => {
-                                setLoading(false);
-                                navigate(routes.home);
+                if (file) {
+                    const storageRef = ref(storage, `images/${file.name}`);
+                    const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
+                    uploadTask.on(
+                        'state_changed',
+                        (snapshot) => {
+                            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                            console.log('Upload is ' + progress + '% done');
+                            switch (snapshot.state) {
+                                case 'paused':
+                                    console.log('Upload is paused');
+                                    break;
+                                case 'running':
+                                    console.log('Upload is running');
+                                    break;
+                                default:
+                                    break;
+                            }
+                        },
+                        (error) => {
+                            alert(error);
+                        },
+                        async () => {
+                            await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                                data.avatar = downloadURL;
+                                updateProfile(data).then(() => {
+                                    setLoading(false);
+                                    navigate(routes.home);
+                                });
                             });
-                        });
-                    },
-                );
+                        },
+                    );
+                }else{
+                    updateProfile(data).then(() => {
+                        setLoading(false);
+                        navigate(routes.home);
+                    });
+                }
             } catch (err) {
                 console.log(err);
                 setError(err.message.slice(10, -1));
@@ -127,19 +128,11 @@ function UpdateProfile() {
 
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('loading')} style={!loading ? {display: 'none'}: {}}>   
-                <RingLoader
-                    color="#367fd6"
-                    
-                    size={150}
-                    speedMultiplier={0.5}
-                />
+            <div className={cx('loading')} style={!loading ? { display: 'none' } : {}}>
+                <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
             </div>
 
-            <div
-                className={cx('form')}
-                style={loading ? {display: 'none'}: {}}
-            >
+            <div className={cx('form')} style={loading ? { display: 'none' } : {}}>
                 <h3 className={cx('heading')}>Account Information</h3>
                 <p className={cx('desc')}>Please type the correct Information for best experience</p>
                 {error && (

@@ -1,9 +1,8 @@
-
 import classNames from 'classnames/bind';
 import styles from './FormSignUp.module.scss';
 import { useRef } from 'react';
 import { useState } from 'react';
-import {useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '~/contexts/authContext';
 import { faAt, faUnlock, faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
 import { RingLoader } from 'react-spinners';
@@ -19,7 +18,7 @@ function FormSignUp({ classes = [] }) {
     const defaultValidate = {
         email: false,
         password: false,
-        confirmPass:false,
+        confirmPass: false,
     };
     const email = useRef();
     const password = useRef();
@@ -28,7 +27,7 @@ function FormSignUp({ classes = [] }) {
     const [validatorMsg, setValidatorMsg] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { createUser, googleSignIn } = UserAuth();
+    const { createUser, googleSignIn, user } = UserAuth();
     const navigate = useNavigate();
     const inputs = [
         {
@@ -59,7 +58,11 @@ function FormSignUp({ classes = [] }) {
         },
     ];
     const validateAll = () => {
-        const msg = validator.signUp({ email: email.current.value, password: password.current.value,confirmPass: confirmPass.current.value });
+        const msg = validator.signUp({
+            email: email.current.value,
+            password: password.current.value,
+            confirmPass: confirmPass.current.value,
+        });
         setValidatorMsg(msg);
         Object.keys(msg).forEach((key) => {
             setValidated((preV) => {
@@ -71,33 +74,34 @@ function FormSignUp({ classes = [] }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setValidated(defaultValidate);
-        if(!validateAll()){
+        if (!validateAll()) {
             try {
                 setError('');
                 setLoading(true);
-                await createUser(email.current.value, password.current.value, confirmPass.current.value)
-                .then(() => {
-                    console.log('successfull');
-                    
-                    navigate(routes.updateInfo);
-                });
+                await createUser(email.current.value, password.current.value, confirmPass.current.value);
+
+                console.log('successfull');
+
+                navigate(routes.updateInfo);
             } catch (err) {
                 console.log(err);
                 setError(err.message.slice(10, -1));
             }
             setLoading(false);
         }
-        
     };
     const handleGoogleSignUp = async (e) => {
         e.preventDefault();
         try {
             setError('');
             setLoading(true);
-            await googleSignIn().then(() => {
+            const acc = await googleSignIn();
+            if (acc) {
                 console.log('successfull');
                 navigate(routes.home);
-            });
+            } else {
+                navigate(routes.updateInfo);
+            }
         } catch (err) {
             console.log(err);
             setError(err.message.slice(10, -1));
@@ -106,36 +110,45 @@ function FormSignUp({ classes = [] }) {
     };
     return (
         <>
-        {loading ? (
-            <div>
-                <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-            </div>
-        ) : (
-        <div className={cx('form', ...classes)}>
-            <h3 className={cx('heading')}>Sign up</h3>
-            <p className={cx('desc')}>Sign up to improve your learning journey</p>
-            {error && <div><span>{error}</span></div>}
-            {inputs.map((input, id) => {
-                return <FormInput invalid={validated[input.name]} key={id} {...input} />;
-            })}
+            {loading ? (
+                <div>
+                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                </div>
+            ) : (
+                <div className={cx('form', ...classes)}>
+                    <h3 className={cx('heading')}>Sign up</h3>
+                    <p className={cx('desc')}>Sign up to improve your learning journey</p>
+                    {error && (
+                        <div className={cx('error')}>
+                            <span>{error}</span>
+                        </div>
+                    )}
+                    {inputs.map((input, id) => {
+                        return <FormInput invalid={validated[input.name]} key={id} {...input} />;
+                    })}
 
-            <div className={cx('gg-btn')}>
-                <span className={cx('gg-signup')}>Or sign up with google account ?</span>
-                <Image onClick={handleGoogleSignUp} src={image.google} alt="Google sign in" className={cx('gg-icon')} />
-            </div>
-            <Button
-                primary
-                dark
-                large
-                onClick={(e) => {
-                    console.log(loading);
-                    return !loading && handleSubmit(e);
-                }}
-            >
-                Sign up
-            </Button>
-        </div>
-        )}
+                    <div className={cx('gg-btn')}>
+                        <span className={cx('gg-signup')}>Or sign up with google account ?</span>
+                        <Image
+                            onClick={handleGoogleSignUp}
+                            src={image.google}
+                            alt="Google sign in"
+                            className={cx('gg-icon')}
+                        />
+                    </div>
+                    <Button
+                        primary
+                        dark
+                        large
+                        onClick={(e) => {
+                            console.log(loading);
+                            return !loading && handleSubmit(e);
+                        }}
+                    >
+                        Sign up
+                    </Button>
+                </div>
+            )}
         </>
     );
 }

@@ -83,10 +83,10 @@ function updateProfile({ fullname, dob, phone, address, bio, avatar }) {
     if (!isNotEmpty(bio)) {
         msg.bio = !!msg.bio ? msg.bio : 'Please enter your date of birth.';
     }
-    if (!avatar) {
-        msg.avatar = !!msg.avatar ? msg.avatar : 'Please choose an image.';
-    } else if (!isImage(avatar)) {
-        msg.avatar = !!msg.avatar ? msg.avatar : 'This is not an image.';
+    if (avatar) {
+        if (!isImage(avatar)) {
+            msg.avatar = !!msg.avatar ? msg.avatar : 'This is not an image.';
+        }
     }
 
     return msg;

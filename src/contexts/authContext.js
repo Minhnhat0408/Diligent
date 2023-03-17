@@ -24,32 +24,34 @@ import {
 import { auth } from '../firebase';
 import { provider } from '../firebase';
 import { db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
+import routes from '~/routes';
+import image from '~/assets/images';
+
 
 
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const usersRef = collection(db, 'users');
+    
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
+    // const navigate = useNavigate();
     const createUser = async (email, password) => {
-        try {
+      
             const response = await createUserWithEmailAndPassword(auth, email, password);
             const user = response.user;
             console.log(response)
             console.log(user)
             await setDoc(doc(db, 'users', user.uid), {
                 user_email: user?.email,
-                user_authProvider: response?.providerId,
+                user_authProvider: response?.providerId || 'email/pasword',
                 user_createdAt: serverTimestamp(),
             });
             
-            
-        } catch (error) {
-            alert(error.message);
-            console.log(error.message);
-        }
+            return response
+      
     };
 
     const signIn = (email, password) => {
@@ -60,6 +62,7 @@ export const AuthContextProvider = ({ children }) => {
         return signOut(auth);
     };
     const updateProfile = async (data) => {
+        
         await setDoc(doc(db, 'users',user.uid), {
            user_dob:data.dob,
            user_name:data.fullname,
@@ -67,44 +70,44 @@ export const AuthContextProvider = ({ children }) => {
            user_phone: data.phone,
            user_address:data.address,
            user_bio:data.bio,
-           user_avatar:data.avatar,
+           user_avatar:data.avatar ||  user?.photoURL || image.userUndefined,
            user_status: 'online',
+           user_theme: 'light',
         },{merge:true});
 
     };
+    
     const googleSignIn = async () => {
-        try {
+      
             const response = await signInWithPopup(auth, provider);
             const user = response.user;
 
             const docs = await getDoc(doc(db, 'users', user.uid));
             console.log(docs.data(), 'fefe');
-            if (!docs) {
+            if (!docs.data()) {
                 console.log('new');
+          
                 await setDoc(doc(db, 'users', user.uid), {
-                    user_name: user?.displayName,
                     user_email: user?.email,
-                    user_avatar: user?.photoURL,
                     user_authProvider: response?.providerId,
                     user_createdAt: serverTimestamp(),
-                    user_status: 'offline',
-                    user_bio: '',
                 });
+       
+                // navigate(routes.updateInfo) 
+                return false;// false means fresh account
+                
             }
-        } catch (error) {
-            alert(error.message);
-            console.log(error.message);
-        }
+            return true;
     };
 
     const userStateChanged = async () => {
-        onAuthStateChanged(auth, async (currentUser) => {
+        onAuthStateChanged(auth, async (currentUser) => {          
             if (currentUser) {
                 localStorage.setItem('user_id',currentUser.uid)
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     setUserData(doc.data());
-                    console.log("data",doc.data());
-                    console.log("user" ,user)
+                    // console.log("data",doc.data());
+                    // console.log("user" ,user)
                     // const dateObject = new Date(doc.data().user_createdAt.toMillis()+ 231231231);
                     // console.log(doc.data().user_createdAt)
                     // console.log(serverTimestamp())
@@ -120,25 +123,10 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         userStateChanged();
+
         return () => userStateChanged();
     }, []);
 
-    // useEffect(() => {
-    //     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-    //         console.log(currentUser);
-    //         if (currentUser) {
-    //             onSnapshot(doc(db,"users",currentUser.uid), (doc) => {
-    //             setUserData(doc.data());
-    //           });
-    //           setUser(currentUser);
-    //         }
-
-    //         setLoading(false);
-    //     });
-    //     return () => {
-    //         unsubscribe();
-    //     };
-    // }, []);
 
     const value = {
         user,

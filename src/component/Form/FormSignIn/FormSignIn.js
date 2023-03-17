@@ -67,13 +67,13 @@ function FormSignIn() {
                 setError('');
                 setLoading(true);
                 await signIn(email.current.value, password.current.value);
-                
+
                 navigate(routes.home);
             } catch (err) {
                 console.log(err);
                 setError(err.message.slice(10, -1));
             }
-        setLoading(false)   
+            setLoading(false);
         }
     };
     const handleGoogleSignIn = async (e) => {
@@ -82,15 +82,14 @@ function FormSignIn() {
         try {
             setError('');
             setLoading(true);
-            await googleSignIn().then(() => {
-                console.log('successfull');
-                setLoading(false);
-                navigate(routes.home);
-            });
+            await googleSignIn();
+            console.log('successfull');
+            navigate(routes.home);
         } catch (err) {
             console.log(err);
             setError(err.message.slice(10, -1));
         }
+        setLoading(false);
     };
     return (
         <>
@@ -104,12 +103,12 @@ function FormSignIn() {
                     <p className={cx('desc')}>Your next generation of education</p>
                     {/* css this error */}
                     {error && (
-                        <div>
+                        <div className={cx('error')}>
                             <span>{error}</span>
                         </div>
                     )}
                     {inputs.map((input, id) => {
-                        return <FormInput  invalid={validated[input.name]} key={id} {...input} />;
+                        return <FormInput invalid={validated[input.name]} key={id} {...input} />;
                     })}
                     <div className={cx('gg-btn')}>
                         <span className={cx('gg-signup')}>Or sign in with google account ?</span>

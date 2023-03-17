@@ -29,7 +29,14 @@
     }
   }
   
-
+.error{
+    border-radius: 4px;
+    border: 2px solid #f33a58  ;
+    padding: 8px;
+    font-size: 2rem;
+    color:#f33a58 ;
+    margin-bottom: 16px;
+}
 .gg-btn{
     display: flex;
     font-size: 3rem;

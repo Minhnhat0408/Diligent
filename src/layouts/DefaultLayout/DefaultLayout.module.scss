@@ -15,7 +15,12 @@
 
 .content {
     flex: 1;
-    background-color: var(--bg-dark-theme);
+    transition: all 0.8s;
+    background-color: var(--bg-light-theme);
     padding-top: 10px;
     padding-left: var(--defaultLayout-sidebar-width) ;
+    &.dark{
+      
+    background-color: var(--bg-dark-theme);
+    }
 }
