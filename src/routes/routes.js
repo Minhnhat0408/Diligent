@@ -17,16 +17,17 @@ import UpdateProfile from '~/pages/UpdateProfile/UpdateProfile';
 const publicRoutes = [
     { path: routes.home, component: Home },
     { path: routes.login, component: Login, layout: null },
-    { path: routes.updateInfo, component: UpdateProfile, layout: null },
+    
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story },
     { path: routes.flashcard,component:FlashCard,layout: HeaderOnly},
+    { path: routes.profile, component: Profile },
     { path: '/*', component: NotFounded, layout: null },
 ];
 
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
-    { path: routes.profile, component: Profile },
+    { path: routes.updateInfo, component: UpdateProfile, layout: null },
     { path: routes.friend, component: Friend },
     { path: routes.chat, component: Chat },
 ];

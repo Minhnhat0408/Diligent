@@ -74,7 +74,8 @@ function Sidebar() {
                     backGroundColor="linear-gradient(135deg, #05f, #09f)"
                     color="#fff"
                     onClick={() => {
-                        navigate(routes.user+user.uid)}
+                        
+                        return user ? navigate(routes.user+user.uid): navigate('/login')}
                     }
                 />
             </div>
