@@ -1,0 +1,152 @@
+$username-color: #212529;
+$time-color: #adb5bd;
+
+.wrapper {
+    margin-top: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 1px 1px 5px #888888;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .info {
+        display: flex;
+        align-items: center;
+    
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+    
+        .title {
+            margin-left: 12px;
+    
+            .username {
+                color: $username-color;
+                font-size: 1.4rem;
+                font-weight: 700;
+            }
+    
+            .time {
+                color: $time-color;
+                font-size: 1.2rem;
+                font-weight: 500;
+            }
+        }
+    }
+
+    .options {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: #f5f5f5;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .icon {
+            font-size: 2rem;
+        }
+
+        &:hover {
+            background-color: rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+    }
+}
+
+
+
+.content {
+    margin-top: 20px;
+    color: var(--text-color);
+    font-size: 1.6rem;
+    font-weight: 400;
+}
+
+.image {
+    margin-top: 20px;
+    width: 100%;
+    height: 600px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #999;
+}
+
+.actions {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+
+    .default-action {
+        display: flex;
+        .like-action,
+        .dislike-action,
+        .comment-action {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+
+            .icon {
+                margin-right: 8px;
+                font-size: 2rem;
+            }
+
+            .icon:hover {
+                opacity: 0.8;
+                font-size: 2.5rem;
+                cursor: pointer;
+            }
+        }
+
+        .like-action,
+        .dislike-action {
+            .icon {
+                color: #0073ff;
+            }
+        }
+
+        .comment-action {
+            .icon {
+                color: #33d1ba;
+            }
+        }
+
+        .nums {
+            font-size: 1.6rem;
+        }
+    }
+
+    .share-action {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+
+        .icon {
+            font-size: 2rem;
+            margin-right: 8px;
+            color:  #f2c14b;
+
+            &:hover {
+                font-size: 2.5rem;
+                opacity: 0.9;
+            }
+        }
+
+        p {
+            font-size: 1.6rem;
+        }
+    }
+}
+
+.popper-wrapper {
+    background-color: #fff;
+    box-shadow: 0 0 5px #888888;
+}
