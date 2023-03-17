@@ -127,16 +127,10 @@ function UpdateProfile() {
 
     return (
         <div className={cx('wrapper')}>
-            <div>
+            <div className={cx('loading')} style={!loading ? {display: 'none'}: {}}>   
                 <RingLoader
                     color="#367fd6"
-                    style={
-                        !loading
-                            ? {
-                                  display: 'none',
-                              }
-                            : {}
-                    }
+                    
                     size={150}
                     speedMultiplier={0.5}
                 />

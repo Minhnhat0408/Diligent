@@ -3,8 +3,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import { forwardRef, useState } from 'react';
 import styles from './FormInput.module.scss';
-
 const cx = classNames.bind(styles);
+
+
 const FormInput = forwardRef(({ small,password, invalid,date, icon, type, placeholder, msg,onBlur }, ref) => {
   const [currentType,setCurrentType] = useState(type);
     const handleShowPassword = () => {

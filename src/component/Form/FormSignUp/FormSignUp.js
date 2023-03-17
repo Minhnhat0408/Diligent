@@ -1,12 +1,12 @@
-import { faGooglePlus } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import classNames from 'classnames/bind';
 import styles from './FormSignUp.module.scss';
 import { useRef } from 'react';
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
+import {useNavigate } from 'react-router-dom';
 import { UserAuth } from '~/contexts/authContext';
 import { faAt, faUnlock, faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
+import { RingLoader } from 'react-spinners';
 import FormInput from '../FormInput';
 import Button from '~/component/Button';
 import Image from '~/component/Image';
@@ -105,6 +105,12 @@ function FormSignUp({ classes = [] }) {
         setLoading(false);
     };
     return (
+        <>
+        {loading ? (
+            <div>
+                <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+            </div>
+        ) : (
         <div className={cx('form', ...classes)}>
             <h3 className={cx('heading')}>Sign up</h3>
             <p className={cx('desc')}>Sign up to improve your learning journey</p>
@@ -129,6 +135,8 @@ function FormSignUp({ classes = [] }) {
                 Sign up
             </Button>
         </div>
+        )}
+        </>
     );
 }
 
