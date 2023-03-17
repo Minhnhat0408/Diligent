@@ -1,0 +1,74 @@
+
+.container {
+    display: flex;
+    justify-content: center;
+    margin: 0 80px;
+  }
+  
+  .card {
+    position: relative;
+    flex-basis: 100%;
+
+  
+  }
+  
+  .card-content {
+    
+    width: 100%;
+    backface-visibility: hidden;
+    transform: translateZ(40px) scale(0.90);
+  }
+  
+  .bgfade {
+    position: absolute;
+    right: 0;
+    bottom: 0;left: 0;
+    height: 200px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 20%,rgba(0,0,0,.8) 90%);
+  }
+  
+  .card-tp {
+    width: 100%;
+    backface-visibility: hidden;
+    height: 600px;
+    border-radius: 6px;
+    transform-style: preserve-3d;
+    transition: transform 1s cubic-bezier(0.8, 0.3, 0.3, 1);
+  
+    &.card-back {
+      position:absolute;
+      top: 0;
+      left: 0;
+      background-color: #2a2b38;
+      background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: 300%;
+      border-radius: 6px;
+      
+
+    }
+  
+    &.card-front {
+      background-color: #2a2b38;
+      background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
+      background-position: bottom center;
+      background-repeat: no-repeat;
+      background-size: 300%;
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  
+    }
+    
+    
+  }
+  
+  .cardfrontflip{
+    transform: rotateY(-180deg);
+  }
+  
+  .cardbackflip{
+    transform: rotateY(180deg);
+  }

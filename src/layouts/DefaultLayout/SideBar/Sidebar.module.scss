@@ -7,10 +7,28 @@
     bottom: 0;
     overflow-y: scroll;
     overflow-x: hidden;
+    transition:all 0.8s;
+    & .menu-wrapper{
+        color:var(--text-color) ; 
+    }
+    
+    &.dark .menu-wrapper{
+        
+        background-color: var(--dark-theme);
+        color:var(--text-color-dark);   
+    }
+
+    &.dark {
+        background-color: var(--bg-dark-theme);
+    }
+    &.dark .menu-header{
+        color:var(--text-color-dark); 
+    }
 }
     
 
 .menu-wrapper {
+    transition:all 0.8s;
     width: calc(var(--defaultLayout-sidebar-width) - 30px);
     min-height: 100px;
     background-color: #fff;
@@ -19,7 +37,7 @@
 }
 
 .menu-header {
-    color: var(--light-grey);
+    color: var(--text-color);
     margin-left: 25px;
     font-size: 1.2rem;
     padding-top: 10px;

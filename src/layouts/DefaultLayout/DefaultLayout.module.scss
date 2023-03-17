@@ -5,15 +5,17 @@
 }
 
 .container {
-  margin-top: var(--defaultLayout-header-height);
-  width: 100%;
-  max-width: 100%;
-  display: flex;
-  background-color: var(--light-theme);
-  overflow: hidden;
+    margin-top: var(--defaultLayout-header-height);
+    width: 100%;
+    max-width: 100%;
+    display: flex;
+    background-color: var(--light-theme);
+    overflow: hidden;
 }
 
 .content {
-  margin-left: var(--defaultLayout-sidebar-width);
-  width: 100%;
+    flex: 1;
+    background-color: var(--bg-dark-theme);
+    padding-top: 10px;
+    padding-left: var(--defaultLayout-sidebar-width) ;
 }

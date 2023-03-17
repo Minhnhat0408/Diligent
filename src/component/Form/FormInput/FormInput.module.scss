@@ -1,0 +1,134 @@
+
+
+.form__input{
+    display: flex;
+    position: relative;
+    margin-bottom: 1.8rem;
+    flex-direction: column;
+
+    &.invalid .form-control {
+        border: 2px solid #f33a58 !important  ;
+        border-color: #f33a58;
+        
+        
+       
+    }
+    &.invalid .form-control:focus {
+        box-shadow: 0 0 20px 0 #f33a58;
+        
+    }
+    
+    &.invalid .form-message {
+        color: #f33a58;
+    }
+
+    &.invalid .form-label{
+        color: #f33a58;
+    }
+    &.small .form-label{
+
+    height: 48px;
+    line-height: 48px;
+ 
+    font-size: 2rem;
+    }
+    &.small .form-control{
+        padding-left: 55px;
+        height: 48px;
+         font-size: 1.4rem;
+    }
+
+    &.small .form-message{
+        font-size: 1.2rem;
+        line-height: 1.6rem;
+        padding: 4px 0 0;
+    }
+    &.small .eye{
+        height: 48px;
+        line-height: 48px;
+        font-size: 2rem;
+     
+    }
+}
+
+
+
+.form-label {
+    font-weight: 700;
+    position: absolute;
+    color: var(--primary) ;
+    left: 24px;
+    top: 0;
+    height: 80px;
+    line-height: 80px;
+    text-align: left;
+    font-size: 2.6rem;
+    
+}
+.form-message{
+    text-align: start;
+}
+.form-control {
+    padding: 13px 20px;
+    padding-left: 70px;
+    height: 80px;
+    width: 100%;
+    font-weight: 500;
+    border-radius: 4px;
+    font-size: 2rem;
+    line-height: 22px;
+    letter-spacing: 0.5px;
+    outline: none;
+    color: #c4c3ca;
+    background-color: #1f2029;
+
+    border: none;
+    &:focus{
+        box-shadow: 0 0 20px 0 var(--primary);
+        border: 2px solid var(--primary);
+
+        
+        &::placeholder{
+            opacity: 0;
+        }
+    }
+    &.invalid {
+        border-color: #f33a58;
+    }
+    &.invalid>.form-message{
+        color: #f33a58;
+    }
+    &::placeholder{
+
+        transition: opacity 0.8s;
+    
+    }
+
+
+}
+
+
+  
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(100%);
+  }
+
+.form-message {
+    font-size: 1.6rem;
+    line-height: 1.6rem;
+    margin-top:8px;
+}
+
+.eye{
+    font-weight: 700;
+    position: absolute;
+    color: var(--primary) ;
+    right: 24px;
+    top: 0;
+    opacity:.6;
+    height: 80px;
+    line-height: 80px;
+    text-align: left;
+    font-size: 2.6rem;
+    cursor:pointer
+}

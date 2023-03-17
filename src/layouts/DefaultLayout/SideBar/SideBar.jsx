@@ -15,12 +15,20 @@ import {
     faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { useContext } from 'react';
+import { ThemeContext } from '~/contexts/Context';
+import routes from '~/config/routes';
+import { useNavigate } from 'react-router-dom';
+import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
+    const navigate = useNavigate();
+    const context = useContext(ThemeContext);
+    const {user} = UserAuth();
     return (
-        <aside className={cx('wrapper')}>
+        <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>New Feeds</h4>
@@ -31,30 +39,44 @@ function Sidebar() {
                     backGroundColor="linear-gradient(to right, #0575e6, #021b79)"
                     color="#fff"
                     numsNotify={590}
+                    onClick={() => {
+                 
+                        navigate(routes.home)}
+                    }
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faIdBadge} />}
                     title="Badges"
                     backGroundColor="linear-gradient(to right, #e44d26, #f16529)"
                     color="#fff"
+           
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faBoxArchive} />}
                     title="Explore Stories"
                     backGroundColor="linear-gradient(to right, #f2994a, #f2c94c)"
                     color="#fff"
+                    onClick={() => {
+             
+                        navigate(routes.story)}
+                    }
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faLightbulb} />}
                     title="Groups"
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
+              
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faUser} />}
                     title="Author Profile"
                     backGroundColor="linear-gradient(135deg, #05f, #09f)"
                     color="#fff"
+                    onClick={() => {
+                        
+                        return user ? navigate(routes.user+user.uid): navigate('/login')}
+                    }
                 />
             </div>
 

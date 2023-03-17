@@ -1,0 +1,17 @@
+.wrapper {
+  width: 100%;  
+  min-height: 100px;
+  max-height: min((100vh - 96px) - 60px, 734px);
+  padding-top: 8px;
+  border-radius: 8px;
+  background-color: var(--light-theme);
+  box-shadow: rgb(0 0 0 / 12%) 0px 2px 12px;
+  display: flex;
+  flex-direction: column;
+  color: var(--text-color);
+  &.dark{
+    color: var(--text-color-dark);
+    background-color: var(--dark-theme);
+  }
+  // overflow-y: scroll;
+}

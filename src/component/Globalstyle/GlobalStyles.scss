@@ -14,11 +14,13 @@
     --primary: #ffeba7;
     --primary-light: #102770;
     --black: #000;
-    --dark-theme: #1f2029;
-    --light-theme: #f7f8fa;
+    --dark-theme: #293145;
+    --bg-dark-theme:#20222b;
+    --light-theme:white;
     --blue: #102770;
     --input-text-color: rgba(22, 24, 35, 1);
-    --text-color: #777;
+    --text-color-dark: #ddd;
+    --text-color:#888;
     --icon-color: #adb5bd;
     // --background-color: #f7f8fa; 
 
@@ -65,7 +67,7 @@ body {
     line-height: 1.5;
     color: var(--text-color);
     text-rendering: optimizeSpeed;
-    height: 5000px;
+    height: 100%;
     overflow-y: overlay;
 }
 
@@ -81,7 +83,7 @@ input,
 }
 
 a[href] {
-    color: var(--text-color);
+
     text-decoration: none;
 }
 // scrolbar css
