@@ -1,0 +1,28 @@
+$icon-color: #0084ff;
+
+.wrapper {
+    padding: 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    &:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+    }
+}
+
+.icon {
+    font-size: 2rem;
+    margin-right: 12px;
+    color: $icon-color;
+}
+
+.title {
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+
+.detail {
+    font-size: 1.2rem;
+}
