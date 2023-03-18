@@ -1,15 +1,19 @@
-import { faComment, faEllipsis, faSave, faShare, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
+import { faEyeSlash } from '@fortawesome/free-regular-svg-icons';
+import { faCircleExclamation, faComment, faEllipsis, faLock, faMinus, faSave, faShare, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
+import FuncItem from '../FuncItem';
+import { Wrapper } from '../Popper';
 import styles from './Post.module.scss';
 
 const cx = classNames.bind(styles);
 
-function Post() {
+function Post({avatar, username, time, content, image, likeNums, dislikeNums, commentNums }) {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
+
                 <div className={cx('info')}>
                     <img
                         src="https://scontent.fhan5-2.fna.fbcdn.net/v/t1.6435-9/51132488_1049848925197144_4209746563502702592_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=6jNeyhfww0cAX9bxzni&_nc_ht=scontent.fhan5-2.fna&oh=00_AfDAyCtElTrMPbwWW9z-mT07V8vShL7B6TDQ5VjrdXzNiA&oe=643AA3B8"
@@ -21,15 +25,21 @@ function Post() {
                     </div>
                 </div>
 
-                <Tippy 
-					visible
-					placement='bottom'
-					render={attrs => (
-						<div className={cx('popper-wrapper')} tabIndex="-1" {...attrs}>
-                            
-						</div>
-					)}
-				>
+                <Tippy
+                    interactive
+                    placement="bottom"
+                    delay={[0, 300]}
+                    render={(attrs) => (
+                        <div className={cx('popper-wrapper')} tabIndex="-1" {...attrs}>
+                            <Wrapper>
+                                <FuncItem icon={<FontAwesomeIcon icon={faSave}/>} title="Save" detail="Add this to your saved items"/>
+                                <FuncItem icon={<FontAwesomeIcon icon={faMinus}/>} title="Hide" detail="Hide this post"/>
+                                <FuncItem icon={<FontAwesomeIcon icon={faCircleExclamation}/>} title="Hide all" detail="Hide all posts from this user"/>
+                                <FuncItem icon={<FontAwesomeIcon icon={faLock}/>} title="Unfollow" detail="You will not see any activity from this user"/>
+                            </Wrapper>
+                        </div>
+                    )}
+                >
                     <div className={cx('options')}>
                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
                     </div>
@@ -69,6 +79,7 @@ function Post() {
                     <p>Share</p>
                 </div>
             </div>
+            
         </div>
     );
 }

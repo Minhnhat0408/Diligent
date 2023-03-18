@@ -2,22 +2,22 @@
     background-color: var(--background-color);
     width: 100%;
     min-height: 1000px;
-    padding-top: 20px;
+    padding-top: 10px;
     display: flex;
     transform: translateZ(0);
     margin-left: 80px;
 }
 
 .newsfeed {
-    width: 66.67%;
-    margin-left: 60px;
+    width: 50%;
+    margin-left: 32px;
     min-height: 10000px;
 }
 
 .card-info {
     background-color: #fff;
     min-height: 100px;
-    width: 33.33%;
+    width: 20%;
     margin-right: 60px;
-    margin-left: 20px;
+    margin-left: 140px;
 }

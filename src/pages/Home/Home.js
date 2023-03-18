@@ -18,6 +18,8 @@ function Home() {
 
                 {/* Hiển thị bài viết */}
                 <Post/>
+                <Post/>
+                <Post/>
             </div>
 
             <div className={cx('card-info')}></div>
