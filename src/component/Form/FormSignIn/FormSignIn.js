@@ -66,7 +66,7 @@ function FormSignIn() {
             try {
                 setError('');
                 setLoading(true);
-                await signIn(email.current.value, password.current.value);
+                await signIn(email.current.value.trimEnd(), password.current.value.trimEnd());
 
                 navigate(routes.home);
             } catch (err) {
@@ -82,9 +82,13 @@ function FormSignIn() {
         try {
             setError('');
             setLoading(true);
-            await googleSignIn();
-            console.log('successfull');
-            navigate(routes.home);
+            const acc = await googleSignIn();
+            if (acc) {
+                console.log('successfull');
+                navigate(routes.home);
+            } else {
+                navigate(routes.updateInfo);
+            }
         } catch (err) {
             console.log(err);
             setError(err.message.slice(10, -1));

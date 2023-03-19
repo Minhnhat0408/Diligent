@@ -4,7 +4,11 @@
   padding: 6px 16px;
   cursor: pointer;
   text-decoration: none;
-  
+  color: var(--text-color);
+  &.dark {
+    color: var(--text-color-dark);
+    background-color: var(--dark-theme);
+  }
   &:hover{
     background-color: rgba(22,24, 35, 0.03);
   }
@@ -29,12 +33,6 @@
   span {
     font-size: 1.6rem;
   }
-}
-
-.icon {
-  margin-left: 8px;
-  color: rgb(32, 213, 236);
-  font-size: 1.2rem;
 }
 
 .username {

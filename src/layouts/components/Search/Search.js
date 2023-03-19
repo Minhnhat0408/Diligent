@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import HeadlessTippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
@@ -8,8 +8,8 @@ import styles from './Search.module.scss';
 import { Wrapper as PopperWrapper } from '~/component/Popper';
 import AccountItem from '~/component/AccountItem';
 import { useDebounce } from '~/hooks';
-import { search } from '~/services/searchService';
-
+import { UserAuth } from '~/contexts/authContext';
+import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 function Search() {
     const [searchValue, setSearchValue] = useState('');
@@ -17,20 +17,29 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
     const debounce = useDebounce(searchValue, 1000);
+    const { usersList,user } = UserAuth();
     const inputRef = useRef();
+    const context = useContext(ThemeContext)
     // khi call API tim kiem co ket qua
     useEffect(() => {
         if (searchValue.trim()) {
             setLoading(true);
-            const fetchData = async () => {
-                console.log('hello')
-                await search(debounce)
-                setTimeout(() => {
-                 
-                    setLoading(false);
-                }, 500);
-            }
-            fetchData(); 
+            const fetchData = async (value) => {
+                await usersList.then((result) => {
+                    const search = result.filter((duser) => {
+                        return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user.uid;
+                    });
+                    setTimeout(() => {
+                        setSearchResult(search)
+                        setLoading(false);
+                    },500)
+                    
+                });
+                
+                
+            };
+            fetchData(searchValue.trim());
+            
         } else {
             setLoading(false);
             setSearchResult([]);
@@ -38,11 +47,11 @@ function Search() {
     }, [debounce]);
 
     const handleSearch = (e) => {
-        const value = e.target.value
-        if(!value.startsWith(' ')){
-            setSearchValue(value)
+        const value = e.target.value;
+        if (!value.startsWith(' ')) {
+            setSearchValue(value);
         }
-    }
+    };
     const handleClear = () => {
         setSearchValue('');
         setSearchResult([]);
@@ -59,11 +68,10 @@ function Search() {
             appendTo={() => document.body}
             render={(attrs) => (
                 <div tabIndex="-1" {...attrs} className={cx('search-result')}>
-                    <PopperWrapper>
-                        <h4 className={cx('search-title')}>Account</h4>
-                        {searchResult.map((user, index) => {
-                       
-                            return <AccountItem key={user.id} data= {user} />;
+                    <PopperWrapper className={ context.theme === 'dark' ? [context.theme] : ''}>
+                        <h4 className={cx('search-title',{dark:context.theme ==='dark'})}>Account</h4>
+                        {searchResult.map((user) => {
+                            return <AccountItem key={user.id} user={user} dark={context.theme === 'dark'}  />;
                         })}
                     </PopperWrapper>
                 </div>
@@ -94,6 +102,5 @@ function Search() {
         </HeadlessTippy>
     );
 }
-
 
 export default Search;

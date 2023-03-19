@@ -8,7 +8,7 @@ const cx = classNames.bind(styles);
 // dac tinh rieng do 'children' quyet dinh
 
 function Wrapper({children, className}) {
-  
+    
     return ( 
         <div className={cx('wrapper', className)}>{children}</div>
      );
@@ -16,6 +16,6 @@ function Wrapper({children, className}) {
 
 Wrapper.propTypes = {
     children: PropTypes.node.isRequired,
-    className: PropTypes.string
+    
 }
 export default Wrapper;

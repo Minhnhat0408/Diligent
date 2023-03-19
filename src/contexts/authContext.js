@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -20,12 +20,13 @@ import {
     where,
     getDoc,
     onSnapshot,
+    orderBy,
+    getCountFromServer
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
 import { db } from '../firebase';
-import { useNavigate } from 'react-router-dom';
-import routes from '~/routes';
+
 import image from '~/assets/images';
 
 
@@ -37,7 +38,9 @@ export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
-    // const navigate = useNavigate();
+    const [countUser,setCountUser] = useState(0);       
+     const userRef = collection(db,'users');
+
     const createUser = async (email, password) => {
       
             const response = await createUserWithEmailAndPassword(auth, email, password);
@@ -52,8 +55,18 @@ export const AuthContextProvider = ({ children }) => {
             
             return response
       
-    };
+    }; 
 
+    const usersList = useMemo(async () => {
+        const data = []
+        const q = query(userRef,orderBy('user_name'));
+        const docs = await getDocs(q);
+        docs.forEach((doc) => {
+            data.push({id:doc.id,data:doc.data()})
+        })
+        console.log(data)
+        return data
+    },[countUser])
     const signIn = (email, password) => {
         return signInWithEmailAndPassword(auth, email, password);
     };
@@ -65,11 +78,11 @@ export const AuthContextProvider = ({ children }) => {
         
         await setDoc(doc(db, 'users',user.uid), {
            user_dob:data.dob,
-           user_name:data.fullname,
+           user_name:data.fullname.trimEnd(),
            user_gender:data.gender,
-           user_phone: data.phone,
-           user_address:data.address,
-           user_bio:data.bio,
+           user_phone: data.phone.trimEnd(),
+           user_address:data.address.trimEnd(),
+           user_bio:data.bio.trimEnd(),
            user_avatar:data.avatar ||  user?.photoURL || image.userUndefined,
            user_status: 'online',
            user_theme: 'light',
@@ -99,11 +112,14 @@ export const AuthContextProvider = ({ children }) => {
             }
             return true;
     };
-
+    
     const userStateChanged = async () => {
-        onAuthStateChanged(auth, async (currentUser) => {          
+
+        onAuthStateChanged(auth, async (currentUser) => {      
+            const snapshot = await getCountFromServer(userRef);
+            console.log(snapshot.data().count)
+            setCountUser(snapshot.data().count)
             if (currentUser) {
-                localStorage.setItem('user_id',currentUser.uid)
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     setUserData(doc.data());
                     // console.log("data",doc.data());
@@ -129,6 +145,7 @@ export const AuthContextProvider = ({ children }) => {
 
 
     const value = {
+        usersList,
         user,
         userData,
         signIn,

@@ -78,7 +78,7 @@ function FormSignUp({ classes = [] }) {
             try {
                 setError('');
                 setLoading(true);
-                await createUser(email.current.value, password.current.value, confirmPass.current.value);
+                await createUser(email.current.value.trimEnd(), password.current.value.trimEnd(), confirmPass.current.value.trimEnd());
 
                 console.log('successfull');
 

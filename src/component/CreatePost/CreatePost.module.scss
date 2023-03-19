@@ -1,15 +1,40 @@
 $color-text: var(--text-color);
-$color-blue: var(--blue);
+$color-blue: var(--primary-light);
 $color-video: #e50202;
 $color-photo: #10d876;
 $color-camera: #fe9431;
 
 .wrapper {
-    background-color: #fff;
+    background-color: var(--light--theme);
     padding: 20px;
     border-radius: 10px;
     box-shadow: 1px 1px 5px #888;
+    &.dark{
+        background-color: var(--dark-theme);
+        box-shadow: none;
+   
+    }
 
+    &.dark .header{
+        &-icon {
+
+            color: var(--primary);
+        }
+        &-title {
+            margin-left: 8px;
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+    }
+    &.dark .input {
+        textarea{
+            background-color: var(--bg-dark-theme);
+            color:var(--text-color-dark);
+          
+        }
+        
+    }
     .header {
         display: flex;
         align-items: center;
@@ -18,7 +43,7 @@ $color-camera: #fe9431;
             margin-left: 8px;
             font-size: 1.4rem;
             font-weight: 600;
-            color: $color-text;
+            color: var(--primary-light);
         }
 
         &-icon {
@@ -31,7 +56,7 @@ $color-camera: #fe9431;
         display: flex;
         align-items: center;
         margin-top: 20px;
-
+        
         .avatar {
             width: 40px;
             height: 40px;
@@ -40,6 +65,7 @@ $color-camera: #fe9431;
         }
 
         textarea {
+            font-size: 1.6rem;
             width: 100%;
             min-height: 100px;
             padding: 8px;
@@ -59,12 +85,14 @@ $color-camera: #fe9431;
             }
         }
     }
-
+    &.dark .options{
+        color: var(--text-color-dark);
+    }
     .options {
         display: flex;
         align-items: center;
         margin-top: 20px;
-
+        color: var(--text-color);
         .option {
             display: flex;
             align-items: center;
@@ -82,8 +110,11 @@ $color-camera: #fe9431;
             &-title {
                 font-size: 1.4rem;
                 font-weight: 600;
-                color: $color-text;
+           
+
             }
+
+            
 
             .video {
                 color: $color-video;

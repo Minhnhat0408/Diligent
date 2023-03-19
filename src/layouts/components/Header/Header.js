@@ -96,16 +96,23 @@ const MENU_ITEM = [
     { icon: <FontAwesomeIcon icon={faKeyboard} />, title: 'Keyboard shortcuts' },
 ];
 
-const USER_MENU = [
-    { icon: <FontAwesomeIcon icon={faUser} />, title: 'View profile', to: '/profile' },
-    { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
-    ...MENU_ITEM,
-    { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
-];
+let USER_MENU = []
 function Header() {
     const context = useContext(ThemeContext);
     const currentRoute = useLocation();
     const {user,logOut, userData}= UserAuth();
+    
+    useEffect(()=> {
+
+      USER_MENU = [
+            { icon: <FontAwesomeIcon icon={faUser} />, title: userData?.user_name || 'View Profile', to: routes.user +user?.uid },
+            { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
+            ...MENU_ITEM,
+            { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
+        ];
+    },[user])
+    
+ 
     const handleMenuChange = (menuItem) => {
         // xu li khi 1 item trong menu khong co children
         switch (menuItem.type) {
