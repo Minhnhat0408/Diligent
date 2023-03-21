@@ -57,7 +57,6 @@ function Menu({ children, item = [], onChange = () => {} }) {
     return (
         <Tippy
             onHide={handleOutofHoverMenu}
-            // onHide={() => alert('hidden')}
             hideOnClick={true}
             interactive
             delay={[0, 800]}

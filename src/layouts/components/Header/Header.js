@@ -14,22 +14,20 @@ import {
     faCoins,
     faGear,
     faSignOut,
-    faPlus,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
-import { useContext, useState ,useRef, useEffect} from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Menu from '~/component/Popper/Menu';
 import Image from '~/component/Image';
 import { UserAuth } from '~/contexts/authContext';
-import { signOut } from 'firebase/auth';
+import { Wrapper as PopperWrapper } from '~/component/Popper';
+import Notification from '~/component/Notification';
 import { db } from '~/firebase';
-import { getDoc, onSnapshot,doc } from 'firebase/firestore';
-import { collection, query, where, getDocs } from "firebase/firestore";
-
+import { getDocs,collection } from 'firebase/firestore';
+import getTimeDiff from '~/utils/timeDiff';
 const cx = classNames.bind(styles);
-
 
 const languages = [
     'English',
@@ -96,23 +94,46 @@ const MENU_ITEM = [
     { icon: <FontAwesomeIcon icon={faKeyboard} />, title: 'Keyboard shortcuts' },
 ];
 
-let USER_MENU = []
+let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
     const currentRoute = useLocation();
-    const {user,logOut, userData}= UserAuth();
-    
-    useEffect(()=> {
+    const { user, logOut, userData } = UserAuth();
+    const [notifications,setNotifications] = useState();
+    const notif = useRef();
+    const [visible,setVisible] = useState(false);
 
-      USER_MENU = [
-            { icon: <FontAwesomeIcon icon={faUser} />, title: userData?.user_name || 'View Profile', to: routes.user +user?.uid },
-            { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
-            ...MENU_ITEM,
-            { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
-        ];
-    },[user])
-    
- 
+    useEffect(() => {
+        console.log('effect')
+       getDocs(collection(db, 'users', user.uid, 'notifications')).then((docs) => {
+            let data1 = []
+            docs.forEach((doc) => {
+                data1.push(doc.data())
+            })
+            setNotifications(data1)
+       });
+       
+    },[userData.user_friendRequests])
+    USER_MENU = [
+        {
+            icon: <FontAwesomeIcon icon={faUser} />,
+            title: userData?.user_name || 'View Profile',
+            to: routes.user + user?.uid,
+        },
+        { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
+        ...MENU_ITEM,
+        { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
+    ];
+
+    const renderNotifications = (attrs) => (
+        <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
+            <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
+                {notifications?.map((data) => {
+                    return <Notification key={data.sender.id} data={data} time={getTimeDiff(Date.now(),data.time.toMillis())} />
+                })}
+            </PopperWrapper>
+        </div>
+    );
     const handleMenuChange = (menuItem) => {
         // xu li khi 1 item trong menu khong co children
         switch (menuItem.type) {
@@ -125,12 +146,10 @@ function Header() {
         }
     };
 
-        
-
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             <div className={cx('inner')}>
-                <Link to={routes.home}  className={cx('start')}>
+                <Link to={routes.home} className={cx('start')}>
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
                         className={cx('logo')}
@@ -139,27 +158,45 @@ function Header() {
                 </Link>
                 <div className={cx('middle')}>
                     <Search />
-                    <Link to={routes.home} className={cx('middle-btn',{'active': currentRoute.pathname === routes.home})}>
+                    <Link
+                        to={routes.home}
+                        className={cx('middle-btn', { active: currentRoute.pathname === routes.home })}
+                    >
                         <i className={`${styles.icon} fa-regular fa-house`}></i>
                     </Link>
-                    <Link to={routes.friend}  className={cx('middle-btn',{'active': currentRoute.pathname === routes.friend})}>
+                    <Link
+                        to={routes.friend}
+                        className={cx('middle-btn', { active: currentRoute.pathname === routes.friend })}
+                    >
                         <i className={`${styles.icon} fa-regular fa-user-group`}></i>
                     </Link>
-                    <Link to={routes.flashcard}  className={cx('middle-btn',{'active': currentRoute.pathname === routes.flashcard})}>
+                    <Link
+                        to={routes.flashcard}
+                        className={cx('middle-btn', { active: currentRoute.pathname === routes.flashcard })}
+                    >
                         <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
                     </Link>
-                    <Link to={routes.story}   className={cx('middle-btn',{'active': currentRoute.pathname === routes.story})}>
+                    <Link
+                        to={routes.story}
+                        className={cx('middle-btn', { active: currentRoute.pathname === routes.story })}
+                    >
                         <i className={`${styles.icon} fa-regular fa-folder-arrow-up`}></i>
                     </Link>
                 </div>
 
                 <div className={cx('end')}>
-                    
                     {user ? (
                         <>
                             <span className={cx('end-btn')}>
-                                <Tippy content="notification" placement="bottom">
-                                    <i className="fa-solid fa-bell"></i>
+                                <Tippy
+                                    visible={visible}
+                                    interactive
+                                    offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
+                                    placement="bottom"
+                                    render={renderNotifications}
+                                    animation={false}
+                                >
+                                    <i className="fa-solid fa-bell" onClick={() => setVisible(!visible)}></i>
                                 </Tippy>
                             </span>
                             <Link to={routes.chat} className={cx('end-btn')}>
@@ -186,14 +223,18 @@ function Header() {
                             <i className="fa-duotone fa-moon"></i>
                         )}
                     </span>
-                    <Menu item={user ? USER_MENU : MENU_ITEM} className={cx('menu',{ [context.theme]: context.theme === 'dark' })} onChange={handleMenuChange} >
+                    <Menu
+                        item={user ? USER_MENU : MENU_ITEM}
+                        className={cx('menu', { [context.theme]: context.theme === 'dark' })}
+                        onChange={handleMenuChange}
+                    >
                         {user ? (
                             <Image
                                 className={cx('user-avatar')}
                                 src={userData?.user_avatar}
                                 alt={userData?.user_name}
                             ></Image>
-                        ): (
+                        ) : (
                             <button className={cx('more-button')}>
                                 <FontAwesomeIcon icon={faEllipsisVertical} />
                             </button>

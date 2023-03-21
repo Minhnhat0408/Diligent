@@ -1,22 +1,15 @@
 .wrapper {
-    width: 100%;
+
     min-height: 1000px;
     padding-top: 10px;
-    display: flex;
     transform: translateZ(0);
-    margin-left: 80px;
+    width: 700px;
+    margin: 0 100px 0 100px;
 }
 
 .newsfeed {
-    width: 50%;
+    width: 100%;
     margin-left: 32px;
-    min-height: 10000px;
+    min-height: 1000px;
 }
 
-.card-info {
-    background-color: #fff;
-    min-height: 100px;
-    width: 20%;
-    margin-right: 60px;
-    margin-left: 140px;
-}

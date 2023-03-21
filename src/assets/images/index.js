@@ -4,7 +4,8 @@ const image = {
     userUndefined: require('~/assets/images/userUndefined.png'),
     noImage: require('~/assets/images/download.jpg'),
     loginImg: require('~/assets/images/loginImage.png'),
-    google: require('~/assets/images/google.png')
+    google: require('~/assets/images/google.png'),
+    social:require('~/assets/images/socialmedia.jpg')
   };
   
   export default image;

@@ -1,0 +1,32 @@
+.wrapper{
+    padding:0 24px;
+    margin-bottom: 16px;
+    &.dark .info{
+        color:var(--text-color-dark)
+    }
+}
+.body{
+    display: flex;
+    align-items: center;
+}
+
+.info{
+    margin: 0 16px;
+    line-height: 1.8rem;
+    color: var(--text-color);
+}
+
+.mutual{
+    font-size: 1.4rem;
+}
+.avatar{
+    width: 46px;
+    height: 46px;
+    object-fit: cover;
+    border-radius: 50%;     
+}
+.btn{
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-around;
+}

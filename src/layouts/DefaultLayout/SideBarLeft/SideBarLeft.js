@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import styles from './Sidebar.module.scss';
+import styles from './SideBarLeft.module.scss';
 import SidebarMenuItems from 'src/layouts/components/SidebarMenuItems';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -23,10 +23,11 @@ import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
-function Sidebar() {
+function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const {user} = UserAuth();
+    console.log('refresh')
     return (
         <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
@@ -124,4 +125,4 @@ function Sidebar() {
     );
 }
 
-export default Sidebar;
+export default SideBarLeft;

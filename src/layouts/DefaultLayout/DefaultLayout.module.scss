@@ -8,19 +8,20 @@
     margin-top: var(--defaultLayout-header-height);
     width: 100%;
     max-width: 100%;
-    display: flex;
+
     background-color: var(--light-theme);
     overflow: hidden;
 }
 
 .content {
-    flex: 1;
     transition: all 0.8s;
     background-color: var(--bg-light-theme);
+    min-height:100vh;
     padding-top: 10px;
-    padding-left: var(--defaultLayout-sidebar-width) ;
+    padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px) ;
+    padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px) ;
     &.dark{
-      
-    background-color: var(--bg-dark-theme);
-    }
+        background-color: var(--bg-dark-theme);
+    } 
 }
+

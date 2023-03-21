@@ -1,9 +1,10 @@
 .wrapper {
   display: flex;
   align-items: center;
-  padding: 6px 16px;
+  padding: 10px 16px;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.8s;
   color: var(--text-color);
   &.dark {
     color: var(--text-color-dark);
@@ -22,16 +23,35 @@
 }
 
 .info {
+  display: flex;
   flex: 1;
   margin-left: 12px;
+  align-items: center;
+  
 }
 
 .name {
   font-size: 1.4rem;
   font-weight: 500;
-
+  padding-right: 20px;
+  flex:1;
   span {
     font-size: 1.6rem;
+  }
+}
+
+.icon{
+  font-size: 1rem;
+  
+  &.online{
+    color: var(--online);
+  }
+
+  &.offline{
+    color: var(--offline);
+  }
+  &.ban{
+    color: var(--ban);
   }
 }
 

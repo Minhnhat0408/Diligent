@@ -27,6 +27,10 @@
     &.dark .more-button{
       color:var(--primary);
     }
+
+    &.dark .menu-popper{
+      background-color: var(--dark-theme);
+    }
   }
 
 
@@ -114,7 +118,9 @@
 
 }
 
-
+.menu-popper{
+  background-color: var(--light-theme);
+}
 .more-button {
   color: var(--primary-light);
   font-size: 3rem;

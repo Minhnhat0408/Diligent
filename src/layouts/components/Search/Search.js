@@ -17,29 +17,23 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
     const debounce = useDebounce(searchValue, 1000);
-    const { usersList,user } = UserAuth();
+    const { usersList, user } = UserAuth();
     const inputRef = useRef();
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     // khi call API tim kiem co ket qua
     useEffect(() => {
         if (searchValue.trim()) {
             setLoading(true);
-            const fetchData = async (value) => {
-                await usersList.then((result) => {
-                    const search = result.filter((duser) => {
-                        return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user.uid;
-                    });
-                    setTimeout(() => {
-                        setSearchResult(search)
-                        setLoading(false);
-                    },500)
-                    
+            const fetchData = (value) => {
+                const search = usersList.filter((duser) => {
+                    return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user?.uid;
                 });
-                
-                
+                setTimeout(() => {
+                    setSearchResult(search);
+                    setLoading(false);
+                }, 500);
             };
             fetchData(searchValue.trim());
-            
         } else {
             setLoading(false);
             setSearchResult([]);
@@ -68,10 +62,10 @@ function Search() {
             appendTo={() => document.body}
             render={(attrs) => (
                 <div tabIndex="-1" {...attrs} className={cx('search-result')}>
-                    <PopperWrapper className={ context.theme === 'dark' ? [context.theme] : ''}>
-                        <h4 className={cx('search-title',{dark:context.theme ==='dark'})}>Account</h4>
+                    <PopperWrapper className={context.theme === 'dark' ? [context.theme] : ''}>
+                        <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Account</h4>
                         {searchResult.map((user) => {
-                            return <AccountItem key={user.id} user={user} dark={context.theme === 'dark'}  />;
+                            return <AccountItem key={user.id} search user={user} dark={context.theme === 'dark'} />;
                         })}
                     </PopperWrapper>
                 </div>

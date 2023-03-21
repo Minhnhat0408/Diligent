@@ -12,6 +12,8 @@ import Image from '~/component/Image';
 import Button from '~/component/Button';
 import routes from '~/config/routes';
 import RingLoader from 'react-spinners/RingLoader';
+import { doc,updateDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 function FormSignIn() {
     const defaultValidate = {
@@ -66,9 +68,9 @@ function FormSignIn() {
             try {
                 setError('');
                 setLoading(true);
-                await signIn(email.current.value.trimEnd(), password.current.value.trimEnd());
-
-                navigate(routes.home);
+                await signIn(email.current.value.trimEnd(), password.current.value.trimEnd())
+                navigate(routes.home)
+                
             } catch (err) {
                 console.log(err);
                 setError(err.message.slice(10, -1));

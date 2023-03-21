@@ -1,10 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from './DefaultLayout.module.scss';
 import Header from '../components/Header';
-import Sidebar from './SideBar';
+import SideBarLeft from './SideBarLeft';
 import PropTypes from 'prop-types'
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import SideBarRight from './SideBarRight';
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
@@ -13,8 +14,9 @@ function DefaultLayout({ children }) {
     <div className={cx('wrapper')}>
       <Header />
       <div className={cx('container')}>
-        <Sidebar />
+        <SideBarLeft />
         <div className={cx('content',{'dark':context.theme === 'dark'})}>{children}</div>
+        <SideBarRight />
       </div>
     </div>
   );

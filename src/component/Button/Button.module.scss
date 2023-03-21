@@ -49,13 +49,15 @@
   color: rgba(22, 24, 35, 0.55);
   border-radius: 99999px;
   font-weight: 700;
-
+  background-color: var(--light-theme);
+  cursor: pointer;
   &:hover {
     border-color: rgba(22, 24, 35, 0.2);
-
-    background-color: rgba(22, 24, 35, 0.03);
+    opacity: 0.8;
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0,0.2);
   }
 }
+
 
 .primary {
   background-color: var(--primary-light);
@@ -64,12 +66,14 @@
   border-color: var(--primary-light);
 
   &:hover {
-    border-color: var(--primary-light);
-    box-shadow: 0 0 15px 0 var(--primary-light);
+    background-color: var(--primary-light);
+    border-color: var(--primary-light) ;
+    box-shadow: 0 0 10px 0 var(--primary-light);
     
   }
 
   &:active {
+
     background-color: var(--primary);
   color: var(--primary-light);  
   } 
@@ -81,6 +85,7 @@
   border-color: var(--primary);
   &:hover{
     border-color: var(--primary);
+    color: var(--primary);
     box-shadow: 0 0 15px 0 var(--primary);
   }
 
@@ -110,6 +115,7 @@
   min-width: 100px;
   // min-width: 88px // if error in UI
   padding: 4px 16px;
+  font-size: 1.4rem;
 }
 
 .large {

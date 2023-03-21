@@ -14,8 +14,5 @@ function Wrapper({children, className}) {
      );
 }
 
-Wrapper.propTypes = {
-    children: PropTypes.node.isRequired,
-    
-}
+
 export default Wrapper;
