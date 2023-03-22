@@ -1,0 +1,150 @@
+.wrapper {
+    display: flex;
+    margin-top: 10px;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+
+.image {
+    margin-top: 5px;
+    width: 250px;
+    max-width: 250px;
+    height: 200px;
+    border-radius: 20px;
+}
+
+.comment {
+    margin-left: 4px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    .username {
+        font-size: 1.4rem;
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    }
+}
+
+.message {
+    border: 3px solid #f0f2f5;
+    border-radius: 12px;
+    padding: 8px;
+    width: 100%;
+    max-width: 250px;
+
+    p {
+        font-size: 1.4rem;
+    }
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    margin-top: 4px;
+    margin-left: 8px;
+
+    .like,
+    .reply {
+        margin-left: 4px;
+        font-size: 1.2rem;
+        color: #65676b;
+        font-weight: 700;
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+
+    .time {
+        font-size: 1rem;
+        color: var(--time-color);
+
+        &:hover {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    }
+
+    .time, .reply {
+        margin-left: 12px;
+    }
+}
+
+// .user-info {
+//     display: flex;
+//     flex-direction: column;
+
+//     .comment {
+//         .username {
+//             font-size: 1.4rem;
+//             color: #212529;
+//             font-weight: 600;
+
+//             &:hover {
+//                 cursor: pointer;
+//                 text-decoration: underline;
+//             }
+//         }
+
+//         .message {
+//             border: 3px solid #f0f2f5;
+//             border-radius: 12px;
+//             padding: 8px;
+//         }
+//     }
+
+//     .image {
+//         .comment-img {
+//             margin-top: 5px;
+//             min-width: 240px;
+//             max-width: 300px;
+//             height: 200px;
+//             border-radius: 20px;
+//         }
+//     }
+
+//     .actions {
+//         max-width: 120px;
+//         margin-left: 8px;
+//         display: flex;
+//         justify-content: space-between;
+//         align-items: center;
+//         margin-top: 4px;
+//         line-height: 15px;
+
+//         .like,
+//         .reply {
+//             font-size: 1.2rem;
+//             font-weight: 700;
+//             color: #65676b;
+
+//             &:hover {
+//                 text-decoration: underline;
+//                 cursor: pointer;
+//             }
+//         }
+
+//         .time {
+//             font-size: 1rem;
+//             color: var(--time-color);
+//             &:hover {
+//                 text-decoration: underline;
+//                 cursor: pointer;
+//             }
+//         }
+//     }
+// }
+
+// .my-comment {
+//     margin-top: 4px;
+//     display: none;
+// }
