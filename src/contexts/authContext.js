@@ -128,20 +128,14 @@ export const AuthContextProvider = ({ children }) => {
    
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
-            const snapshot = await getCountFromServer(userRef);
-            console.log(snapshot.data().count);
-            setCountUser(snapshot.data().count);
+            onSnapshot(query(collection(db,'users'),where('user_status','==',"online")),(docs) => {
+                setCountUser(docs.docs.length);
+            })
             
             if (currentUser) {
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log(doc.data())
                     setUserData(doc.data());
-                    // console.log("data",doc.data());
-                    // console.log("user" ,user)
-                    // const dateObject = new Date(doc.data().user_createdAt.toMillis()+ 231231231);
-                    // console.log(doc.data().user_createdAt)
-                    // console.log(serverTimestamp())
-                    // console.log(dateObject.toLocaleString())
                 });
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());

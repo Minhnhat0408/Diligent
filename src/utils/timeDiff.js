@@ -19,7 +19,8 @@ function getTimeDiff(timeA,timeB) {
         return mins+ ' minutes ago'
     }
     var hrs = s % 24;
-    if(s === 0 ) {
+    var tmp  = (s-hrs)/24;
+    if(tmp === 0 ) {
         return hrs + ' hours ago'
     }
     var day= (s- hrs)/24;

@@ -29,6 +29,7 @@ function Button({
   separate = false,
   dark = false,
   theme = false,
+  submit = 'button',
   ...passProps
   
 }) {
@@ -58,11 +59,12 @@ function Button({
     separate,
     dark,
     theme,
+    
     [className]: className,
   });
 
   return (
-    <Comp className={classes} {...props}>
+    <Comp type={submit} className={classes} {...props}>
       {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
       {<span className={cx('title')}>{children}</span>}
       {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}

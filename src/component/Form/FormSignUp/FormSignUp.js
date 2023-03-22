@@ -140,6 +140,7 @@ function FormSignUp({ classes = [] }) {
                         primary
                         dark
                         large
+                        submit='submit'
                         onClick={(e) => {
                             console.log(loading);
                             return !loading && handleSubmit(e);

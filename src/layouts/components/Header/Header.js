@@ -25,7 +25,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { Wrapper as PopperWrapper } from '~/component/Popper';
 import Notification from '~/component/Notification';
 import { db } from '~/firebase';
-import { getDocs,collection } from 'firebase/firestore';
+import { getDocs, collection, updateDoc, query, where, getDoc, onSnapshot, doc } from 'firebase/firestore';
 import getTimeDiff from '~/utils/timeDiff';
 const cx = classNames.bind(styles);
 
@@ -99,21 +99,23 @@ function Header() {
     const context = useContext(ThemeContext);
     const currentRoute = useLocation();
     const { user, logOut, userData } = UserAuth();
-    const [notifications,setNotifications] = useState();
+    const [notifications, setNotifications] = useState();
     const notif = useRef();
-    const [visible,setVisible] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     useEffect(() => {
-        console.log('effect')
-       getDocs(collection(db, 'users', user.uid, 'notifications')).then((docs) => {
-            let data1 = []
-            docs.forEach((doc) => {
-                data1.push(doc.data())
-            })
-            setNotifications(data1)
-       });
-       
-    },[userData.user_friendRequests])
+        console.log('effect');
+        if (user) {
+            getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
+                let data1 = [];
+                docs.forEach((doc) => {
+                    data1.push(doc.data());
+                });
+                setNotifications(data1);
+            });
+        }
+    }, [user, userData?.user_friendRequests]);
+
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -124,12 +126,35 @@ function Header() {
         ...MENU_ITEM,
         { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
     ];
+    const handleReadNoti = async (data) => {
+        const q = query(collection(db, 'users', user?.uid, 'notifications'), where('sender.id', '==', data.sender.id));
+        const docs = await getDocs(q);
+        await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
+            read: true,
+        });
+        await getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
+            let data1 = [];
+            docs.forEach((doc) => {
+                data1.push(doc.data());
+            });
+            setNotifications(data1);
+        });
+    };
 
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
                 {notifications?.map((data) => {
-                    return <Notification key={data.sender.id} data={data} time={getTimeDiff(Date.now(),data.time.toMillis())} />
+                    return (
+                        <Notification
+                            onClick={() => {
+                                handleReadNoti(data);
+                            }}
+                            key={data.sender.id}
+                            data={data}
+                            time={getTimeDiff(Date.now(), data.time.toMillis())}
+                        />
+                    );
                 })}
             </PopperWrapper>
         </div>

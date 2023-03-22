@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind'
 import styles from './FriendItem.module.scss'
 import Image from '~/component/Image';
-import image from '~/assets/images';
 import Button from '~/component/Button';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
@@ -9,6 +8,13 @@ const cx = classNames.bind(styles)
 
 function FriendItem({user}) {
     const context = useContext(ThemeContext)
+    const handleDecline = () => {
+
+    }
+
+    const handleAccept = () => {
+        
+    }
     return ( 
         <div className={cx('wrapper',{dark:context.theme === "dark"})}>
             <div className={cx('body')}>
@@ -20,8 +26,8 @@ function FriendItem({user}) {
                 
             </div>
             <div className={cx('btn')}> 
-                <Button small rounded primary dark={context.theme === 'dark'} >Confirm</Button>
-                <Button small rounded >delete</Button>
+                <Button onClick={handleAccept} small rounded primary dark={context.theme === 'dark'} >Confirm</Button>
+                <Button onClick={handleDecline} small rounded >delete</Button>
             </div>
         </div>
      );

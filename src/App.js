@@ -3,8 +3,25 @@ import { privateRoutes, publicRoutes } from './routes';
 import DefaultLayout from './layouts/DefaultLayout';
 import { Fragment } from 'react';
 import PrivateRoute from './routes/PrivateRoute';
+import { useEffect } from 'react';
+import { UserAuth } from './contexts/authContext';
 
+function useUnload(handler) {
+    useEffect(() => {
+      window.addEventListener('unload', handler);
+  
+      return () => {
+        window.removeEventListener('unload', handler);
+      };
+    }, [handler]);
+  }
 function App() {
+    const {logOut} = UserAuth();
+
+    useUnload(() => {
+        logOut();
+        console.log('Closing the tab or window!');
+      });
     return (
         <Router>
             <div className="app">

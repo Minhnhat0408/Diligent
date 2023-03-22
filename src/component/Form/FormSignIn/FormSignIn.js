@@ -104,7 +104,7 @@ function FormSignIn() {
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>
             ) : (
-                <div ref={form} className={cx('form')}>
+                <form ref={form} className={cx('form')}>
                     <h2 className={cx('heading')}>Sign in</h2>
                     <p className={cx('desc')}>Your next generation of education</p>
                     {/* css this error */}
@@ -129,6 +129,7 @@ function FormSignIn() {
                         primary
                         dark
                         large
+                        submit='submit'
                         onClick={(e) => {
                             console.log(loading);
                             return !loading && handleSubmit(e);
@@ -136,7 +137,7 @@ function FormSignIn() {
                     >
                         Sign in
                     </Button>
-                </div>
+                </form>
             )}
         </>
     );

@@ -8,7 +8,7 @@ import { faCircle, faComment, faThumbsUp, faUserFriends } from '@fortawesome/fre
 import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
-function Notification({ data,time }) {
+function Notification({ data,time,...props }) {
     const context = useContext(ThemeContext);
     let icon = faUserFriends;
     if(data.type === "comment" || data.type ==="mention" || data.type === "reply"){
@@ -16,8 +16,9 @@ function Notification({ data,time }) {
     }else if(data.type === "react"){
             icon = faThumbsUp
     }
+ 
     return (
-        <Link to={data.url} className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <Link to={data.url} {...props} className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('img')}>
                 <Image src={data.sender.avatar} className={cx('avatar')} alt="avatar" />
                 <FontAwesomeIcon icon={icon} className={cx('icon')}/>
