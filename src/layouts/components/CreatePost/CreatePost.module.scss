@@ -109,7 +109,7 @@ $color-camera: #fe9431;
     background-color: #fff;
     box-shadow: 2px 2px 5px #888;
     transform: translateX(80px);
-    z-index: 9999;
+    z-index: 999;
     border-radius: 20px;
 
     .header {
@@ -205,7 +205,6 @@ $color-camera: #fe9431;
                 .emotion {
                     color: #f7b928;
                 }
-                
             }
         }
     }

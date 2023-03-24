@@ -12,8 +12,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Tippy from '@tippyjs/react/headless';
 import classNames from 'classnames/bind';
-import FuncItem from '../FuncItem';
-import { Wrapper } from '../Popper';
+import FuncItem from '../../../component/FuncItem';
+import { Wrapper } from '../../../component/Popper';
 import styles from './Post.module.scss';
 import { useState } from 'react';
 import CommentBox from '~/layouts/components/CommentBox';

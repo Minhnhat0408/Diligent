@@ -75,7 +75,7 @@ function CreatePost({ avatar }) {
     return (
         <div className={cx('wrapper')}>
             {createBoxVisible && (
-                <div className={cx('create-box')} ref={createBoxRef} style={{ height: imagePreview && '628px' }}>
+                <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
                     <div className={cx('header')}>
                         <div></div>
                         <h1 className={cx('title')}>Create post</h1>
