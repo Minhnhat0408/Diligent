@@ -19,20 +19,22 @@ import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
 import type from '~/config/typeNotification';
 import routes from '~/config/routes';
-import { useEffect, useState } from 'react';
-import getTimeDiff from '~/utils/timeDiff';
-import { faCancel, faCodePullRequest, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import { useEffect, useState } from 'react'
+import { faCancel, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import CreatePost from '~/component/CreatePost';
+import Post from '~/component/Post';
+import Image from '~/component/Image';
 const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
     const { user, userData } = UserAuth();
     const [ disabled, setDisabled ] = useState();
-    const time = new Date(userData.user_createdAt.toMillis()) ;
-    console.log(time.toLocaleString())
-    const a = Date.now() -userData.user_createdAt.toMillis()
-    console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
+    // const time = new Date(userData.user_createdAt.toMillis()) ;
+    // console.log(time.toLocaleString())
+    // const a = Date.now() -userData.user_createdAt.toMillis()
+    // console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
 
     useEffect(() => {
        getDoc(doc(db, 'users', id)).then((doc) => {
@@ -40,7 +42,10 @@ function Profile() {
             const sent = friendRq.some((friendRequest) => {
                 return friendRequest.id === user.uid;
             });
-            setDisabled(sent);
+            const friend = doc.data().user_friends.some((friend) => {
+                return friend.id === user.uid;
+            });
+            setDisabled(sent || friend);
         });
     }, [id]);
     const handleAddfr = async () => {
@@ -75,9 +80,19 @@ function Profile() {
     };
     return (
         <div className={cx('wrapper')}>
-            <Button disabled={disabled} leftIcon={!disabled ?<FontAwesomeIcon icon={faUserFriends}/> : <FontAwesomeIcon icon={faCancel}/>} large primary onClick={handleAddfr}>
+            {/* <Button disabled={disabled} leftIcon={!disabled ?<FontAwesomeIcon icon={faUserFriends}/> : <FontAwesomeIcon icon={faCancel}/>} large primary onClick={handleAddfr}>
                 {disabled ? 'Requesting' : 'Add friend'}
-            </Button>
+            </Button> */}
+            <div className={cx('infor')}></div>
+                <div className={cx('user')}>
+                    <Image src="fesf"alt="background-image"/>
+                </div>
+            <div className={cx('content')}>
+                <CreatePost/>
+                <Post />
+                <Post />
+                <Post />
+            </div>
         </div>
     );
 }

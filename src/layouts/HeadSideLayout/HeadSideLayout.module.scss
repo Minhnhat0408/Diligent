@@ -1,0 +1,28 @@
+.wrapper {
+    display: flex;
+  //   align-items: center;
+    flex-direction: column;
+  }
+  
+  .container {
+      margin-top: var(--defaultLayout-header-height);
+      width: 100%;
+      max-width: 100%;
+  
+      background-color: var(--light-theme);
+      overflow: hidden;
+  }
+  
+  .content {
+      transition: all 0.8s;
+      background-color: var(--bg-light-theme);
+      min-height:100vh;
+      padding-top: 10px;
+      padding-left: calc(200px) ;
+      padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px) ;
+      &.dark{
+          background-color: var(--bg-dark-theme);
+      } 
+  } 
+  
+  

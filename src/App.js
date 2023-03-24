@@ -3,18 +3,9 @@ import { privateRoutes, publicRoutes } from './routes';
 import DefaultLayout from './layouts/DefaultLayout';
 import { Fragment } from 'react';
 import PrivateRoute from './routes/PrivateRoute';
-import { useEffect } from 'react';
 import { UserAuth } from './contexts/authContext';
+import useUnload from './hooks/useUnload';
 
-function useUnload(handler) {
-    useEffect(() => {
-      window.addEventListener('unload', handler);
-  
-      return () => {
-        window.removeEventListener('unload', handler);
-      };
-    }, [handler]);
-  }
 function App() {
     const {logOut} = UserAuth();
 

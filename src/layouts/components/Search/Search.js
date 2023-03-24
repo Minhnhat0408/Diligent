@@ -72,7 +72,7 @@ function Search() {
             )}
             onClickOutside={handleHideResult}
         >
-            <div className={cx('search')}>
+            <div className={cx('search',{dark:context.theme ==='dark'})}>
                 <input
                     ref={inputRef}
                     value={searchValue}

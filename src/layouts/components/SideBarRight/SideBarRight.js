@@ -19,7 +19,7 @@ function SideBarRight() {
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             {user ? (
                 <>
-                    {userData?.user_friendRequests.length !== 0 && (
+                    {userData?.user_friendRequests.length !== 0 ? (
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
                                 <h4 className={cx('menu-header')}>Friend request</h4>
@@ -29,9 +29,25 @@ function SideBarRight() {
                             </div>
 
                             {userData.user_friendRequests.map((user) => {
-                                return <FriendItem key={user.id} user={user} />;
+                                return <FriendItem key={user.id} data={user} />;
                             })}
                         </div>
+                    ):(
+                        <div className={cx('menu-wrapper')}>
+                        <div className={cx('options')}>
+                            <h4 className={cx('menu-header')}>Suggested friends</h4>
+                            <Link to={routes.friend} className={cx('more')}>
+                                See all
+                            </Link>
+                        </div>
+                        {usersList?.map((u) => {
+                            return (
+                                ((user.uid !== u.id) && (!u.friend))&& (
+                                    <AccountItem  search key={u.id} dark={context.theme === 'dark'} user={u} />
+                                )
+                            );
+                        })}
+                    </div>
                     )}
 
                     <div className={cx('menu-wrapper')}>
@@ -39,8 +55,9 @@ function SideBarRight() {
                             <h4 className={cx('menu-header')}>Contacts</h4>
                         </div>
                         {usersList?.map((u) => {
+                            
                             return (
-                                user.uid !== u.id && (
+                                ((user.uid !== u.id) && (u.friend)) && (
                                     <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />
                                 )
                             );

@@ -23,6 +23,7 @@ import {
     orderBy,
     getCountFromServer,
     updateDoc,
+    documentId,
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
@@ -30,6 +31,7 @@ import { db } from '../firebase';
 
 import image from '~/assets/images';
 import { async } from '@firebase/util';
+import { faL } from '@fortawesome/free-solid-svg-icons';
 
 const UserContext = createContext();
 
@@ -38,12 +40,12 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [countUser, setCountUser] = useState(0);
+
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
-        console.log(response);
         console.log(user);
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
@@ -60,21 +62,32 @@ export const AuthContextProvider = ({ children }) => {
         async function fetchData() {
             const docs = await getDocs(q);
             docs.forEach((doc) => {
-                data.push({ id: doc.id, data: doc.data() });
+                if (
+                    doc.data().user_friends.some((doc) => {
+                        return doc?.id === user?.uid;
+                    })
+                ) {
+                    data.push({ id: doc.id, data: doc.data(), friend: true });
+                } else {
+                    data.push({ id: doc.id, data: doc.data(), friend: false });
+                }
             });
             setUsersList(data);
         }
-        fetchData();
-    }, [countUser]);
+
+        if (user?.uid) {
+            console.log('fetch ');
+            fetchData();
+        }
+    }, [user, countUser]);
 
     const signIn = async (email, password) => {
         const newUser = await signInWithEmailAndPassword(auth, email, password);
         return updateDoc(doc(db, 'users', newUser.user.uid), {
-            user_status: 'online'
+            user_status: 'online',
         });
         // // Signed in
-        
-    };  
+    };
     const logOut = async () => {
         await updateDoc(doc(userRef, user.uid), {
             user_status: 'offline',
@@ -94,8 +107,8 @@ export const AuthContextProvider = ({ children }) => {
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
                 user_status: 'online',
                 user_theme: 'light',
-                user_friendRequests:[],
-                user_friends:[]
+                user_friendRequests: [],
+                user_friends: [],
             },
             { merge: true },
         );
@@ -106,9 +119,8 @@ export const AuthContextProvider = ({ children }) => {
         const repuser = response.user;
 
         const docs = await getDoc(doc(db, 'users', repuser.uid));
-        console.log(docs.data(), 'fefe');
+    
         if (!docs.data()) {
-            console.log('new');
 
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
@@ -125,30 +137,29 @@ export const AuthContextProvider = ({ children }) => {
         }
         return true;
     };
-   
+
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
-            onSnapshot(query(collection(db,'users'),where('user_status','==',"online")),(docs) => {
+            onSnapshot(query(collection(db, 'users'), where('user_status', '==', 'online')), (docs) => {
                 setCountUser(docs.docs.length);
-            })
-            
+            });
+
             if (currentUser) {
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
-                    console.log(doc.data())
+                    console.log(doc.data());
                     setUserData(doc.data());
                 });
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());
                 setUser(currentUser);
-                
             } else {
                 setUser(null);
             }
-    
+
             setLoading(false);
         });
     };
-    
+
     useEffect(() => {
         userStateChanged();
         return () => userStateChanged();

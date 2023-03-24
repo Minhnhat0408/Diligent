@@ -35,6 +35,10 @@ $color-camera: #fe9431;
         }
         
     }
+    &.dark .header i{
+        color: var(--primary-light);
+        background-color: var(--primary);
+    }
     .header {
         display: flex;
         align-items: center;
@@ -46,10 +50,15 @@ $color-camera: #fe9431;
             color: var(--primary-light);
         }
 
-        &-icon {
+        & i {
             font-size: 1.4rem;
-            color: $color-blue;
+            color: var(--primary);
+            background-color: var(--primary-light);
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 50%;
         }
+        
     }
 
     .input {

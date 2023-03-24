@@ -16,7 +16,7 @@ function CreatePost({avatar}) {
     return (
         <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
             <div className={cx('header')}>
-                <FontAwesomeIcon icon={faPen} className={cx('header-icon')} />
+                <i className="fa-light fa-pen" ></i>
                 <h5 className={cx('header-title')}>Create Post</h5>
             </div>
 

@@ -16,7 +16,6 @@ function Menu({ children, item = [], onChange = () => {} }) {
     const context = useContext(ThemeContext);
     useEffect(()=> {
         setHistory([{data:item}])
-        console.log('reloading item')
     },[item])
     const renderItem = () => {
       

@@ -12,6 +12,7 @@ import Friend from '~/pages/Friend';
 import Login from '~/pages/Login';
 import FlashCard from '~/pages/FlashCard';
 import UpdateProfile from '~/pages/UpdateProfile/UpdateProfile';
+import HeadSideLayout from '~/layouts/HeadSideLayout';
 
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
@@ -20,7 +21,7 @@ const publicRoutes = [
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story },
     { path: routes.flashcard,component:FlashCard,layout: HeaderOnly},
-    { path: routes.profile, component: Profile },
+    { path: routes.profile, component: Profile, layout:HeadSideLayout },
     { path: '/*', component: NotFounded, layout: null },
 ];
 

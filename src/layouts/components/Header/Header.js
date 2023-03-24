@@ -14,6 +14,7 @@ import {
     faCoins,
     faGear,
     faSignOut,
+    faAddressCard,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
@@ -25,7 +26,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { Wrapper as PopperWrapper } from '~/component/Popper';
 import Notification from '~/component/Notification';
 import { db } from '~/firebase';
-import { getDocs, collection, updateDoc, query, where, getDoc, onSnapshot, doc } from 'firebase/firestore';
+import { getDocs, collection, updateDoc, query, where, getDoc, onSnapshot, doc, orderBy } from 'firebase/firestore';
 import getTimeDiff from '~/utils/timeDiff';
 const cx = classNames.bind(styles);
 
@@ -91,7 +92,6 @@ const MENU_ITEM = [
         },
     },
     { icon: <FontAwesomeIcon icon={faCircleQuestion} />, title: 'Feedback and help', to: '/feedback' },
-    { icon: <FontAwesomeIcon icon={faKeyboard} />, title: 'Keyboard shortcuts' },
 ];
 
 let USER_MENU = [];
@@ -106,25 +106,31 @@ function Header() {
     useEffect(() => {
         console.log('effect');
         if (user) {
-            getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
+            const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
+            getDocs(q).then((docs) => {
                 let data1 = [];
+                let readNoti = 0;
                 docs.forEach((doc) => {
                     data1.push(doc.data());
+                    if(!doc.data().read) {
+                        readNoti++;
+                    }
                 });
-                setNotifications(data1);
+                setNotifications({data:data1,unread:readNoti});
             });
         }
-    }, [user, userData?.user_friendRequests]);
-
+    }, [userData?.user_friendRequests]);
+    
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: userData?.user_name || 'View Profile',
             to: routes.user + user?.uid,
         },
+        { icon: <FontAwesomeIcon icon={faAddressCard}/>, title: 'Update profile',to:routes.updateInfo},
         { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
         ...MENU_ITEM,
-        { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
+       { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
     ];
     const handleReadNoti = async (data) => {
         const q = query(collection(db, 'users', user?.uid, 'notifications'), where('sender.id', '==', data.sender.id));
@@ -134,17 +140,21 @@ function Header() {
         });
         await getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
             let data1 = [];
+            let readNoti = 0;
             docs.forEach((doc) => {
                 data1.push(doc.data());
+                if(!doc.data().read) {
+                    readNoti++;
+                }
             });
-            setNotifications(data1);
+            setNotifications({data:data1,unread:readNoti});
         });
     };
-
+    console.log(notifications)
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
-                {notifications?.map((data) => {
+                {notifications?.data.map((data) => {
                     return (
                         <Notification
                             onClick={() => {
@@ -215,14 +225,17 @@ function Header() {
                             <span className={cx('end-btn')}>
                                 <Tippy
                                     visible={visible}
-                                    interactive
                                     offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
                                     placement="bottom"
                                     render={renderNotifications}
                                     animation={false}
+                                    onClickOutside={() => setVisible(false)}
                                 >
-                                    <i className="fa-solid fa-bell" onClick={() => setVisible(!visible)}></i>
+                                    <i className="fa-solid fa-bell" onClick={() => setVisible(true)} >
+                                   
+                                    </i>
                                 </Tippy>
+                                {notifications?.unread !== 0 && <div className={cx('noti-count')}>{notifications?.unread}</div>}
                             </span>
                             <Link to={routes.chat} className={cx('end-btn')}>
                                 <i className="fa-regular fa-message"></i>

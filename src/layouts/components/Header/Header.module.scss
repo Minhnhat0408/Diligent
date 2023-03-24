@@ -31,6 +31,9 @@
     &.dark .menu-popper{
       background-color: var(--dark-theme);
     }
+    &.dark .noti-count{
+      background-color: var(--primary-light);
+    }
   }
 
 
@@ -91,15 +94,33 @@
   flex:1;
   display: flex;
   align-items: center;
+  
 }
 .end-btn{
   color:var(--primary-light);
   font-size: 2.8rem;
   padding: 8px;
   text-align: center;
+  position:relative;
 
 
 }
+
+.noti-count{
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  top:4px;
+  right: -2px;
+  border-radius: 50%;
+  font-size: 1.4rem;
+  font-weight: 800;
+  background-color: var(--primary);
+}
+
 
 .end-btn + .end-btn{
   margin-left: 24px;
@@ -120,7 +141,11 @@
 
 .menu-popper{
   background-color: var(--light-theme);
+  &.dark{
+    background-color: var(--dark-theme);
+  }
 }
+
 .more-button {
   color: var(--primary-light);
   font-size: 3rem;

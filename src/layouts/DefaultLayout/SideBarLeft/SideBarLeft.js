@@ -15,11 +15,13 @@ import {
     faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react';
+import { useContext,useState} from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '~/contexts/authContext';
+import 'src/Calendar.css';
+import { Calendar } from 'react-calendar';
 
 const cx = classNames.bind(styles);
 
@@ -27,7 +29,7 @@ function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const {user} = UserAuth();
-    console.log('refresh')
+    console.log('hehee')
     return (
         <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
@@ -84,29 +86,12 @@ function SideBarLeft() {
             {/* More pages */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>More pages</h4>
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faInbox} />}
-                    title="Email Box"
-                    backGroundColor="linear-gradient(to right, #DECBA4, #3E5151)"
-                    color="#fff"
-                />
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faInbox} />}
-                    title="Email Box"
-                    backGroundColor="linear-gradient(to right, #8360c3, #2ebf91)"
-                    color="#fff"
-                />
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faInbox} />}
-                    title="Email Box"
-                    backGroundColor="linear-gradient(to right, #8e2de2, #4a00e0)"
-                    color="#fff"
-                />
+                <Calendar className={context.theme === 'dark' && 'dark'}/>
                 
             </div>
 
             {/* Account  */}
-            <div className={cx('menu-wrapper')}>
+            {/* <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>Account</h4>
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faGear} />}
@@ -120,7 +105,7 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(-20deg, #00cdac 0%, #8ddad5 100%)"
                     color="#fff"
                 />
-            </div>
+            </div> */}
         </aside>
     );
 }

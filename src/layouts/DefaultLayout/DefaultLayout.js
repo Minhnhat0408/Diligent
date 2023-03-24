@@ -5,7 +5,7 @@ import SideBarLeft from './SideBarLeft';
 import PropTypes from 'prop-types'
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import SideBarRight from './SideBarRight';
+import SideBarRight from '../components/SideBarRight';
 const cx = classNames.bind(styles);
 
 function DefaultLayout({ children }) {
