@@ -1,0 +1,68 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+.my-comment {
+    display: flex;
+    align-items: center;
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+    .input {
+        width: 100%;
+        padding: 8px;
+        margin-left: 8px;
+        border-radius: 10px;
+
+        &:hover {
+            border-color: #999;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+        }
+
+        &:focus {
+            border-color: #666;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+            outline: none;
+        }
+    }
+
+    #upload {
+        display: none;
+    }
+
+    .upload-icon {
+        margin-left: 8px;
+        color: #13a0f8;
+
+        &:hover {
+            cursor: pointer;
+            opacity: 0.8;
+        }
+    }
+}
+
+.add-img {
+    display: flex;
+    .your-img {
+        width: 100px;
+        height: 100px;
+        margin-top: 5px;
+        margin-left: 48px;
+    }
+    .delete {
+        margin-top: 2px;
+        margin-left: 2px;
+        font-size: 1.8rem;
+        cursor: pointer;
+    }
+}
+
+.d-none {
+    display: none;
+}

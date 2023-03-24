@@ -89,7 +89,8 @@ $time-color: #adb5bd;
 }
 
 .actions {
-    margin-top: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -118,7 +119,8 @@ $time-color: #adb5bd;
         .like-action,
         .dislike-action {
             .icon {
-                color: #0073ff;
+                // color: #0073ff;
+                color: #888;
             }
         }
 
@@ -160,3 +162,4 @@ $time-color: #adb5bd;
     background-color: #fff;
     box-shadow: 0 0 5px #888888;
 }
+
