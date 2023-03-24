@@ -1,8 +1,8 @@
 import classNames from 'classnames/bind';
 import styles from './Home.module.scss';
 import Stories from '~/component/Stories';
-import CreatePost from '~/layouts/components/CreatePost/CreatePost';
-import Post from '~/layouts/components/Post/Post';
+import CreatePost from '~/component/CreatePost/CreatePost';
+import Post from '~/component/Post/Post';
 
 const cx = classNames.bind(styles);
 
