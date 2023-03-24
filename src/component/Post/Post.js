@@ -25,7 +25,7 @@ const cx = classNames.bind(styles);
 
 function Post({ avatar, username, time, content, image, likeNums, dislikeNums, commentNums }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
-
+    const context = useContext(ThemeContext)
     function handleCommentClick() {
         console.log('ok');
         setIsCommentVisible(!isCommentVisible);
@@ -45,7 +45,7 @@ function Post({ avatar, username, time, content, image, likeNums, dislikeNums, c
     };
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
             <div className={cx('header')}>
                 <div className={cx('info')}>
                     <Image

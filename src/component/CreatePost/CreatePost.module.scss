@@ -5,7 +5,7 @@ $color-photo: #10d876;
 $color-camera: #fe9431;
 
 .wrapper {
-    background-color: var(--light--theme);
+    background-color: var(--light-theme);
     padding: 20px;
     border-radius: 20px;
     box-shadow: 1px 1px 5px #888;
@@ -14,7 +14,14 @@ $color-camera: #fe9431;
         box-shadow: none;
    
     }
-
+    & .input {
+        textarea{
+            background-color: #eee;;
+            color:var(--text-color);
+            
+        }
+        
+    }
     &.dark .header{
         &-icon {
 
@@ -27,6 +34,7 @@ $color-camera: #fe9431;
             color: var(--primary);
         }
     }
+    
     &.dark .input {
         textarea{
             background-color: var(--bg-dark-theme);
