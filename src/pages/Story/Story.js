@@ -11,10 +11,10 @@ function Story() {
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Story</h1>
-                <Link className={cx('my-story')} to="/createstory">
-                    <h3 className={cx('title')}>My Story</h3>
-                    <StoryItem title="Create story" detail="You can share a photo or write something" />
-                </Link>
+                <div className={cx('my-story')} to="/createstory">
+                    <h3 className={cx('title')}>Your Story</h3>
+                    <StoryItem title="Create story" detail="You can share a photo or write something" to="/createstory"/>
+                </div>
                 <div className={cx('all-story')}>
                     <h3 className={cx('title')}>All Story</h3>
                     <StoryItem
