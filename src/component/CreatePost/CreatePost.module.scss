@@ -9,15 +9,13 @@ $color-camera: #fe9431;
     padding: 20px;
     border-radius: 20px;
     box-shadow: 1px 1px 5px #888;
-    &.dark{
+    &.dark {
         background-color: var(--dark-theme);
         box-shadow: none;
-   
     }
 
-    &.dark .header{
+    &.dark .header {
         &-icon {
-
             color: var(--primary);
         }
         &-title {
@@ -28,14 +26,12 @@ $color-camera: #fe9431;
         }
     }
     &.dark .input {
-        textarea{
+        textarea {
             background-color: var(--bg-dark-theme);
-            color:var(--text-color-dark);
-          
+            color: var(--text-color-dark);
         }
-        
     }
-    &.dark .header i{
+    &.dark .header i {
         color: var(--primary-light);
         background-color: var(--primary);
     }
@@ -58,14 +54,13 @@ $color-camera: #fe9431;
             cursor: pointer;
             border-radius: 50%;
         }
-        
     }
 
     .input {
         display: flex;
         align-items: center;
         margin-top: 20px;
-        
+
         .avatar {
             width: 40px;
             height: 40px;
@@ -95,7 +90,7 @@ $color-camera: #fe9431;
             }
         }
     }
-    &.dark .options{
+    &.dark .options {
         color: var(--text-color-dark);
     }
     .options {
@@ -120,11 +115,7 @@ $color-camera: #fe9431;
             &-title {
                 font-size: 1.4rem;
                 font-weight: 600;
-           
-
             }
-
-            
 
             .video {
                 color: $color-video;
@@ -195,6 +186,29 @@ $color-camera: #fe9431;
                 margin-left: 4px;
                 color: #050505;
                 font-size: 1.2rem;
+            }
+
+            .category {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-left: 4px;
+                font-size: 1.4rem;
+                color: #050505;
+                border: 1px solid #ccc;
+                border-radius: 10px;
+                padding: 0 15px;
+            
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(0, 0, 0, 0.06);
+                }
+
+                i {
+                    font-size: 1.4rem;
+                    margin-left: 2px;
+                    margin-top: 2px;
+                }
             }
         }
 
@@ -280,5 +294,23 @@ $color-camera: #fe9431;
     .delete {
         margin-left: 4px;
         cursor: pointer;
+    }
+}
+
+.category-item {
+    padding: 4px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    i {
+        margin-left: 4px;
+        margin-bottom: 4px;
+    }
+
+    &:hover {
+        cursor: pointer;
+        color: #888;
     }
 }

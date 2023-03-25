@@ -232,7 +232,7 @@ function Header() {
                                     onClickOutside={() => setVisible(false)}
                                 >
                                     <i className="fa-solid fa-bell" onClick={() => setVisible(true)} >
-                                   
+                                        
                                     </i>
                                 </Tippy>
                                 {notifications?.unread !== 0 && <div className={cx('noti-count')}>{notifications?.unread}</div>}

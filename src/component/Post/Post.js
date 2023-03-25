@@ -44,8 +44,10 @@ function Post({ avatar, username, time, content, image, likeNums, dislikeNums, c
         setIsLiveActive(false);
     };
 
+    const context = useContext(ThemeContext)
+
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('header')}>
                 <div className={cx('info')}>
                     <Image

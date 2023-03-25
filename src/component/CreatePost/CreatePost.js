@@ -1,27 +1,33 @@
+import { useState, useEffect, useContext, useRef } from 'react';
 import classNames from 'classnames/bind';
-import styles from './CreatePost.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faCamera,
-    faFaceSmile,
-    faImage,
-    faPen,
-    faUserTag,
-    faVideo,
-    faVideoCamera,
-    faXmark,
+  faCamera,
+  faFaceSmile,
+  faImage,
+  faPen,
+  faUserTag,
+  faVideo,
+  faVideoCamera,
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import image from '~/assets/images';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/dist/tippy.css';
 
-import { useContext } from 'react';
+import image from '~/assets/images';
 import { ThemeContext } from '~/contexts/Context';
-import { useRef, useState, useEffect } from 'react';
+
+import styles from './CreatePost.module.scss';
 
 const cx = classNames.bind(styles);
 
 function CreatePost({ avatar }) {
+    //theme context để đổi màu background
+    const context = useContext(ThemeContext);
+
+    //Xử lí khi ấn tạo post mới
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const context = useContext(ThemeContext)
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
@@ -29,6 +35,7 @@ function CreatePost({ avatar }) {
     const handleClickCloseBox = () => {
         setCreateBoxVisible(false);
         handleDeleteImage();
+        handleCategoryClick('Choose category');
     };
 
     const createBoxRef = useRef(null);
@@ -73,15 +80,23 @@ function CreatePost({ avatar }) {
         setCounter((prevCounter) => prevCounter + 1);
     };
 
+    //Xử lí khi chọn thể loại bài đăng
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+    };
+
+    //Nếu người dùng chưa đăng nhập thì để avatar mặc định
     if (avatar == undefined) {
         avatar = image.userUndefined;
     }
     return (
-        <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+            {/* Create Post Box  */}
             {createBoxVisible && (
-                <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
+                <div className={cx('create-box')} style={{ height: imagePreview && '628px' }} ref={createBoxRef}>
                     <div className={cx('header')}>
-                        <div></div>
                         <h1 className={cx('title')}>Create post</h1>
                         <div className={cx('icon')} onClick={handleClickCloseBox}>
                             <FontAwesomeIcon icon={faXmark} />
@@ -96,7 +111,60 @@ function CreatePost({ avatar }) {
                                 className={cx('avatar')}
                                 src="https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-1/335054687_661660009050943_8863087169477620520_n.jpg?stp=dst-jpg_p100x100&_nc_cat=106&ccb=1-7&_nc_sid=7206a8&_nc_ohc=g3yUAMBFWP4AX9JvpV5&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-sin6-3.xx&oh=00_AfDzeFwc92Pgk00_6KbR9B4cwoP2UGF5FjksjydZJsr-LQ&oe=64211D7C"
                             />
-                            <h5 className={cx('username')}>Nguyen Nhat Minh</h5>
+                            <Tippy
+                                placement="bottom"
+                                trigger="click"
+                                interactive={true}
+                                theme="light"
+                                content={
+                                    <div className={cx('categories')}>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Japanese')}
+                                        >
+                                            <p>Japanese</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('English')}
+                                        >
+                                            <p>English</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Korean')}
+                                        >
+                                            <p>Korean</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Chinese')}
+                                        >
+                                            <p>Chinese</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('French')}
+                                        >
+                                            <p>French</p>
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                <div>
+                                    <h5 className={cx('username')}>Nguyen Nhat Minh</h5>
+                                    <div className={cx('category')}>
+                                        {selectedCategory ? (
+                                            <p>{selectedCategory}</p>
+                                        ) : (
+                                            <>
+                                                <p>Choose category</p>
+                                            </>
+                                        )}
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </Tippy>
                         </div>
                         <textarea placeholder="What's on your mind?" className={cx('input')} />
                         {imagePreview && (
@@ -130,6 +198,7 @@ function CreatePost({ avatar }) {
                 </div>
             )}
 
+
             <div className={cx('header')}>
                 <FontAwesomeIcon icon={faPen} className={cx('header-icon')} />
                 <h5 className={cx('header-title')}>Create Post</h5>
@@ -159,4 +228,3 @@ function CreatePost({ avatar }) {
 }
 
 export default CreatePost;
-

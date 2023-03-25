@@ -56,6 +56,7 @@ export const AuthContextProvider = ({ children }) => {
         return response;
     };
 
+    //fetch users list
     useEffect(() => {
         const data = [];
         const q = query(userRef, orderBy('user_name'));
@@ -73,6 +74,7 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
             setUsersList(data);
+            console.log(data);
         }
 
         if (user?.uid) {
@@ -119,9 +121,8 @@ export const AuthContextProvider = ({ children }) => {
         const repuser = response.user;
 
         const docs = await getDoc(doc(db, 'users', repuser.uid));
-    
-        if (!docs.data()) {
 
+        if (!docs.data()) {
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
                 user_authProvider: response?.providerId,
