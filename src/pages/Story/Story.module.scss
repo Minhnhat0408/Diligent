@@ -1,5 +1,120 @@
-.wrapper{
-    margin-left: 80px;
-   height: 800px;   
-   
+.wrapper {
+    margin-top: var(--defaultLayout-header-height);
+    display: flex;
+    // background-color: #000;
+}
+
+.sidebar {
+    width: 360px;
+    min-height: 1000px;
+    background-color: #fff;
+    .header {
+        margin-top: 4px;
+        margin-left: 8px;
+        font-size: 4rem;
+        color: #050505;
+    }
+
+    .title {
+        margin-left: 8px;
+        color: #050505;
+    }
+}
+
+.display {
+    position: fixed;
+    top: var(--defaultLayout-header-height);
+    left: 360px;
+    background-color: #000;
+    width: 1175px;
+    height: 650px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    .content {
+        width: 300px;
+        height: 550px;
+        background-color: #fff;
+        border-radius: 10px;
+        
+        .progress {
+            height: 4px;
+            width: 95%;
+            background-color: blue;
+            margin: auto;
+            margin-top: 4px;
+            margin-bottom: 4px;
+        }
+
+        .info {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            margin-left: 6px;
+
+            .avatar {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            .detail {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                margin-left: 4px;
+
+                .time {
+                    font-size: 1.4rem;
+                }
+
+                .username {
+                    font-size: 1.4rem;
+                    &:hover {
+                        cursor: pointer;
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+    }
+
+    .react {
+        margin-top: 10px;
+        display: flex;
+        align-items: center;
+
+        .reply {
+            width: 300px;
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            padding: 4px;
+            resize: none;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 12px;
+            i {
+                font-size: 2.6rem;
+                color: #fff;
+            }
+
+            &:hover {
+                cursor: pointer;
+                opacity: 0.8;
+            }
+        }
+    }
 }

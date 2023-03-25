@@ -1,18 +1,18 @@
-.wrapper{
-   height: 800px;  
-   display: flex; 
-   min-height: 1000px;
+.wrapper {
+    height: 800px;
+    display: flex;
+    min-height: 1000px;
     padding-top: 10px;
     margin: 0 100px 0 30px;
-   transition: all 0.8s;
+    transition: all 0.8s;
 }
 
-.infor{
-    width: 300px; 
+.infor {
+    width: 300px;
     margin: 0 20px;
     background-color: var(--dark-theme);
     border-radius: 10px;
 }
-.content{
+.content {
     width: 660px;
 }

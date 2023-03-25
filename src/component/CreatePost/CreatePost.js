@@ -2,14 +2,14 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-  faCamera,
-  faFaceSmile,
-  faImage,
-  faPen,
-  faUserTag,
-  faVideo,
-  faVideoCamera,
-  faXmark,
+    faCamera,
+    faFaceSmile,
+    faImage,
+    faPen,
+    faUserTag,
+    faVideo,
+    faVideoCamera,
+    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
@@ -197,7 +197,6 @@ function CreatePost({ avatar }) {
                     <button className={cx('upload')}>Upload</button>
                 </div>
             )}
-
 
             <div className={cx('header')}>
                 <FontAwesomeIcon icon={faPen} className={cx('header-icon')} />

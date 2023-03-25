@@ -13,15 +13,17 @@ import Login from '~/pages/Login';
 import FlashCard from '~/pages/FlashCard';
 import UpdateProfile from '~/pages/UpdateProfile/UpdateProfile';
 import HeadSideLayout from '~/layouts/HeadSideLayout';
+import CreateStory  from '~/pages/CreateStory';
 
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
     { path: routes.home, component: Home },
     { path: routes.login, component: Login, layout: null },
     { path: routes.setting, component: Setting },
-    { path: routes.story, component: Story },
-    { path: routes.flashcard,component:FlashCard,layout: HeaderOnly},
-    { path: routes.profile, component: Profile, layout:HeadSideLayout },
+    { path: routes.story, component: Story, layout: HeaderOnly },
+    { path: routes.flashcard, component: FlashCard, layout: HeaderOnly },
+    { path: routes.profile, component: Profile, layout: HeadSideLayout },
+    {path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: '/*', component: NotFounded, layout: null },
 ];
 
