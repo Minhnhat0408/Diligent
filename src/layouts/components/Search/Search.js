@@ -39,7 +39,6 @@ function Search() {
             setSearchResult([]);
         }
     }, [debounce]);
-
     const handleSearch = (e) => {
         const value = e.target.value;
         if (!value.startsWith(' ')) {

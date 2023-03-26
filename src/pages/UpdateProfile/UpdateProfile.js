@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './UpdateProfile.module.scss';
-import { useRef } from 'react';
+import { useContext, useRef } from 'react';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UserAuth } from '~/contexts/authContext';
@@ -12,10 +12,13 @@ import validator from '~/utils/validator';
 import { faAddressBook } from '@fortawesome/free-regular-svg-icons';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
+import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
 function UpdateProfile() {
+    const {userData} = UserAuth();
+
     const defaultValidate = {
         fullname: false,
         dob: false,
@@ -38,6 +41,7 @@ function UpdateProfile() {
     const { updateProfile } = UserAuth();
     const navigate = useNavigate();
     const [gender, setGender] = useState('male');
+    const context = useContext(ThemeContext)
     const handleAvatar = (e) => {
         const ava = e.target.files[0];
         setFile(ava);
@@ -127,7 +131,7 @@ function UpdateProfile() {
     };
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',{user:window.location.pathname === routes.userUpdate && userData},{dark:context.theme === 'dark'})}>
             <div className={cx('loading')} style={!loading ? { display: 'none' } : {}}>
                 <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
             </div>

@@ -3,8 +3,29 @@
     height: 100vh;
     justify-content: center;
     align-items: center;
-background-color: var(--bg-dark-theme);
-text-align: center;
+    background-color: var(--bg-dark-theme);
+    text-align: center;
+  &.user{
+    height: 100%;
+    padding-top: 10px;
+    background-color: var(--bg-light-theme);
+ 
+  }
+  &.dark.user {
+    background-color: var(--bg-dark-theme);
+  }
+  &.user .form {
+    background-color: var(--light-theme);
+    background-image: none;
+    color: var(--text-color);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+
+  }
+  &.dark.user .form{
+    background-color: var(--dark-theme);
+    background-image: none;
+    color: var(--text-color-dark);
+  }
 }
 
 .loading{
@@ -19,7 +40,7 @@ text-align: center;
     min-height: 100px;
     padding: 32px 32px;
     text-align: center;
-    background-color: #2a2b38;
+    background-color:#2a2b38;
       background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
       background-position: bottom center;
       background-repeat: no-repeat;

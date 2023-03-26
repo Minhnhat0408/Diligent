@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [countUser, setCountUser] = useState(0);
-
+    // const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const createUser = async (email, password) => {
@@ -55,7 +55,23 @@ export const AuthContextProvider = ({ children }) => {
 
         return response;
     };
-
+    // useEffect(() => {
+    //     console.log('effect');
+    //     if (user) {
+    //         const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
+    //         getDocs(q).then((docs) => {
+    //             let data1 = [];
+    //             let readNoti = 0;
+    //             docs.forEach((doc) => {
+    //                 data1.push(doc.data());
+    //                 if(!doc.data().read) {
+    //                     readNoti++;
+    //                 }
+    //             });
+    //             setNotifications({data:data1,unread:readNoti});
+    //         });
+    //     }
+    // }, [userData?.user_friendRequests]);
     useEffect(() => {
         const data = [];
         const q = query(userRef, orderBy('user_name'));

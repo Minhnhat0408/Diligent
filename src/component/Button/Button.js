@@ -18,7 +18,7 @@ function Button({
   children,
   leftIcon,
   rightIcon,
-  className = false,
+  className,
   small = false,
   large = false,
   primary = false,
@@ -29,6 +29,7 @@ function Button({
   separate = false,
   dark = false,
   theme = false,
+  xs= false,
   submit = 'button',
   ...passProps
   
@@ -52,6 +53,7 @@ function Button({
     primary,
     outline,
     small,
+    xs,
     large,
     text,
     disabled,
@@ -59,7 +61,6 @@ function Button({
     separate,
     dark,
     theme,
-    
     [className]: className,
   });
 

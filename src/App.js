@@ -13,32 +13,12 @@ function App() {
         logOut();
         console.log('Closing the tab or window!');
       });
+      console.log('app')
     return (
-        <Router>
-            <div className="app">
-                <Routes>
-                    {publicRoutes.map((route, index) => {
-                        const Page = route.component;
-                        let Layout = DefaultLayout;
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
-                        return (
-                            <Route
-                                key={index}
-                                path={route.path}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-                    <Route element={<PrivateRoute />}>
-                        {privateRoutes.map((route, index) => {
+            <Router>
+                <div className="app">
+                    <Routes>
+                        {publicRoutes.map((route, index) => {
                             const Page = route.component;
                             let Layout = DefaultLayout;
                             if (route.layout) {
@@ -58,10 +38,31 @@ function App() {
                                 />
                             );
                         })}
-                    </Route>
-                </Routes>
-            </div>
-        </Router>
+                        <Route element={<PrivateRoute />}>
+                            {privateRoutes.map((route, index) => {
+                                const Page = route.component;
+                                let Layout = DefaultLayout;
+                                if (route.layout) {
+                                    Layout = route.layout;
+                                } else if (route.layout === null) {
+                                    Layout = Fragment;
+                                }
+                                return (
+                                    <Route
+                                        key={index}
+                                        path={route.path}
+                                        element={
+                                            <Layout>
+                                                <Page />
+                                            </Layout>
+                                        }
+                                    />
+                                );
+                            })}
+                        </Route>
+                    </Routes>
+                </div>
+            </Router>
     );
 }
 

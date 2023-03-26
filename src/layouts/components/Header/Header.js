@@ -8,10 +8,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEllipsisVertical,
     faEarthAsia,
-    faKeyboard,
     faCircleQuestion,
     faUser,
-    faCoins,
     faGear,
     faSignOut,
     faAddressCard,
@@ -26,8 +24,9 @@ import { UserAuth } from '~/contexts/authContext';
 import { Wrapper as PopperWrapper } from '~/component/Popper';
 import Notification from '~/component/Notification';
 import { db } from '~/firebase';
-import { getDocs, collection, updateDoc, query, where, getDoc, onSnapshot, doc, orderBy } from 'firebase/firestore';
+import { getDocs, collection, updateDoc, query, where, doc, orderBy } from 'firebase/firestore';
 import getTimeDiff from '~/utils/timeDiff';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 const languages = [
@@ -97,11 +96,11 @@ const MENU_ITEM = [
 let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
-    const currentRoute = useLocation();
     const { user, logOut, userData } = UserAuth();
     const [notifications, setNotifications] = useState();
     const notif = useRef();
     const [visible, setVisible] = useState(false);
+
 
     useEffect(() => {
         console.log('effect');
@@ -120,14 +119,16 @@ function Header() {
             });
         }
     }, [userData?.user_friendRequests]);
-    
+
+    console.log('re-render header');
+
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: userData?.user_name || 'View Profile',
             to: routes.user + user?.uid,
         },
-        { icon: <FontAwesomeIcon icon={faAddressCard}/>, title: 'Update profile',to:routes.updateInfo},
+        { icon: <FontAwesomeIcon icon={faAddressCard}/>, title: 'Update profile',to:routes.userUpdate},
         { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
         ...MENU_ITEM,
        { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
@@ -150,7 +151,7 @@ function Header() {
             setNotifications({data:data1,unread:readNoti});
         });
     };
-    console.log(notifications)
+
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
@@ -195,27 +196,27 @@ function Header() {
                     <Search />
                     <Link
                         to={routes.home}
-                        className={cx('middle-btn', { active: currentRoute.pathname === routes.home })}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.home })}
                     >
                         <i className={`${styles.icon} fa-regular fa-house`}></i>
                     </Link>
                     <Link
                         to={routes.friend}
-                        className={cx('middle-btn', { active: currentRoute.pathname === routes.friend })}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.friend })}
                     >
                         <i className={`${styles.icon} fa-regular fa-user-group`}></i>
                     </Link>
                     <Link
                         to={routes.flashcard}
-                        className={cx('middle-btn', { active: currentRoute.pathname === routes.flashcard })}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.flashcard })}
                     >
                         <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
                     </Link>
                     <Link
                         to={routes.story}
-                        className={cx('middle-btn', { active: currentRoute.pathname === routes.story })}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.story })}
                     >
-                        <i className={`${styles.icon} fa-regular fa-folder-arrow-up`}></i>
+                         <i className={`${styles.icon} fa-regular fa-bolt`}></i>
                     </Link>
                 </div>
 
@@ -225,15 +226,15 @@ function Header() {
                             <span className={cx('end-btn')}>
                                 <Tippy
                                     visible={visible}
+                                    appendTo={document.body}
+                                    interactive
                                     offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
                                     placement="bottom"
                                     render={renderNotifications}
-                                    animation={false}
                                     onClickOutside={() => setVisible(false)}
+                                    animation={false}
                                 >
-                                    <i className="fa-solid fa-bell" onClick={() => setVisible(true)} >
-                                   
-                                    </i>
+                                    <i className="fa-solid fa-bell" onClick={() => setVisible(true)} ></i>
                                 </Tippy>
                                 {notifications?.unread !== 0 && <div className={cx('noti-count')}>{notifications?.unread}</div>}
                             </span>

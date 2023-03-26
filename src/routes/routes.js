@@ -22,14 +22,16 @@ const publicRoutes = [
     { path: routes.story, component: Story },
     { path: routes.flashcard,component:FlashCard,layout: HeaderOnly},
     { path: routes.profile, component: Profile, layout:HeadSideLayout },
+    { path: routes.updateInfo, component: UpdateProfile, layout: null },
     { path: '/*', component: NotFounded, layout: null },
 ];
 
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
-    { path: routes.updateInfo, component: UpdateProfile, layout: null },
+
     { path: routes.friend, component: Friend },
     { path: routes.chat, component: Chat },
+    { path: routes.userUpdate, component: UpdateProfile}
 ];
 
 export { publicRoutes, privateRoutes };

@@ -9,12 +9,14 @@ $color-camera: #fe9431;
     padding: 20px;
     border-radius: 20px;
     box-shadow: 1px 1px 5px #888;
+    transition: all 0.8s;
     &.dark{
         background-color: var(--dark-theme);
         box-shadow: none;
    
     }
     & .input {
+        transition: all 0.8s;
         textarea{
             background-color: #eee;;
             color:var(--text-color);

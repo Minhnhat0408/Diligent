@@ -32,37 +32,38 @@ function SideBarRight() {
                                 return <FriendItem key={user.id} data={user} />;
                             })}
                         </div>
-                    ):(
+                    ) : (
                         <div className={cx('menu-wrapper')}>
-                        <div className={cx('options')}>
-                            <h4 className={cx('menu-header')}>Suggested friends</h4>
-                            <Link to={routes.friend} className={cx('more')}>
-                                See all
-                            </Link>
+                            <div className={cx('options')}>
+                                <h4 className={cx('menu-header')}>Suggested friends</h4>
+                                <Link to={routes.friend} className={cx('more')}>
+                                    See all
+                                </Link>
+                            </div>
+                            {usersList?.map((u) => {
+                                return (
+                                    user.uid !== u.id &&
+                                    !u.friend && (
+                                        <AccountItem search key={u.id} dark={context.theme === 'dark'} user={u} />
+                                    )
+                                );
+                            })}
                         </div>
-                        {usersList?.map((u) => {
-                            return (
-                                ((user.uid !== u.id) && (!u.friend))&& (
-                                    <AccountItem  search key={u.id} dark={context.theme === 'dark'} user={u} />
-                                )
-                            );
-                        })}
-                    </div>
                     )}
 
-                    <div className={cx('menu-wrapper')}>
-                        <div className={cx('options')}>
-                            <h4 className={cx('menu-header')}>Contacts</h4>
+                    {userData?.user_friends.length !== 0 && (
+                        <div className={cx('menu-wrapper')}>
+                            <div className={cx('options')}>
+                                <h4 className={cx('menu-header')}>Contacts</h4>
+                            </div>
+                            {usersList?.map((u) => {
+                                return (
+                                    user.uid !== u.id &&
+                                    u.friend && <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />
+                                );
+                            })}
                         </div>
-                        {usersList?.map((u) => {
-                            
-                            return (
-                                ((user.uid !== u.id) && (u.friend)) && (
-                                    <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />
-                                )
-                            );
-                        })}
-                    </div>
+                    )}
                 </>
             ) : (
                 <div className={cx('menu-wrapper')}>

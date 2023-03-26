@@ -12,7 +12,7 @@ import {
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import image from '~/assets/images';
-
+import Image from '../Image';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { useRef, useState, useEffect } from 'react';
@@ -92,8 +92,9 @@ function CreatePost({ avatar }) {
 
                     <div className={cx('body')}>
                         <div className={cx('info')}>
-                            <img
+                            <Image
                                 className={cx('avatar')}
+                                alt='ava'
                                 src="https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-1/335054687_661660009050943_8863087169477620520_n.jpg?stp=dst-jpg_p100x100&_nc_cat=106&ccb=1-7&_nc_sid=7206a8&_nc_ohc=g3yUAMBFWP4AX9JvpV5&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-sin6-3.xx&oh=00_AfDzeFwc92Pgk00_6KbR9B4cwoP2UGF5FjksjydZJsr-LQ&oe=64211D7C"
                             />
                             <h5 className={cx('username')}>Nguyen Nhat Minh</h5>
@@ -131,12 +132,12 @@ function CreatePost({ avatar }) {
             )}
 
             <div className={cx('header')}>
-                <FontAwesomeIcon icon={faPen} className={cx('header-icon')} />
+                <i className="fa-light fa-pen" ></i>
                 <h5 className={cx('header-title')}>Create Post</h5>
             </div>
 
             <div className={cx('input')}>
-                <img className={cx('avatar')} src={avatar} />
+                <Image className={cx('avatar')} src={avatar} alt='avatar' />
                 <textarea placeholder="What's on your mind?" onClick={handleClickCreateBox}></textarea>
             </div>
 
