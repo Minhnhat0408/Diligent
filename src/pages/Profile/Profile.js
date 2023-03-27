@@ -34,6 +34,7 @@ function Profile() {
     const { user, userData } = UserAuth();
     const [disabled, setDisabled] = useState();
     const [pageUser, setPageUser] = useState(undefined);
+    const [previewAvatar,setPreviewAvatar] = useState(false)
     const context = useContext(ThemeContext);
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
@@ -58,6 +59,7 @@ function Profile() {
             setPageUser(userData);
         }
     }, [id]);
+
     const handleAddfr = async () => {
         try {
             await updateDoc(doc(db, 'users', id), {
@@ -90,16 +92,17 @@ function Profile() {
     return (
         <>
             {!pageUser ? (
-                <div className="loader">
+                <div className="pop-up loader">
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>
             ) : (
+         
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('infor')}>
                         <div className={cx('section')}>
                             <Image src="fesf" alt="background-image" className={cx('background-ava')} />
                             <div className={cx('represent')}>
-                                <Image src={pageUser.user_avatar} alt="avatar" className={cx('ava')} />
+                                <Image src={pageUser.user_avatar} alt="avatar" onClick={() => setPreviewAvatar(true)} className={cx('ava')} />
                                 <h4 className={cx('name')}>
                                     {pageUser.user_name}{' '}
                                     {pageUser.user_gender === 'male' ? (
@@ -201,12 +204,16 @@ function Profile() {
                     </div>
 
                     <div className={cx('content')}>
-                        <CreatePost avatar={pageUser.user_avatar} />
+                        <CreatePost/>
                         <Post />
                         <Post />
                         <Post />
                     </div>
+                    {previewAvatar && <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
+                        <Image src={pageUser.user_avatar} className={cx('preview')} alt="preview"/>
+                    </div> }
                 </div>
+           
             )}
         </>
     );

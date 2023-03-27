@@ -152,14 +152,11 @@ $color-camera: #fe9431;
 }
 
 .create-box {
-    position: fixed;
     width: 500px;
     height: 428px;
     padding: 10px;
     background-color: #fff;
     box-shadow: 2px 2px 5px #888;
-    transform: translateX(80px);
-    z-index: 999;
     border-radius: 20px;
 
     .header {

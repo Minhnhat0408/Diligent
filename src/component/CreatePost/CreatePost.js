@@ -11,17 +11,18 @@ import {
     faVideoCamera,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import image from '~/assets/images';
 import Image from '../Image';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { useRef, useState, useEffect } from 'react';
+import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
-function CreatePost({ avatar }) {
+function CreatePost() {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const context = useContext(ThemeContext)
+    const {userData} = UserAuth();
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
@@ -73,62 +74,62 @@ function CreatePost({ avatar }) {
         setCounter((prevCounter) => prevCounter + 1);
     };
 
-    if (avatar == undefined) {
-        avatar = image.userUndefined;
-    }
     return (
         <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
             {createBoxVisible && (
-                <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
-                    <div className={cx('header')}>
-                        <div></div>
-                        <h1 className={cx('title')}>Create post</h1>
-                        <div className={cx('icon')} onClick={handleClickCloseBox}>
-                            <FontAwesomeIcon icon={faXmark} />
-                        </div>
-                    </div>
-
-                    <hr />
-
-                    <div className={cx('body')}>
-                        <div className={cx('info')}>
-                            <Image
-                                className={cx('avatar')}
-                                alt='ava'
-                                src="https://scontent-sin6-3.xx.fbcdn.net/v/t39.30808-1/335054687_661660009050943_8863087169477620520_n.jpg?stp=dst-jpg_p100x100&_nc_cat=106&ccb=1-7&_nc_sid=7206a8&_nc_ohc=g3yUAMBFWP4AX9JvpV5&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent-sin6-3.xx&oh=00_AfDzeFwc92Pgk00_6KbR9B4cwoP2UGF5FjksjydZJsr-LQ&oe=64211D7C"
-                            />
-                            <h5 className={cx('username')}>Nguyen Nhat Minh</h5>
-                        </div>
-                        <textarea placeholder="What's on your mind?" className={cx('input')} />
-                        {imagePreview && (
-                            <div className={cx('add-img')}>
-                                <img src={imagePreview} alt="preview" className={cx('your-img')} />
-                                <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteImage} />
+                <div className={cx('pop-up')}>
+                    <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
+                        <div className={cx('header')}>
+                            <div></div>
+                            <h1 className={cx('title')}>Create post</h1>
+                            <div className={cx('icon')} onClick={handleClickCloseBox}>
+                                <FontAwesomeIcon icon={faXmark} />
                             </div>
-                        )}
-                        <div className={cx('options')}>
-                            <h4 className={cx('title')}>Add to your post</h4>
-                            <div className={cx('option')}>
-                                <label for="create-post-img">
-                                    <FontAwesomeIcon icon={faCamera} className={cx('img')} />
-                                </label>
-                                <input
-                                    type="file"
-                                    id="create-post-img"
-                                    className={cx('d-none')}
-                                    onChange={handleImageChange}
-                                    key={counter}
+                        </div>
+    
+                        <hr />
+    
+                        <div className={cx('body')}>
+                            <div className={cx('info')}>
+                                <Image
+                                    className={cx('avatar')}
+                                    alt='ava'
+                                    src={userData.user_avatar}
                                 />
-
-                                <FontAwesomeIcon icon={faVideo} className={cx('video')} />
-                                <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
-                                <FontAwesomeIcon icon={faFaceSmile} className={cx('emotion')} />
+                                <h5 className={cx('username')}>{userData.user_name}</h5>
+                            </div>
+                            <textarea placeholder="What's on your mind?" className={cx('input')} />
+                            {imagePreview && (
+                                <div className={cx('add-img')}>
+                                    <img src={imagePreview} alt="preview" className={cx('your-img')} />
+                                    <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteImage} />
+                                </div>
+                            )}
+                            <div className={cx('options')}>
+                                <h4 className={cx('title')}>Add to your post</h4>
+                                <div className={cx('option')}>
+                                    <label for="create-post-img">
+                                        <FontAwesomeIcon icon={faCamera} className={cx('img')} />
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="create-post-img"
+                                        className={cx('d-none')}
+                                        onChange={handleImageChange}
+                                        key={counter}
+                                    />
+    
+                                    <FontAwesomeIcon icon={faVideo} className={cx('video')} />
+                                    <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
+                                    <FontAwesomeIcon icon={faFaceSmile} className={cx('emotion')} />
+                                </div>
                             </div>
                         </div>
+    
+                        <button className={cx('upload')}>Upload</button>
                     </div>
-
-                    <button className={cx('upload')}>Upload</button>
                 </div>
+
             )}
 
             <div className={cx('header')}>
@@ -137,7 +138,7 @@ function CreatePost({ avatar }) {
             </div>
 
             <div className={cx('input')}>
-                <Image className={cx('avatar')} src={avatar} alt='avatar' />
+                <Image className={cx('avatar')} src={userData.user_avatar} alt='avatar' />
                 <textarea placeholder="What's on your mind?" onClick={handleClickCreateBox}></textarea>
             </div>
 
