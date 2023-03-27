@@ -96,31 +96,30 @@ const MENU_ITEM = [
 let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
-    const { user, logOut, userData } = UserAuth();
-    const [notifications, setNotifications] = useState();
+    const { user, logOut, userData,notifications,handleReadNoti } = UserAuth();
     const notif = useRef();
     const [visible, setVisible] = useState(false);
 
 
-    useEffect(() => {
-        console.log('effect');
-        if (user) {
-            const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
-            getDocs(q).then((docs) => {
-                let data1 = [];
-                let readNoti = 0;
-                docs.forEach((doc) => {
-                    data1.push(doc.data());
-                    if(!doc.data().read) {
-                        readNoti++;
-                    }
-                });
-                setNotifications({data:data1,unread:readNoti});
-            });
-        }
-    }, [userData?.user_friendRequests]);
+    // useEffect(() => {
+    //     console.log('effect');
+    //     if (user) {
+    //         const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
+    //         getDocs(q).then((docs) => {
+    //             let data1 = [];
+    //             let readNoti = 0;
+    //             docs.forEach((doc) => {
+    //                 data1.push(doc.data());
+    //                 if(!doc.data().read) {
+    //                     readNoti++;
+    //                 }
+    //             });
+    //             setNotifications({data:data1,unread:readNoti});
+    //         });
+    //     }
+    // }, [userData?.user_friendRequests]);
 
-    console.log('re-render header');
+    // console.log('re-render header');
 
     USER_MENU = [
         {
@@ -133,24 +132,7 @@ function Header() {
         ...MENU_ITEM,
        { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
     ];
-    const handleReadNoti = async (data) => {
-        const q = query(collection(db, 'users', user?.uid, 'notifications'), where('sender.id', '==', data.sender.id));
-        const docs = await getDocs(q);
-        await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
-            read: true,
-        });
-        await getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
-            let data1 = [];
-            let readNoti = 0;
-            docs.forEach((doc) => {
-                data1.push(doc.data());
-                if(!doc.data().read) {
-                    readNoti++;
-                }
-            });
-            setNotifications({data:data1,unread:readNoti});
-        });
-    };
+  
 
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>

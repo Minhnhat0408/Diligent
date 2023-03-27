@@ -32,7 +32,7 @@ const cx = classNames.bind(styles);
 function Profile() {
     const { id } = useParams();
     const { user, userData } = UserAuth();
-    const [disabled, setDisabled] = useState();
+    const [disabled, setDisabled] = useState(false);
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar,setPreviewAvatar] = useState(false)
     const context = useContext(ThemeContext);
@@ -42,22 +42,27 @@ function Profile() {
     // console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
 
     useEffect(() => {
-        if (user.uid !== id) {
-            getDoc(doc(db, 'users', id)).then((doc) => {
-                const friendRq = doc.data().user_friendRequests;
-
-                setPageUser(doc.data());
-                const sent = friendRq.some((friendRequest) => {
-                    return friendRequest.id === user.uid;
+        
+        console.log(user?.uid)
+        if (user?.uid !== id) {
+                getDoc(doc(db, 'users', id)).then((doc) => {
+                    const friendRq = doc.data().user_friendRequests;
+                    setPageUser(doc.data());
+                    if(user) {
+                        const sent = friendRq.some((friendRequest) => {
+                            return friendRequest.id === user.uid;
+                        });
+                        const friend = doc.data().user_friends.some((friend) => {
+                            return friend.id === user.uid;
+                        });
+                        setDisabled(sent || friend);
+                    }
                 });
-                const friend = doc.data().user_friends.some((friend) => {
-                    return friend.id === user.uid;
-                });
-                setDisabled(sent || friend);
-            });
         } else {
-            setPageUser(userData);
+                setPageUser(userData);
         }
+      
+        
     }, [id]);
 
     const handleAddfr = async () => {
@@ -129,7 +134,7 @@ function Profile() {
                                 </div>
                             </div>
                             <div className={cx('options')}>
-                                {id === user.uid ? (
+                                {id === user?.uid ? (
                                     <>
                                         <Button className={cx('btn')} dark={context.theme === 'dark'} primary>
                                             Create
@@ -204,7 +209,7 @@ function Profile() {
                     </div>
 
                     <div className={cx('content')}>
-                        <CreatePost/>
+                        {user &&   <CreatePost/> }
                         <Post />
                         <Post />
                         <Post />

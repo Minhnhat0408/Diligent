@@ -40,7 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [countUser, setCountUser] = useState(0);
-    // const [notifications, setNotifications] = useState();
+    const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const createUser = async (email, password) => {
@@ -55,23 +55,7 @@ export const AuthContextProvider = ({ children }) => {
 
         return response;
     };
-    // useEffect(() => {
-    //     console.log('effect');
-    //     if (user) {
-    //         const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
-    //         getDocs(q).then((docs) => {
-    //             let data1 = [];
-    //             let readNoti = 0;
-    //             docs.forEach((doc) => {
-    //                 data1.push(doc.data());
-    //                 if(!doc.data().read) {
-    //                     readNoti++;
-    //                 }
-    //             });
-    //             setNotifications({data:data1,unread:readNoti});
-    //         });
-    //     }
-    // }, [userData?.user_friendRequests]);
+  
     useEffect(() => {
         const data = [];
         const q = query(userRef, orderBy('user_name'));
@@ -95,8 +79,27 @@ export const AuthContextProvider = ({ children }) => {
             console.log('fetch ');
             fetchData();
         }
-    }, [user, countUser]);
+    }, [ countUser]);
 
+    const handleReadNoti = async (data) => {
+        console.log('read')
+        const q = query(collection(db, 'users', user?.uid, 'notifications'), where('sender.id', '==', data.sender.id));
+        const docs = await getDocs(q);
+        await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
+            read: true,
+        });
+        await getDocs(collection(db, 'users', user?.uid, 'notifications')).then((docs) => {
+            let data1 = [];
+            let readNoti = 0;
+            docs.forEach((doc) => {
+                data1.push(doc.data());
+                if(!doc.data().read) {
+                    readNoti++;
+                }
+            });
+            setNotifications({data:data1,unread:readNoti});
+        });
+    };
     const signIn = async (email, password) => {
         const newUser = await signInWithEmailAndPassword(auth, email, password);
         return updateDoc(doc(db, 'users', newUser.user.uid), {
@@ -161,10 +164,23 @@ export const AuthContextProvider = ({ children }) => {
             });
 
             if (currentUser) {
+             
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log(doc.data());
                     setUserData(doc.data());
                 });
+                onSnapshot(query(collection(db, 'users', currentUser.uid, 'notifications'),orderBy('time','desc')), (docs) =>{
+                    let data1 = [];
+                    let readNoti = 0;
+                    console.log('hello')
+                    docs.forEach((doc) => {
+                        data1.push(doc.data());
+                        if(!doc.data().read) {
+                            readNoti++;
+                        }
+                    });
+                    setNotifications({data:data1,unread:readNoti});
+                })
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());
                 setUser(currentUser);
@@ -185,6 +201,8 @@ export const AuthContextProvider = ({ children }) => {
         usersList,
         user,
         userData,
+        notifications,
+        handleReadNoti,
         signIn,
         logOut,
         createUser,

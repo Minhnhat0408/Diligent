@@ -101,8 +101,9 @@ function Post({ avatar, username, time, content, image, likeNums, dislikeNums, c
                 feugiat non nisi. Phasellus faucibus mollis pharetra. Proin blandit ac massa sed rhoncus.{' '}
             </p>
 
-            <img
+            <Image
                 className={cx('image')}
+                alt='post-image'
                 src="https://scontent.fhan5-11.fna.fbcdn.net/v/t1.15752-9/331385382_2146975102167124_2229025955395837596_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=ae9488&_nc_ohc=KSLV0bPZ_gsAX_0MW4o&_nc_ht=scontent.fhan5-11.fna&oh=03_AdSFysJF-Z9LR5usHvHCY7KUBoOKm45-_LZ8Zilqf18hUQ&oe=643ABF47"
             />
 
