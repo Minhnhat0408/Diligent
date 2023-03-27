@@ -9,11 +9,12 @@ import useUnload from './hooks/useUnload';
 function App() {
     const {logOut} = UserAuth();
 
-    useUnload(() => {
-        logOut();
+    useUnload(async (e) =>  {
+        e.preventDefault();
+        await logOut();
         console.log('Closing the tab or window!');
       });
-      console.log('app')
+
     return (
             <Router>
                 <div className="app">

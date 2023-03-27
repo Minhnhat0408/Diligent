@@ -4,9 +4,6 @@ import {
     signInWithEmailAndPassword,
     signOut,
     onAuthStateChanged,
-    updateCurrentUser,
-    updateProfile,
-    GoogleAuthProvider,
     signInWithPopup,
 } from 'firebase/auth';
 import {
@@ -21,17 +18,12 @@ import {
     getDoc,
     onSnapshot,
     orderBy,
-    getCountFromServer,
     updateDoc,
-    documentId,
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
 import { db } from '../firebase';
-
 import image from '~/assets/images';
-import { async } from '@firebase/util';
-import { faL } from '@fortawesome/free-solid-svg-icons';
 
 const UserContext = createContext();
 
@@ -55,7 +47,7 @@ export const AuthContextProvider = ({ children }) => {
 
         return response;
     };
-  
+
     useEffect(() => {
         const data = [];
         const q = query(userRef, orderBy('user_name'));
@@ -79,10 +71,10 @@ export const AuthContextProvider = ({ children }) => {
             console.log('fetch ');
             fetchData();
         }
-    }, [ countUser]);
+    }, [countUser]);
 
     const handleReadNoti = async (data) => {
-        console.log('read')
+        console.log('read');
         const q = query(collection(db, 'users', user?.uid, 'notifications'), where('sender.id', '==', data.sender.id));
         const docs = await getDocs(q);
         await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
@@ -93,11 +85,11 @@ export const AuthContextProvider = ({ children }) => {
             let readNoti = 0;
             docs.forEach((doc) => {
                 data1.push(doc.data());
-                if(!doc.data().read) {
+                if (!doc.data().read) {
                     readNoti++;
                 }
             });
-            setNotifications({data:data1,unread:readNoti});
+            setNotifications({ data: data1, unread: readNoti });
         });
     };
     const signIn = async (email, password) => {
@@ -138,9 +130,8 @@ export const AuthContextProvider = ({ children }) => {
         const repuser = response.user;
 
         const docs = await getDoc(doc(db, 'users', repuser.uid));
-    
-        if (!docs.data()) {
 
+        if (!docs.data()) {
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
                 user_authProvider: response?.providerId,
@@ -164,26 +155,32 @@ export const AuthContextProvider = ({ children }) => {
             });
 
             if (currentUser) {
-             
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log(doc.data());
                     setUserData(doc.data());
                 });
-                onSnapshot(query(collection(db, 'users', currentUser.uid, 'notifications'),orderBy('time','desc')), (docs) =>{
-                    let data1 = [];
-                    let readNoti = 0;
-                    console.log('hello')
-                    docs.forEach((doc) => {
-                        data1.push(doc.data());
-                        if(!doc.data().read) {
-                            readNoti++;
-                        }
-                    });
-                    setNotifications({data:data1,unread:readNoti});
-                })
+                onSnapshot(
+                    query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
+                    (docs) => {
+                        let data1 = [];
+                        let readNoti = 0;
+                        console.log('hello');
+                        docs.forEach((doc) => {
+                            data1.push(doc.data());
+                            if (!doc.data().read) {
+                                readNoti++;
+                            }
+                        });
+                        setNotifications({ data: data1, unread: readNoti });
+                    },
+                );
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());
                 setUser(currentUser);
+                await updateDoc(doc(userRef,currentUser.uid),{
+                    user_status: 'online'
+                })
+                
             } else {
                 setUser(null);
             }
