@@ -1,12 +1,13 @@
 .wrapper {
     padding-top: var(--defaultLayout-header-height);
-    display: flex;  
+    display: flex;
     height: 100vh;
-}   
+}
 
 .sidebar {
     width: 360px;
     background-color: #fff;
+    position: relative;
     .header {
         margin-top: 8px;
         margin-left: 8px;
@@ -18,6 +19,7 @@
         align-items: center;
         margin-left: 20px;
         margin-bottom: 20px;
+        margin-top: 20px;
         .avatar {
             width: 60px;
             height: 60px;
@@ -26,6 +28,92 @@
 
         .username {
             margin-left: 8px;
+        }
+    }
+
+    .options {
+        position: fixed;
+        bottom: 0;
+        width: 360px;
+        height: 72px;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        box-shadow: 1px 1px 5px #ccc;
+
+        .cancel,
+        .share {
+            width: 120px;
+            height: 36px;
+            border-radius: 10px;
+            font-size: 1.8rem;
+            font-weight: 600;
+
+            &:hover {
+                opacity: 0.9;
+                cursor: pointer;
+            }
+        }
+
+        .cancel {
+            background-color: #e4e6eb;
+            color: #050505;
+        }
+
+        .share {
+            background-color: #1b74e4;
+            color: #fff;
+        }
+    }
+
+    .add-text {
+        width: 330px;
+        height: 220px;
+        margin-left: 15px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 2rem;
+        outline-color: #1b74e4;
+        resize: none;
+    }
+
+    .color {
+        width: 330px;
+        height: 100px;
+        margin-left: 15px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        padding: 10px;
+
+        .title {
+            margin-bottom: 4px;
+        }
+
+        .lists {
+            display: flex;
+            flex-direction: column;
+
+            .items {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                margin-bottom: 8px;
+
+                .item {
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    border: 1px solid #ccc;
+
+                    &:hover {
+                        cursor: pointer;
+                        opacity: 0.8;
+                    }
+                }
+            }
         }
     }
 }
@@ -54,7 +142,8 @@
         color: #fff;
     }
 
-    .image-story, .text-story {
+    .image-story,
+    .text-story {
         width: 220px;
         height: 330px;
         display: flex;
@@ -78,4 +167,80 @@
         background-image: linear-gradient(to bottom, #fc5c7d, #6a82fb);
         margin-left: 8px;
     }
+
+    .header {
+        color: #050505;
+    }
+
+    .preview {
+        width: 900px;
+        height: 650px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 1px 1px 5px #ccc;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+
+        .message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: transparent;
+            color: #000;
+            z-index: 10;
+            max-width: 300px;
+            max-height: 500px;
+            overflow: hidden;
+            font-size: 2rem;
+            text-align: center;
+            word-wrap: break-word;
+            cursor: grab;
+        }
+
+        .image-wrap {
+            width: 330px;
+            height: 550px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        input[type='range'] {
+            width: 330px;
+            margin-top: 12px;
+        }
+
+        input[type='range']::-webkit-slider-thumb {
+            -webkit-appearance: none; /* Bỏ đi đường viền mặc định của thanh kéo */
+            appearance: none;
+            width: 15px; /* Thiết lập chiều rộng của nút trượt */
+            height: 15px; /* Thiết lập chiều cao của nút trượt */
+            background-color: #333; /* Thiết lập màu nền cho nút trượt */
+            cursor: pointer; /* Thiết lập con trỏ tay khi hover vào nút trượt */
+        }
+
+        input[type='range']::-moz-range-thumb {
+            width: 15px; /* Thiết lập chiều rộng của nút trượt */
+            height: 15px; /* Thiết lập chiều cao của nút trượt */
+            background-color: #333; /* Thiết lập màu nền cho nút trượt */
+            cursor: pointer; /* Thiết lập con trỏ tay khi hover vào nút trượt */
+        }
+
+        input[type='range']::-webkit-slider-thumb:hover,
+        input[type='range']::-moz-range-thumb:hover {
+            width: 20px; /* Khi hover vào nút trượt, nút sẽ to hơn 5px */
+            height: 20px;
+        }
+    }
+}
+
+.d-none {
+    display: none;
 }

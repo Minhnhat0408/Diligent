@@ -2,8 +2,10 @@ import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryItem';
 import styles from './Story.module.scss';
 import Image from '~/component/Image';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Link } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { doc } from 'firebase/firestore';
+import { useState, useEffect } from 'react';
 const cx = classNames.bind(styles);
 
 function Story() {
@@ -13,7 +15,11 @@ function Story() {
                 <h1 className={cx('header')}>Story</h1>
                 <div className={cx('my-story')} to="/createstory">
                     <h3 className={cx('title')}>Your Story</h3>
-                    <StoryItem title="Create story" detail="You can share a photo or write something" to="/createstory"/>
+                    <StoryItem
+                        title="Create story"
+                        detail="You can share a photo or write something"
+                        to="/createstory"
+                    />
                 </div>
                 <div className={cx('all-story')}>
                     <h3 className={cx('title')}>All Story</h3>
@@ -38,6 +44,7 @@ function Story() {
             </div>
 
             <div className={cx('display')}>
+                
                 <div className={cx('content')}>
                     <div className={cx('progress')}></div>
                     <div className={cx('info')}>
@@ -62,10 +69,10 @@ function Story() {
                         <i class="fa-solid fa-circle-heart"></i>
                     </div>
                     <div className={cx('icon')} style={{ backgroundColor: '#fddc63' }}>
-                        <i class="fa-sharp fa-regular fa-face-awesome" style={{color: '#e45305'}}></i>
+                        <i class="fa-sharp fa-regular fa-face-awesome" style={{ color: '#e45305' }}></i>
                     </div>
                     <div className={cx('icon')} style={{ backgroundColor: '#e45305' }}>
-                        <i class="fa-regular fa-face-angry"></i>    
+                        <i class="fa-regular fa-face-angry"></i>
                     </div>
                 </div>
             </div>

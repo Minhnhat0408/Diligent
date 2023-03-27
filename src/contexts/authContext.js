@@ -46,13 +46,12 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
-        console.log(user);
+        // console.log(user);
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
             user_createdAt: serverTimestamp(),
         });
-
         return response;
     };
 
