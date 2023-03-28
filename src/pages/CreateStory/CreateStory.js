@@ -221,7 +221,7 @@ function CreateStory() {
 
                 {imagePreview && (
                     <div>
-                        <h1 className={cx('header')}>Preview</h1>
+                        {/* <h1 className={cx('header')}>Preview</h1> */}
 
                         <div className={cx('preview')}>
                             <div className={cx('image-wrap')} style={{ backgroundColor: backgroundColor }}>
@@ -251,7 +251,7 @@ function CreateStory() {
 
                 {textPreview && (
                     <div>
-                        <h1 className={cx('header')}>Preview</h1>
+                        {/* <h1 className={cx('header')}>Preview</h1> */}
 
                         <div className={cx('preview')}>
                             <div className={cx('image-wrap')} style={{ backgroundColor: backgroundColor }}>
