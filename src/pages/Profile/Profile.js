@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { collection, getDoc, doc, updateDoc, serverTimestamp, addDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
@@ -14,12 +14,16 @@ import {
     faAt,
     faCalendar,
     faCancel,
+    faCheck,
+    faCheckCircle,
     faEllipsis,
+    faListCheck,
     faMars,
     faMessage,
     faPhone,
     faUserFriends,
     faVenus,
+    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CreatePost from '~/component/CreatePost';
@@ -31,39 +35,50 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, userData } = UserAuth();
-    const [disabled, setDisabled] = useState(false);
+    const { user, userData, handleAccept, handleDecline } = UserAuth();
+    const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
-    const [previewAvatar,setPreviewAvatar] = useState(false)
+    const [previewAvatar, setPreviewAvatar] = useState(false);
     const context = useContext(ThemeContext);
+    const navigate = useNavigate();
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
     // const a = Date.now() -userData.user_createdAt.toMillis()
     // console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
 
     useEffect(() => {
-        
-        console.log(user?.uid)
+        console.log(user?.uid);
+
+        console.log('rendrererer')
         if (user?.uid !== id) {
-                getDoc(doc(db, 'users', id)).then((doc) => {
-                    const friendRq = doc.data().user_friendRequests;
-                    setPageUser(doc.data());
-                    if(user) {
-                        const sent = friendRq.some((friendRequest) => {
-                            return friendRequest.id === user.uid;
-                        });
-                        const friend = doc.data().user_friends.some((friend) => {
-                            return friend.id === user.uid;
-                        });
-                        setDisabled(sent || friend);
+            getDoc(doc(db, 'users', id)).then((doc) => {
+                const friendRq = doc.data().user_friendRequests;
+                setPageUser(doc.data());
+                if (user) {
+                    const sent = friendRq.some((friendRequest) => {
+                        return friendRequest.id === user.uid;
+                    });
+                    const friend = doc.data().user_friends.some((friend) => {
+                        return friend.id === user.uid;
+                    });
+                    const request = userData.user_friendRequests.some((friend) => {
+                        return friend.id === id;
+                    });
+                    if (sent) {
+                        setDisabled('Requesting');
+                    } else if (friend) {
+                        setDisabled('Friend');
+                    } else if (request) {
+                        setDisabled('Accept');
+                    } else {
+                        setDisabled('Add Friend');
                     }
-                });
+                }
+            });
         } else {
-                setPageUser(userData);
+            setPageUser(userData);
         }
-      
-        
-    }, [id]);
+    }, [id,userData?.user_friendRequests]);
 
     const handleAddfr = async () => {
         try {
@@ -88,7 +103,7 @@ function Profile() {
                 read: false,
             });
 
-            setDisabled(true);
+            setDisabled('Requesting');
         } catch (err) {
             console.log(err);
             alert(err);
@@ -101,13 +116,17 @@ function Profile() {
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>
             ) : (
-         
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('infor')}>
                         <div className={cx('section')}>
                             <Image src="fesf" alt="background-image" className={cx('background-ava')} />
                             <div className={cx('represent')}>
-                                <Image src={pageUser.user_avatar} alt="avatar" onClick={() => setPreviewAvatar(true)} className={cx('ava')} />
+                                <Image
+                                    src={pageUser.user_avatar}
+                                    alt="avatar"
+                                    onClick={() => setPreviewAvatar(true)}
+                                    className={cx('ava')}
+                                />
                                 <h4 className={cx('name')}>
                                     {pageUser.user_name}{' '}
                                     {pageUser.user_gender === 'male' ? (
@@ -148,28 +167,70 @@ function Profile() {
                                     </>
                                 ) : (
                                     <>
-                                        <Button
-                                            disabled={disabled}
-                                            leftIcon={
-                                                !disabled ? (
-                                                    <FontAwesomeIcon icon={faUserFriends} />
-                                                ) : (
-                                                    <FontAwesomeIcon icon={faCancel} />
-                                                )
-                                            }
-                                            dark={context.theme === 'dark'}
-                                            primary
-                                            small
-                                            onClick={handleAddfr}
-                                        >
-                                            {disabled ? 'Requesting' : 'Add friend'}
-                                        </Button>
-                                        <Button xs outline dark={context.theme === 'dark'}>
-                                            <FontAwesomeIcon icon={faMessage} />
-                                        </Button>
-                                        <Button xs outline dark={context.theme === 'dark'}>
-                                            <FontAwesomeIcon icon={faEllipsis} />
-                                        </Button>
+                                        {disabled === 'Accept' ? (
+                                            <>
+                                                <Button
+                                                    leftIcon={<FontAwesomeIcon icon={faCheck} />}
+                                                    dark={context.theme === 'dark'}
+                                                    primary
+                                                    xl
+                                                    onClick={() => {
+                                                        handleAccept({
+                                                            id: id,
+                                                            name: pageUser.user_name,
+                                                            ava: pageUser.user_avatar,
+                                                        }
+                                                        );
+                                                      ;
+                                           
+                                                    }}
+                                                >
+                                                    Accept Friend
+                                                </Button>
+                                                <Button
+                                                    leftIcon={<FontAwesomeIcon icon={faXmark} />}
+                                                    dark={context.theme === 'dark'}
+                                                    outline
+                                                    xl
+                                                    onClick={() => {
+                                                        handleDecline({
+                                                            id: id,
+                                                            name: pageUser.user_name,
+                                                            ava: pageUser.user_avatar,
+                                                        });
+                                                        ;
+                                                    }}
+                                                >
+                                                    Decline Friend
+                                                </Button>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Button
+                                                    disabled={disabled === 'Friend' || disabled === 'Requesting'}
+                                                    leftIcon={
+                                                        (disabled === 'Friend' && (
+                                                            <FontAwesomeIcon icon={faCheckCircle} />
+                                                        )) ||
+                                                        (disabled === 'Requesting' && (
+                                                            <FontAwesomeIcon icon={faCancel} />
+                                                        )) || <FontAwesomeIcon icon={faUserFriends} />
+                                                    }
+                                                    dark={context.theme === 'dark'}
+                                                    primary
+                                                    small
+                                                    onClick={handleAddfr}
+                                                >
+                                                    {disabled}
+                                                </Button>
+                                                <Button xs outline dark={context.theme === 'dark'} onClick={() => {navigate(routes.chat)}}>
+                                                    <FontAwesomeIcon icon={faMessage} />
+                                                </Button>
+                                                <Button xs outline dark={context.theme === 'dark'}>
+                                                    <FontAwesomeIcon icon={faEllipsis} />
+                                                </Button>
+                                            </>
+                                        )}
                                     </>
                                 )}
                             </div>
@@ -209,16 +270,17 @@ function Profile() {
                     </div>
 
                     <div className={cx('content')}>
-                        {user &&   <CreatePost/> }
+                        {user && <CreatePost />}
                         <Post />
                         <Post />
                         <Post />
                     </div>
-                    {previewAvatar && <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
-                        <Image src={pageUser.user_avatar} className={cx('preview')} alt="preview"/>
-                    </div> }
+                    {previewAvatar && (
+                        <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
+                            <Image src={pageUser.user_avatar} className={cx('preview')} alt="preview" />
+                        </div>
+                    )}
                 </div>
-           
             )}
         </>
     );

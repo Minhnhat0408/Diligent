@@ -137,13 +137,13 @@ function Header() {
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
-                {notifications?.data.map((data) => {
+                {notifications?.data.map((data,ind) => {
                     return (
                         <Notification
                             onClick={() => {
                                 handleReadNoti(data);
                             }}
-                            key={data.sender.id}
+                            key={ind}
                             data={data}
                             time={getTimeDiff(Date.now(), data.time.toMillis())}
                         />
