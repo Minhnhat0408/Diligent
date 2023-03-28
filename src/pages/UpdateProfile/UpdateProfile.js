@@ -17,7 +17,7 @@ import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
 function UpdateProfile() {
-    const {userData} = UserAuth();
+    const { userData } = UserAuth();
 
     const defaultValidate = {
         fullname: false,
@@ -27,7 +27,7 @@ function UpdateProfile() {
         bio: false,
         avatar: false,
     };
-    
+
     const fullname = useRef();
     const dob = useRef();
     const phone = useRef();
@@ -41,7 +41,7 @@ function UpdateProfile() {
     const { updateProfile } = UserAuth();
     const navigate = useNavigate();
     const [gender, setGender] = useState('male');
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     const handleAvatar = (e) => {
         const ava = e.target.files[0];
         setFile(ava);
@@ -53,14 +53,21 @@ function UpdateProfile() {
 
     const validateAll = () => {
         console.log(fullname, dob, phone, address);
-        const msg = validator.updateProfile({
+        const dataNeedValid = {
             fullname: fullname.current.value,
             dob: dob.current.value,
             phone: phone.current.value,
             address: address.current.value,
             bio: bio.current.value,
             avatar: file,
-        });
+        }
+        let msg = null;
+        if(window.location.pathname === routes.userUpdate){
+            msg = validator.updateUserProfile(dataNeedValid);
+        }else{
+            msg = validator.updateProfile(dataNeedValid);
+        }
+       
         setValidatorMsg(msg);
         Object.keys(msg).forEach((key) => {
             setValidated((preV) => {
@@ -73,18 +80,19 @@ function UpdateProfile() {
         e.preventDefault();
         setValidated(defaultValidate);
         if (!validateAll()) {
-            const data = {
-                dob: dob.current.value,
-                fullname: fullname.current.value,
-                gender: gender,
-                phone: phone.current.value,
-                address: address.current.value,
-                bio: bio.current.value,
-                avatar: null,
-            };
+            let data = {
+                    dob: dob.current.value || userData.user_dob,
+                    fullname: fullname.current.value  || userData.user_name,
+                    gender: gender  || userData.user_gender ,
+                    phone: phone.current.value  || userData.user_phone,
+                    address: address.current.value  || userData.user_address,
+                    bio: bio.current.value  || userData.user_bio ,
+                    avatar: userData?.user_avatar,
+                };
             try {
                 setError('');
                 setLoading(true);
+
                 if (file) {
                     const storageRef = ref(storage, `images/${file.name}`);
                     const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
@@ -117,7 +125,7 @@ function UpdateProfile() {
                             });
                         },
                     );
-                }else{
+                } else {
                     updateProfile(data).then(() => {
                         setLoading(false);
                         navigate(routes.home);
@@ -131,7 +139,13 @@ function UpdateProfile() {
     };
 
     return (
-        <div className={cx('wrapper',{user:window.location.pathname === routes.userUpdate && userData},{dark:context.theme === 'dark'})}>
+        <div
+            className={cx(
+                'wrapper',
+                { user: window.location.pathname === routes.userUpdate && userData },
+                { dark: context.theme === 'dark' },
+            )}
+        >
             <div className={cx('loading')} style={!loading ? { display: 'none' } : {}}>
                 <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
             </div>
@@ -230,7 +244,7 @@ function UpdateProfile() {
                     }}
                     className={cx('btn')}
                 >
-                    Sign up
+                    Submit
                 </Button>
             </div>
         </div>

@@ -73,16 +73,45 @@ function updateProfile({ fullname, dob, phone, address, bio, avatar }) {
         msg.dob = !!msg.dob ? msg.dob : 'DOB invalid.';
     }
     if (!isNotEmpty(phone)) {
-        msg.phone = !!msg.phone ? msg.phone : 'Please enter your date of birth.';
+        msg.phone = !!msg.phone ? msg.phone : 'Please enter your phone number.';
     } else if (!isMobilePhone(phone)) {
         msg.phone = !!msg.phone ? msg.phone : 'This is not a phone number.';
     }
     if (!isNotEmpty(address)) {
-        msg.address = !!msg.address ? msg.address : 'Please enter your date of birth.';
+        msg.address = !!msg.address ? msg.address : 'Please enter your address.';
     }
     if (!isNotEmpty(bio)) {
-        msg.bio = !!msg.bio ? msg.bio : 'Please enter your date of birth.';
+        msg.bio = !!msg.bio ? msg.bio : 'Please enter your bio.';
     }
+    if (avatar) {
+        if (!isImage(avatar)) {
+            msg.avatar = !!msg.avatar ? msg.avatar : 'This is not an image.';
+        }
+    }
+
+    return msg;
+}
+
+function updateUserProfile({ fullname, dob, phone, address, bio, avatar }) {
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
+    var yyyy = today.getFullYear() - 1;
+
+    today = mm + '-' + dd + '-' + yyyy;
+    const msg = {};
+
+
+    if (isNotEmpty(dob)) {
+        if (isAfter(dob, today)) {
+            msg.dob = !!msg.dob ? msg.dob : 'DOB invalid.';
+        }
+    } 
+    if (isNotEmpty(phone)) {
+        if (!isMobilePhone(phone)) {
+            msg.phone = !!msg.phone ? msg.phone : 'This is not a phone number.';
+        }
+    }  
     if (avatar) {
         if (!isImage(avatar)) {
             msg.avatar = !!msg.avatar ? msg.avatar : 'This is not an image.';
@@ -95,6 +124,7 @@ const validator = {
     signIn,
     signUp,
     updateProfile,
+    updateUserProfile
 };
 
 export default validator;
