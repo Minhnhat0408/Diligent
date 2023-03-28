@@ -1,8 +1,7 @@
 import classNames from 'classnames/bind';
 import Image from '~/component/Image';
 import styles from './CreateStory.module.scss';
-import { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useState, useMemo, useCallback } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -43,12 +42,12 @@ function CreateStory() {
         reader.readAsDataURL(file);
     };
 
-    const handleDeleteImage = () => {
+    const handleDeleteImage = useCallback(() => {
         URL.revokeObjectURL(imagePreview);
         setSelectedFile(null);
         setImagePreview(null);
         setCounter((prevCounter) => prevCounter + 1);
-    };
+    }, [imagePreview]);
 
     //resize image
     const [scale, setScale] = useState(1);
@@ -61,9 +60,9 @@ function CreateStory() {
     //add text
     const [addText, setAddText] = useState();
 
-    const handleInputText = (value) => {
+    const handleInputText = useCallback((value) => {
         setAddText(value);
-    };
+    }, []);
 
     //drag message
     const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -93,37 +92,41 @@ function CreateStory() {
 
     //change text color
     const [color, setColor] = useState('black');
-    const handleClickTextColor = (value) => {
+    const handleClickTextColor = useCallback((value) => {
         setColor(value);
-    };
+    }, []);
 
-    const colorItems = colors.map((color) => (
-        <div
-            key={color}
-            className={cx('item', color)}
-            style={{ backgroundColor: color }}
-            onClick={() => {
-                handleClickTextColor(color);
-            }}
-        ></div>
-    ));
+    const colorItems = useMemo(() => {
+        return colors.map((color) => (
+            <div
+                key={color}
+                className={cx('item', color)}
+                style={{ backgroundColor: color }}
+                onClick={() => {
+                    handleClickTextColor(color);
+                }}
+            ></div>
+        ));
+    }, []);
 
     //change background color
     const [backgroundColor, setBackgroundColor] = useState('white');
-    const handleClickBackGroundColor = (value) => {
+    const handleClickBackGroundColor = useCallback((value) => {
         setBackgroundColor(value);
-    };
+    }, []);
 
-    const backgroundColorItems = colors.map((color) => (
-        <div
+    const backgroundColorItems = useMemo(() => {
+        return colors.map((color) => (
+            <div
             key={color}
             className={cx('item', color)}
             style={{ backgroundColor: color }}
             onClick={() => {
                 handleClickBackGroundColor(color);
             }}
-        ></div>
-    ));
+            ></div>
+        ));
+    }, []);
 
     //click cancel
     const handleClickCancel = () => {
