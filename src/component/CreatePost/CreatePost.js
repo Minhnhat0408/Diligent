@@ -1,5 +1,5 @@
+import { useState, useEffect, useContext, useRef } from 'react';
 import classNames from 'classnames/bind';
-import styles from './CreatePost.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCamera,
@@ -11,17 +11,20 @@ import {
     faVideoCamera,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import Image from '../Image';
-import { useContext } from 'react';
+import Tippy from '@tippyjs/react';
+import 'tippy.js/themes/light.css';
+import 'tippy.js/dist/tippy.css';
+
+import image from '~/assets/images';
 import { ThemeContext } from '~/contexts/Context';
-import { useRef, useState, useEffect } from 'react';
+
+import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
-function CreatePost() {
+function CreatePost({ avatar }) {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const context = useContext(ThemeContext)
     const {userData} = UserAuth();
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
@@ -30,6 +33,7 @@ function CreatePost() {
     const handleClickCloseBox = () => {
         setCreateBoxVisible(false);
         handleDeleteImage();
+        handleCategoryClick('Choose category');
     };
 
     const createBoxRef = useRef(null);
@@ -74,8 +78,20 @@ function CreatePost() {
         setCounter((prevCounter) => prevCounter + 1);
     };
 
+    //Xử lí khi chọn thể loại bài đăng
+    const [selectedCategory, setSelectedCategory] = useState(null);
+
+    const handleCategoryClick = (category) => {
+        setSelectedCategory(category);
+    };
+
+    //Nếu người dùng chưa đăng nhập thì để avatar mặc định
+    if (avatar == undefined) {
+        avatar = image.userUndefined;
+    }
     return (
-        <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+            {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
                     <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
@@ -96,7 +112,60 @@ function CreatePost() {
                                     alt='ava'
                                     src={userData.user_avatar}
                                 />
-                                <h5 className={cx('username')}>{userData.user_name}</h5>
+                                <Tippy
+                                placement="bottom"
+                                trigger="click"
+                                interactive={true}
+                                theme="light"
+                                content={
+                                    <div className={cx('categories')}>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Japanese')}
+                                        >
+                                            <p>Japanese</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('English')}
+                                        >
+                                            <p>English</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Korean')}
+                                        >
+                                            <p>Korean</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('Chinese')}
+                                        >
+                                            <p>Chinese</p>
+                                        </div>
+                                        <div
+                                            className={cx('category-item')}
+                                            onClick={() => handleCategoryClick('French')}
+                                        >
+                                            <p>French</p>
+                                        </div>
+                                    </div>
+                                }
+                            >
+                                <div>
+                                    <h5 className={cx('username')}>userData.user_name</h5>
+                                    <div className={cx('category')}>
+                                        {selectedCategory ? (
+                                            <p>{selectedCategory}</p>
+                                        ) : (
+                                            <>
+                                                <p>Choose category</p>
+                                            </>
+                                        )}
+                                        <i className="fa-solid fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </Tippy>
                             </div>
                             <textarea placeholder="What's on your mind?" className={cx('input')} />
                             {imagePreview && (
@@ -161,4 +230,3 @@ function CreatePost() {
 }
 
 export default CreatePost;
-

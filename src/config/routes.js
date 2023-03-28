@@ -10,6 +10,7 @@ const routes = {
     updateInfo:'/updateinfor',
     flashcard:'/flashcard',
     userUpdate:'/user/updateinfor',
+    createStory: '/createstory',
 }
 
 export default routes
