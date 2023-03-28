@@ -20,6 +20,7 @@ import { ThemeContext } from '~/contexts/Context';
 
 import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
+import Image from '../Image';
 
 const cx = classNames.bind(styles);
 
@@ -89,6 +90,8 @@ function CreatePost({ avatar }) {
     if (avatar == undefined) {
         avatar = image.userUndefined;
     }
+
+    const context = useContext(ThemeContext)
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {/* Create Post Box  */}
@@ -153,7 +156,7 @@ function CreatePost({ avatar }) {
                                 }
                             >
                                 <div>
-                                    <h5 className={cx('username')}>userData.user_name</h5>
+                                    <h5 className={cx('username')}>{userData.user_name}</h5>
                                     <div className={cx('category')}>
                                         {selectedCategory ? (
                                             <p>{selectedCategory}</p>
