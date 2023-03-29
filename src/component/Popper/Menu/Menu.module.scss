@@ -52,9 +52,11 @@
 
 .header {
   height: 50px;
-  position: relative;
+  display:flex;
   margin-top: -8px;
   flex-shrink: 0;
+  align-items: center;
+
 }
 
 .back-btn {
@@ -66,9 +68,8 @@
 
 .header-title {
   color: var(--text-color);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  padding-left: 30px;
+
+
 }
 

@@ -15,11 +15,12 @@ const cx = classNames.bind(styles);
 function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
+    console.log(userData)
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             {user ? (
                 <>
-                    {(userData?.user_friendRequests && userData?.user_friendRequests?.length !== 0) ? (
+                    {(userData?.user_friendRequests.length !== 0) ? (
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
                                 <h4 className={cx('menu-header')}>Friend request</h4>

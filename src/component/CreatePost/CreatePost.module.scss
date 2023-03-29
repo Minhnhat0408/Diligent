@@ -141,6 +141,16 @@ $color-camera: #fe9431;
             }
         }
     }
+    &.dark .create-box{
+        color:var(--text-color-dark);
+        background-color: var(--dark-theme);
+
+    }
+    &.dark .create-box .input{
+        background-color: var(--bg-dark-theme);
+        color:var(--text-color-dark);
+    }
+ 
 }
 
 .create-box {
@@ -157,15 +167,13 @@ $color-camera: #fe9431;
         margin-bottom: 4px;
 
         .tittle {
-            font-size: 1.4rem;
-            color: #050505;
+            font-size: 1.4rem
         }
 
         .icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background-color: #e4e6eb;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -192,7 +200,7 @@ $color-camera: #fe9431;
 
             .username {
                 margin-left: 4px;
-                color: #050505;
+
                 font-size: 1.2rem;
             }
 
@@ -202,7 +210,6 @@ $color-camera: #fe9431;
                 justify-content: space-between;
                 margin-left: 4px;
                 font-size: 1.4rem;
-                color: #050505;
                 border: 1px solid #ccc;
                 border-radius: 10px;
                 padding: 0 15px;
@@ -244,7 +251,6 @@ $color-camera: #fe9431;
 
             .title {
                 font-size: 1.6rem;
-                color: #050505;
             }
 
             .option {
@@ -276,13 +282,10 @@ $color-camera: #fe9431;
         height: 40px;
         margin-top: 16px;
         border-radius: 10px;
-        background-color: #1b74e4;
         font-size: 1.8rem;
-        color: #fff;
-
         &:hover {
             cursor: pointer;
-            opacity: 0.9;
+   
         }
     }
 }

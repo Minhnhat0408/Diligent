@@ -68,11 +68,11 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
             setUsersList(data);
-            console.log(data);
+            
         }
 
         if (user?.uid) {
-            console.log('fetch ');
+            console.log('fetch user list');
             fetchData();
         }
     }, [countUser, userData?.user_friendRequests]);
@@ -91,17 +91,33 @@ export const AuthContextProvider = ({ children }) => {
         return signOut(auth);
     };
     const updateProfile = async (data) => {
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_dob: data.dob,
-            user_name: data.fullname.trimEnd(),
-            user_gender: data.gender,
-            user_phone: data.phone.trimEnd(),
-            user_address: data.address.trimEnd(),
-            user_bio: data.bio.trimEnd(),
-            user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-            user_status: 'online',
-            user_theme: 'light',
-        });
+        if(window.location.pathname === routes.updateInfo){
+            await updateDoc(doc(db, 'users', user.uid), {
+                user_dob: data.dob,
+                user_name: data.fullname.trimEnd(),
+                user_gender: data.gender,
+                user_phone: data.phone.trimEnd(),
+                user_address: data.address.trimEnd(),
+                user_bio: data.bio.trimEnd(),
+                user_avatar: data.avatar || user?.photoURL || image.userUndefined,
+                user_status: 'online',
+                user_theme: 'light',
+                user_friendRequests:[],
+                user_friends:[],
+            });
+        }else{
+            await updateDoc(doc(db, 'users', user.uid), {
+                user_dob: data.dob,
+                user_name: data.fullname.trimEnd(),
+                user_gender: data.gender,
+                user_phone: data.phone.trimEnd(),
+                user_address: data.address.trimEnd(),
+                user_bio: data.bio.trimEnd(),
+                user_avatar: data.avatar || user?.photoURL || image.userUndefined,
+        
+            });
+        }
+        
     };
 
     const googleSignIn = async () => {
@@ -185,15 +201,41 @@ export const AuthContextProvider = ({ children }) => {
             }),
         });
     };
+    const unFriend = async (friendData) => {
+        const deleteFr = userData.user_friends.filter((friend) => {
+            return friend.id === friendData.id
+        })
+        
+        await updateDoc(doc(db, 'users', user.uid), {
+            user_friends: arrayRemove({
+                id: deleteFr[0].id,
+                ava: deleteFr[0].ava,
+                name: deleteFr[0].name,
+                time: deleteFr[0].time
+            }),
+        });
+        await updateDoc(doc(db, 'users', friendData.id), {
+            user_friends: arrayRemove({
+                id: friendData.data.id,
+                ava: friendData.data.ava,
+                name: friendData.data.name,
+                time: friendData.data.time
+            }),
+        });
+    }
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
             onSnapshot(query(collection(db, 'users'), where('user_status', '==', 'online')), (docs) => {
                 setCountUser(docs.docs.length);
+                console.log('some user online offline')
             });
 
             if (currentUser) {
+                await updateDoc(doc(userRef, currentUser.uid), {
+                    user_status: 'online',
+                });
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
-                    console.log(doc.data());
+                    console.log('data of user change');
                     setUserData(doc.data());
                 });
                 onSnapshot(
@@ -201,7 +243,7 @@ export const AuthContextProvider = ({ children }) => {
                     (docs) => {
                         let data1 = [];
                         let readNoti = 0;
-                        console.log('hello');
+                        console.log('notification change');
                         docs.forEach((doc) => {
                             data1.push(doc.data());
                             if (!doc.data().read) {
@@ -214,9 +256,7 @@ export const AuthContextProvider = ({ children }) => {
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());
                 setUser(currentUser);
-                await updateDoc(doc(userRef, currentUser.uid), {
-                    user_status: 'online',
-                });
+                
             } else {
                 setUser(null);
             }
@@ -238,6 +278,7 @@ export const AuthContextProvider = ({ children }) => {
         handleReadNoti,
         handleDecline,
         handleAccept,
+        unFriend,
         signIn,
         logOut,
         createUser,

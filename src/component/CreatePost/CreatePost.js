@@ -21,6 +21,7 @@ import { ThemeContext } from '~/contexts/Context';
 import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 import Image from '../Image';
+import Button from '../Button';
 
 const cx = classNames.bind(styles);
 
@@ -97,7 +98,7 @@ function CreatePost({ avatar }) {
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
-                    <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
+                    <div className={cx('create-box',{dark:context.theme === 'dark'})} style={{ height: imagePreview && '628px' }}>
                         <div className={cx('header')}>
                             <div></div>
                             <h1 className={cx('title')}>Create post</h1>
@@ -180,7 +181,7 @@ function CreatePost({ avatar }) {
                             <div className={cx('options')}>
                                 <h4 className={cx('title')}>Add to your post</h4>
                                 <div className={cx('option')}>
-                                    <label for="create-post-img">
+                                    <label htmlFor="create-post-img">
                                         <FontAwesomeIcon icon={faCamera} className={cx('img')} />
                                     </label>
                                     <input
@@ -198,7 +199,7 @@ function CreatePost({ avatar }) {
                             </div>
                         </div>
     
-                        <button className={cx('upload')}>Upload</button>
+                        <Button primary dark={context.theme === 'dark'} className={cx('upload')}>Upload</Button>
                     </div>
                 </div>
 

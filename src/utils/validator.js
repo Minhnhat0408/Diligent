@@ -10,7 +10,7 @@ function isNotEmpty(obj) {
     return !!obj && obj.trim();
 }
 
-function isImage(obj) {
+export function isImage(obj) {
     const metadata = {
         contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };

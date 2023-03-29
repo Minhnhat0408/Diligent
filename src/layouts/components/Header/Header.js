@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import routes from '~/config/routes';
-import { Link, useLocation } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import image from '~/assets/images';
 import Search from '../Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,71 +16,18 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
-import { useContext, useState, useRef, useEffect } from 'react';
+import { useContext, useState, useRef} from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Menu from '~/component/Popper/Menu';
 import Image from '~/component/Image';
 import { UserAuth } from '~/contexts/authContext';
 import { Wrapper as PopperWrapper } from '~/component/Popper';
 import Notification from '~/component/Notification';
-import { db } from '~/firebase';
-import { getDocs, collection, updateDoc, query, where, doc, orderBy } from 'firebase/firestore';
 import getTimeDiff from '~/utils/timeDiff';
-import { memo } from 'react';
+import listLanguage from '~/config/languages';
 const cx = classNames.bind(styles);
 
-const languages = [
-    'English',
-    'العربية',
-    'বাঙ্গালি (ভারত)',
-    'Cebuano (Pilipinas)',
-    'Čeština (Česká republika)',
-    'Deutsch',
-    'Ελληνικά (Ελλάδα)',
-    'Español',
-    'Suomi (Suomi)',
-    'Filipino (Pilipinas)',
-    'Français',
-    '(ישראל) עברית',
-    'हिंदी',
-    'Magyar (Magyarország)',
-    'Bahasa Indonesia (Indonesia)',
-    'Italiano (Italia)',
-    '日本語（日本）',
-    'Basa Jawa (Indonesia)',
-    'ខ្មែរ (កម្ពុជា)',
-    '한국어 (대한민국)',
-    'Bahasa Melayu (Malaysia)',
-    'မြန်မာ (မြန်မာ)',
-    'Nederlands (Nederland)',
-    'Polski  (Polska)',
-    'Português (Brasil)',
-    'Română (Romania)',
-    'Русский (Россия)',
-    'Svenska  (Sverige)',
-    'ไทย (ไทย)',
-    'Türkçe (Türkiye)',
-    'Українська (Україна)',
-    'اردو',
-    'Tiếng Việt (Việt Nam)',
-    '简体中文',
-    '繁體中文',
-];
-const listLanguage = languages.map((lang) => {
-    return {
-        code: 'en',
-        type: 'language',
-        title: lang,
-        children: {
-            title: 'Success',
-            data: [
-                {
-                    title: 'Not Working',
-                },
-            ],
-        },
-    };
-});
+
 const MENU_ITEM = [
     {
         icon: <FontAwesomeIcon icon={faEarthAsia} />,
@@ -100,27 +47,6 @@ function Header() {
     const notif = useRef();
     const [visible, setVisible] = useState(false);
 
-
-    // useEffect(() => {
-    //     console.log('effect');
-    //     if (user) {
-    //         const q = query(collection(db, 'users', user?.uid, 'notifications'),orderBy('time','desc'))
-    //         getDocs(q).then((docs) => {
-    //             let data1 = [];
-    //             let readNoti = 0;
-    //             docs.forEach((doc) => {
-    //                 data1.push(doc.data());
-    //                 if(!doc.data().read) {
-    //                     readNoti++;
-    //                 }
-    //             });
-    //             setNotifications({data:data1,unread:readNoti});
-    //         });
-    //     }
-    // }, [userData?.user_friendRequests]);
-
-    // console.log('re-render header');
-
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -135,7 +61,7 @@ function Header() {
   
 
     const renderNotifications = (attrs) => (
-        <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>
+        <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>  
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
                 {notifications?.data.map((data,ind) => {
                     return (
@@ -252,6 +178,8 @@ function Header() {
                         {user ? (
                             <Image
                                 className={cx('user-avatar')}
+                                placement="bottom-end"
+                                offset={[16,30]}
                                 src={userData?.user_avatar}
                                 alt={userData?.user_name}
                             ></Image>

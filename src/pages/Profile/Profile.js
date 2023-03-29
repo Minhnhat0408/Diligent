@@ -16,30 +16,95 @@ import {
     faCancel,
     faCheck,
     faCheckCircle,
-    faEllipsis,
     faMars,
     faMessage,
     faPhone,
     faUserFriends,
+    faUserXmark,
     faVenus,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CreatePost from '~/component/CreatePost';
 import Post from '~/component/Post';
 import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import Menu from '~/component/Popper/Menu';
+import { isImage } from '~/utils/validator';
 const cx = classNames.bind(styles);
 
+const OPTIONS = [
+    // {
+    //     icon: <FontAwesomeIcon icon={faEarthAsia} />,
+    //     title: 'English',
+    //     children: {
+    //         title: 'Language',
+    //         data: listLanguage,
+    //     },
+    // },
+    {
+        icon: <FontAwesomeIcon icon={faFlag} />,
+        title: 'Report',
+        children: {
+            title: 'Report',
+            data: [
+                {
+                    type: 'report',
+                    title: 'Fake account',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Harassment/Bully',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Inappropriate post',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    },
+    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
+];
 function Profile() {
     const { id } = useParams();
-    const { user, userData, handleAccept, handleDecline } = UserAuth();
+    const { user, userData, handleAccept, handleDecline, unFriend } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
+    const [file, setFile] = useState();
     const [previewAvatar, setPreviewAvatar] = useState(false);
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
+    const storage = getStorage();
+    const metadata = {
+        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
+    };
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
     // const a = Date.now() -userData.user_createdAt.toMillis()
@@ -48,7 +113,7 @@ function Profile() {
     useEffect(() => {
         console.log(user?.uid);
 
-        console.log('rendrererer')
+        console.log('rendrererer');
         if (user?.uid !== id) {
             getDoc(doc(db, 'users', id)).then((doc) => {
                 const friendRq = doc.data().user_friendRequests;
@@ -77,11 +142,66 @@ function Profile() {
         } else {
             setPageUser(userData);
         }
-    }, [id,userData?.user_friendRequests]);
+    }, [id, userData?.user_friendRequests]);
+    // useEffect(() => {
+    //     console.log(file);
+    //     if (file) {
+    //         if (isImage(file)) {
+    //             const storageRef = ref(storage, `images/${file.name}`);
+    //             const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
+    //             uploadTask.on(
+    //                 'state_changed',
+    //                 (snapshot) => {
+    //                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+    //                     console.log('Upload is ' + progress + '% done');
+    //                     switch (snapshot.state) {
+    //                         case 'paused':
+    //                             console.log('Upload is paused');
+    //                             break;
+    //                         case 'running':
+    //                             console.log('Upload is running');
+    //                             break;
+    //                         default:
+    //                             break;
+    //                     }
+    //                 },
+    //                 (error) => {
+    //                     alert(error);
+    //                 },
+    //                 async () => {
+    //                     await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+    //                         updateDoc(doc(db, 'users', user.uid), {
+    //                             user_bg: downloadURL,
+    //                         });
+    //                     });
+    //                 },
+    //             );
+    //         } else {
+    //             setFile(null);
+    //         }
+    //     }
+    // }, [file]);
+    const handleBgAvatar = (e) => {
+        const ava = e.target.files[0];
+        setFile(ava);
+    };
 
+    const handleMenuChange = (menuItem) => {
+        switch (menuItem.type) {
+            case 'unfriend':
+                const deleteMe = pageUser.user_friends.filter((friend) => {
+                    return friend.id === user.uid;
+                });
+
+                unFriend({ data: deleteMe[0], id: id });
+                break;
+
+            default:
+                break;
+        }
+    };
     const handleAddfr = async () => {
         try {
-            
             await updateDoc(doc(db, 'users', id), {
                 user_friendRequests: arrayUnion({
                     id: user.uid,
@@ -120,6 +240,14 @@ function Profile() {
                     <div className={cx('infor')}>
                         <div className={cx('section')}>
                             <Image src="fesf" alt="background-image" className={cx('background-ava')} />
+                            {id === user?.uid && (
+                                <>
+                                    <label className={cx('bg-btn', { fail: file === null })} htmlFor="bg">
+                                        <i className="fa-solid fa-pen" />
+                                    </label>
+                                    <input onClick={handleBgAvatar} type="file" id="bg" className={cx('d-none')} />
+                                </>
+                            )}
                             <div className={cx('represent')}>
                                 <Image
                                     src={pageUser.user_avatar}
@@ -155,10 +283,20 @@ function Profile() {
                             <div className={cx('options')}>
                                 {id === user?.uid ? (
                                     <>
-                                        <Button className={cx('btn')} dark={context.theme === 'dark'} primary>
+                                        <Button
+                                            className={cx('btn')}
+                                            dark={context.theme === 'dark'}
+                                            onClick={() => navigate(routes.flashcard)}
+                                            primary
+                                        >
                                             Create
                                         </Button>
-                                        <Button xs dark={context.theme === 'dark'} outline>
+                                        <Button
+                                            xs
+                                            dark={context.theme === 'dark'}
+                                            onClick={() => navigate(routes.story)}
+                                            outline
+                                        >
                                             <i className={`fa-regular fa-bolt`}></i>
                                         </Button>
                                         <Button className={cx('btn')} dark={context.theme === 'dark'} outline>
@@ -179,10 +317,7 @@ function Profile() {
                                                             id: id,
                                                             name: pageUser.user_name,
                                                             ava: pageUser.user_avatar,
-                                                        }
-                                                        );
-                                                      ;
-                                           
+                                                        });
                                                     }}
                                                 >
                                                     Accept Friend
@@ -198,7 +333,6 @@ function Profile() {
                                                             name: pageUser.user_name,
                                                             ava: pageUser.user_avatar,
                                                         });
-                                                        ;
                                                     }}
                                                 >
                                                     Decline Friend
@@ -223,11 +357,26 @@ function Profile() {
                                                 >
                                                     {disabled}
                                                 </Button>
-                                                <Button xs outline dark={context.theme === 'dark'} onClick={() => {navigate(routes.chat)}}>
+                                                <Button
+                                                    xs
+                                                    outline
+                                                    dark={context.theme === 'dark'}
+                                                    onClick={() => {
+                                                        navigate(routes.chat);
+                                                    }}
+                                                >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>
                                                 <Button xs outline dark={context.theme === 'dark'}>
-                                                    <FontAwesomeIcon icon={faEllipsis} />
+                                                    <Menu
+                                                        offset={[0, 30]}
+                                                        // chinh ben trai / chieu cao so vs ban dau
+                                                        placement="right"
+                                                        item={OPTIONS}
+                                                        onChange={handleMenuChange}
+                                                    >
+                                                        <i className="fa-solid fa-ellipsis"></i>
+                                                    </Menu>
                                                 </Button>
                                             </>
                                         )}

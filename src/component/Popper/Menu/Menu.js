@@ -9,7 +9,7 @@ import PropTypes from 'prop-types';
 import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
-function Menu({ children, item = [], onChange = () => {} }) {
+function Menu({ placement,offset,children, item = [], onChange = () => {} }) {
     const [history, setHistory] = useState([{ data: item }]); // du lieu cua Menu cap hien tai
     const current = history[history.length - 1];
     const menu = useRef();
@@ -59,8 +59,8 @@ function Menu({ children, item = [], onChange = () => {} }) {
             hideOnClick={true}
             interactive
             delay={[0, 800]}
-            offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
-            placement="bottom-end"
+            offset={offset} // chinh ben trai / chieu cao so vs ban dau
+            placement={placement}
             render={renderResult}
         >
             {children}
