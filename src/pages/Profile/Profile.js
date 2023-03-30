@@ -24,6 +24,7 @@ import {
     faVenus,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
+import Menu from '~/component/Popper/Menu';
 import { faFlag } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CreatePost from '~/component/CreatePost';
@@ -31,9 +32,9 @@ import Post from '~/component/Post';
 import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
-import Menu from '~/component/Popper/Menu';
+
 import { isImage } from '~/utils/validator';
+import { setDoc } from 'firebase/firestore';
 const cx = classNames.bind(styles);
 
 const OPTIONS = [
@@ -94,17 +95,14 @@ const OPTIONS = [
 ];
 function Profile() {
     const { id } = useParams();
-    const { user, userData, handleAccept, handleDecline, unFriend } = UserAuth();
+    const { user, userData, handleAccept, handleDecline, unFriend,fileUpload } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
-    const [pageUser, setPageUser] = useState(undefined);
     const [file, setFile] = useState();
+    const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
-    const storage = getStorage();
-    const metadata = {
-        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
-    };
+   
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
     // const a = Date.now() -userData.user_createdAt.toMillis()
@@ -143,47 +141,13 @@ function Profile() {
             setPageUser(userData);
         }
     }, [id, userData?.user_friendRequests]);
-    // useEffect(() => {
-    //     console.log(file);
-    //     if (file) {
-    //         if (isImage(file)) {
-    //             const storageRef = ref(storage, `images/${file.name}`);
-    //             const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
-    //             uploadTask.on(
-    //                 'state_changed',
-    //                 (snapshot) => {
-    //                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-    //                     console.log('Upload is ' + progress + '% done');
-    //                     switch (snapshot.state) {
-    //                         case 'paused':
-    //                             console.log('Upload is paused');
-    //                             break;
-    //                         case 'running':
-    //                             console.log('Upload is running');
-    //                             break;
-    //                         default:
-    //                             break;
-    //                     }
-    //                 },
-    //                 (error) => {
-    //                     alert(error);
-    //                 },
-    //                 async () => {
-    //                     await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-    //                         updateDoc(doc(db, 'users', user.uid), {
-    //                             user_bg: downloadURL,
-    //                         });
-    //                     });
-    //                 },
-    //             );
-    //         } else {
-    //             setFile(null);
-    //         }
-    //     }
-    // }, [file]);
+
     const handleBgAvatar = (e) => {
+
         const ava = e.target.files[0];
-        setFile(ava);
+        const newNameFile = `${user.uid}_bg` +  ava.name.substring(0, ava.name.indexOf("."));
+        fileUpload(ava,newNameFile)
+    
     };
 
     const handleMenuChange = (menuItem) => {
@@ -239,13 +203,14 @@ function Profile() {
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('infor')}>
                         <div className={cx('section')}>
-                            <Image src="fesf" alt="background-image" className={cx('background-ava')} />
+                            <Image src={pageUser?.user_bg || 'ds'} alt="background-image" className={cx('background-ava')} />
                             {id === user?.uid && (
                                 <>
-                                    <label className={cx('bg-btn', { fail: file === null })} htmlFor="bg">
+                                    <label className={cx('bg-btn')} htmlFor="bg">
                                         <i className="fa-solid fa-pen" />
                                     </label>
-                                    <input onClick={handleBgAvatar} type="file" id="bg" className={cx('d-none')} />
+                                    <input onChange={handleBgAvatar} type="file" id="bg" className={cx('d-none')} />
+                                   
                                 </>
                             )}
                             <div className={cx('represent')}>

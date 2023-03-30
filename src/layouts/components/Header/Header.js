@@ -89,7 +89,6 @@ function Header() {
                 break;
         }
     };
-
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             <div className={cx('inner')}>

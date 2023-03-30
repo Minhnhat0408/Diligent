@@ -138,9 +138,13 @@
   cursor: pointer;
 
 }
-
+.menu-lists{
+  max-height: 350px;
+  overflow-y:scroll ;
+}
 .menu-popper{
   background-color: var(--light-theme);
+ 
   &.dark{
     background-color: var(--dark-theme);
   }

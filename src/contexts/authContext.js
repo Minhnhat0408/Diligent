@@ -27,6 +27,7 @@ import { provider } from '../firebase';
 import { db } from '../firebase';
 import image from '~/assets/images';
 import type from '~/config/typeNotification';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 const UserContext = createContext();
 
@@ -38,6 +39,10 @@ export const AuthContextProvider = ({ children }) => {
     const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
+    const storage = getStorage();
+    const metadata = {
+        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
+    };
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
@@ -68,7 +73,6 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
             setUsersList(data);
-            
         }
 
         if (user?.uid) {
@@ -91,7 +95,7 @@ export const AuthContextProvider = ({ children }) => {
         return signOut(auth);
     };
     const updateProfile = async (data) => {
-        if(window.location.pathname === routes.updateInfo){
+        if (window.location.pathname === routes.updateInfo) {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
                 user_name: data.fullname.trimEnd(),
@@ -102,10 +106,10 @@ export const AuthContextProvider = ({ children }) => {
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
                 user_status: 'online',
                 user_theme: 'light',
-                user_friendRequests:[],
-                user_friends:[],
+                user_friendRequests: [],
+                user_friends: [],
             });
-        }else{
+        } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
                 user_name: data.fullname.trimEnd(),
@@ -114,10 +118,8 @@ export const AuthContextProvider = ({ children }) => {
                 user_address: data.address.trimEnd(),
                 user_bio: data.bio.trimEnd(),
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-        
             });
         }
-        
     };
 
     const googleSignIn = async () => {
@@ -203,15 +205,15 @@ export const AuthContextProvider = ({ children }) => {
     };
     const unFriend = async (friendData) => {
         const deleteFr = userData.user_friends.filter((friend) => {
-            return friend.id === friendData.id
-        })
-        
+            return friend.id === friendData.id;
+        });
+
         await updateDoc(doc(db, 'users', user.uid), {
             user_friends: arrayRemove({
                 id: deleteFr[0].id,
                 ava: deleteFr[0].ava,
                 name: deleteFr[0].name,
-                time: deleteFr[0].time
+                time: deleteFr[0].time,
             }),
         });
         await updateDoc(doc(db, 'users', friendData.id), {
@@ -219,15 +221,46 @@ export const AuthContextProvider = ({ children }) => {
                 id: friendData.data.id,
                 ava: friendData.data.ava,
                 name: friendData.data.name,
-                time: friendData.data.time
+                time: friendData.data.time,
             }),
         });
-    }
+    };
+    const fileUpload = (file,name) => {
+        const storageRef = ref(storage, `images/${name}`);
+        const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
+        uploadTask.on(
+            'state_changed',
+            (snapshot) => {
+                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                console.log('Upload is ' + progress + '% done');
+                switch (snapshot.state) {
+                    case 'paused':
+                        console.log('Upload is paused');
+                        break;
+                    case 'running':
+                        console.log('Upload is running');
+                        break;
+                    default:
+                        break;
+                }
+            },
+            (error) => {
+                alert(error);
+            },
+            async () => {
+                await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                    updateDoc(doc(db, 'users', user.uid), {
+                        user_bg: downloadURL,
+                    });
+                });
+            },
+        );
+    };
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
             onSnapshot(query(collection(db, 'users'), where('user_status', '==', 'online')), (docs) => {
                 setCountUser(docs.docs.length);
-                console.log('some user online offline')
+                console.log('some user online offline');
             });
 
             if (currentUser) {
@@ -256,7 +289,6 @@ export const AuthContextProvider = ({ children }) => {
                 const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 setUserData(docdata.data());
                 setUser(currentUser);
-                
             } else {
                 setUser(null);
             }
@@ -276,6 +308,7 @@ export const AuthContextProvider = ({ children }) => {
         userData,
         notifications,
         handleReadNoti,
+        fileUpload,
         handleDecline,
         handleAccept,
         unFriend,
