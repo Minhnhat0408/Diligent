@@ -5,7 +5,6 @@ import {
     faCamera,
     faFaceSmile,
     faImage,
-    faPen,
     faUserTag,
     faVideo,
     faVideoCamera,
@@ -26,15 +25,16 @@ const cx = classNames.bind(styles);
 
 function CreatePost({ avatar }) {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const {userData} = UserAuth();
+    const { userData } = UserAuth();
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
 
+    //Xử lí khi đóng create box
     const handleClickCloseBox = () => {
         setCreateBoxVisible(false);
         handleDeleteImage();
-        handleCategoryClick('Choose category');
+        setSelectedCategories([]);
     };
 
     const createBoxRef = useRef(null);
@@ -80,24 +80,42 @@ function CreatePost({ avatar }) {
     };
 
     //Xử lí khi chọn thể loại bài đăng
-    const [selectedCategory, setSelectedCategory] = useState(null);
+    const [selectedCategories, setSelectedCategories] = useState([]);
 
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(category);
+    const handleAddCategory = (value) => {
+        if (selectedCategories.length < 5 && !selectedCategories.includes(value)) {
+            setSelectedCategories([...selectedCategories, value]);
+        } else {
+            return;
+        }
     };
+
+    const handleDeleteCategory = (value) => {
+        setSelectedCategories(selectedCategories.filter((category) => category !== value));
+    };
+
+    console.log(selectedCategories);
 
     //Nếu người dùng chưa đăng nhập thì để avatar mặc định
     if (avatar == undefined) {
         avatar = image.userUndefined;
     }
 
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
-                    <div className={cx('create-box')} style={{ height: imagePreview && '628px' }}>
+                    <div
+                        className={cx('create-box')}
+                        style={{
+                            height:
+                                (imagePreview && selectedCategories.length > 0 && '658px') ||
+                                (imagePreview && selectedCategories.length == 0 && '628px') ||
+                                (selectedCategories.length > 0 && '458px'),
+                        }}
+                    >
                         <div className={cx('header')}>
                             <div></div>
                             <h1 className={cx('title')}>Create post</h1>
@@ -105,78 +123,82 @@ function CreatePost({ avatar }) {
                                 <FontAwesomeIcon icon={faXmark} />
                             </div>
                         </div>
-    
+
                         <hr />
-    
+
                         <div className={cx('body')}>
                             <div className={cx('info')}>
-                                <Image
-                                    className={cx('avatar')}
-                                    alt='ava'
-                                    src={userData.user_avatar}
-                                />
+                                <Image className={cx('avatar')} alt="ava" src={userData.user_avatar} />
                                 <Tippy
-                                placement="bottom"
-                                trigger="click"
-                                interactive={true}
-                                theme="light"
-                                content={
-                                    <div className={cx('categories')}>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleCategoryClick('Japanese')}
-                                        >
-                                            <p>Japanese</p>
+                                    placement="bottom"
+                                    trigger="click"
+                                    interactive={true}
+                                    theme="light"
+                                    content={
+                                        <div className={cx('categories')}>
+                                            <div
+                                                className={cx('category-item')}
+                                                onClick={() => handleAddCategory('Japanese')}
+                                            >
+                                                <p>Japanese</p>
+                                            </div>
+                                            <div
+                                                className={cx('category-item')}
+                                                onClick={() => handleAddCategory('English')}
+                                            >
+                                                <p>English</p>
+                                            </div>
+                                            <div
+                                                className={cx('category-item')}
+                                                onClick={() => handleAddCategory('Korean')}
+                                            >
+                                                <p>Korean</p>
+                                            </div>
+                                            <div
+                                                className={cx('category-item')}
+                                                onClick={() => handleAddCategory('Chinese')}
+                                            >
+                                                <p>Chinese</p>
+                                            </div>
+                                            <div
+                                                className={cx('category-item')}
+                                                onClick={() => handleAddCategory('French')}
+                                            >
+                                                <p>French</p>
+                                            </div>
                                         </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleCategoryClick('English')}
-                                        >
-                                            <p>English</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleCategoryClick('Korean')}
-                                        >
-                                            <p>Korean</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleCategoryClick('Chinese')}
-                                        >
-                                            <p>Chinese</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleCategoryClick('French')}
-                                        >
-                                            <p>French</p>
+                                    }
+                                >
+                                    <div>
+                                        <h5 className={cx('username')}>{userData.user_name}</h5>
+                                        <div className={cx('category')}>
+                                            <p>Choose category</p>
+                                            <i className="fa-solid fa-chevron-right"></i>
                                         </div>
                                     </div>
-                                }
-                            >
-                                <div>
-                                    <h5 className={cx('username')}>{userData.user_name}</h5>
-                                    <div className={cx('category')}>
-                                        {selectedCategory ? (
-                                            <p>{selectedCategory}</p>
-                                        ) : (
-                                            <>
-                                                <p>Choose category</p>
-                                            </>
-                                        )}
-                                        <i className="fa-solid fa-chevron-right"></i>
-                                    </div>
-                                </div>
-                            </Tippy>
+                                </Tippy>
                             </div>
                             <textarea placeholder="What's on your mind?" className={cx('input')} />
                             {imagePreview && (
                                 <div className={cx('add-img')}>
                                     <img src={imagePreview} alt="preview" className={cx('your-img')} />
-                                    <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteImage} />
+                                    <FontAwesomeIcon
+                                        icon={faXmark}
+                                        className={cx('delete')}
+                                        onClick={handleDeleteImage}
+                                    />
                                 </div>
                             )}
+
+                            <ul className={cx('selected-category')}>
+                                {selectedCategories.map((category, index) => (
+                                    <li key={index} onClick={() => handleDeleteCategory(category)}>
+                                        <p>{category}</p>
+                                        <FontAwesomeIcon icon={faXmark} />
+                                    </li>
+                                ))}
+                            </ul>
+
                             <div className={cx('options')}>
                                 <h4 className={cx('title')}>Add to your post</h4>
                                 <div className={cx('option')}>
@@ -190,27 +212,26 @@ function CreatePost({ avatar }) {
                                         onChange={handleImageChange}
                                         key={counter}
                                     />
-    
+
                                     <FontAwesomeIcon icon={faVideo} className={cx('video')} />
                                     <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
                                     <FontAwesomeIcon icon={faFaceSmile} className={cx('emotion')} />
                                 </div>
                             </div>
                         </div>
-    
+
                         <button className={cx('upload')}>Upload</button>
                     </div>
                 </div>
-
             )}
 
             <div className={cx('header')}>
-                <i className="fa-light fa-pen" ></i>
+                <i className="fa-light fa-pen"></i>
                 <h5 className={cx('header-title')}>Create Post</h5>
             </div>
 
             <div className={cx('input')}>
-                <Image className={cx('avatar')} src={userData.user_avatar} alt='avatar' />
+                <Image className={cx('avatar')} src={userData.user_avatar} alt="avatar" />
                 <textarea placeholder="What's on your mind?" onClick={handleClickCreateBox}></textarea>
             </div>
 

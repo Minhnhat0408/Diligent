@@ -8,7 +8,19 @@ import { doc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 const cx = classNames.bind(styles);
 
-function Story() {
+function Story({ scale, posX, posY }) {
+    //demo
+    const story = [
+        {
+            color: 'white',
+            backgroundColor: 'linear-gradient(to bottom, #DECBA4, #3E5151)',
+            positionX: posX,
+            positionY: posY,
+            scale: 1,
+            addText: 'test mot ti',
+        },
+    ];
+
     return (
         <div className={cx('wrapper')}>
             <div className={cx('sidebar')}>
@@ -44,8 +56,7 @@ function Story() {
             </div>
 
             <div className={cx('display')}>
-                
-                <div className={cx('content')}>
+                <div className={cx('content')} style={{ backgroundImage: story[0].backgroundColor }}>
                     <div className={cx('progress')}></div>
                     <div className={cx('info')}>
                         <Image
@@ -58,6 +69,23 @@ function Story() {
                             <p className={cx('time')}>2 giờ</p>
                         </div>
                     </div>
+                    {story[0].addText && (
+                        <div
+                            className={cx('message')}
+                            style={{
+                                color: story[0].color,
+                                transform: `translate(${story[0].positionX}px, ${story[0].positionY}px)`,
+                            }}
+                        >
+                            {story[0].addText}
+                        </div>
+                    )}
+                    <Image
+                        src="https://scontent.fhan15-2.fna.fbcdn.net/v/t39.30808-6/338402109_547996410777470_540667616731139081_n.jpg?_nc_cat=1&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=MLlc3TMH3CMAX9meXbF&_nc_ht=scontent.fhan15-2.fna&oh=00_AfAo1OK1BfsQmWKF8vqN27IXyUMo35p7CMpSZrhumjOQeg&oe=6429FF80"
+                        alt="image story"
+                        className={cx('image')}
+                        style={{ transform: `scale(${story[0].scale})` }}
+                    />
                 </div>
 
                 <div className={cx('react')}>

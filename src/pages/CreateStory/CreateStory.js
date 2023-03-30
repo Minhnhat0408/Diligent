@@ -24,6 +24,25 @@ const colors = [
     'sienna',
 ];
 
+const backgroundColors = [
+    'linear-gradient(120deg, #d4fc79 0%, #96e6a1 100%)',
+    'linear-gradient(to bottom, #DECBA4, #3E5151)',
+    'linear-gradient(to bottom, #8360c3, #2ebf91)',
+    'linear-gradient(to bottom, #8e2de2, #4a00e0)',
+    'linear-gradient(to bottom, #fffbd5, #b20a2c)',
+    'linear-gradient(to bottom, #fc5c7d, #6a82fb)',
+    'linear-gradient(to bottom, #c6ffdd, #fbd786, #f7797d)',
+    'linear-gradient(to bottom, #00b4db, #0083b0)',
+    'linear-gradient(to bottom, #434343 0%, black 100%)',
+    'linear-gradient(-20deg, #00cdac 0%, #8ddad5 100%)',
+    'linear-gradient(to bottom, #0f0c29, #302b63, #24243e)',
+    'linear-gradient(to bottom, #00b09b, #96c93d)',
+    'linear-gradient(to bottom, rgb(242, 112, 156), rgb(255, 148, 114))',
+    'linear-gradient( 109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% )',
+    'linear-gradient(25deg,#d64c7f,#ee4758 50%)',
+    'linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% )',
+]
+
 function CreateStory() {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
@@ -116,13 +135,13 @@ function CreateStory() {
     }, []);
 
     const backgroundColorItems = useMemo(() => {
-        return colors.map((color) => (
+        return backgroundColors.map((backgroundColor) => (
             <div
-            key={color}
-            className={cx('item', color)}
-            style={{ backgroundColor: color }}
+            key={backgroundColor}
+            className={cx('item', backgroundColor)}
+            style={{ backgroundImage: backgroundColor }}
             onClick={() => {
-                handleClickBackGroundColor(color);
+                handleClickBackGroundColor(backgroundColor);
             }}
             ></div>
         ));
@@ -224,7 +243,7 @@ function CreateStory() {
                         {/* <h1 className={cx('header')}>Preview</h1> */}
 
                         <div className={cx('preview')}>
-                            <div className={cx('image-wrap')} style={{ backgroundColor: backgroundColor }}>
+                            <div className={cx('image-wrap')} style={{ backgroundImage: backgroundColor }}>
                                 {addText && (
                                     <div
                                         className={cx('message')}
@@ -254,7 +273,7 @@ function CreateStory() {
                         {/* <h1 className={cx('header')}>Preview</h1> */}
 
                         <div className={cx('preview')}>
-                            <div className={cx('image-wrap')} style={{ backgroundColor: backgroundColor }}>
+                            <div className={cx('image-wrap')} style={{ backgroundImage: backgroundColor }}>
                                 {addText && (
                                     <div
                                         className={cx('message')}

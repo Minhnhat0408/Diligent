@@ -2,7 +2,7 @@ $color-text: var(--text-color);
 $color-blue: var(--primary-light);
 $color-video: #e50202;
 $color-photo: #10d876;
-$color-camera: #fe9431;
+$color-camera: #fe9431;body
 
 .wrapper {
     background-color: var(--light-theme);
@@ -228,6 +228,33 @@ $color-camera: #fe9431;
             border: none;
             outline: none;
             resize: none;
+        }
+
+        .selected-category {
+            margin-top: 8px;
+            display: flex;
+            flex-direction: row;
+            li {
+                padding: 1px 8px;
+                margin-right: 4px;
+                border: 1px solid #ccc;
+                border-radius: 16px;
+                list-style-type: none;
+                font-size: 1.4rem;
+                color: var(--text-color);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                p {
+                    margin-right: 4px;
+                }
+
+                &:hover {
+                    cursor: pointer;
+                    background-color: rgba(0, 0, 0, 0.06);
+                }
+            }
         }
 
         .options {
