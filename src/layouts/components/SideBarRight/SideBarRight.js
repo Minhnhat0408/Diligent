@@ -18,7 +18,7 @@ function SideBarRight() {
     console.log(userData)
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
-            {user ? (
+            {user && userData ? (
                 <>
                     {(userData?.user_friendRequests.length !== 0) ? (
                         <div className={cx('menu-wrapper')}>
