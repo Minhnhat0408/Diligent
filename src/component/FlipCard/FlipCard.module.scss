@@ -19,13 +19,6 @@
     transform: translateZ(40px) scale(0.90);
   }
   
-  .bgfade {
-    position: absolute;
-    right: 0;
-    bottom: 0;left: 0;
-    height: 200px;
-    background: linear-gradient(to bottom, rgba(0,0,0,0) 20%,rgba(0,0,0,.8) 90%);
-  }
   
   .card-tp {
     width: 100%;

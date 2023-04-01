@@ -109,12 +109,12 @@ function CreatePost({ avatar }) {
     
                         <hr />
     
-                        <div className={cx('body')}>
+                        <div className={cx('body',  { dark: context.theme === 'dark' })}>
                             <div className={cx('info')}>
                                 <Image
                                     className={cx('avatar')}
                                     alt='ava'
-                                    src={userData.user_avatar}
+                                    src={userData?.user_avatar}
                                 />
                                 <Tippy
                                 placement="bottom"
@@ -211,7 +211,7 @@ function CreatePost({ avatar }) {
             </div>
 
             <div className={cx('input')}>
-                <Image className={cx('avatar')} src={userData.user_avatar} alt='avatar' />
+                <Image className={cx('avatar')} src={userData?.user_avatar} alt='avatar' />
                 <textarea placeholder="What's on your mind?" onClick={handleClickCreateBox}></textarea>
             </div>
 

@@ -104,6 +104,7 @@ $color-camera: #fe9431;
     &.dark .options {
         color: var(--text-color-dark);
     }
+    
     .options {
         display: flex;
         align-items: center;
@@ -236,7 +237,9 @@ $color-camera: #fe9431;
             outline: none;
             resize: none;
         }
-
+        &.dark .options {
+            border:none
+        }
         .options {
             display: flex;
             align-items: center;
@@ -244,7 +247,7 @@ $color-camera: #fe9431;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 10px;
-
+            
             label {
                 cursor: pointer;
             }
