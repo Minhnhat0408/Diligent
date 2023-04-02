@@ -1,10 +1,9 @@
 import isEmail from 'validator/lib/isEmail';
 import isStrongPassword from 'validator/lib/isStrongPassword';
-import isLength from 'validator/lib/isLength';
+
 import equals from 'validator/lib/equals';
 import isMobilePhone from 'validator/lib/isMobilePhone';
-import isAlpha from 'validator/lib/isAlpha';
-import { useState } from 'react';
+
 import isAfter from 'validator/lib/isAfter';
 function isNotEmpty(obj) {
     return !!obj && obj.trim();

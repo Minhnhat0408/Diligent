@@ -12,7 +12,9 @@ function HeadSideLayout({children}) {
     <div className={cx('wrapper')}>
       <Header />
       <div className={cx('container')}>
-        <div className={cx('content',{'dark':context.theme === 'dark'})}>{children}</div>
+        <div className={cx('content',{'dark':context.theme === 'dark'})}>
+          {children}
+          </div>
         <SideBarRight />
       </div>
     </div>

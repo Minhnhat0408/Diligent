@@ -33,8 +33,7 @@ import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
 
-import { isImage } from '~/utils/validator';
-import { setDoc } from 'firebase/firestore';
+
 const cx = classNames.bind(styles);
 
 const OPTIONS = [
@@ -97,7 +96,6 @@ function Profile() {
     const { id } = useParams();
     const { user, userData, handleAccept, handleDecline, unFriend,fileUpload } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
-    const [file, setFile] = useState();
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
     const context = useContext(ThemeContext);
@@ -146,7 +144,8 @@ function Profile() {
 
         const ava = e.target.files[0];
         const newNameFile = `${user.uid}_bg` +  ava.name.substring(0, ava.name.indexOf("."));
-        fileUpload(ava,newNameFile)
+        
+        fileUpload(ava,newNameFile,true)
     
     };
 

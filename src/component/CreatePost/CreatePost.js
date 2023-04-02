@@ -5,6 +5,7 @@ import {
     faCamera,
     faFaceSmile,
     faImage,
+    faImages,
     faPen,
     faUserTag,
     faVideo,
@@ -22,6 +23,8 @@ import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 import Image from '../Image';
 import Button from '../Button';
+import { isImage } from '~/utils/validator';
+
 
 const cx = classNames.bind(styles);
 
@@ -34,50 +37,24 @@ function CreatePost({ avatar }) {
 
     const handleClickCloseBox = () => {
         setCreateBoxVisible(false);
-        handleDeleteImage();
         handleCategoryClick('Choose category');
     };
 
-    const createBoxRef = useRef(null);
-
-    useEffect(() => {
-        // add event listener to detect clicks outside of the create-box component
-        const handleClickOutside = (event) => {
-            if (createBoxRef.current && !createBoxRef.current.contains(event.target)) {
-                setCreateBoxVisible(false);
-                handleDeleteImage();
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-
-        // cleanup event listener when component unmounts
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, []);
+    
 
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh
-    const [selectedFile, setSelectedFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
-    const [counter, setCounter] = useState(0);
-
+    const [imagePreview, setImagePreview] = useState([]);
     const handleImageChange = (e) => {
         const file = e.target.files[0];
-        setSelectedFile(file);
-
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            setImagePreview(reader.result);
-            setCounter((prevCounter) => prevCounter + 1);
-        };
-        reader.readAsDataURL(file);
+        if(isImage(file)) {
+            const img  = {file:file,url:URL.createObjectURL(file)};
+            setImagePreview((prev) => [...prev,img])
+        }
+        
     };
-
-    const handleDeleteImage = () => {
-        URL.revokeObjectURL(imagePreview);
-        setSelectedFile(null);
-        setImagePreview(null);
-        setCounter((prevCounter) => prevCounter + 1);
+    console.log(imagePreview,'fefe')
+    const handleDeleteImage = (id) => {
+        setImagePreview(prev => prev.filter((_, index) => index !== id));
     };
 
     //Xử lí khi chọn thể loại bài đăng
@@ -88,9 +65,6 @@ function CreatePost({ avatar }) {
     };
 
     //Nếu người dùng chưa đăng nhập thì để avatar mặc định
-    if (avatar == undefined) {
-        avatar = image.userUndefined;
-    }
 
     const context = useContext(ThemeContext)
     return (
@@ -98,7 +72,7 @@ function CreatePost({ avatar }) {
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
-                    <div className={cx('create-box',{dark:context.theme === 'dark'})} style={{ height: imagePreview && '628px' }}>
+                    <div className={cx('create-box',{dark:context.theme === 'dark'})} >
                         <div className={cx('header')}>
                             <div></div>
                             <h1 className={cx('title')}>Create post</h1>
@@ -108,7 +82,7 @@ function CreatePost({ avatar }) {
                         </div>
     
                         <hr />
-    
+                        {console.log('rerender')}
                         <div className={cx('body',  { dark: context.theme === 'dark' })}>
                             <div className={cx('info')}>
                                 <Image
@@ -120,7 +94,7 @@ function CreatePost({ avatar }) {
                                 placement="bottom"
                                 trigger="click"
                                 interactive={true}
-                                theme="light"
+                        
                                 content={
                                     <div className={cx('categories')}>
                                         <div
@@ -172,29 +146,34 @@ function CreatePost({ avatar }) {
                             </Tippy>
                             </div>
                             <textarea placeholder="What's on your mind?" className={cx('input')} />
-                            {imagePreview && (
-                                <div className={cx('add-img')}>
-                                    <img src={imagePreview} alt="preview" className={cx('your-img')} />
-                                    <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteImage} />
-                                </div>
-                            )}
+                            <div  className={cx('show-img')}>
+                            {imagePreview.length !== 0  && 
+                                (imagePreview.map((img,id) => {
+                                    return (
+                                        <div key={id} className={cx('show-img-content')}>
+                                            <img src={img.url} alt="preview" className={cx('your-img')} />
+                                            <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={() => handleDeleteImage(id)} />
+                                     </div>
+                                    )
+                                }))}
+                            </div>
                             <div className={cx('options')}>
                                 <h4 className={cx('title')}>Add to your post</h4>
                                 <div className={cx('option')}>
                                     <label htmlFor="create-post-img">
-                                        <FontAwesomeIcon icon={faCamera} className={cx('img')} />
+                                        <FontAwesomeIcon icon={faImages} className={cx('img')} />
                                     </label>
                                     <input
                                         type="file"
                                         id="create-post-img"
                                         className={cx('d-none')}
                                         onChange={handleImageChange}
-                                        key={counter}
                                     />
     
                                     <FontAwesomeIcon icon={faVideo} className={cx('video')} />
                                     <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
-                                    <FontAwesomeIcon icon={faFaceSmile} className={cx('emotion')} />
+                            
+                             
                                 </div>
                             </div>
                         </div>

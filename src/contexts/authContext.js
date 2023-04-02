@@ -29,6 +29,7 @@ import image from '~/assets/images';
 import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
+import { RingLoader } from 'react-spinners';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -60,47 +61,45 @@ export const AuthContextProvider = ({ children }) => {
         const data = [];
         const q = query(userRef, orderBy('user_name'));
         async function fetchData() {
-            
-        console.log('fetch user list');
+            console.log('fetch user list');
             const docs = await getDocs(q);
             docs.forEach((doc) => {
-
-                
-                    if (
-                        doc.data().user_friends.some((doc) => {
-                            return doc?.id === user?.uid;
-                        })
-                    ) {
-                        data.push({ id: doc.id, data: doc.data(), friend: true });
-                    } else {
-                        data.push({ id: doc.id, data: doc.data(), friend: false });
-                    }
-              
-               
+                if (
+                    doc.data().user_friends.some((doc) => {
+                        return doc?.id === user?.uid;
+                    })
+                ) {
+                    data.push({ id: doc.id, data: doc.data(), friend: true });
+                } else {
+                    data.push({ id: doc.id, data: doc.data(), friend: false });
+                }
             });
             setUsersList(data);
         }
-        if(user?.uid) {
+        if (user?.uid) {
             fetchData();
         }
     }, [countUser, userData?.user_friendRequests]);
 
     useEffect(() => {
-        const data = [];
-        const q = query(userRef, orderBy('user_name'));
-        async function fetchData() {
-            
-        console.log('fetch user list first time');
-            const docs = await getDocs(q);
-            docs.forEach((doc) => {
-                data.push({id: doc.id, data: doc.data()})
-               
-            });
-            setUsersList(data);
-        }
-  
+        console.log(user)
+        if (!!user) {
+         
+            const data = [];
+            const q = query(userRef, orderBy('user_name'));
+            async function fetchData() {
+                console.log('fetch user list first time');
+                const docs = await getDocs(q);
+                docs.forEach((doc) => {
+                    data.push({ id: doc.id, data: doc.data() });
+                });
+                setUsersList(data);
+            }
+
             fetchData();
-    }, [])
+        }
+
+    }, []);
     const signIn = async (email, password) => {
         const newUser = await signInWithEmailAndPassword(auth, email, password);
         return updateDoc(doc(db, 'users', newUser.user.uid), {
@@ -116,23 +115,20 @@ export const AuthContextProvider = ({ children }) => {
     };
     const updateProfile = async (data) => {
         if (window.location.pathname === routes.updateInfo) {
-            console.log(user,user?.uid)
-            await updateDoc(
-                doc(db, 'users', user.uid),
-                {
-                    user_dob: data.dob,
-                    user_name: data.fullname.trimEnd(),
-                    user_gender: data.gender,
-                    user_phone: data.phone.trimEnd(),
-                    user_address: data.address.trimEnd(),
-                    user_bio: data.bio.trimEnd(),
-                    user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-                    user_status: 'online',
-                    user_theme: 'light',
-                    user_friendRequests: [],
-                    user_friends: [],
-                },
-            );
+            console.log(user, user?.uid);
+            await updateDoc(doc(db, 'users', user.uid), {
+                user_dob: data.dob,
+                user_name: data.fullname.trimEnd(),
+                user_gender: data.gender,
+                user_phone: data.phone.trimEnd(),
+                user_address: data.address.trimEnd(),
+                user_bio: data.bio.trimEnd(),
+                user_avatar: data.avatar || user?.photoURL || image.userUndefined,
+                user_status: 'online',
+                user_theme: 'light',
+                user_friendRequests: [],
+                user_friends: [],
+            });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
@@ -249,7 +245,8 @@ export const AuthContextProvider = ({ children }) => {
             }),
         });
     };
-    const fileUpload = (file, name) => {
+    console.log('auth rerender')
+    const fileUpload = (file, name,bg_upload = false) => {
         const storageRef = ref(storage, `images/${name}`);
         const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
         uploadTask.on(
@@ -273,9 +270,15 @@ export const AuthContextProvider = ({ children }) => {
             },
             async () => {
                 await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    updateDoc(doc(db, 'users', user.uid), {
-                        user_bg: downloadURL,
-                    });
+                    if(bg_upload) {
+                        updateDoc(doc(db, 'users', user.uid), {
+                            user_bg: downloadURL,
+                        });
+                    }else{
+                        return downloadURL
+                    }
+                   
+                  
                 });
             },
         );
@@ -292,9 +295,9 @@ export const AuthContextProvider = ({ children }) => {
                 await updateDoc(doc(userRef, currentUser.uid), {
                     user_status: 'online',
                 });
-                const docdata = await getDoc(doc(db, 'users', currentUser.uid));
-                setUserData(docdata.data());
-                console.log('helllo')
+                // const docdata = await getDoc(doc(db, 'users', currentUser.uid));
+                // setUserData(docdata.data());
+                // console.log('helllo');
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log('data of user change');
                     setUserData(doc.data());
@@ -314,13 +317,15 @@ export const AuthContextProvider = ({ children }) => {
                         setNotifications({ data: data1, unread: readNoti });
                     },
                 );
-                
-      
             } else {
                 setUser(null);
             }
 
-            setLoading(false);
+            // proximate the loading time
+            setTimeout(() => {
+                setLoading(false);
+            },1000)
+     
         });
     };
 
@@ -346,7 +351,11 @@ export const AuthContextProvider = ({ children }) => {
         updateProfile,
     };
 
-    return <UserContext.Provider value={value}>{!loading && children}</UserContext.Provider>;
+    return <UserContext.Provider value={value}>{loading ?(
+        <div className="pop-up loader">
+            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+        </div>
+    ) :children}</UserContext.Provider>;
 };
 
 export const UserAuth = () => {

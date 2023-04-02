@@ -15,7 +15,7 @@ const cx = classNames.bind(styles);
 function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
-    console.log(userData)
+
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             {user && userData ? (

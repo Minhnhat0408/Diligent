@@ -10,14 +10,13 @@ import Button from '~/component/Button';
 import { RingLoader } from 'react-spinners';
 import validator from '~/utils/validator';
 import { faAddressBook } from '@fortawesome/free-regular-svg-icons';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { ThemeContext } from '~/contexts/Context';
-import Image from '~/component/Image';
+
 const cx = classNames.bind(styles);
 
 function UpdateProfile() {
-    const { userData } = UserAuth();
+    const { userData, user, fileUpload } = UserAuth();
 
     const defaultValidate = {
         fullname: false,
@@ -44,13 +43,9 @@ function UpdateProfile() {
     const context = useContext(ThemeContext);
     const handleAvatar = (e) => {
         const ava = e.target.files[0];
-        ava.preview = URL.createObjectURL(ava)
-        console.log(ava)
+        ava.preview = URL.createObjectURL(ava);
+        console.log(ava);
         setFile(ava);
-    };
-    const storage = getStorage();
-    const metadata = {
-        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };
 
     const validateAll = () => {
@@ -96,37 +91,13 @@ function UpdateProfile() {
                 setLoading(true);
 
                 if (file) {
-                    const storageRef = ref(storage, `images/${file.name}`);
-                    const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
-                    uploadTask.on(
-                        'state_changed',
-                        (snapshot) => {
-                            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                            console.log('Upload is ' + progress + '% done');
-                            switch (snapshot.state) {
-                                case 'paused':
-                                    console.log('Upload is paused');
-                                    break;
-                                case 'running':
-                                    console.log('Upload is running');
-                                    break;
-                                default:
-                                    break;
-                            }
-                        },
-                        (error) => {
-                            alert(error);
-                        },
-                        async () => {
-                            await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                                data.avatar = downloadURL;
-                                updateProfile(data).then(() => {
-                                    setLoading(false);
-                                    navigate(routes.home);
-                                });
-                            });
-                        },
-                    );
+                    const newNameFile = `${user.uid}_avatar` + file.name.substring(0, file.name.indexOf('.'));
+                    const url = fileUpload(file, newNameFile);
+                    data.avatar = url;
+                    updateProfile(data).then(() => {
+                        setLoading(false);
+                        navigate(routes.home);
+                    });
                 } else {
                     updateProfile(data).then(() => {
                         setLoading(false);
@@ -208,16 +179,16 @@ function UpdateProfile() {
                         />
                     </div>
 
-
-                    <div className={cx('avatar',{ invalid: validatorMsg.avatar })}>
-                        <label  className={cx('ava-btn')} htmlFor="bg">
+                    <div className={cx('avatar', { invalid: validatorMsg.avatar })}>
+                        <label className={cx('ava-btn')} htmlFor="bg">
                             Avatar
                         </label>
                         <input onChange={handleAvatar} type="file" id="bg" className={cx('d-none')} />
                         <span className={cx('msg')}>{validatorMsg.avatar}</span>
-                      
                     </div>
-                    {file?.preview && (<img className={cx('prev',{ invalid: validatorMsg.avatar })} alt="ava" src={file.preview}/>)}
+                    {file?.preview && (
+                        <img className={cx('prev', { invalid: validatorMsg.avatar })} alt="ava" src={file.preview} />
+                    )}
                 </div>
 
                 <FormInput

@@ -148,7 +148,7 @@ $color-camera: #fe9431;
 
     }
     &.dark .create-box .input{
-        background-color: var(--bg-dark-theme);
+        background-color: transparent;
         color:var(--text-color-dark);
     }
  
@@ -156,12 +156,13 @@ $color-camera: #fe9431;
 
 .create-box {
     width: 500px;
-    height: 428px;
+    
     padding: 10px;
     background-color: #fff;
     box-shadow: 2px 2px 5px #888;
     border-radius: 20px;
-
+max-height: 600px;
+    overflow-y: scroll;
     .header {
         display: flex;
         justify-content: space-between;
@@ -231,11 +232,12 @@ $color-camera: #fe9431;
         .input {
             margin-top: 8px;
             width: 100%;
-            height: 180px;
+            height: 80px;
             font-size: 2rem;
             border: none;
             outline: none;
             resize: none;
+ 
         }
         &.dark .options {
             border:none
@@ -254,6 +256,7 @@ $color-camera: #fe9431;
 
             .title {
                 font-size: 1.6rem;
+                flex: 1;
             }
 
             .option {
@@ -276,6 +279,12 @@ $color-camera: #fe9431;
                 .emotion {
                     color: #f7b928;
                 }
+                .emoji{
+                    position: absolute;
+                    top:80px;
+                    right: 80px;
+    
+                }
             }
         }
     }
@@ -297,20 +306,31 @@ $color-camera: #fe9431;
     display: none;
 }
 
-.add-img {
+.show-img {
     display: flex;
+    overflow-y: scroll;
 
-    .your-img {
-        width: 200px;
-        height: 200px;
-    }
-
-    .delete {
-        margin-left: 4px;
-        cursor: pointer;
-    }
 }
 
+.show-img-content{
+    position: relative;
+    width: 100%;
+    overflow-y: scroll;
+}
+.your-img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+}
+.delete {
+    position: absolute;
+    margin-left: 4px;
+    padding: 10px;
+    border-radius: 50%;
+    right: 5px;
+    background-color: rgba(0,0,0,0.3);
+    cursor: pointer;
+}
 .category-item {
     padding: 4px;
     width: 100%;
