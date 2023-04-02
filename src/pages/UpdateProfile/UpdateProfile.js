@@ -91,8 +91,8 @@ function UpdateProfile() {
                 setLoading(true);
 
                 if (file) {
-                    const newNameFile = `${user.uid}_avatar` + file.name.substring(0, file.name.indexOf('.'));
-                    const url = fileUpload(file, newNameFile);
+                    const newNameFile = `${user.uid}_avatar` + file.name.substring(file.name.indexOf('.'));
+                    const url = await fileUpload(file, newNameFile);
                     data.avatar = url;
                     updateProfile(data).then(() => {
                         setLoading(false);

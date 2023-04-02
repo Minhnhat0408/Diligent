@@ -8,7 +8,7 @@ import { UserAuth } from '~/contexts/authContext';
 const cx = classNames.bind(styles);
 
 function Home() {
-    const { user } = UserAuth();
+    const { user,posts } = UserAuth();
     return (
         <div className={cx('wrapper')}>
                 {/* Phần story  */}
@@ -18,9 +18,9 @@ function Home() {
                     <CreatePost avatar="https://scontent.fhan5-2.fna.fbcdn.net/v/t1.6435-9/51132488_1049848925197144_4209746563502702592_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=09cbfe&_nc_ohc=6jNeyhfww0cAX9bxzni&_nc_ht=scontent.fhan5-2.fna&oh=00_AfDAyCtElTrMPbwWW9z-mT07V8vShL7B6TDQ5VjrdXzNiA&oe=643AA3B8" />
                 )}
                 {/* Hiển thị bài viết */}
-                <Post />
-                <Post />
-                <Post />
+                {posts && posts.map((data,id) =>{
+                    return <Post key={id} data={data}/>
+                })}
         </div>
     );
 }

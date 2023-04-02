@@ -80,6 +80,9 @@ $time-color: #adb5bd;
     font-weight: 400;
 }
 
+.image-holders{
+    display:flex;
+}
 .image {
     margin-top: 20px;
     width: 100%;
@@ -87,6 +90,9 @@ $time-color: #adb5bd;
     border-radius: 10px;
     box-shadow: 0 0 5px #999;
     object-fit: cover;
+}
+.image, .image{
+    margin-right: 10px;
 }
 
 .actions {

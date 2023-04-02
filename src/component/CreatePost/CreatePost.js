@@ -30,7 +30,7 @@ const cx = classNames.bind(styles);
 
 function CreatePost({ avatar }) {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const {userData} = UserAuth();
+    const {userData,fileUpload,createPost} = UserAuth();
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
@@ -64,11 +64,27 @@ function CreatePost({ avatar }) {
         setSelectedCategory(category);
     };
 
-    //Nếu người dùng chưa đăng nhập thì để avatar mặc định
+    //handle post 
+    const textContent = useRef();
+    
+    const handlePost = async () => {
+        console.log(textContent.current.value,imagePreview)
+        try {
+   
+            console.log('promist')
+            const results = await Promise.all(imagePreview.map((img)  =>  fileUpload(img.file,img.file.name)));
+            console.log('Upload completed!', results);
+            await createPost(results
+                ,textContent.current.value)
+          } catch (error) {
+            console.error('Upload failed!', error);
+          }
+    }
+
 
     const context = useContext(ThemeContext)
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}> 
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
@@ -145,7 +161,7 @@ function CreatePost({ avatar }) {
                                 </div>
                             </Tippy>
                             </div>
-                            <textarea placeholder="What's on your mind?" className={cx('input')} />
+                            <textarea placeholder="What's on your mind?" ref={textContent} className={cx('input')} />
                             <div  className={cx('show-img')}>
                             {imagePreview.length !== 0  && 
                                 (imagePreview.map((img,id) => {
@@ -178,7 +194,7 @@ function CreatePost({ avatar }) {
                             </div>
                         </div>
     
-                        <Button primary dark={context.theme === 'dark'} className={cx('upload')}>Upload</Button>
+                        <Button primary dark={context.theme === 'dark'} onClick={handlePost} className={cx('upload')}>Upload</Button>
                     </div>
                 </div>
 

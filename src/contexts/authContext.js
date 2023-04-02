@@ -30,6 +30,7 @@ import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
+import { wait } from '@testing-library/user-event/dist/utils';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -38,6 +39,7 @@ export const AuthContextProvider = ({ children }) => {
     const [userData, setUserData] = useState();
     const [countUser, setCountUser] = useState(0);
     const [notifications, setNotifications] = useState();
+    const [posts,setPosts] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
@@ -82,9 +84,8 @@ export const AuthContextProvider = ({ children }) => {
     }, [countUser, userData?.user_friendRequests]);
 
     useEffect(() => {
-        console.log(user)
+        console.log(user);
         if (!!user) {
-         
             const data = [];
             const q = query(userRef, orderBy('user_name'));
             async function fetchData() {
@@ -98,7 +99,6 @@ export const AuthContextProvider = ({ children }) => {
 
             fetchData();
         }
-
     }, []);
     const signIn = async (email, password) => {
         const newUser = await signInWithEmailAndPassword(auth, email, password);
@@ -245,43 +245,61 @@ export const AuthContextProvider = ({ children }) => {
             }),
         });
     };
-    console.log('auth rerender')
-    const fileUpload = (file, name,bg_upload = false) => {
-        const storageRef = ref(storage, `images/${name}`);
-        const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
-        uploadTask.on(
-            'state_changed',
-            (snapshot) => {
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                console.log('Upload is ' + progress + '% done');
-                switch (snapshot.state) {
-                    case 'paused':
-                        console.log('Upload is paused');
-                        break;
-                    case 'running':
-                        console.log('Upload is running');
-                        break;
-                    default:
-                        break;
-                }
-            },
-            (error) => {
-                alert(error);
-            },
-            async () => {
-                await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                    if(bg_upload) {
+    console.log('auth rerender');
+    const fileUpload = (file, name, bg_upload = false) => {
+        return new Promise((resolve, reject) => {
+            const storageRef = ref(storage, `images/${name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            console.log('Upload is paused');
+                            break;
+                        case 'running':
+                            console.log('Upload is running');
+                            break;
+                        default:
+                            break;
+                    }
+                },
+                (error) => {
+                    reject(error);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    if (bg_upload) {
                         updateDoc(doc(db, 'users', user.uid), {
                             user_bg: downloadURL,
                         });
-                    }else{
-                        return downloadURL
+                    } else {
+                        console.log(downloadURL);
+                        resolve(downloadURL); // resolve the Promise with the downloaded URL
                     }
-                   
-                  
-                });
+                },
+            );
+        });
+    };
+
+    const createPost = async (files, text) => {
+        await addDoc(collection(db, 'posts'), {
+            text: text,
+            files: files,
+            user:{
+                id: user.uid,
+                avatar: userData.user_avatar,
+                name: userData.user_name,
             },
-        );
+            time: serverTimestamp(),
+            like:[],
+            dislike:[],
+            commentNumber:0,
+            latest_comment: {},
+        });
     };
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
@@ -302,6 +320,15 @@ export const AuthContextProvider = ({ children }) => {
                     console.log('data of user change');
                     setUserData(doc.data());
                 });
+                onSnapshot(collection(db, 'posts'), orderBy('time'),
+                (docs) => {
+                    let data1 = [];
+                    console.log('posts change');
+                    docs.forEach((doc) => {
+                        data1.push(doc.data());
+                    });
+                    setPosts(data1);
+                })
                 onSnapshot(
                     query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
                     (docs) => {
@@ -324,8 +351,7 @@ export const AuthContextProvider = ({ children }) => {
             // proximate the loading time
             setTimeout(() => {
                 setLoading(false);
-            },1000)
-     
+            }, 1000);
         });
     };
 
@@ -339,8 +365,10 @@ export const AuthContextProvider = ({ children }) => {
         user,
         userData,
         notifications,
+        posts,
         handleReadNoti,
         fileUpload,
+        createPost,
         handleDecline,
         handleAccept,
         unFriend,
@@ -351,11 +379,17 @@ export const AuthContextProvider = ({ children }) => {
         updateProfile,
     };
 
-    return <UserContext.Provider value={value}>{loading ?(
-        <div className="pop-up loader">
-            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-        </div>
-    ) :children}</UserContext.Provider>;
+    return (
+        <UserContext.Provider value={value}>
+            {loading ? (
+                <div className="pop-up loader">
+                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                </div>
+            ) : (
+                children
+            )}
+        </UserContext.Provider>
+    );
 };
 
 export const UserAuth = () => {

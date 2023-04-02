@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
-import { collection, getDoc, doc, updateDoc, serverTimestamp, addDoc } from 'firebase/firestore';
+import { collection, getDoc, doc, updateDoc, serverTimestamp, addDoc, query, where, getDocs,orderBy } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
@@ -98,6 +98,7 @@ function Profile() {
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
+    const [userPosts,setUserPosts] = useState();
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
    
@@ -135,17 +136,30 @@ function Profile() {
                     }
                 }
             });
+
         } else {
             setPageUser(userData);
         }
+        const q = query(collection(db,'posts'),where('user.id','==',id),orderBy('time','desc'));
+        getDocs(q).then((data) => {
+  
+            console.log(data.docs)
+            const posts = [];
+            data.forEach((doc) => {
+                posts.push(doc.data())
+            })
+            console.log(posts)
+            setUserPosts(posts)
+        })
     }, [id, userData?.user_friendRequests]);
 
-    const handleBgAvatar = (e) => {
+    const handleBgAvatar = async  (e) => {
 
         const ava = e.target.files[0];
-        const newNameFile = `${user.uid}_bg` +  ava.name.substring(0, ava.name.indexOf("."));
-        
-        fileUpload(ava,newNameFile,true)
+
+        const newNameFile = `${user.uid}_bg` +  ava.name.substring(ava.name.indexOf("."));
+        console.log(newNameFile)
+        await fileUpload(ava,newNameFile,true)
     
     };
 
@@ -384,9 +398,9 @@ function Profile() {
 
                     <div className={cx('content')}>
                         {user && <CreatePost />}
-                        <Post />
-                        <Post />
-                        <Post />
+                        {userPosts && userPosts.map((data) => {
+                            return <Post data={data}/>
+                        })}
                     </div>
                     {previewAvatar && (
                         <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
