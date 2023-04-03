@@ -146,13 +146,15 @@ function Profile() {
             console.log(data.docs)
             const posts = [];
             data.forEach((doc) => {
-                posts.push(doc.data())
+                posts.push({id:doc.id,data:doc.data()})
             })
-            console.log(posts)
             setUserPosts(posts)
         })
     }, [id, userData?.user_friendRequests]);
 
+    // useEffect(() => {
+
+    // },[posts])
     const handleBgAvatar = async  (e) => {
 
         const ava = e.target.files[0];
@@ -245,7 +247,7 @@ function Profile() {
                             </div>
                             <div className={cx('stats')}>
                                 <div className={cx('stats_num')}>
-                                    <h4>452</h4>
+                                    <h4>{pageUser.user_postNumber}</h4>
                                     <p>Posts</p>
                                 </div>
                                 <div className={cx('stats_num')}>
@@ -398,8 +400,8 @@ function Profile() {
 
                     <div className={cx('content')}>
                         {user && <CreatePost />}
-                        {userPosts && userPosts.map((data) => {
-                            return <Post data={data}/>
+                        {userPosts && userPosts.map((post) => {
+                            return <Post id={post.id} data={post.data}/>
                         })}
                     </div>
                     {previewAvatar && (

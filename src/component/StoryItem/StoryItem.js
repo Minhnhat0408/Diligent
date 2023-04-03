@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import Image from '../Image';
@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 function StoryItem({ avatar, title, detail, to }) {
     return (
         <Link className={cx('wrapper')} to={to}>
-            {avatar == undefined ? (
+            {avatar === undefined ? (
                 <div className={cx('add')}>
                     <i class="fa-light fa-plus"></i>
                 </div>

@@ -39,7 +39,7 @@ export const AuthContextProvider = ({ children }) => {
     const [userData, setUserData] = useState();
     const [countUser, setCountUser] = useState(0);
     const [notifications, setNotifications] = useState();
-    const [posts,setPosts] = useState();
+    const [posts, setPosts] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
@@ -59,45 +59,58 @@ export const AuthContextProvider = ({ children }) => {
     };
 
     //fetch users list
-    useEffect(() => {
-        const data = [];
-        const q = query(userRef, orderBy('user_name'));
-        async function fetchData() {
-            console.log('fetch user list');
-            const docs = await getDocs(q);
-            docs.forEach((doc) => {
-                if (
-                    doc.data().user_friends.some((doc) => {
-                        return doc?.id === user?.uid;
-                    })
-                ) {
-                    data.push({ id: doc.id, data: doc.data(), friend: true });
-                } else {
-                    data.push({ id: doc.id, data: doc.data(), friend: false });
-                }
-            });
-            setUsersList(data);
-        }
-        if (user?.uid) {
-            fetchData();
-        }
-    }, [countUser, userData?.user_friendRequests]);
+    // useEffect(() => {
+    //     const data = [];
+    //     const q = query(userRef, orderBy('user_name'));
+    //     async function fetchData() {
+    //         console.log('fetch user list');
+    //         const docs = await getDocs(q);
+    //         docs.forEach((doc) => {
+    //             if (
+    //                 doc.data().user_friends.some((doc) => {
+    //                     return doc?.id === user?.uid;
+    //                 })
+    //             ) {
+    //                 data.push({ id: doc.id, data: doc.data(), friend: true });
+    //             } else {
+    //                 data.push({ id: doc.id, data: doc.data(), friend: false });
+    //             }
+    //         });
+    //         setUsersList(data);
+    //     }
+    //     if (user?.uid) {
+    //         fetchData();
+    //     }
+    // }, [countUser, userData?.user_friendRequests]);
 
     useEffect(() => {
-        console.log(user);
+
         if (!!user) {
-            const data = [];
-            const q = query(userRef, orderBy('user_name'));
             async function fetchData() {
+                const data = [];
                 console.log('fetch user list first time');
+                const q = query(userRef, orderBy('user_name'));
                 const docs = await getDocs(q);
                 docs.forEach((doc) => {
                     data.push({ id: doc.id, data: doc.data() });
                 });
                 setUsersList(data);
             }
+            async function fetchPosts() {
+                const data = [];
+                console.log('fetch posts first time');
+                const q = query(collection(db,'posts'), orderBy('time','desc'));
+                const docs = await getDocs(q);
+                docs.forEach((doc) => {
+                    data.push({ id: doc.id, data: doc.data() });
+                });
+                setPosts(data);
+            }
 
             fetchData();
+
+            
+            fetchPosts();
         }
     }, []);
     const signIn = async (email, password) => {
@@ -128,6 +141,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_theme: 'light',
                 user_friendRequests: [],
                 user_friends: [],
+                user_postNumber: 0,
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
@@ -289,25 +303,21 @@ export const AuthContextProvider = ({ children }) => {
         await addDoc(collection(db, 'posts'), {
             text: text,
             files: files,
-            user:{
+            user: {
                 id: user.uid,
                 avatar: userData.user_avatar,
                 name: userData.user_name,
             },
-            time: serverTimestamp(),
-            like:[],
-            dislike:[],
-            commentNumber:0,
+            time: new Date(),
+            like: {count:0,list:[]},
+            dislike: {count:0,list:[]},
+            commentNumber: 0,
             latest_comment: {},
         });
     };
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
-            onSnapshot(query(collection(db, 'users'), where('user_status', '==', 'online')), (docs) => {
-                setCountUser(docs.docs.length);
-                console.log('some user online offline');
-            });
-
+            
             if (currentUser) {
                 setUser(currentUser);
                 await updateDoc(doc(userRef, currentUser.uid), {
@@ -316,19 +326,48 @@ export const AuthContextProvider = ({ children }) => {
                 // const docdata = await getDoc(doc(db, 'users', currentUser.uid));
                 // setUserData(docdata.data());
                 // console.log('helllo');
+                onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
+                    const data = [];
+                    console.log('fetch user list or someone online/offline');
+                    docs.forEach((doc) => {
+                        if (
+                            doc.data().user_friends.some((doc) => {
+                                return doc?.id === user?.uid;
+                            })
+                        ) {
+                            data.push({ id: doc.id, data: doc.data(), friend: true });
+                        } else {
+                            data.push({ id: doc.id, data: doc.data(), friend: false });
+                        }
+                    });
+                    setUsersList(data);
+                });
+                onSnapshot(collection(db, 'posts'), orderBy('time', 'desc'), (docs) => {
+                    let data1 = [];
+                    console.log('posts change');
+                    docs.forEach((doc) => {
+                        if(doc.data().like.list.some((u) => {
+                   
+                            return u.id === currentUser.uid
+                        })){
+                            data1.push({id:doc.id,data:{...doc.data(),react:1}});// 1 mean like
+                        }else if(doc.data().dislike.list.some((u) => {
+                         
+                            return u.id === currentUser.uid
+                        })){
+                            data1.push({id:doc.id,data:{...doc.data(),react:-1}});// -1 mean dislike
+                        }else{
+                            data1.push({id:doc.id,data:{...doc.data(),react:0}});// 0 mean neutral
+                        }
+                       
+                    });
+                    setPosts(data1);
+                });
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log('data of user change');
                     setUserData(doc.data());
                 });
-                onSnapshot(collection(db, 'posts'), orderBy('time'),
-                (docs) => {
-                    let data1 = [];
-                    console.log('posts change');
-                    docs.forEach((doc) => {
-                        data1.push(doc.data());
-                    });
-                    setPosts(data1);
-                })
+                
                 onSnapshot(
                     query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
                     (docs) => {

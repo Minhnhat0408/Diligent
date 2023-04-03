@@ -129,7 +129,13 @@ $time-color: #adb5bd;
                 // color: #0073ff;
                 color: #888;
             }
+            .icon.active {
+ 
+                color: var(--primary);
+            }
         }
+
+
 
         .comment-action {
             .icon {

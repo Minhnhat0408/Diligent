@@ -1,7 +1,8 @@
 const type = {
     addfr: "sent you a friend request.",
     accfr: "accepted your friend request .",
-    react:'reacted to your post.',
+    like:'like your post.',
+    dislike:'dislike your post.',
     comment:'comment on your post.',
     mention:'mentioned you in a comment.',
     reply:'replied to your comment.'

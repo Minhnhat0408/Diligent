@@ -6,6 +6,7 @@ import {
     faFaceSmile,
     faImage,
     faImages,
+    faL,
     faPen,
     faUserTag,
     faVideo,
@@ -24,13 +25,15 @@ import { UserAuth } from '~/contexts/authContext';
 import Image from '../Image';
 import Button from '../Button';
 import { isImage } from '~/utils/validator';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
 
 
 const cx = classNames.bind(styles);
 
-function CreatePost({ avatar }) {
+function CreatePost() {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const {userData,fileUpload,createPost} = UserAuth();
+    const {userData,fileUpload,createPost,user} = UserAuth();
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
@@ -72,10 +75,21 @@ function CreatePost({ avatar }) {
         try {
    
             console.log('promist')
-            const results = await Promise.all(imagePreview.map((img)  =>  fileUpload(img.file,img.file.name)));
-            console.log('Upload completed!', results);
-            await createPost(results
-                ,textContent.current.value)
+            if(imagePreview) {
+                const results = await Promise.all(imagePreview.map((img)  =>  fileUpload(img.file,img.file.name)));
+                console.log('Upload completed!', results);
+                createPost(results
+                    ,textContent.current.value)
+            }else{
+                createPost(null
+                    ,textContent.current.value)
+            }
+       
+            await updateDoc(doc(db,'users',user.uid),{
+                user_postNumber:userData.user_postNumber+1
+            })
+            setCreateBoxVisible(false)
+            setImagePreview([])
           } catch (error) {
             console.error('Upload failed!', error);
           }

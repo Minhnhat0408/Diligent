@@ -22,29 +22,102 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Image from '../Image';
 import getTimeDiff from '~/utils/timeDiff';
+import { arrayRemove, arrayUnion, doc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { UserAuth } from '~/contexts/authContext';
+import routes from '~/config/routes';
+import type from '~/config/typeNotification';
 
 const cx = classNames.bind(styles);
 
-function Post({ data ,...props}) {
+function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
+    const { userData, user } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
-
-    const [isLikeActive, setIsLiveActive] = useState(false);
-    const [isDislikeActive, setIsDislikeActive] = useState(false);
-
-    const handleClickLike = () => {
-        setIsLiveActive(!isLikeActive);
-        setIsDislikeActive(false);
+    console.log(data.react)
+    const handleClickLike = async () => {
+        try {
+            const dis = data.react === -1 ? data.dislike.count -1 : data.dislike.count;
+            await updateDoc(doc(db, 'posts', id), {
+                like: {
+                    count: data.like.count + 1,
+                    list: arrayUnion({
+                        id: user.uid,
+                        name: userData.user_name,
+                        ava: userData.user_avatar,
+                    }),
+                },
+                dislike: {
+                    count: dis,
+                    list: arrayRemove({
+                        id: user.uid,
+                        name: userData.user_name,
+                        ava: userData.user_avatar,
+                    }),
+                },
+            });
+            if(user.uid !== data.user.id) {
+            await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
+                title: type.like,
+                url: routes.post + user.uid,
+                sender: {
+                    id: user.uid,
+                    name: userData.user_name,
+                    avatar: userData.user_avatar,
+                },
+                type: 'like',
+                time: new Date(),
+                read: false,
+            });}
+        } catch (err) {
+            console.log(err);
+        }
     };
 
-    const handleClickDislike = () => {
-        setIsDislikeActive(!isDislikeActive);
-        setIsLiveActive(false);
+    const handleClickDislike = async () => {
+        try {
+            const lik = data.react === 1 ? data.like.count -1 : data.like.count;
+       
+            await updateDoc(doc(db, 'posts', id), {
+                dislike: {
+                    count: lik,
+                    list: arrayUnion({
+                        id: user.uid,
+                        name: userData.user_name,
+                        ava: userData.user_avatar,
+                    }),
+                },
+                like: {
+                    count: data.dislike.count +1,
+                    list: arrayRemove({
+                        id: user.uid,
+                        name: userData.user_name,
+                        ava: userData.user_avatar,
+                    }),
+                },
+            });
+            if(user.uid !== data.user.id) {
+                await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
+                    title: type.dislike,
+                    url: routes.post + user.uid,
+                    sender: {
+                        id: user.uid,
+                        name: userData.user_name,
+                        avatar: userData.user_avatar,
+                    },
+                    type: 'dislike',
+                    time: new Date(),
+                    read: false,
+                });
+            }
+           
+        } catch (err) {
+            console.log(err);
+        }
     };
-
     return (
-        <div {...props} className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {focusPost && (
                 <div className={cx('pop-up')}>
                     <div className={cx('focus', { dark: context.theme === 'dark' })}>
@@ -115,21 +188,26 @@ function Post({ data ,...props}) {
                                 <div className={cx('like-action')}>
                                     <FontAwesomeIcon
                                         icon={faThumbsUp}
-                                        className={cx('icon')}
-                                        onClick={handleClickLike}
-                                        style={{ color: isLikeActive && '#0073ff' }}
+                                        className={cx('icon',{active:data.react === 1})}
+                                        onClick={() => {
+                                            if (data.react !== 1) {
+                                                handleClickLike();
+                                            }
+                                        }}
                                     />
-                                    <p className={cx('nums')}>{data.like.length}</p>
+                                    <p className={cx('nums')}>{data.like.count}</p>
                                 </div>
 
                                 <div className={cx('dislike-action')}>
                                     <FontAwesomeIcon
                                         icon={faThumbsDown}
-                                        className={cx('icon')}
-                                        onClick={handleClickDislike}
-                                        style={{ color: isDislikeActive && '#0073ff' }}
+                                        className={cx('icon',{active:data.react === -1})}
+                                        onClick={() => {
+                                            if (data.react !== -1) {
+                                                handleClickDislike();
+                                        }}}
                                     />
-                                    <p className={cx('nums')}>{data.dislike.length}</p>
+                                    <p className={cx('nums')}>{data.dislike.count}</p>
                                 </div>
 
                                 <div className={cx('comment-action')}>
@@ -196,31 +274,30 @@ function Post({ data ,...props}) {
 
             <p className={cx('content')}>{data.text} </p>
             <div className={cx('image-holders')}>
-            {data.files.map((file) => {
-                return <Image className={cx('image')} alt="post-image" src={file} />;
-            })}
+                {data.files.map((file) => {
+                    return <Image className={cx('image')} alt="post-image" src={file} />;
+                })}
             </div>
 
             <div className={cx('actions')}>
                 <div className={cx('default-action')}>
                     <div className={cx('like-action')}>
-                        <FontAwesomeIcon
-                            icon={faThumbsUp}
-                            className={cx('icon')}
-                            onClick={handleClickLike}
-                            style={{ color: isLikeActive && '#0073ff' }}
-                        />
-                        <p className={cx('nums')}>{data.like.length}</p>
+                        <FontAwesomeIcon icon={faThumbsUp} className={cx('icon',{active:data.react === 1})}
+                                        onClick={() => {
+                                            if (data.react !== 1) {
+                                                handleClickLike();
+                                            }
+                                        }} />
+                        <p className={cx('nums')}>{data.like.count}</p>
                     </div>
 
                     <div className={cx('dislike-action')}>
-                        <FontAwesomeIcon
-                            icon={faThumbsDown}
-                            className={cx('icon')}
-                            onClick={handleClickDislike}
-                            style={{ color: isDislikeActive && '#0073ff' }}
-                        />
-                        <p className={cx('nums')}>{data.dislike.length}</p>
+                        <FontAwesomeIcon icon={faThumbsDown} className={cx('icon',{active:data.react === -1})}
+                        onClick={() => {
+                            if (data.react !== -1) {
+                                handleClickDislike();
+                        }}} />
+                        <p className={cx('nums')}>{data.dislike.count}</p>
                     </div>
 
                     <div className={cx('comment-action')}>
