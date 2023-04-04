@@ -154,12 +154,12 @@ function CreatePost() {
                 <div className={cx('pop-up')}>
                     <div
                         className={cx('create-box',{dark:context.theme === 'dark'})}
-                        style={{
-                            height:
-                                (imagePreview && selectedCategories.length > 0 && '658px') ||
-                                (imagePreview && selectedCategories.length == 0 && '628px') ||
-                                (selectedCategories.length > 0 && '458px'),
-                        }}
+                        // style={{
+                        //     height:
+                        //         (imagePreview && selectedCategories.length > 0 && '658px') ||
+                        //         (imagePreview && selectedCategories.length == 0 && '628px') ||
+                        //         (selectedCategories.length > 0 && '458px'),
+                        // }}
                     >
                         <div className={cx('header')}>
                             <div></div>
@@ -178,7 +178,6 @@ function CreatePost() {
                                     alt='ava'
                                     src={userData?.user_avatar}
                                 />
-                                <Image className={cx('avatar')} alt="ava" src={userData.user_avatar} />
                                 <Tippy
                                 placement="bottom"
                                 trigger="click"
