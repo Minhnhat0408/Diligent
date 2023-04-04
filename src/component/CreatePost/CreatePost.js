@@ -7,6 +7,7 @@ import {
     faImage,
     faImages,
     faL,
+    faPaperclip,
     faPen,
     faUserTag,
     faVideo,
@@ -24,7 +25,7 @@ import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 import Image from '../Image';
 import Button from '../Button';
-import { isImage } from '~/utils/validator';
+import { isImage, isVideo } from '~/utils/validator';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 
@@ -52,9 +53,31 @@ function CreatePost() {
         if(isImage(file)) {
             const img  = {file:file,url:URL.createObjectURL(file)};
             setImagePreview((prev) => [...prev,img])
+        }else{
+            alert('This is not an image')
         }
         
     };
+
+    const handleVideoChange = (e) => {
+        const file = e.target.files[0];
+        if(isVideo(file)) {
+            const video  = {file:file,url:URL.createObjectURL(file)};
+            setImagePreview((prev) => [...prev,video])
+        }else{
+            alert('This is not a video')
+        }
+    }
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        if(!isImage(file) && !isVideo(file)) {
+            const img  = {file:file,url:URL.createObjectURL(file)};
+            setImagePreview((prev) => [...prev,img])
+        }else{
+            alert('This is not a file')
+        }
+    }
     console.log(imagePreview,'fefe')
     const handleDeleteImage = (id) => {
         setImagePreview(prev => prev.filter((_, index) => index !== id));
@@ -199,9 +222,28 @@ function CreatePost() {
                                         className={cx('d-none')}
                                         onChange={handleImageChange}
                                     />
-    
+                                    <label htmlFor="create-post-video">
                                     <FontAwesomeIcon icon={faVideo} className={cx('video')} />
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="create-post-video"
+                                        className={cx('d-none')}
+                                        onChange={handleVideoChange}
+                                    />
+                                    <label htmlFor="create-post-file">
+                                    <FontAwesomeIcon icon={faPaperclip} className={cx('attach')} />
+                                    </label>
+                                    <input
+                                        type="file"
+                                        id="create-post-file"
+                                        className={cx('d-none')}
+                                        onChange={handleFileChange}
+                                    />
                                     <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
+                                   
+                                
+                                  
                             
                              
                                 </div>
@@ -225,17 +267,18 @@ function CreatePost() {
             </div>
 
             <div className={cx('options')}>
+                
+                <div className={cx('option')} onClick={handleClickCreateBox}>
+                    <FontAwesomeIcon icon={faImages} className={cx('option-icon', 'photo')} />
+                    <h5 className={cx('option-title')}>Photo</h5>
+                </div>
                 <div className={cx('option')} onClick={handleClickCreateBox}>
                     <FontAwesomeIcon icon={faVideoCamera} className={cx('option-icon', 'video')} />
                     <h5 className={cx('option-title')}>Video</h5>
                 </div>
                 <div className={cx('option')} onClick={handleClickCreateBox}>
-                    <FontAwesomeIcon icon={faImage} className={cx('option-icon', 'photo')} />
-                    <h5 className={cx('option-title')}>Photo</h5>
-                </div>
-                <div className={cx('option')} onClick={handleClickCreateBox}>
-                    <FontAwesomeIcon icon={faCamera} className={cx('option-icon', 'camera')} />
-                    <h5 className={cx('option-title')}>Feeling/Activity</h5>
+                    <FontAwesomeIcon icon={faPaperclip} className={cx('option-icon', 'attach')} />
+                    <h5 className={cx('option-title')}>File</h5>
                 </div>
             </div>
         </div>

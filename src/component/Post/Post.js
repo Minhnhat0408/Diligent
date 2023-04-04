@@ -22,7 +22,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Image from '../Image';
 import getTimeDiff from '~/utils/timeDiff';
-import { arrayRemove, arrayUnion, doc, updateDoc, addDoc, collection, query, where, setDoc, getDoc, getDocs } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, updateDoc, addDoc, collection, query, where ,getDocs } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
@@ -33,13 +33,12 @@ const cx = classNames.bind(styles);
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user,notifications } = UserAuth();
+    const { userData, user } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
-    console.log(data.react)
+
     const handleClickLike = async () => {
         try {
             const dis = data.react === -1 ? data.dislike.count -1 : data.dislike.count;
-            console.log(dis)
             await updateDoc(doc(db, 'posts', id), {
                 like: {
                     count: data.like.count + 1,
@@ -59,12 +58,12 @@ function Post({ id, data }) {
                 },
             });
             if(user.uid !== data.user.id) {
-            const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('type','==','dislike'))
+            const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('url','==',routes.post +id))
             getDocs(q).then(async(result) => {
                 if(result.docs.length === 0){
                     await addDoc(collection(db,'users',data.user.id,'notifications'),{
                         title: type.like,
-                        url: routes.post + user.uid,
+                        url: routes.post + id,
                         sender: {
                             id: user.uid,
                             name: userData.user_name,
@@ -114,7 +113,7 @@ function Post({ id, data }) {
                 },
             });
             if(user.uid !== data.user.id) {
-                const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('type','==','like'))
+                const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('url','==',routes.post +id))
                 getDocs(q).then(async(result) => {
                     if(result.docs.length === 0){
                         await addDoc(collection(db,'users',data.user.id,'notifications'),{
@@ -150,7 +149,7 @@ function Post({ id, data }) {
                 <div className={cx('pop-up')}>
                     <div className={cx('focus', { dark: context.theme === 'dark' })}>
                         <div className={cx('post')}>
-                            <h3>Sơn's Post</h3>
+                            <h3>{data.user.name.split(' ')[data.user.name.split(' ').length-1]}'s Post</h3>
                             <FontAwesomeIcon
                                 icon={faXmark}
                                 className={cx('esc')}
@@ -207,7 +206,7 @@ function Post({ id, data }) {
                         </div>
 
                         <p className={cx('content')}>{data.text} </p>
-                        {data.files.map((file) => {
+                        {data.files.image.map((file) => {
                             return <Image className={cx('image')} alt="post-image" src={file} />;
                         })}
 
@@ -302,7 +301,7 @@ function Post({ id, data }) {
 
             <p className={cx('content')}>{data.text} </p>
             <div className={cx('image-holders')}>
-                {data.files.map((file) => {
+                {data.files.image.map((file) => {
                     return <Image className={cx('image')} alt="post-image" src={file} />;
                 })}
             </div>

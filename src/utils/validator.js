@@ -16,6 +16,13 @@ export function isImage(obj) {
     return metadata.contentType.includes(obj['type']);
 }
 
+export function isVideo(obj) {
+    const metadata = {
+        contentType: ['video/mp4', 'video/mov', 'video/avi'],
+    };
+    return metadata.contentType.includes(obj['type']);
+}
+
 function signUp({ email, password, confirmPass, name, dob, sex }) {
     const msg = {};
 

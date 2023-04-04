@@ -15,22 +15,25 @@ import UpdateProfile from '~/pages/UpdateProfile/UpdateProfile';
 import HeadSideLayout from '~/layouts/HeadSideLayout';
 import CreateStory  from '~/pages/CreateStory';
 
+import PostPage from '~/pages/PostPage/PostPage';
+
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
     { path: routes.home, component: Home },
     { path: routes.login, component: Login, layout: null },
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story, layout: HeaderOnly },
-    { path: routes.flashcard, component: FlashCard, layout: HeaderOnly },
+    {path: routes.postpage,component:PostPage,layout:HeadSideLayout},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
-    {path: routes.createStory, component: CreateStory, layout: HeaderOnly},
+
     { path: '/*', component: NotFounded, layout: null },
 ];
 
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
-
+    { path: routes.flashcard, component: FlashCard, layout: HeaderOnly },
+    { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: routes.friend, component: Friend },
     { path: routes.chat, component: Chat },
     { path: routes.userUpdate, component: UpdateProfile}
