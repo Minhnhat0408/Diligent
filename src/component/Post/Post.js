@@ -22,7 +22,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Image from '../Image';
 import getTimeDiff from '~/utils/timeDiff';
-import { arrayRemove, arrayUnion, doc, updateDoc, addDoc, collection } from 'firebase/firestore';
+import { arrayRemove, arrayUnion, doc, updateDoc, addDoc, collection, query, where, setDoc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
@@ -33,12 +33,13 @@ const cx = classNames.bind(styles);
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user } = UserAuth();
+    const { userData, user,notifications } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     console.log(data.react)
     const handleClickLike = async () => {
         try {
             const dis = data.react === -1 ? data.dislike.count -1 : data.dislike.count;
+            console.log(dis)
             await updateDoc(doc(db, 'posts', id), {
                 like: {
                     count: data.like.count + 1,
@@ -58,30 +59,45 @@ function Post({ id, data }) {
                 },
             });
             if(user.uid !== data.user.id) {
-            await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
-                title: type.like,
-                url: routes.post + user.uid,
-                sender: {
-                    id: user.uid,
-                    name: userData.user_name,
-                    avatar: userData.user_avatar,
-                },
-                type: 'like',
-                time: new Date(),
-                read: false,
-            });}
+            const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('type','==','dislike'))
+            getDocs(q).then(async(result) => {
+                if(result.docs.length === 0){
+                    await addDoc(collection(db,'users',data.user.id,'notifications'),{
+                        title: type.like,
+                        url: routes.post + user.uid,
+                        sender: {
+                            id: user.uid,
+                            name: userData.user_name,
+                            avatar: userData.user_avatar,
+                        },
+                        type: 'like',
+                        time: new Date(),
+                        read: false,
+                    })
+                }else{
+                    await updateDoc(doc(db, 'users', data.user.id, 'notifications',result.docs[0].id), {
+                        title: type.like,
+                        type: 'like',
+                        time: new Date(),
+                        read: false,
+                    })
+                }
+            })
+           ;}
         } catch (err) {
             console.log(err);
         }
     };
 
+   
+    
     const handleClickDislike = async () => {
         try {
             const lik = data.react === 1 ? data.like.count -1 : data.like.count;
-       
+            console.log(lik)
             await updateDoc(doc(db, 'posts', id), {
                 dislike: {
-                    count: lik,
+                    count: data.dislike.count +1,
                     list: arrayUnion({
                         id: user.uid,
                         name: userData.user_name,
@@ -89,7 +105,7 @@ function Post({ id, data }) {
                     }),
                 },
                 like: {
-                    count: data.dislike.count +1,
+                    count: lik,
                     list: arrayRemove({
                         id: user.uid,
                         name: userData.user_name,
@@ -98,18 +114,30 @@ function Post({ id, data }) {
                 },
             });
             if(user.uid !== data.user.id) {
-                await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
-                    title: type.dislike,
-                    url: routes.post + user.uid,
-                    sender: {
-                        id: user.uid,
-                        name: userData.user_name,
-                        avatar: userData.user_avatar,
-                    },
-                    type: 'dislike',
-                    time: new Date(),
-                    read: false,
-                });
+                const q = query(collection(db,'users',data.user.id,'notifications'),where('sender.id','==',user.uid),where('type','==','like'))
+                getDocs(q).then(async(result) => {
+                    if(result.docs.length === 0){
+                        await addDoc(collection(db,'users',data.user.id,'notifications'),{
+                            title: type.dislike,
+                            url: routes.post + user.uid,
+                            sender: {
+                                id: user.uid,
+                                name: userData.user_name,
+                                avatar: userData.user_avatar,
+                            },
+                            type: 'dislike',
+                            time: new Date(),
+                            read: false,
+                        })
+                    }else{
+                        await updateDoc(doc(db, 'users', data.user.id, 'notifications',result.docs[0].id), {
+                            title: type.dislike,
+                            type: 'dislike',
+                            time: new Date(),
+                            read: false,
+                        })
+                    }
+                })
             }
            
         } catch (err) {

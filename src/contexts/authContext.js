@@ -332,7 +332,7 @@ export const AuthContextProvider = ({ children }) => {
                     docs.forEach((doc) => {
                         if (
                             doc.data().user_friends.some((doc) => {
-                                return doc?.id === user?.uid;
+                                return doc?.id === currentUser.uid;
                             })
                         ) {
                             data.push({ id: doc.id, data: doc.data(), friend: true });
@@ -380,7 +380,7 @@ export const AuthContextProvider = ({ children }) => {
                                 readNoti++;
                             }
                         });
-                        setNotifications({ data: data1, unread: readNoti });
+                        setNotifications({id:doc.id ,data: data1, unread: readNoti });
                     },
                 );
             } else {

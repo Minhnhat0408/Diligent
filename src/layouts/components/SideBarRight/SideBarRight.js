@@ -15,7 +15,7 @@ const cx = classNames.bind(styles);
 function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
-
+    
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             {user && userData ? (
@@ -58,6 +58,7 @@ function SideBarRight() {
                                 <h4 className={cx('menu-header')}>Contacts</h4>
                             </div>
                             {usersList?.map((u) => {
+                                console.log(u)
                                 return (
                                     user.uid !== u.id &&
                                     u.friend && <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />
