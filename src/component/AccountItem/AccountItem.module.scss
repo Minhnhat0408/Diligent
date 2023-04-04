@@ -27,21 +27,28 @@
   flex: 1;
   margin-left: 12px;
   align-items: center;
+  overflow: hidden;
   
 }
 
 .name {
   font-size: 1.4rem;
   font-weight: 500;
-  padding-right: 20px;
   flex:1;
+
+
   span {
     font-size: 1.6rem;
+    white-space: nowrap;
+    overflow: hidden;
+  
   }
 }
 
 .icon{
+  position: absolute;
   font-size: 1rem;
+  right: 16px;
   
   &.online{
     color: var(--online);

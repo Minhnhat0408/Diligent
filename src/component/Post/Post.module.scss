@@ -80,6 +80,9 @@ $time-color: #adb5bd;
     font-weight: 400;
 }
 
+.image-holders{
+    display:flex;
+}
 .image {
     margin-top: 20px;
     width: 100%;
@@ -87,6 +90,9 @@ $time-color: #adb5bd;
     border-radius: 10px;
     box-shadow: 0 0 5px #999;
     object-fit: cover;
+}
+.image, .image{
+    margin-right: 10px;
 }
 
 .actions {
@@ -123,7 +129,13 @@ $time-color: #adb5bd;
                 // color: #0073ff;
                 color: #888;
             }
+            .icon.active {
+ 
+                color: var(--primary);
+            }
         }
+
+
 
         .comment-action {
             .icon {
@@ -161,6 +173,55 @@ $time-color: #adb5bd;
 
 .popper-wrapper {
     background-color: #fff;
-    box-shadow: 0 0 5px #888888;
+    box-shadow: 0 0 5px #ccc;
+}
+
+.focus{
+
+    background-color: var(--light-theme);
+    height: 90%;
+    width: 750px;
+    overflow-y:scroll ;
+    padding: 0 20px 20px 20px;
+    border-radius: 10px;
+    box-shadow: 1px 1px 5px #ccc;
+    color: var(--text-color);
+    transition: all 0.8s;
+    & .header{
+        margin-top: 16px;
+    }
+    &.dark {
+        background-color: var(--dark-theme);
+        box-shadow: none;
+        color: var(--text-color-dark);
+    }
+    &.dark .header .info .username{
+        color:var(--primary)
+    }
+
+    &.dark .post{
+        color: var(--primary);
+    }
+}
+
+.post{
+    height: 60px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    color: var(--primary-light);
+    border-bottom: 1px solid #ccc ;
+    & h3{
+        flex:1;
+        margin-left:26px;
+    }
+    text-align: center;
+    
+}
+
+.esc{
+    font-size: 2.6rem;
+    font-weight: 600;
+    cursor: pointer;
 }
 

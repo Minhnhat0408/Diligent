@@ -9,16 +9,15 @@ import PropTypes from 'prop-types';
 import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
-function Menu({ children, item = [], onChange = () => {} }) {
+function Menu({ placement, offset, children, item = [], onChange = () => {} }) {
     const [history, setHistory] = useState([{ data: item }]); // du lieu cua Menu cap hien tai
     const current = history[history.length - 1];
     const menu = useRef();
     const context = useContext(ThemeContext);
-    useEffect(()=> {
-        setHistory([{data:item}])
-    },[item])
+    useEffect(() => {
+        setHistory([{ data: item }]);
+    }, [item]);
     const renderItem = () => {
-      
         return current.data.map((a, b) => {
             const isParent = !!a.children;
             return (
@@ -47,7 +46,7 @@ function Menu({ children, item = [], onChange = () => {} }) {
 
     const renderResult = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={menu}>
-            <PopperWrapper className={cx('menu-popper',{ [context.theme]: context.theme === 'dark' })}>
+            <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
                 {history.length > 1 && <Header title={current.title} onBack={handleBackMenu} />}
                 <div className={cx('menu-body')}>{renderItem()}</div>
             </PopperWrapper>
@@ -59,8 +58,8 @@ function Menu({ children, item = [], onChange = () => {} }) {
             hideOnClick={true}
             interactive
             delay={[0, 800]}
-            offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
-            placement="bottom-end"
+            offset={offset} // chinh ben trai / chieu cao so vs ban dau
+            placement={placement}
             render={renderResult}
         >
             {children}

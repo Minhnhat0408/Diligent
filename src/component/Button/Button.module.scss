@@ -128,6 +128,13 @@
   min-width: 168px;
   font-size: 18px;
 }
+.xl{
+  min-width: 100px;
+  min-height: 50px;
+  // min-width: 88px // if error in UI
+  padding: 4px 16px;
+  font-size: 1.4rem;
+}
 
 .xs{
   min-width: 50px;

@@ -30,6 +30,7 @@ function Button({
   dark = false,
   theme = false,
   xs= false,
+  xl=false,
   submit = 'button',
   ...passProps
   
@@ -54,6 +55,7 @@ function Button({
     outline,
     small,
     xs,
+    xl,
     large,
     text,
     disabled,

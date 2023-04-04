@@ -10,14 +10,13 @@ import Button from '~/component/Button';
 import { RingLoader } from 'react-spinners';
 import validator from '~/utils/validator';
 import { faAddressBook } from '@fortawesome/free-regular-svg-icons';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
 function UpdateProfile() {
-    const {userData} = UserAuth();
+    const { userData, user, fileUpload } = UserAuth();
 
     const defaultValidate = {
         fullname: false,
@@ -27,7 +26,7 @@ function UpdateProfile() {
         bio: false,
         avatar: false,
     };
-    
+
     const fullname = useRef();
     const dob = useRef();
     const phone = useRef();
@@ -41,26 +40,31 @@ function UpdateProfile() {
     const { updateProfile } = UserAuth();
     const navigate = useNavigate();
     const [gender, setGender] = useState('male');
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     const handleAvatar = (e) => {
         const ava = e.target.files[0];
+        ava.preview = URL.createObjectURL(ava);
+        console.log(ava);
         setFile(ava);
-    };
-    const storage = getStorage();
-    const metadata = {
-        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };
 
     const validateAll = () => {
         console.log(fullname, dob, phone, address);
-        const msg = validator.updateProfile({
+        const dataNeedValid = {
             fullname: fullname.current.value,
             dob: dob.current.value,
             phone: phone.current.value,
             address: address.current.value,
             bio: bio.current.value,
             avatar: file,
-        });
+        };
+        let msg = null;
+        if (window.location.pathname === routes.userUpdate) {
+            msg = validator.updateUserProfile(dataNeedValid);
+        } else {
+            msg = validator.updateProfile(dataNeedValid);
+        }
+
         setValidatorMsg(msg);
         Object.keys(msg).forEach((key) => {
             setValidated((preV) => {
@@ -73,51 +77,28 @@ function UpdateProfile() {
         e.preventDefault();
         setValidated(defaultValidate);
         if (!validateAll()) {
-            const data = {
-                dob: dob.current.value,
-                fullname: fullname.current.value,
-                gender: gender,
-                phone: phone.current.value,
-                address: address.current.value,
-                bio: bio.current.value,
-                avatar: null,
+            let data = {
+                dob: dob.current.value || userData.user_dob,
+                fullname: fullname.current.value || userData.user_name,
+                gender: gender || userData.user_gender,
+                phone: phone.current.value || userData.user_phone,
+                address: address.current.value || userData.user_address,
+                bio: bio.current.value || userData.user_bio,
+                avatar: userData?.user_avatar,
             };
             try {
                 setError('');
                 setLoading(true);
+
                 if (file) {
-                    const storageRef = ref(storage, `images/${file.name}`);
-                    const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
-                    uploadTask.on(
-                        'state_changed',
-                        (snapshot) => {
-                            const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                            console.log('Upload is ' + progress + '% done');
-                            switch (snapshot.state) {
-                                case 'paused':
-                                    console.log('Upload is paused');
-                                    break;
-                                case 'running':
-                                    console.log('Upload is running');
-                                    break;
-                                default:
-                                    break;
-                            }
-                        },
-                        (error) => {
-                            alert(error);
-                        },
-                        async () => {
-                            await getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-                                data.avatar = downloadURL;
-                                updateProfile(data).then(() => {
-                                    setLoading(false);
-                                    navigate(routes.home);
-                                });
-                            });
-                        },
-                    );
-                }else{
+                    const newNameFile = `${user.uid}_avatar` + file.name.substring(file.name.indexOf('.'));
+                    const url = await fileUpload(file, newNameFile);
+                    data.avatar = url;
+                    updateProfile(data).then(() => {
+                        setLoading(false);
+                        navigate(routes.home);
+                    });
+                } else {
                     updateProfile(data).then(() => {
                         setLoading(false);
                         navigate(routes.home);
@@ -131,7 +112,13 @@ function UpdateProfile() {
     };
 
     return (
-        <div className={cx('wrapper',{user:window.location.pathname === routes.userUpdate && userData},{dark:context.theme === 'dark'})}>
+        <div
+            className={cx(
+                'wrapper',
+                { user: window.location.pathname === routes.userUpdate && userData },
+                { dark: context.theme === 'dark' },
+            )}
+        >
             <div className={cx('loading')} style={!loading ? { display: 'none' } : {}}>
                 <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
             </div>
@@ -193,14 +180,15 @@ function UpdateProfile() {
                     </div>
 
                     <div className={cx('avatar', { invalid: validatorMsg.avatar })}>
-                        <input
-                            type="file"
-                            id="avatar"
-                            onChange={handleAvatar}
-                            className={cx('custom-file-input', { selected: file })}
-                        />
+                        <label className={cx('ava-btn')} htmlFor="bg">
+                            Avatar
+                        </label>
+                        <input onChange={handleAvatar} type="file" id="bg" className={cx('d-none')} />
                         <span className={cx('msg')}>{validatorMsg.avatar}</span>
                     </div>
+                    {file?.preview && (
+                        <img className={cx('prev', { invalid: validatorMsg.avatar })} alt="ava" src={file.preview} />
+                    )}
                 </div>
 
                 <FormInput
@@ -230,7 +218,7 @@ function UpdateProfile() {
                     }}
                     className={cx('btn')}
                 >
-                    Sign up
+                    Submit
                 </Button>
             </div>
         </div>

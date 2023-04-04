@@ -4,18 +4,12 @@ import SidebarMenuItems from 'src/layouts/components/SidebarMenuItems';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBoxArchive,
-    faClock,
-    faEnvelope,
-    faGear,
     faIdBadge,
-    faInbox,
     faLightbulb,
-    faMessage,
-    faTv,
     faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext,useState} from 'react';
+import { useContext} from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
@@ -29,7 +23,7 @@ function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const {user} = UserAuth();
-    console.log('hehee')
+
     return (
         <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}

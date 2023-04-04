@@ -37,10 +37,11 @@ function MyComment() {
                 <img
                     src="https://scontent.fhan15-2.fna.fbcdn.net/v/t39.30808-6/318961918_3317632705152230_4867945811344342607_n.jpg?stp=cp6_dst-jpg&_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=LTax3aa44p0AX_o4DQj&_nc_ht=scontent.fhan15-2.fna&oh=00_AfAIK9umaEtYOTkeqBLtPbfHnvGXv1SnKCVwlgwgIGIWqw&oe=641E1201"
                     className={cx('avatar')}
+                    alt='avatar'
                 />
                 <div className={cx('input')}>
                     <textarea placeholder="Write your comment..."></textarea>
-                    <label for="upload">
+                    <label htmlFor="upload">
                         <FontAwesomeIcon icon={faCamera} className={cx('upload-icon')} />
                     </label>
                     <input type="file" id="upload" className={cx('d-none')} onChange={handleImageChange} key={counter} />

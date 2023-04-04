@@ -4,7 +4,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Image from '../Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCircle, faComment, faThumbsUp, faUserFriends } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faComment, faThumbsDown, faThumbsUp, faUserFriends } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
@@ -13,9 +13,11 @@ function Notification({ data,time,...props }) {
     let icon = faUserFriends;
     if(data.type === "comment" || data.type ==="mention" || data.type === "reply"){
         icon = faComment;
-    }else if(data.type === "react"){
-            icon = faThumbsUp
-    }
+    }else if(data.type === "like"){
+        icon = faThumbsUp
+    }else if(data.type === "dislike"){
+        icon = faThumbsDown
+}
  
     return (
         <Link to={data.url} {...props} className={cx('wrapper', { dark: context.theme === 'dark' })}>

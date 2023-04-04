@@ -2,10 +2,6 @@ import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryItem';
 import styles from './Story.module.scss';
 import Image from '~/component/Image';
-import { collection, getDocs } from 'firebase/firestore';
-import { db } from '~/firebase';
-import { doc } from 'firebase/firestore';
-import { useState, useEffect } from 'react';
 const cx = classNames.bind(styles);
 
 function Story({ scale, posX, posY }) {
