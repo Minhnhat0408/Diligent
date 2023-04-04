@@ -140,6 +140,9 @@ $color-camera: #fe9431;body
             .camera {
                 color: $color-camera;
             }
+            .attach{
+                color: pink
+            }
         }
     }
     &.dark .create-box{
@@ -304,15 +307,7 @@ max-height: 600px;
                     color: #1877f2;
                 }
 
-                .emotion {
-                    color: #f7b928;
-                }
-                .emoji{
-                    position: absolute;
-                    top:80px;
-                    right: 80px;
-    
-                }
+        
             }
         }
     }
