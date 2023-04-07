@@ -9,7 +9,7 @@ const cx = classNames.bind(styles);
 
 function Home() {
     const { user,posts } = UserAuth();
-    console.log(posts)
+
     return (
         <div className={cx('wrapper')}>
                 {/* Phần story  */}

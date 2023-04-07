@@ -103,9 +103,6 @@ function Profile() {
         });
     }, [id, userData?.user_friendRequests]);
 
-    // useEffect(() => {
-
-    // },[posts])
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
 

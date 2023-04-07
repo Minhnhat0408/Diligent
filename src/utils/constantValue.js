@@ -1,4 +1,4 @@
-import { faFlag, faUserXmark } from "@fortawesome/free-solid-svg-icons";
+import { faFlag, faLock, faSave, faTrash, faUserXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const CATEGORY_OPTIONS = [
@@ -77,6 +77,77 @@ export const CATEGORY_OPTIONS = [
             ],
         },
         
+    },
+]
+export const USER_POST_OPTIONS = [
+    
+    {
+        icon:<FontAwesomeIcon icon={faTrash} />,
+        title: 'Delete',
+        type: 'delete' 
+    },
+    {
+        icon:<FontAwesomeIcon icon={faSave} />,
+        title: 'Save',
+        type: 'save' 
+    },
+
+]
+export const POST_OPTIONS = [
+    {
+        icon:<FontAwesomeIcon icon={faSave} />,
+        title: 'Save',
+        type: 'save' 
+    },
+    {
+        icon: <FontAwesomeIcon icon={faFlag} />,
+        title: 'Report',
+        children: {
+            title: 'Report',
+            data: [
+                {
+                    type: 'report',
+                    title: 'Fake account',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Harassment/Bully',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Inappropriate post',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    },
+    {
+        icon:<FontAwesomeIcon icon={faLock} />,
+        title: 'Unfollow',
+        type: 'unfollow' 
     },
 ]
 export const PROFILE_OPTIONS = [

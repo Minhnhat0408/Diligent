@@ -10,7 +10,7 @@ import { ThemeContext } from '~/contexts/Context';
 import 'tippy.js/animations/scale.css';
 const cx = classNames.bind(styles);
 
-function Menu({ placement = 'bottom', offset,small = false, children, item = [], onChange = () => {} }) {
+function Menu({ placement = 'bottom', offset,small = false, children, item = [], onClick = () =>{},onChange = () => {} }) {
     const [history, setHistory] = useState([{ data: item }]); // du lieu cua Menu cap hien tai
     const current = history[history.length - 1];
     const menu = useRef();
@@ -30,8 +30,9 @@ function Menu({ placement = 'bottom', offset,small = false, children, item = [],
                             setHistory((prev) => [...prev, a.children]);
                         } else {
                             onChange(a);
-                        
+                          
                         }
+                        onClick(a);
                         console.log(history,a)
                     }}
                 ></MenuItem>

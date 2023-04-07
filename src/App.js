@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import PrivateRoute from './routes/PrivateRoute';
 import { UserAuth } from './contexts/authContext';
 import useUnload from './hooks/useUnload';
+import ScrollToTop from './component/ScrollToTop';
 
 function App() {
     const {logOut} = UserAuth();
@@ -18,7 +19,9 @@ function App() {
     return (
             <Router>
                 <div className="app">
+                    <ScrollToTop/>
                     <Routes>
+                        
                         {publicRoutes.map((route, index) => {
                             const Page = route.component;
                             let Layout = DefaultLayout;
