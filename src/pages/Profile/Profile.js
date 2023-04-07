@@ -63,7 +63,6 @@ function Profile() {
 
     useEffect(() => {
         console.log(user?.uid);
-y
         console.log('rendrererer');
         if (user?.uid !== id) {
             getDoc(doc(db, 'users', id)).then((doc) => {
