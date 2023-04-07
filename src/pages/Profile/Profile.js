@@ -63,7 +63,6 @@ function Profile() {
 
     useEffect(() => {
         console.log(user?.uid);
-y
         console.log('rendrererer');
         if (user?.uid !== id) {
             getDoc(doc(db, 'users', id)).then((doc) => {
@@ -104,9 +103,6 @@ y
         });
     }, [id, userData?.user_friendRequests]);
 
-    // useEffect(() => {
-
-    // },[posts])
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
 

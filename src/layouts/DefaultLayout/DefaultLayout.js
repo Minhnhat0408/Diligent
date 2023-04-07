@@ -15,7 +15,7 @@ function DefaultLayout({ children }) {
             <Header />
             <div className={cx('container')}>
                 <SideBarLeft />
-                <div className={cx('content', { dark: context.theme === 'dark' })}>{console.log('rerender')}{children}</div>
+                <div className={cx('content', { dark: context.theme === 'dark' })}>{children}</div>
                 <SideBarRight />
             </div>
         </div>

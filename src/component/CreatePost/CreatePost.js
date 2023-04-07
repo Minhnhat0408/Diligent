@@ -118,8 +118,10 @@ function CreatePost() {
     const [selectedCategories, setSelectedCategories] = useState([]);
 
     const handleAddCategory = (value) => {
-        if (selectedCategories.length < 5 && !selectedCategories.includes(value)) {
-            setSelectedCategories([...selectedCategories, value]);
+        console.log('fsdafs')
+        if (!selectedCategories.includes(value.title)) {
+            setSelectedCategories([...selectedCategories, value.title]);
+            
         } else {
             return;
         }
@@ -176,15 +178,7 @@ function CreatePost() {
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
-                    <div
-                        className={cx('create-box', { dark: context.theme === 'dark' })}
-                        // style={{
-                        //     height:
-                        //         (imagePreview && selectedCategories.length > 0 && '658px') ||
-                        //         (imagePreview && selectedCategories.length == 0 && '628px') ||
-                        //         (selectedCategories.length > 0 && '458px'),
-                        // }}
-                    >
+                    <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                         <div className={cx('header')}>
                             <div></div>
                             <h1 className={cx('title')}>Create post</h1>
@@ -204,42 +198,7 @@ function CreatePost() {
                                     placement="right"
                                     item={CATEGORY_OPTIONS}
                                     small
-                                    onChange={handleAddCategory}
-                                    // allowHTML={true}
-                                    // content={
-                                    //     <div className={cx('categories')}>
-                                    //         <div
-                                    //             className={cx('category-item')}
-                                    //             onClick={() => handleAddCategory('Japanese')}
-                                    //         >
-                                    //             <p>Japanese</p>
-                                    //         </div>
-                                    //         <div
-                                    //             className={cx('category-item')}
-                                    //             onClick={() => handleAddCategory('English')}
-                                    //         >
-                                    //             <p>English</p>
-                                    //         </div>
-                                    //         <div
-                                    //             className={cx('category-item')}
-                                    //             onClick={() => handleAddCategory('Korean')}
-                                    //         >
-                                    //             <p>Korean</p>
-                                    //         </div>
-                                    //         <div
-                                    //             className={cx('category-item')}
-                                    //             onClick={() => handleAddCategory('Chinese')}
-                                    //         >
-                                    //             <p>Chinese</p>
-                                    //         </div>
-                                    //         <div
-                                    //             className={cx('category-item')}
-                                    //             onClick={() => handleAddCategory('French')}
-                                    //         >
-                                    //             <p>French</p>
-                                    //         </div>
-                                    //     </div>
-                                    // }
+                                    onClick={handleAddCategory}
                                 >
                                     <div>
                                         <h5 className={cx('username')}>{userData.user_name}</h5>
@@ -405,15 +364,15 @@ function CreatePost() {
             <div className={cx('options')}>
                 <div className={cx('option')} onClick={handleClickCreateBox}>
                     <FontAwesomeIcon icon={faImages} className={cx('option-icon', 'photo')} />
-                    <h5 className={cx('option-title')}>Photo</h5>
-                </div>
-                <div className={cx('option')} onClick={handleClickCreateBox}>
-                    <FontAwesomeIcon icon={faVideoCamera} className={cx('option-icon', 'video')} />
-                    <h5 className={cx('option-title')}>Video</h5>
+                    <h5 className={cx('option-title')}>Media</h5>
                 </div>
                 <div className={cx('option')} onClick={handleClickCreateBox}>
                     <FontAwesomeIcon icon={faPaperclip} className={cx('option-icon', 'attach')} />
                     <h5 className={cx('option-title')}>File</h5>
+                </div>
+                <div className={cx('option')} onClick={handleClickCreateBox}>
+                <FontAwesomeIcon icon={faUserTag} className={cx('option-icon','user-tag')} />
+                    <h5 className={cx('option-title')}>Tag</h5>
                 </div>
             </div>
         </div>

@@ -5,7 +5,6 @@ import AccountItem from '~/component/AccountItem';
 import { UserAuth } from '~/contexts/authContext';
 import { ThemeContext } from '~/contexts/Context';
 import FriendItem from '~/layouts/components/FriendItem';
-import Friend from '~/pages/Friend';
 import Image from '~/component/Image';
 import styles from './SideBarRight.module.scss';
 import { Link } from 'react-router-dom';
@@ -58,7 +57,7 @@ function SideBarRight() {
                                 <h4 className={cx('menu-header')}>Contacts</h4>
                             </div>
                             {usersList?.map((u) => {
-                                console.log(u)
+                         
                                 return (
                                     user.uid !== u.id &&
                                     u.friend && <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />

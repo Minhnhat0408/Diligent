@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -21,6 +21,7 @@ import {
     updateDoc,
     arrayRemove,
     arrayUnion,
+    deleteDoc,
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
@@ -30,14 +31,12 @@ import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
-import { wait } from '@testing-library/user-event/dist/utils';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState({});
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
-    const [countUser, setCountUser] = useState(0);
     const [notifications, setNotifications] = useState();
     const [posts, setPosts] = useState();
     const userRef = collection(db, 'users');
@@ -49,7 +48,6 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
-        // console.log(user);
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
@@ -58,30 +56,6 @@ export const AuthContextProvider = ({ children }) => {
         return response;
     };
 
-    //fetch users list
-    // useEffect(() => {
-    //     const data = [];
-    //     const q = query(userRef, orderBy('user_name'));
-    //     async function fetchData() {
-    //         console.log('fetch user list');
-    //         const docs = await getDocs(q);
-    //         docs.forEach((doc) => {
-    //             if (
-    //                 doc.data().user_friends.some((doc) => {
-    //                     return doc?.id === user?.uid;
-    //                 })
-    //             ) {
-    //                 data.push({ id: doc.id, data: doc.data(), friend: true });
-    //             } else {
-    //                 data.push({ id: doc.id, data: doc.data(), friend: false });
-    //             }
-    //         });
-    //         setUsersList(data);
-    //     }
-    //     if (user?.uid) {
-    //         fetchData();
-    //     }
-    // }, [countUser, userData?.user_friendRequests]);
 
     useEffect(() => {
 
@@ -316,6 +290,13 @@ export const AuthContextProvider = ({ children }) => {
             latest_comment: {},
         });
     };
+
+    const deletePost = async (id) => {
+        await deleteDoc(doc(db,'posts',id))
+        await updateDoc(doc(db,'users',user.uid),{
+            user_postNumber:userData.user_postNumber-1,
+        })
+    }
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
             
@@ -343,12 +324,12 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setUsersList(data);
                 });
-                onSnapshot(collection(db, 'posts'), orderBy('time', 'desc'), (docs) => {
+                onSnapshot(collection(db, 'posts'), (docs) => {
                     let data1 = [];
                     console.log('posts change');
                     docs.forEach((doc) => {
                         if(doc.data().like.list.some((u) => {
-                   
+                            
                             return u.id === currentUser.uid
                         })){
                             data1.push({id:doc.id,data:{...doc.data(),react:1}});// 1 mean like
@@ -356,12 +337,14 @@ export const AuthContextProvider = ({ children }) => {
                          
                             return u.id === currentUser.uid
                         })){
+
                             data1.push({id:doc.id,data:{...doc.data(),react:-1}});// -1 mean dislike
                         }else{
+                            
                             data1.push({id:doc.id,data:{...doc.data(),react:0}});// 0 mean neutral
                         }
-                       
                     });
+                    data1.sort((a,b) => b.data.time.seconds - a.data.time.seconds)
                     setPosts(data1);
                 });
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
@@ -409,6 +392,7 @@ export const AuthContextProvider = ({ children }) => {
         handleReadNoti,
         fileUpload,
         createPost,
+        deletePost,
         handleDecline,
         handleAccept,
         unFriend,
