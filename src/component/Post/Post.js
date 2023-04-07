@@ -27,6 +27,7 @@ import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
 import type from '~/config/typeNotification';
+import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 
 const cx = classNames.bind(styles);
 
@@ -92,6 +93,7 @@ function Post({ id, data }) {
     
     const handleClickDislike = async () => {
         try {
+            
             const lik = data.react === 1 ? data.like.count -1 : data.like.count;
             console.log(lik)
             await updateDoc(doc(db, 'posts', id), {
@@ -100,7 +102,7 @@ function Post({ id, data }) {
                     list: arrayUnion({
                         id: user.uid,
                         name: userData.user_name,
-                        ava: userData.user_avatar,
+                        ava: userData.user_avatar
                     }),
                 },
                 like: {
@@ -206,7 +208,7 @@ function Post({ id, data }) {
                         </div>
 
                         <p className={cx('content')}>{data.text} </p>
-                        {data.files.image.map((file) => {
+                        {data.files.media.map((file) => {
                             return <Image className={cx('image')} alt="post-image" src={file} />;
                         })}
 
@@ -300,12 +302,47 @@ function Post({ id, data }) {
             </div>
 
             <p className={cx('content')}>{data.text} </p>
+            <div className={cx('file-show')}>
+                                {data.files.others.map((f, id) => {
+                                        return (
+                                            <div className={cx('file-link')}>
+                                                <a href={f.url} target="_blank" download={f.name}>
+                                                    {f.name}    
+                                                </a>
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+            
             <div className={cx('image-holders')}>
-                {data.files.image.map((file) => {
-                    return <Image className={cx('image')} alt="post-image" src={file} />;
+            {data.files.media.map((url, id) => {
+                    let result = undefined;
+                    if (isImageUrl(url)) {
+                  
+                        result = (
+                            // trao doi vi tri anh
+                            <div key={id} className={cx('image-box',{plenty:data.files.media.length > 2})}>
+                                <img
+                                    src={url}
+                                    alt="preview"
+                                    style={{}}
+                                    className={cx('image',{plenty:data.files.media.length > 2})}
+                                /> 
+                            </div>
+                        );
+                    } else if (isVideoUrl(url)) {
+                        result = (
+                            <div key={id} className={cx('image-box',{plenty:data.files.media.length > 2})}>
+                                <video controls className={cx('image',{plenty:data.files.media.length > 2})}>
+                                    <source src={url} />
+                                </video>
+                            </div>
+                        );
+                    }
+                    return result;
                 })}
-            </div>
-
+        </div>
+ 
             <div className={cx('actions')}>
                 <div className={cx('default-action')}>
                     <div className={cx('like-action')}>

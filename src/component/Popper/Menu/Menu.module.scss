@@ -1,6 +1,9 @@
 .menu-lists {
   width: 224px;
-
+  &.small {
+    width:130px;
+  }
+ 
   .menu-item {
 
     margin-left: 0;
@@ -29,7 +32,8 @@
 } 
 .menu-body{
   overflow: auto;
-  
+  max-height:400px;
+
 }
 .menu-item {
   line-height: 1.8rem;
@@ -61,14 +65,14 @@
 
 .back-btn {
   color: var(--text-color);
-  width: 50px;
+  width: 20%;
   height: 100%;
   background-color: transparent;
 }
 
 .header-title {
   color: var(--text-color);
-  padding-left: 30px;
+  padding-left: 10%;
 
 
 }

@@ -18,7 +18,7 @@ export function isImage(obj) {
 
 export function isVideo(obj) {
     const metadata = {
-        contentType: ['video/mp4', 'video/mov', 'video/avi'],
+        contentType: ['video/mp4', 'video/webm', 'video/ogg'],
     };
     return metadata.contentType.includes(obj['type']);
 }

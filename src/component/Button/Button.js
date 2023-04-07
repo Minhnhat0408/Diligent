@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import styles from './Button.module.scss';
 import PropTypes from 'prop-types'
+import { forwardRef } from 'react';
 const cx = classNames.bind(styles);
 
 // passProps la nhung props khac muon truyen vao khac props mac dinh
@@ -11,7 +12,7 @@ const cx = classNames.bind(styles);
 // 1. noSize: medium
 // 2. small
 // 3. large
-function Button({
+const Button = forwardRef( ({
   to,
   href,
   onClick,
@@ -34,7 +35,7 @@ function Button({
   submit = 'button',
   ...passProps
   
-}) {
+},ref) => {
   let Comp = 'button';
 
   const props = {
@@ -67,13 +68,13 @@ function Button({
   });
 
   return (
-    <Comp type={submit} className={classes} {...props}>
+    <Comp type={submit} ref={ref} className={classes} {...props}>
       {leftIcon && <span className={cx('icon')}>{leftIcon}</span>}
       {<span className={cx('title')}>{children}</span>}
       {rightIcon && <span className={cx('icon')}>{rightIcon}</span>}
     </Comp>
   );
-}
+})
 
 Button.propTypes = {
   children: PropTypes.node.isRequired,

@@ -7,9 +7,10 @@ import Header from './Header';
 import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from '~/contexts/Context';
+import 'tippy.js/animations/scale.css';
 const cx = classNames.bind(styles);
 
-function Menu({ placement, offset, children, item = [], onChange = () => {} }) {
+function Menu({ placement = 'bottom', offset,small = false, children, item = [], onChange = () => {} }) {
     const [history, setHistory] = useState([{ data: item }]); // du lieu cua Menu cap hien tai
     const current = history[history.length - 1];
     const menu = useRef();
@@ -29,7 +30,9 @@ function Menu({ placement, offset, children, item = [], onChange = () => {} }) {
                             setHistory((prev) => [...prev, a.children]);
                         } else {
                             onChange(a);
+                        
                         }
+                        console.log(history,a)
                     }}
                 ></MenuItem>
             );
@@ -45,7 +48,7 @@ function Menu({ placement, offset, children, item = [], onChange = () => {} }) {
     };
 
     const renderResult = (attrs) => (
-        <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={menu}>
+        <div tabIndex="-1" {...attrs} className={cx('menu-lists',{small:small})} ref={menu}>
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
                 {history.length > 1 && <Header title={current.title} onBack={handleBackMenu} />}
                 <div className={cx('menu-body')}>{renderItem()}</div>
@@ -55,9 +58,8 @@ function Menu({ placement, offset, children, item = [], onChange = () => {} }) {
     return (
         <Tippy
             onHide={handleOutofHoverMenu}
-            hideOnClick={true}
+            trigger='click'
             interactive
-            delay={[0, 800]}
             offset={offset} // chinh ben trai / chieu cao so vs ban dau
             placement={placement}
             render={renderResult}

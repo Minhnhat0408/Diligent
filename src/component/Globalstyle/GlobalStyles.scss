@@ -109,7 +109,7 @@ html *::-webkit-scrollbar-track {
 // Custom Tippy Tooltip
 body {
     .tippy-box {
-        background-color: rgba(84, 84, 84, 0.92);
+        background-color:var(--dark-theme) ;
         min-height: 38px;
         border-radius: 8px;
         display: flex;
@@ -120,7 +120,7 @@ body {
     }
 
     .tippy-arrow {
-        color: rgba(84, 84, 84, 0.92) !important;
+        color: var(--dark-theme) !important;
     }
 
     .tippy-box[data-placement^='bottom'] > .tippy-arrow {

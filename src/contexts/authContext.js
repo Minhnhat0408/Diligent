@@ -260,9 +260,9 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     console.log('auth rerender');
-    const fileUpload = (file, name, bg_upload = false) => {
+    const fileUpload = ({file, name, location = 'images', bg_upload = false}) => {
         return new Promise((resolve, reject) => {
-            const storageRef = ref(storage, `images/${name}`);
+            const storageRef = ref(storage, `${location}/${name}`);
             const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
 
             uploadTask.on(
@@ -292,17 +292,18 @@ export const AuthContextProvider = ({ children }) => {
                         });
                     } else {
                         console.log(downloadURL);
-                        resolve(downloadURL); // resolve the Promise with the downloaded URL
+                        resolve({url:downloadURL,name:name}); // resolve the Promise with the downloaded URL
                     }
                 },
             );
         });
     };
 
-    const createPost = async (files, text) => {
+    const createPost = async (files, text,tag) => {
         await addDoc(collection(db, 'posts'), {
             text: text,
             files: files,
+            tag:tag,
             user: {
                 id: user.uid,
                 avatar: userData.user_avatar,

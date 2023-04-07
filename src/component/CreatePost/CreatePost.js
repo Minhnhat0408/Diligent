@@ -2,25 +2,18 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faCamera,
-    faFaceSmile,
-    faImage,
+    faArrowLeft,
+    faArrowRight,
+    faCirclePlay,
     faImages,
-    faL,
     faPaperclip,
-    faPen,
     faUserTag,
-    faVideo,
     faVideoCamera,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import Tippy from '@tippyjs/react';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
-
-import image from '~/assets/images';
 import { ThemeContext } from '~/contexts/Context';
-
 import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 import Image from '../Image';
@@ -28,13 +21,16 @@ import Button from '../Button';
 import { isImage, isVideo } from '~/utils/validator';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
-
+import { RingLoader } from 'react-spinners';
+import Menu from '../Popper/Menu/Menu';
+import { CATEGORY_OPTIONS } from '~/utils/constantValue';
 
 const cx = classNames.bind(styles);
 
 function CreatePost() {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const {userData,fileUpload,createPost,user} = UserAuth();
+    const { userData, fileUpload, createPost, user } = UserAuth();
+    const [loading,setLoading] = useState(false);
     const handleClickCreateBox = () => {
         setCreateBoxVisible(true);
     };
@@ -42,7 +38,7 @@ function CreatePost() {
     //Xử lí khi đóng create box
     const handleClickCloseBox = () => {
         setCreateBoxVisible(false);
-        setSelectedCategories([])
+        setSelectedCategories([]);
     };
 
     const createBoxRef = useRef(null);
@@ -66,38 +62,56 @@ function CreatePost() {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh
     const [imagePreview, setImagePreview] = useState([]);
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if(isImage(file)) {
-            const img  = {file:file,url:URL.createObjectURL(file)};
-            setImagePreview((prev) => [...prev,img])
-        }else{
-            alert('This is not an image')
+        const newfile = e.target.files[0];
+        if (isImage(newfile) || isVideo(newfile)) {
+            const img = { file: newfile, url: URL.createObjectURL(newfile) };
+            setImagePreview((prev) => [...prev, img]);
+        } else {
+            alert('This is not an image');
         }
-        
+    };
+    const [others, setOthersPreview] = useState([]);
+    const handleFileChange = (e) => {
+        const newfile = e.target.files[0];
+        if (!isImage(newfile) && !isVideo(newfile)) {
+            const img = { file: newfile, url: URL.createObjectURL(newfile) };
+            setOthersPreview((prev) => [...prev, img]);
+        } else {
+            alert('This is not a file');
+        }
+    };
+    const handleDeleteOthers = (id) => {
+        setOthersPreview((prev) => prev.filter((_, index) => index !== id));
+    };
+    const handleDeleteImage = (id) => {
+        setImagePreview((prev) => prev.filter((_, index) => index !== id));
     };
 
-    const handleVideoChange = (e) => {
-        const file = e.target.files[0];
-        if(isVideo(file)) {
-            const video  = {file:file,url:URL.createObjectURL(file)};
-            setImagePreview((prev) => [...prev,video])
-        }else{
-            alert('This is not a video')
+    const moveLeft = (index) => {
+        // Make sure the index is not out of range
+        if (index > 0 && index < imagePreview.length) {
+            // Switch the positions of the two elements
+            const newImages = [...imagePreview];
+            const temp = newImages[index];
+            newImages[index] = newImages[index - 1];
+            newImages[index - 1] = temp;
+            // Update the state with the new array
+            setImagePreview(newImages);
         }
-    }
+    };
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        if(!isImage(file) && !isVideo(file)) {
-            const img  = {file:file,url:URL.createObjectURL(file)};
-            setImagePreview((prev) => [...prev,img])
-        }else{
-            alert('This is not a file')
+    const moveRight = (index) => {
+        // Make sure the index is not out of range
+        if (index >= 0 && index < imagePreview.length - 1) {
+            // Switch the positions of the two elements
+            const newImages = [...imagePreview];
+            const temp = newImages[index];
+            newImages[index] = newImages[index + 1];
+            newImages[index + 1] = temp;
+
+            // Update the state with the new array
+            setImagePreview(newImages);
         }
-    }
-    console.log(imagePreview,'fefe')
-    const handleDeleteImage = (id) => {
-        setImagePreview(prev => prev.filter((_, index) => index !== id));
     };
 
     //Xử lí khi chọn thể loại bài đăng
@@ -110,50 +124,60 @@ function CreatePost() {
             return;
         }
     };
-
+    
     const handleDeleteCategory = (value) => {
         setSelectedCategories(selectedCategories.filter((category) => category !== value));
     };
 
-    console.log(selectedCategories);
-
-    //handle post 
+    //handle post
     const textContent = useRef();
-    
+    const [textFinal, setTextFinal] = useState();
     const handlePost = async () => {
-        console.log(textContent.current.value,imagePreview)
+        setLoading(true)
         try {
-   
-            console.log('promist')
-            if(imagePreview) {
-                const results = await Promise.all(imagePreview.map((img)  =>  fileUpload(img.file,img.file.name)));
-                console.log('Upload completed!', results);
-                createPost(results
-                    ,textContent.current.value)
-            }else{
-                createPost(null
-                    ,textContent.current.value)
+            let files = { media: [], others: [] };
+            if (imagePreview.length !== 0) {
+                const results = await Promise.all(
+                    imagePreview.map((img) => fileUpload({ file: img.file, name: img.file.name })),
+                );
+                files.media = results.map((obj) => obj.url);
+        
             }
-       
-            await updateDoc(doc(db,'users',user.uid),{
-                user_postNumber:userData.user_postNumber+1
-            })
-            setCreateBoxVisible(false)
-            setImagePreview([])
-          } catch (error) {
-            console.error('Upload failed!', error);
-          }
-    }
 
+            if (others.length !== 0) {
+                const results = await Promise.all(
+                    others.map((file) => fileUpload({ file: file.file, name: file.file.name, location: 'others' })),
+                );
+                files.others = results;
+            }
+
+            createPost(files, textFinal, selectedCategories);
+            await updateDoc(doc(db, 'users', user.uid), {
+                user_postNumber: userData.user_postNumber + 1,
+            });
+            setCreateBoxVisible(false);
+            setImagePreview([]);
+            setOthersPreview([]);
+            setLoading(false)
+        } catch (error) {
+            console.error('Upload failed!', error);
+        }
+    };
 
     const context = useContext(ThemeContext);
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}> 
+        <>
+        {loading ? (
+            <div className="pop-up loader">
+                <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+            </div>
+        ) : (
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {/* Create Post Box  */}
             {createBoxVisible && (
                 <div className={cx('pop-up')}>
                     <div
-                        className={cx('create-box',{dark:context.theme === 'dark'})}
+                        className={cx('create-box', { dark: context.theme === 'dark' })}
                         // style={{
                         //     height:
                         //         (imagePreview && selectedCategories.length > 0 && '658px') ||
@@ -170,73 +194,154 @@ function CreatePost() {
                         </div>
 
                         <hr />
-    
-                        <div className={cx('body' ,  { dark: context.theme === 'dark' })}>
+
+                        <div className={cx('body', { dark: context.theme === 'dark' })}>
                             <div className={cx('info')}>
-                                <Image
-                                    className={cx('avatar')}
-                                    alt='ava'
-                                    src={userData?.user_avatar}
-                                />
-                                <Tippy
-                                placement="bottom"
-                                trigger="click"
-                                interactive={true}
-                                content={
-                                    <div className={cx('categories')}>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleAddCategory('Japanese')}
-                                        >
-                                            <p>Japanese</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleAddCategory('English')}
-                                        >
-                                            <p>English</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleAddCategory('Korean')}
-                                        >
-                                            <p>Korean</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleAddCategory('Chinese')}
-                                        >
-                                            <p>Chinese</p>
-                                        </div>
-                                        <div
-                                            className={cx('category-item')}
-                                            onClick={() => handleAddCategory('French')}
-                                        >
-                                            <p>French</p>
+                                <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
+                                <Menu
+                                    offset={[0, 30]}
+                                    // chinh ben trai / chieu cao so vs ban dau
+                                    placement="right"
+                                    item={CATEGORY_OPTIONS}
+                                    small
+                                    onChange={handleAddCategory}
+                                    // allowHTML={true}
+                                    // content={
+                                    //     <div className={cx('categories')}>
+                                    //         <div
+                                    //             className={cx('category-item')}
+                                    //             onClick={() => handleAddCategory('Japanese')}
+                                    //         >
+                                    //             <p>Japanese</p>
+                                    //         </div>
+                                    //         <div
+                                    //             className={cx('category-item')}
+                                    //             onClick={() => handleAddCategory('English')}
+                                    //         >
+                                    //             <p>English</p>
+                                    //         </div>
+                                    //         <div
+                                    //             className={cx('category-item')}
+                                    //             onClick={() => handleAddCategory('Korean')}
+                                    //         >
+                                    //             <p>Korean</p>
+                                    //         </div>
+                                    //         <div
+                                    //             className={cx('category-item')}
+                                    //             onClick={() => handleAddCategory('Chinese')}
+                                    //         >
+                                    //             <p>Chinese</p>
+                                    //         </div>
+                                    //         <div
+                                    //             className={cx('category-item')}
+                                    //             onClick={() => handleAddCategory('French')}
+                                    //         >
+                                    //             <p>French</p>
+                                    //         </div>
+                                    //     </div>
+                                    // }
+                                >
+                                    <div>
+                                        <h5 className={cx('username')}>{userData.user_name}</h5>
+                                        <div className={cx('category')}>
+                                            <p>Choose category</p>
+                                            <i className="fa-solid fa-chevron-right"></i>
                                         </div>
                                     </div>
-                                }
-                            >
-                                <div>
-                                    <h5 className={cx('username')}>{userData.user_name}</h5>
-                                    <div className={cx('category')}>
-                                        <p>Choose category</p>
-                                        <i className="fa-solid fa-chevron-right"></i>
-                                    </div>
-                                </div>
-                            </Tippy>
+                                </Menu>
                             </div>
-                            <textarea placeholder="What's on your mind?" ref={textContent} className={cx('input')} />
-                            <div  className={cx('show-img')}>
-                            {imagePreview.length !== 0  && 
-                                (imagePreview.map((img,id) => {
-                                    return (
-                                        <div key={id} className={cx('show-img-content')}>
-                                            <img src={img.url} alt="preview" className={cx('your-img')} />
-                                            <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={() => handleDeleteImage(id)} />
-                                     </div>
-                                    )
-                                }))}
+                            <textarea
+                                placeholder="What's on your mind?"
+                                ref={textContent}
+                                onBlur={() => {
+                                    setTextFinal(textContent.current.value);
+                                }}
+                                className={cx('input')}
+                            />
+                            <div className={cx('file-show')}>
+                                {others.length !== 0 &&
+                                    others.map((f, id) => {
+                                        return (
+                                            <div className={cx('file-link')}>
+                                                <a href={f.url} download={f.file.name}>
+                                                    {f.file.name}
+                                                </a>
+                                                <FontAwesomeIcon
+                                                    icon={faXmark}
+                                                    className={cx('delete-file')}
+                                                    onClick={() => handleDeleteOthers(id)}
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                            </div>
+                            <div className={cx('show-img')}>
+                                {imagePreview.length !== 0 &&
+                                    imagePreview.map((img, id) => {
+                                        let result = undefined;
+                                        if (isImage(img.file)) {
+                                            console.log(img.url);
+                                            result = (
+                                                // trao doi vi tri anh
+                                                <div key={id} className={cx('show-img-content',{plenty:imagePreview.length > 2})}>
+                                                    <img
+                                                        src={img.url}
+                                                        alt="preview"
+                                                        style={{}}
+                                                        className={cx('your-img',{plenty:imagePreview.length > 2})}
+                                                    />
+                                                    <FontAwesomeIcon
+                                                        icon={faXmark}
+                                                        className={cx('delete')}
+                                                        onClick={() => handleDeleteImage(id)}
+                                                    />
+                                                    {imagePreview.length > 1 && (
+                                                        <>
+                                                            <FontAwesomeIcon
+                                                                icon={faArrowLeft}
+                                                                className={cx('left')}
+                                                                onClick={() => moveLeft(id)}
+                                                            />
+                                                            <FontAwesomeIcon
+                                                                icon={faArrowRight}
+                                                                className={cx('right')}
+                                                                onClick={() => moveRight(id)}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            );
+                                        } else if (isVideo(img.file)) {
+                                            result = (
+                                                <div key={id} className={cx('show-img-content',{plenty:imagePreview.length > 2})}>
+                                                    <video className={cx('your-img',{plenty:imagePreview.length > 2})}>
+                                                        <source src={img.url} />
+                                                    </video>
+                                                    <FontAwesomeIcon icon={faCirclePlay} className={cx('play')} />
+                                                    <FontAwesomeIcon
+                                                        icon={faXmark}
+                                                        className={cx('delete')}
+                                                        onClick={() => handleDeleteImage(id)}
+                                                    />
+                                                    {imagePreview.length > 1 && (
+                                                        <>
+                                                            <FontAwesomeIcon
+                                                                icon={faArrowLeft}
+                                                                className={cx('left')}
+                                                                onClick={() => moveLeft(id)}
+                                                            />
+                                                            <FontAwesomeIcon
+                                                                icon={faArrowRight}
+                                                                className={cx('right')}
+                                                                onClick={() => moveRight(id)}
+                                                            />
+                                                        </>
+                                                    )}
+                                                </div>
+                                            );
+                                        }
+                                        return result;
+                                    })}
                             </div>
 
                             <ul className={cx('selected-category')}>
@@ -260,17 +365,8 @@ function CreatePost() {
                                         className={cx('d-none')}
                                         onChange={handleImageChange}
                                     />
-                                    <label htmlFor="create-post-video">
-                                    <FontAwesomeIcon icon={faVideo} className={cx('video')} />
-                                    </label>
-                                    <input
-                                        type="file"
-                                        id="create-post-video"
-                                        className={cx('d-none')}
-                                        onChange={handleVideoChange}
-                                    />
                                     <label htmlFor="create-post-file">
-                                    <FontAwesomeIcon icon={faPaperclip} className={cx('attach')} />
+                                        <FontAwesomeIcon icon={faPaperclip} className={cx('attach')} />
                                     </label>
                                     <input
                                         type="file"
@@ -279,16 +375,19 @@ function CreatePost() {
                                         onChange={handleFileChange}
                                     />
                                     <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
-                                   
-                                
-                                  
-                            
-                             
                                 </div>
                             </div>
                         </div>
-    
-                        <Button primary dark={context.theme === 'dark'} onClick={handlePost} className={cx('upload')}>Upload</Button>
+
+                        <Button
+                            primary
+                            disabled={imagePreview.length === 0 && others.length === 0 && !textContent.current?.value}
+                            dark={context.theme === 'dark'}
+                            onClick={handlePost}
+                            className={cx('upload')}
+                        >
+                            Upload
+                        </Button>
                     </div>
                 </div>
             )}
@@ -299,12 +398,11 @@ function CreatePost() {
             </div>
 
             <div className={cx('input')}>
-                <Image className={cx('avatar')} src={userData?.user_avatar} alt='avatar' />
+                <Image className={cx('avatar')} src={userData?.user_avatar} alt="avatar" />
                 <textarea placeholder="What's on your mind?" onClick={handleClickCreateBox}></textarea>
             </div>
 
             <div className={cx('options')}>
-                
                 <div className={cx('option')} onClick={handleClickCreateBox}>
                     <FontAwesomeIcon icon={faImages} className={cx('option-icon', 'photo')} />
                     <h5 className={cx('option-title')}>Photo</h5>
@@ -319,6 +417,8 @@ function CreatePost() {
                 </div>
             </div>
         </div>
+        )}
+        </>
     );
 }
 

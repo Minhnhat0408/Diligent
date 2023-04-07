@@ -45,8 +45,6 @@ function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData,notifications,handleReadNoti } = UserAuth();
     const notif = useRef();
-    const [visible, setVisible] = useState(false);
-
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -132,16 +130,16 @@ function Header() {
                         <>
                             <span className={cx('end-btn')}>
                                 <Tippy
-                                    visible={visible}
+
                                     appendTo={document.body}
                                     interactive
                                     offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
                                     placement="bottom"
+                                    trigger='click'
                                     render={renderNotifications}
-                                    onClickOutside={() => setVisible(false)}
                                     animation={false}
                                 >
-                                    <i className="fa-solid fa-bell" onClick={() => setVisible(true)} ></i>
+                                    <i className="fa-solid fa-bell" ></i>
                                 </Tippy>
                                 {notifications?.unread !== 0 && <div className={cx('noti-count')}>{notifications?.unread}</div>}
                             </span>
@@ -173,7 +171,7 @@ function Header() {
                         item={user ? USER_MENU : MENU_ITEM}
                         className={cx('menu', { [context.theme]: context.theme === 'dark' })}
                         onChange={handleMenuChange}
-                    >
+                    >   
                         {user ? (
                             <Image
                                 className={cx('user-avatar')}

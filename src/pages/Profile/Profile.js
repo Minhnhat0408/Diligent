@@ -2,7 +2,18 @@ import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
-import { collection, getDoc, doc, updateDoc, serverTimestamp, addDoc, query, where, getDocs,orderBy } from 'firebase/firestore';
+import {
+    collection,
+    getDoc,
+    doc,
+    updateDoc,
+    serverTimestamp,
+    addDoc,
+    query,
+    where,
+    getDocs,
+    orderBy,
+} from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
@@ -20,12 +31,12 @@ import {
     faMessage,
     faPhone,
     faUserFriends,
-    faUserXmark,
+
     faVenus,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import Menu from '~/component/Popper/Menu';
-import { faFlag } from '@fortawesome/free-regular-svg-icons';
+import { PROFILE_OPTIONS } from '~/utils/constantValue';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CreatePost from '~/component/CreatePost';
 import Post from '~/component/Post';
@@ -33,75 +44,18 @@ import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
 
-
 const cx = classNames.bind(styles);
 
-const OPTIONS = [
-    // {
-    //     icon: <FontAwesomeIcon icon={faEarthAsia} />,
-    //     title: 'English',
-    //     children: {
-    //         title: 'Language',
-    //         data: listLanguage,
-    //     },
-    // },
-    {
-        icon: <FontAwesomeIcon icon={faFlag} />,
-        title: 'Report',
-        children: {
-            title: 'Report',
-            data: [
-                {
-                    type: 'report',
-                    title: 'Fake account',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Harassment/Bully',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Inappropriate post',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    },
-    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
-];
 function Profile() {
     const { id } = useParams();
-    const { user, userData, handleAccept, handleDecline, unFriend,fileUpload } = UserAuth();
+    const { user, userData, handleAccept, handleDecline, unFriend, fileUpload } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
-    const [userPosts,setUserPosts] = useState();
+    const [userPosts, setUserPosts] = useState();
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
-   
+
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
     // const a = Date.now() -userData.user_createdAt.toMillis()
@@ -109,7 +63,7 @@ function Profile() {
 
     useEffect(() => {
         console.log(user?.uid);
-
+y
         console.log('rendrererer');
         if (user?.uid !== id) {
             getDoc(doc(db, 'users', id)).then((doc) => {
@@ -136,33 +90,29 @@ function Profile() {
                     }
                 }
             });
-
         } else {
             setPageUser(userData);
         }
-        const q = query(collection(db,'posts'),where('user.id','==',id),orderBy('time','desc'));
+        const q = query(collection(db, 'posts'), where('user.id', '==', id), orderBy('time', 'desc'));
         getDocs(q).then((data) => {
-  
-            console.log(data.docs)
+            console.log(data.docs);
             const posts = [];
             data.forEach((doc) => {
-                posts.push({id:doc.id,data:doc.data()})
-            })
-            setUserPosts(posts)
-        })
+                posts.push({ id: doc.id, data: doc.data() });
+            });
+            setUserPosts(posts);
+        });
     }, [id, userData?.user_friendRequests]);
 
     // useEffect(() => {
 
     // },[posts])
-    const handleBgAvatar = async  (e) => {
-
+    const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
 
-        const newNameFile = `${user.uid}_bg` +  ava.name.substring(ava.name.indexOf("."));
-        console.log(newNameFile)
-        await fileUpload(ava,newNameFile,true)
-    
+        const newNameFile = `${user.uid}_bg` + ava.name.substring(ava.name.indexOf('.'));
+        console.log(newNameFile);
+        await fileUpload(ava, newNameFile, true);
     };
 
     const handleMenuChange = (menuItem) => {
@@ -218,14 +168,17 @@ function Profile() {
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('infor')}>
                         <div className={cx('section')}>
-                            <Image src={pageUser?.user_bg || 'ds'} alt="background-image" className={cx('background-ava')} />
+                            <Image
+                                src={pageUser?.user_bg || 'ds'}
+                                alt="background-image"
+                                className={cx('background-ava')}
+                            />
                             {id === user?.uid && (
                                 <>
                                     <label className={cx('bg-btn')} htmlFor="bg">
                                         <i className="fa-solid fa-pen" />
                                     </label>
                                     <input onChange={handleBgAvatar} type="file" id="bg" className={cx('d-none')} />
-                                   
                                 </>
                             )}
                             <div className={cx('represent')}>
@@ -347,17 +300,18 @@ function Profile() {
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>
-                                                <Button xs outline dark={context.theme === 'dark'}>
-                                                    <Menu
-                                                        offset={[0, 30]}
-                                                        // chinh ben trai / chieu cao so vs ban dau
-                                                        placement="right"
-                                                        item={OPTIONS}
-                                                        onChange={handleMenuChange}
-                                                    >
+
+                                                <Menu
+                                                    offset={[0, 30]}
+                                                    // chinh ben trai / chieu cao so vs ban dau
+                                                    placement="right"
+                                                    item={PROFILE_OPTIONS}
+                                                    onChange={handleMenuChange}
+                                                >
+                                                    <Button xs outline dark={context.theme === 'dark'}>
                                                         <i className="fa-solid fa-ellipsis"></i>
-                                                    </Menu>
-                                                </Button>
+                                                    </Button>
+                                                </Menu>
                                             </>
                                         )}
                                     </>
@@ -400,9 +354,10 @@ function Profile() {
 
                     <div className={cx('content')}>
                         {user && <CreatePost />}
-                        {userPosts && userPosts.map((post) => {
-                            return <Post id={post.id} data={post.data}/>
-                        })}
+                        {userPosts &&
+                            userPosts.map((post) => {
+                                return <Post id={post.id} data={post.data} />;
+                            })}
                     </div>
                     {previewAvatar && (
                         <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
