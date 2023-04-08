@@ -30,7 +30,7 @@ const cx = classNames.bind(styles);
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user,deletePost } = UserAuth();
+    const { userData, user,deletePost,savePost } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
 
@@ -94,9 +94,10 @@ function Post({ id, data }) {
             case 'unfollow':
                 break;
             case 'save':
+                savePost(id,data);
                 break;
             case 'delete':
-                deletePost(id)
+                deletePost(id);
                 break;
             default:
                 break;
@@ -182,7 +183,7 @@ function Post({ id, data }) {
                                     onClick={() => navigate(routes.user + data.user.id)}
                                     alt="avatar"
                                 />
-                                <div className={cx('title')}>
+                                <div className={cx('user')}>
                                     <h5 className={cx('username')} onClick={() => navigate(routes.user + data.user.id)}>
                                         {data.user.name}
                                     </h5>
@@ -200,7 +201,7 @@ function Post({ id, data }) {
                                 </div>
                             </Menu>
                         </div>
-
+                        <h4 className={cx('title')} >{data.title}</h4>
                         <p className={cx('content')}>{data.text} </p>
                         {data.files.others.length !== 0 && (
                             <div className={cx('file-show')}>
@@ -302,7 +303,7 @@ function Post({ id, data }) {
                         onClick={() => navigate(routes.user + data.user.id)}
                         alt="avatar"
                     />
-                    <div className={cx('title')}>
+                    <div className={cx('user')}>
                         <h5 className={cx('username')} onClick={() => navigate(routes.user + data.user.id)}>
                             {data.user.name}
                         </h5>
@@ -312,7 +313,7 @@ function Post({ id, data }) {
 
                 <Menu
                     // chinh ben trai / chieu cao so vs ban dau
-                    item={data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
+                    item={data.user.id === user?.uid ? USER_POST_OPTIONS : POST_OPTIONS}
                     onClick={handlePostOptions}
                 >
                     <div className={cx('options')}>
@@ -320,7 +321,7 @@ function Post({ id, data }) {
                     </div>
                 </Menu>
             </div>
-
+            <h4 className={cx('title')} >{data.title}</h4>
             <p className={cx('content')}>{data.text} </p>
             {data.files.others.length !== 0 && (
                 <div className={cx('file-show')}>

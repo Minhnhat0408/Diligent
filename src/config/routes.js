@@ -13,6 +13,8 @@ const routes = {
     flashcard:'/flashcard',
     userUpdate:'/user/updateinfor',
     createStory: '/createstory',
+    saveposts:'/saves/:id',
+    saves:'/saves/' // shortcut for saves
 }
 
 export default routes

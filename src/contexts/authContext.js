@@ -272,12 +272,12 @@ export const AuthContextProvider = ({ children }) => {
             );
         });
     };
-
-    const createPost = async (files, text,tag) => {
+    // Post handle 
+    const createPost = async (files, text,tags) => {
         await addDoc(collection(db, 'posts'), {
             text: text,
             files: files,
-            tag:tag,
+            tags:tags,
             user: {
                 id: user.uid,
                 avatar: userData.user_avatar,
@@ -297,6 +297,23 @@ export const AuthContextProvider = ({ children }) => {
             user_postNumber:userData.user_postNumber-1,
         })
     }
+
+    const savePost = async (id,data) => {
+        await setDoc(doc(db,'users',user.uid,'saves',id),{
+            title: data.title,
+            tags: data.tags,
+            user: {
+                name: data.user.name,
+                avatar: data.user.avatar,
+            }
+        })
+    }
+
+    const deleteSavePost = async (id) => {
+        await deleteDoc(doc(db,'users',user.uid,'saves',id))
+    }
+
+    // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
             
@@ -305,9 +322,6 @@ export const AuthContextProvider = ({ children }) => {
                 await updateDoc(doc(userRef, currentUser.uid), {
                     user_status: 'online',
                 });
-                // const docdata = await getDoc(doc(db, 'users', currentUser.uid));
-                // setUserData(docdata.data());
-                // console.log('helllo');
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
                     const data = [];
                     console.log('fetch user list or someone online/offline');
@@ -393,6 +407,8 @@ export const AuthContextProvider = ({ children }) => {
         fileUpload,
         createPost,
         deletePost,
+        savePost,
+        deleteSavePost,
         handleDecline,
         handleAccept,
         unFriend,

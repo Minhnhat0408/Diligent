@@ -1,1 +1,1 @@
-export {default} from './PostPage'
+export { default } from "./PostPage"

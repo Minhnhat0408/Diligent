@@ -17,7 +17,12 @@ $time-color: #adb5bd;
     &.dark .header .info .username{
         color:var(--primary)
     }
-
+    &.dark .file-show .file-link{
+        border-color: var(--text-color-dark);
+        & a {
+            color:var(--text-color-dark);
+        }
+    }
     
 }
 
@@ -37,7 +42,7 @@ $time-color: #adb5bd;
             cursor: pointer;
         }
     
-        .title {
+        .user {
             margin-left: 12px;
     
             .username {
@@ -75,9 +80,13 @@ $time-color: #adb5bd;
 }
 
 
-
+.title{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 2rem ;
+}
 .content {
-    margin: 20px 0;
+    margin-bottom: 15px;
     font-size: 1.6rem;
     font-weight: 400;
 }
@@ -93,7 +102,7 @@ $time-color: #adb5bd;
    }
    .file-link{
        
-       border: 1px solid #ccc;
+       border: 1px solid var(--text-color);
        text-decoration: none;
        border-radius: 5px;
        padding: 0 10px;
@@ -103,7 +112,7 @@ $time-color: #adb5bd;
        & a{
            display: block;
            width: 90%;
-           color: var(--text-color-dark);
+           color: var(--text-color);
            white-space: nowrap;
            overflow: hidden;
        }
