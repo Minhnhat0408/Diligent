@@ -38,6 +38,7 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
+    const [savePostData, setSavePostData] = useState([]);
     const [posts, setPosts] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
@@ -322,6 +323,8 @@ export const AuthContextProvider = ({ children }) => {
                 await updateDoc(doc(userRef, currentUser.uid), {
                     user_status: 'online',
                 });
+
+                //fetch user list realtime
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
                     const data = [];
                     console.log('fetch user list or someone online/offline');
@@ -338,6 +341,8 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setUsersList(data);
                 });
+
+                // fetch posts change realtime
                 onSnapshot(collection(db, 'posts'), (docs) => {
                     let data1 = [];
                     console.log('posts change');
@@ -361,11 +366,13 @@ export const AuthContextProvider = ({ children }) => {
                     data1.sort((a,b) => b.data.time.seconds - a.data.time.seconds)
                     setPosts(data1);
                 });
+
+                //fetch user data change realtime
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log('data of user change');
                     setUserData(doc.data());
                 });
-                
+                //fetch user notifications realtime
                 onSnapshot(
                     query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
                     (docs) => {
@@ -381,6 +388,14 @@ export const AuthContextProvider = ({ children }) => {
                         setNotifications({id:doc.id ,data: data1, unread: readNoti });
                     },
                 );
+                // fetch savepost realtime
+                onSnapshot(query(collection(db, 'users', currentUser.uid, 'saves'), orderBy('title')), (docs) => {
+                    console.log('save post change');
+                    const result = docs.docs.map((doc) => {
+                        return { id: doc.id, data: doc.data() };
+                    });
+                    setSavePostData(result);
+                });
             } else {
                 setUser(null);
             }
@@ -401,8 +416,9 @@ export const AuthContextProvider = ({ children }) => {
         usersList,
         user,
         userData,
-        notifications,
         posts,
+        notifications,
+        savePostData,
         handleReadNoti,
         fileUpload,
         createPost,

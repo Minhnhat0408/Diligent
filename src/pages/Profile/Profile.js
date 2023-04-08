@@ -36,7 +36,7 @@ import {
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import Menu from '~/component/Popper/Menu';
-import { PROFILE_OPTIONS } from '~/utils/constantValue';
+import { PROFILE_FRIEND_OPTIONS, PROFILE_OPTIONS } from '~/utils/constantValue';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import CreatePost from '~/component/CreatePost';
 import Post from '~/component/Post';
@@ -48,7 +48,7 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, userData, handleAccept, handleDecline, unFriend, fileUpload } = UserAuth();
+    const { user,usersList, userData, handleAccept, handleDecline, unFriend, fileUpload,posts } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
@@ -62,46 +62,56 @@ function Profile() {
     // console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
 
     useEffect(() => {
-        console.log(user?.uid);
         console.log('rendrererer');
         if (user?.uid !== id) {
-            getDoc(doc(db, 'users', id)).then((doc) => {
-                const friendRq = doc.data().user_friendRequests;
-                setPageUser(doc.data());
-                if (user) {
-                    const sent = friendRq.some((friendRequest) => {
-                        return friendRequest.id === user.uid;
-                    });
-                    const friend = doc.data().user_friends.some((friend) => {
-                        return friend.id === user.uid;
-                    });
-                    const request = userData.user_friendRequests.some((friend) => {
-                        return friend.id === id;
-                    });
-                    if (sent) {
-                        setDisabled('Requesting');
-                    } else if (friend) {
-                        setDisabled('Friend');
-                    } else if (request) {
-                        setDisabled('Accept');
-                    } else {
-                        setDisabled('Add Friend');
+            usersList.forEach((doc) => {
+                if(doc.id === id) {
+                    const friendRq = doc.data.user_friendRequests;
+                    setPageUser(doc.data);
+                    if (user) {
+                        const sent = friendRq.some((friendRequest) => {
+                            return friendRequest.id === user.uid;
+                        });
+                        const friend = doc.data.user_friends.some((friend) => {
+                            return friend.id === user.uid;
+                        });
+                        const request = userData.user_friendRequests.some((friend) => {
+                            return friend.id === id;
+                        });
+                        if (sent) {
+                            setDisabled('Requesting');
+                        } else if (friend) {
+                            setDisabled('Friend');
+                        } else if (request) {
+                            setDisabled('Accept');
+                        } else {
+                            setDisabled('Add Friend');
+                        }
                     }
+                    return;
                 }
-            });
+            
+            })
+     
         } else {
+
             setPageUser(userData);
         }
-        const q = query(collection(db, 'posts'), where('user.id', '==', id), orderBy('time', 'desc'));
-        getDocs(q).then((data) => {
-            console.log(data.docs);
-            const posts = [];
-            data.forEach((doc) => {
-                posts.push({ id: doc.id, data: doc.data() });
-            });
-            setUserPosts(posts);
-        });
-    }, [id, userData?.user_friendRequests]);
+        // const q = query(collection(db, 'posts'), where('user.id', '==', id), orderBy('time', 'desc'));
+        // getDocs(q).then((data) => {
+        //     console.log(data.docs);
+        //     const posts = [];
+        //     data.forEach((doc) => {
+        //         posts.push({ id: doc.id, data: doc.data() });
+        //     });
+        //     setUserPosts(posts);
+        // });
+       
+           setUserPosts(posts.filter((post) => {
+            return post.data.user.id === id
+           }))
+        
+    }, [id, usersList]);
 
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
@@ -301,7 +311,7 @@ function Profile() {
                                                     offset={[0, 30]}
                                                     // chinh ben trai / chieu cao so vs ban dau
                                                     placement="right"
-                                                    item={PROFILE_OPTIONS}
+                                                    item={disabled === 'Friend' ? PROFILE_FRIEND_OPTIONS : PROFILE_OPTIONS}
                                                     onChange={handleMenuChange}
                                                 >
                                                     <Button xs outline dark={context.theme === 'dark'}>

@@ -6,7 +6,8 @@ const image = {
     loginImg: require('~/assets/images/loginImage.png'),
     google: require('~/assets/images/google.png'),
     social:require('~/assets/images/socialmedia.jpg'),
-    baduc:require('~/assets/images/baduc.jpg')
+    baduc:require('~/assets/images/baduc.jpg'),
+    noContent: require('~/assets/images/no_content.png')
   };
   
   export default image;

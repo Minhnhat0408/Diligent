@@ -1,4 +1,4 @@
-import { faFlag, faLock, faSave, faTrash, faUserXmark } from "@fortawesome/free-solid-svg-icons";
+import { faEyeSlash, faFilePen, faFlag, faLock, faSave, faTrash, faUserXmark } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const CATEGORY_OPTIONS = [
@@ -80,7 +80,11 @@ export const CATEGORY_OPTIONS = [
     },
 ]
 export const USER_POST_OPTIONS = [
-    
+    {
+        icon:<FontAwesomeIcon icon={faFilePen} />,
+        title: 'Update',
+        type: 'update' 
+    },
     {
         icon:<FontAwesomeIcon icon={faTrash} />,
         title: 'Delete',
@@ -145,11 +149,61 @@ export const POST_OPTIONS = [
         },
     },
     {
-        icon:<FontAwesomeIcon icon={faLock} />,
-        title: 'Unfollow',
-        type: 'unfollow' 
+        icon:<FontAwesomeIcon icon={faEyeSlash} />,
+        title: 'Hide',
+        type: 'hide' 
     },
 ]
+
+export const PROFILE_FRIEND_OPTIONS =[
+    {
+        icon: <FontAwesomeIcon icon={faFlag} />,
+        title: 'Report',
+        children: {
+            title: 'Report',
+            data: [
+                {
+                    type: 'report',
+                    title: 'Fake account',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Harassment/Bully',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+                {
+                    type: 'report',
+                    title: 'Inappropriate post',
+                    children: {
+                        title: 'Success',
+                        data: [
+                            {
+                                title: 'Not Working',
+                            },
+                        ],
+                    },
+                },
+            ],
+        },
+    },
+    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
+]
+
 export const PROFILE_OPTIONS = [
     // {
     //     icon: <FontAwesomeIcon icon={faEarthAsia} />,
@@ -204,5 +258,5 @@ export const PROFILE_OPTIONS = [
             ],
         },
     },
-    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
+   
 ];

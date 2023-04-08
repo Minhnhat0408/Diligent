@@ -1,11 +1,4 @@
-import {
-    faComment,
-    faEllipsis,
-    faShare,
-    faThumbsDown,
-    faThumbsUp,
-    faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faComment, faEllipsis, faShare, faThumbsDown, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
@@ -30,7 +23,7 @@ const cx = classNames.bind(styles);
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user,deletePost,savePost } = UserAuth();
+    const { userData, user, deletePost, savePost,posts,setPosts } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
 
@@ -91,10 +84,11 @@ function Post({ id, data }) {
     };
     const handlePostOptions = (item) => {
         switch (item.type) {
-            case 'unfollow':
+            case 'hide':
+            
                 break;
             case 'save':
-                savePost(id,data);
+                savePost(id, data);
                 break;
             case 'delete':
                 deletePost(id);
@@ -201,7 +195,14 @@ function Post({ id, data }) {
                                 </div>
                             </Menu>
                         </div>
-                        <h4 className={cx('title')} >{data.title}</h4>
+                        <div className={cx('title-wrapper')}>
+                            <h4 className={cx('title')}>{data.title}</h4>
+                            <ul className={cx('selected-category')}>
+                                {data.tags.map((tag, index) => {
+                                    return <li key={index}>{tag}</li>;
+                                })}
+                            </ul>
+                        </div>
                         <p className={cx('content')}>{data.text} </p>
                         {data.files.others.length !== 0 && (
                             <div className={cx('file-show')}>
@@ -321,7 +322,15 @@ function Post({ id, data }) {
                     </div>
                 </Menu>
             </div>
-            <h4 className={cx('title')} >{data.title}</h4>
+
+            <div className={cx('title-wrapper')}>
+                <h4 className={cx('title')}>{data.title}</h4>
+                <ul className={cx('selected-category')}>
+                    {data.tags.map((tag, index) => {
+                        return <li key={index}>{tag}</li>;
+                    })}
+                </ul>
+            </div>
             <p className={cx('content')}>{data.text} </p>
             {data.files.others.length !== 0 && (
                 <div className={cx('file-show')}>

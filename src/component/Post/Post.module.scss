@@ -23,6 +23,13 @@ $time-color: #adb5bd;
             color:var(--text-color-dark);
         }
     }
+    &.dark .title{
+        color:var(--primary)
+    }
+    &.dark .selected-category li{
+        border-color: var(--primary);
+        color: var(--primary);
+    }
     
 }
 
@@ -79,12 +86,36 @@ $time-color: #adb5bd;
     }
 }
 
-
-.title{
+.title-wrapper{
+      display: flex;
+    align-items: center;
     margin-top: 10px;
     margin-bottom: 5px;
-    font-size: 2rem ;
 }
+.title{
+ 
+    font-size: 1.8rem ;
+    color:var(--primary-light);
+    margin-right: 10px;
+}
+
+.selected-category {
+
+    display: flex;
+   
+    li {
+        padding: 1px 8px;
+        margin-right: 10px;
+        border: 1px solid var(--primary-light);
+        color: var(--primary-light);
+        border-radius: 16px;
+        list-style-type: none;
+        font-size: 1.4rem;
+    }
+}
+
+
+
 .content {
     margin-bottom: 15px;
     font-size: 1.6rem;

@@ -1,17 +1,10 @@
 .wrapper {
-    min-height: 1000px;
     padding-top: 10px;
     width: 700px;
     margin: 0 68px 0 132px;
+ 
 }
 
-.savepost-wrapper{
-    background-color: var(--dark-theme);
+.no-content{
+   margin-left: 100px;
 }
-.avatar{
-    height: 30px;
-    width: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-

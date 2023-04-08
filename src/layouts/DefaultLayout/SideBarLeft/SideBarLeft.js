@@ -3,9 +3,13 @@ import styles from './SideBarLeft.module.scss';
 import SidebarMenuItems from 'src/layouts/components/SidebarMenuItems';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
+    faBoltLightning,
+    faBook,
     faBoxArchive,
+    faGamepad,
     faIdBadge,
     faLightbulb,
+    faNewspaper,
     faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
@@ -28,11 +32,11 @@ function SideBarLeft() {
         <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
             {/* New feed  */}
             <div className={cx('menu-wrapper')}>
-                <h4 className={cx('menu-header')}>New Feeds</h4>
+                <h4 className={cx('menu-header')}>Applications</h4>
                 {/* prop backgroundcolor de xet background cho icon, color xet color cho icon */}
                 <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faTvAlt} />}
-                    title="Newsfeed"
+                    icon={<FontAwesomeIcon icon={faNewspaper} />}
+                    title="Home"
                     backGroundColor="linear-gradient(to right, #0575e6, #021b79)"
                     color="#fff"
                     numsNotify={590}
@@ -42,14 +46,27 @@ function SideBarLeft() {
                     }
                 />
                 <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faIdBadge} />}
-                    title="Badges"
-                    backGroundColor="linear-gradient(to right, #e44d26, #f16529)"
+                    icon={<FontAwesomeIcon icon={faBook} />}
+                    title="Documents"
+                    backGroundColor="linear-gradient(to right,  #ffafbd,#ffc3a0)"
                     color="#fff"
-           
+                    onClick={() => {
+             
+                        navigate(routes.story)}
+                    }
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faBoxArchive} />}
+                    title="Saved Posts"
+                    backGroundColor="linear-gradient(to right, #e44d26, #f16529)"
+                    color="#fff"
+                    onClick={() => {
+                        navigate(routes.saves+user?.uid)}
+                    }
+           
+                />
+                <SidebarMenuItems
+                    icon={<FontAwesomeIcon icon={faBoltLightning} />}
                     title="Explore Stories"
                     backGroundColor="linear-gradient(to right, #f2994a, #f2c94c)"
                     color="#fff"
@@ -58,9 +75,10 @@ function SideBarLeft() {
                         navigate(routes.story)}
                     }
                 />
+       
                 <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faLightbulb} />}
-                    title="Groups"
+                    icon={<FontAwesomeIcon icon={faGamepad} />}
+                    title="Game"
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
               
