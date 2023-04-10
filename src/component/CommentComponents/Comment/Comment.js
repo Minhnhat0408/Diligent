@@ -15,7 +15,7 @@ function Comment({ avatar, username, paragraph, img, disable }) {
 
     const handleClickReply = () => {
         if (disable) {
-            // Xử lí reply của subcomment 
+            // Xử lí reply của subcomment
             return;
         }
         setIsReply(!isReply);
@@ -51,7 +51,6 @@ function Comment({ avatar, username, paragraph, img, disable }) {
                     />
                 )}
                 {isReply && <ReplyComment username={username} />}
-
             </div>
         </div>
     );

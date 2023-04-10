@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { StoryItem } from '~/component/StoryItem';
+import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
 import Image from '~/component/Image';
 const cx = classNames.bind(styles);

@@ -7,10 +7,7 @@ import {
     faBook,
     faBoxArchive,
     faGamepad,
-    faIdBadge,
-    faLightbulb,
     faNewspaper,
-    faTvAlt,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
 import { useContext} from 'react';
@@ -101,23 +98,6 @@ function SideBarLeft() {
                 <Calendar className={context.theme === 'dark' && 'dark'}/>
                 
             </div>
-
-            {/* Account  */}
-            {/* <div className={cx('menu-wrapper')}>
-                <h4 className={cx('menu-header')}>Account</h4>
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faGear} />}
-                    title="Settings"
-                    backGroundColor="linear-gradient(to right, #fc5c7d, #6a82fb)"
-                    color="#fff"
-                />
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faMessage} />}
-                    title="Chat"
-                    backGroundColor="linear-gradient(-20deg, #00cdac 0%, #8ddad5 100%)"
-                    color="#fff"
-                />
-            </div> */}
         </aside>
     );
 }

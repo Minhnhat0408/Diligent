@@ -10,66 +10,94 @@ import { ThemeContext } from '~/contexts/Context';
 import 'tippy.js/animations/scale.css';
 const cx = classNames.bind(styles);
 
-function Menu({ placement = 'bottom', offset,small = false, children, item = [], onClick = () =>{},onChange = () => {} }) {
-    const [history, setHistory] = useState([{ data: item }]); // du lieu cua Menu cap hien tai
+function Menu({
+    placement = 'bottom',
+    offset,
+    small = false,
+    children,
+    item = [],
+    onClick = () => {},
+    onChange = () => {},
+  }) {
+    const [history, setHistory] = useState([{ data: item }]);
+    const [isOpen, setIsOpen] = useState(false); // Added isOpen state
     const current = history[history.length - 1];
     const menu = useRef();
     const context = useContext(ThemeContext);
+  
     useEffect(() => {
-        setHistory([{ data: item }]);
+      setHistory([{ data: item }]);
     }, [item]);
+  
     const renderItem = () => {
-        return current.data.map((a, b) => {
-            const isParent = !!a.children;
-            return (
-                <MenuItem
-                    key={b}
-                    data={a}
-                    onClick={() => {
-                        if (isParent) {
-                            setHistory((prev) => [...prev, a.children]);
-                        } else {
-                            onChange(a);
-                          
-                        }
-                        onClick(a);
-                        console.log(history,a)
-                    }}
-                ></MenuItem>
-            );
-        });
+      return current.data.map((a, b) => {
+        const isParent = !!a.children;
+        return (
+          <MenuItem
+            key={b}
+            data={a}
+            onClick={() => {
+              if (isParent) {
+                setHistory((prev) => [...prev, a.children]);
+              } else {
+                onChange(a);
+                setIsOpen(false); // Added to close the menu on selection
+              }
+              onClick(a);
+              console.log(history, a);
+            }}
+          ></MenuItem>
+        );
+      });
     };
-
+  
     const handleBackMenu = () => {
-        setHistory(history.slice(0, history.length - 1));
+      setHistory(history.slice(0, history.length - 1));
+      handleOutofHoverMenu();
     };
-
+  
     const handleOutofHoverMenu = () => {
-        setHistory((prev) => prev.slice(0, 1));
+      setHistory((prev) => prev.slice(0, 1));
+       setIsOpen(false)
     };
-
+  
     const renderResult = (attrs) => (
-        <div tabIndex="-1" {...attrs} className={cx('menu-lists',{small:small})} ref={menu}>
-            <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
-                {history.length > 1 && <Header title={current.title} onBack={handleBackMenu} />}
-                <div className={cx('menu-body')}>{renderItem()}</div>
-            </PopperWrapper>
-        </div>
-    );
-    return (
-        <Tippy
-            onHide={handleOutofHoverMenu}
-            trigger='click'
-            interactive
-            offset={offset} // chinh ben trai / chieu cao so vs ban dau
-            placement={placement}
-            render={renderResult}
+      <div
+        tabIndex="-1"
+        {...attrs}
+        className={cx('menu-lists', { small: small })}
+        ref={menu}
+      >
+        <PopperWrapper
+          className={cx('menu-popper', {
+            [context.theme]: context.theme === 'dark',
+          })}
         >
-            {children}
-        </Tippy>
+          {history.length > 1 && (
+            <Header title={current.title} onBack={handleBackMenu} />
+          )}
+          <div className={cx('menu-body')}>{renderItem()}</div>
+        </PopperWrapper>
+      </div>
     );
-}
-
+  
+    return (
+      <>
+        <Tippy
+          visible={isOpen} // Added to control the menu visibility
+          onHide={handleOutofHoverMenu}
+          onClickOutside={() => setIsOpen(false)} // Added to close the menu on outside click
+          interactive
+          offset={offset}
+          placement={placement}
+          render={renderResult}
+        >
+          <div onClick={() => setIsOpen(true)}>{children}</div>
+        </Tippy>
+      </>
+    );
+  }
+  
 Menu.propTypes = {
     children: PropTypes.node.isRequired,
     item: PropTypes.array,

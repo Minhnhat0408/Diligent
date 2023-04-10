@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CommentBox.module.scss';
-import Comment from '~/component/Comment/Comment';
-import MyComment from '~/component/MyComment/MyComment';
+import Comment from '~/component/CommentComponents/Comment/Comment';
+import MyComment from '~/component/CommentComponents/MyComment/MyComment';
 
 const cx = classNames.bind(styles);
 

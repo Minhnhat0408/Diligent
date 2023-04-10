@@ -1,9 +1,9 @@
-import { faComment, faEllipsis, faShare, faThumbsDown, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons';
+import { faComment, faEllipsis, faThumbsDown, faThumbsUp, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import classNames from 'classnames/bind';
 import styles from './Post.module.scss';
-import { useState } from 'react';
-import CommentBox from '~/component/CommentBox';
+import { useEffect, useRef, useState } from 'react';
+import CommentBox from '~/component/CommentComponents/CommentBox';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Image from '../Image';
@@ -17,16 +17,42 @@ import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../Popper/Menu/Menu';
 import { POST_OPTIONS, USER_POST_OPTIONS } from '~/utils/constantValue';
+import parse from 'html-react-parser';
 
 const cx = classNames.bind(styles);
 
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user, deletePost, savePost,posts,setPosts } = UserAuth();
+    const { userData, user, deletePost, savePost } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
-
+    const [text,setText] = useState('');
+    const userLink = (id)=> {
+        navigate(routes.user + id)
+    }
+    useEffect(() => {
+        const regex = /@[^)]+\)/g;
+        const test = /\([^(]+\w+/g;
+    
+        setText(data.text.replace(regex, (spc) => {
+          const id = spc.match(test)[0].substring(1);
+          const name = spc.substring(0, spc.indexOf('('));
+          return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
+        }));
+      }, []);
+    const replace = (domNode) => {
+        if (domNode.attribs && domNode.attribs.id === "mentions") {
+          return (
+              <strong
+                onClick={() => userLink(domNode.attribs.data)}
+                className={cx('mention')}
+              >
+                {domNode.attribs.name}
+              </strong>
+          );
+        }
+      };
     const handleClickLike = async () => {
         try {
             const dis = data.react === -1 ? data.dislike.count - 1 : data.dislike.count;
@@ -85,7 +111,6 @@ function Post({ id, data }) {
     const handlePostOptions = (item) => {
         switch (item.type) {
             case 'hide':
-            
                 break;
             case 'save':
                 savePost(id, data);
@@ -153,6 +178,15 @@ function Post({ id, data }) {
             console.log(err);
         }
     };
+
+    // const norm =/\<strong[^(\<\/strong\>)]+(\<\/strong\>)/g
+
+    // const final = msg.replace(regex, (spc) => {
+    //     const id = spc.match(test)[0].substring(1);
+    //     const name = spc.substring(0, spc.indexOf('('));
+    //     return `<strong id="${id}">${name}</strong>`;
+    // });
+
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {focusPost && (
@@ -285,11 +319,6 @@ function Post({ id, data }) {
                                     <p className={cx('nums')}>{data.commentNumber}</p>
                                 </div>
                             </div>
-
-                            <div className={cx('share-action')}>
-                                <FontAwesomeIcon icon={faShare} className={cx('icon')} />
-                                <p>Share</p>
-                            </div>
                         </div>
 
                         {isCommentVisible && <CommentBox />}
@@ -331,7 +360,11 @@ function Post({ id, data }) {
                     })}
                 </ul>
             </div>
-            <p className={cx('content')}>{data.text} </p>
+            <div className={cx('content')} >
+                {
+                    parse(text,{ replace })
+                }
+            </div>
             {data.files.others.length !== 0 && (
                 <div className={cx('file-show')}>
                     {data.files.others.map((f, id) => {
@@ -411,11 +444,6 @@ function Post({ id, data }) {
                         />
                         <p className={cx('nums')}>{data.commentNumber}</p>
                     </div>
-                </div>
-
-                <div className={cx('share-action')}>
-                    <FontAwesomeIcon icon={faShare} className={cx('icon')} />
-                    <p>Share</p>
                 </div>
             </div>
 

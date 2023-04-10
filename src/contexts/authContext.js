@@ -265,6 +265,7 @@ export const AuthContextProvider = ({ children }) => {
                         updateDoc(doc(db, 'users', user.uid), {
                             user_bg: downloadURL,
                         });
+                        resolve('succesful')
                     } else {
                         console.log(downloadURL);
                         resolve({url:downloadURL,name:name}); // resolve the Promise with the downloaded URL
@@ -274,8 +275,9 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     // Post handle 
-    const createPost = async (files, text,tags) => {
+    const createPost = async (files, title,text ,tags) => {
         await addDoc(collection(db, 'posts'), {
+            title:title,
             text: text,
             files: files,
             tags:tags,

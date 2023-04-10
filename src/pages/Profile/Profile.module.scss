@@ -61,7 +61,7 @@
 .background-ava{
     width: 100%;
     height: 180px;
-    object-fit: cover;
+    object-fit: contain;
     padding-bottom: 10px;
     background-color: var(--bg-light-theme);
     border-radius: 15px;

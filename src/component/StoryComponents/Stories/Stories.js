@@ -1,12 +1,12 @@
-import classNames from "classnames/bind";
-import styles from './Stories.module.scss'
-import { useState, useRef, useContext } from "react";
+import classNames from 'classnames/bind';
+import styles from './Stories.module.scss';
+import { useState, useRef, useContext } from 'react';
 import { faArrowLeft, faArrowRight, faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Story from "../Story";
-import { ThemeContext } from "~/contexts/Context";
+import Story from '../Story';
+import { ThemeContext } from '~/contexts/Context';
 
-const cx = classNames.bind(styles)
+const cx = classNames.bind(styles);
 
 // mô phỏng code array
 const arr = [
@@ -141,10 +141,10 @@ const arr = [
 ];
 
 function Stories() {
-    // 133 là width một story + margin 
+    // 133 là width một story + margin
     const TRANSX = 133;
     let currentIndex = useRef(0);
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     const [transX, setTransX] = useState(0);
 
     const handleClickRight = function () {
@@ -168,7 +168,7 @@ function Stories() {
         return <Story img={a.img} username={a.username} icon={a.icon} key={index} />;
     });
     return (
-        <div className={cx('wrapper',{dark: context.theme === "dark"})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {/* Nếu vị trí stories hiện tại không phải là vị trí đầu tiên, hiển thị nút điều hướng sang trái */}
             {transX !== 0 && (
                 <div className={cx('arrow-left', 'arrow')} onClick={handleClickLeft}>

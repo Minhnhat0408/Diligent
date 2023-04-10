@@ -5,7 +5,7 @@ import equals from 'validator/lib/equals';
 import isMobilePhone from 'validator/lib/isMobilePhone';
 
 import isAfter from 'validator/lib/isAfter';
-function isNotEmpty(obj) {
+export function isNotEmpty(obj) {
     return !!obj && obj.trim();
 }
 

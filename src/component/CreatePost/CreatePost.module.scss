@@ -15,10 +15,10 @@ $color-camera: #fe9431;body
         background-color: var(--dark-theme);
         box-shadow: none;
     }
-    & .input {
+    & .input-outside {
         transition: all 0.8s;
         textarea{
-            background-color: #eee;;
+            background-color: #eeeeee;
             color:var(--text-color);
             
         }
@@ -36,7 +36,7 @@ $color-camera: #fe9431;body
         }
     }
     
-    &.dark .input {
+    &.dark .input-outside {
         textarea {
             background-color: var(--bg-dark-theme);
             color: var(--text-color-dark);
@@ -67,7 +67,7 @@ $color-camera: #fe9431;body
         }
     }
 
-    .input {
+    .input-outside {
         display: flex;
         align-items: center;
         margin-top: 20px;
@@ -154,9 +154,10 @@ $color-camera: #fe9431;body
 
     }
     &.dark .create-box .input{
-        background-color: transparent;
+        background-color: var(--bg-dark-theme);
         color:var(--text-color-dark);
     }
+    
  
 }
 
@@ -238,12 +239,41 @@ max-height: 600px;
         .input {
             margin-top: 8px;
             width: 100%;
-            height: 80px;
             font-size: 2rem;
             border: none;
             outline: none;
+            color: var(--text-color);
+            background-color: #eeeeee;
+            border-radius: 20px;
+            padding-left: 20px;
+            padding-top: 6px;
+            padding: 6px 20px 6px 20px; 
             resize: none;
- 
+            &.inp-title{
+                height:60px;
+                &.invalid{
+                    border: 1px solid #f33a58 ;
+                    box-shadow: 0 0 15px 0 #f33a58;
+                }
+                &.invalid::placeholder{
+                    color: #f33a58;
+                }
+            }
+            &.inp-text{
+                height: 100px;
+                display: flex;
+                flex-wrap: wrap;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                writing-mode: horizontal-tb !important; 
+                & .tagged{
+                    height:20px;
+                    display: inline-block;
+                    color: var(--primary) !important;
+                    cursor: pointer;
+                }
+            }
+           
         }
         &.dark .options {
             border:none
@@ -325,6 +355,28 @@ max-height: 600px;
    
         }
     }
+}
+.tag-box{
+    position: absolute;
+    height: 50px;
+    width: 160px;
+    top:-25px;
+    left: 0;
+    display: flex;
+    border-radius: 15px;
+    overflow-y: scroll;
+    align-items: center;
+    background-color: var(--dark-theme);
+}
+.tag-name{
+    color: var(--primary);
+ 
+    white-space: nowrap;
+    overflow-x: hidden;
+    &:hover{
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+    
 }
 
 .d-none {

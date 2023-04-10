@@ -31,7 +31,6 @@ import {
     faMessage,
     faPhone,
     faUserFriends,
-
     faVenus,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
@@ -48,24 +47,24 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user,usersList, userData, handleAccept, handleDecline, unFriend, fileUpload,posts } = UserAuth();
+    const { user, usersList, userData, handleAccept, handleDecline, unFriend, fileUpload, posts } = UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
     const [userPosts, setUserPosts] = useState();
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
-
+    const [loading, setLoading] = useState();
     // const time = new Date(userData.user_createdAt.toMillis()) ;
     // console.log(time.toLocaleString())
     // const a = Date.now() -userData.user_createdAt.toMillis()
     // console.log(getTimeDiff(Date.now(),userData.user_createdAt.toMillis()))
-
+    console.log('refresh')
     useEffect(() => {
         console.log('rendrererer');
         if (user?.uid !== id) {
             usersList.forEach((doc) => {
-                if(doc.id === id) {
+                if (doc.id === id) {
                     const friendRq = doc.data.user_friendRequests;
                     setPageUser(doc.data);
                     if (user) {
@@ -90,35 +89,28 @@ function Profile() {
                     }
                     return;
                 }
-            
-            })
-     
+            });
         } else {
-
             setPageUser(userData);
         }
-        // const q = query(collection(db, 'posts'), where('user.id', '==', id), orderBy('time', 'desc'));
-        // getDocs(q).then((data) => {
-        //     console.log(data.docs);
-        //     const posts = [];
-        //     data.forEach((doc) => {
-        //         posts.push({ id: doc.id, data: doc.data() });
-        //     });
-        //     setUserPosts(posts);
-        // });
-       
-           setUserPosts(posts.filter((post) => {
-            return post.data.user.id === id
-           }))
-        
+
+        setUserPosts(
+            posts.filter((post) => {
+                return post.data.user.id === id;
+            }),
+        );
     }, [id, usersList]);
 
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
-
+        setLoading(true);
         const newNameFile = `${user.uid}_bg` + ava.name.substring(ava.name.indexOf('.'));
         console.log(newNameFile);
-        await fileUpload(ava, newNameFile, true);
+        fileUpload({file:ava,name:newNameFile,bg_upload:true}).then((res)=>{
+            console.log(res)
+            setLoading(false);
+        });
+       
     };
 
     const handleMenuChange = (menuItem) => {
@@ -311,7 +303,9 @@ function Profile() {
                                                     offset={[0, 30]}
                                                     // chinh ben trai / chieu cao so vs ban dau
                                                     placement="right"
-                                                    item={disabled === 'Friend' ? PROFILE_FRIEND_OPTIONS : PROFILE_OPTIONS}
+                                                    item={
+                                                        disabled === 'Friend' ? PROFILE_FRIEND_OPTIONS : PROFILE_OPTIONS
+                                                    }
                                                     onChange={handleMenuChange}
                                                 >
                                                     <Button xs outline dark={context.theme === 'dark'}>
@@ -368,6 +362,11 @@ function Profile() {
                     {previewAvatar && (
                         <div className={cx('pop-up')} onClick={() => setPreviewAvatar(false)}>
                             <Image src={pageUser.user_avatar} className={cx('preview')} alt="preview" />
+                        </div>
+                    )}
+                    {loading && (
+                        <div className="pop-up loader">
+                            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                         </div>
                     )}
                 </div>

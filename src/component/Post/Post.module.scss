@@ -118,8 +118,17 @@ $time-color: #adb5bd;
 
 .content {
     margin-bottom: 15px;
-    font-size: 1.6rem;
+    font-size: 1.7rem;
     font-weight: 400;
+    overflow: hidden;
+    white-space: wrap;
+    word-wrap: normal;
+
+}
+.mention{
+    color: var(--primary);
+    z-index: 12;
+    cursor: pointer;
 }
 .file-show{
     display: flex;
