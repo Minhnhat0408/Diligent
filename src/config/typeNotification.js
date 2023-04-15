@@ -4,7 +4,7 @@ const type = {
     like:'like your post.',
     dislike:'dislike your post.',
     comment:'comment on your post.',
-    mention:'mentioned you in a comment.',
+    mention:'mentioned you in a post.',
     reply:'replied to your comment.'
 }
 

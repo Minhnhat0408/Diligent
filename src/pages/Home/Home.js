@@ -4,6 +4,7 @@ import Stories from '~/component/StoryComponents/Stories';
 import CreatePost from '~/component/CreatePost';
 import Post from '~/component/Post';
 import { UserAuth } from '~/contexts/authContext';
+import { useEffect } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -20,9 +21,12 @@ function Home() {
             )}
             {/* Hiển thị bài viết */}
             {posts &&
-                posts.map((post, id) => {
-                    return <Post key={id} id={post.id} data={post.data} />;
-                })}
+                posts
+                    .filter((post) => {
+
+                        return user ? !post.data.hide.includes(user.uid) : true;
+                    })
+                    .map((post, id) => <Post key={id} id={post.id} data={post.data} />)}
         </div>
     );
 }

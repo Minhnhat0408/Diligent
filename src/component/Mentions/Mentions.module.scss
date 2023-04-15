@@ -1,89 +1,129 @@
-
 .mentions {
-   //entire box
-    & .mentions__input{
-        line-height: 1.5;
-        overflow-y: scroll !important;
-   
-      }
-  }
-
+  width: 100%;
+  //entire box
+   & .mentions__input{
+       line-height: 1.5;
+       overflow-y: scroll !important;
   
-  .mentions--singleLine .mentions__control {
-    display: inline-block;
-    width: 130px;
-  }
-  .mentions--singleLine .mentions__highlighter {
-    padding: 1px;
-    border: 2px inset transparent;
-  }
-  .mentions--singleLine .mentions__input {
-    padding: 1px;
-    border: 2px inset;
-  }
-  
-  .mentions--multiLine .mentions__control {
-    font-size: 2rem;
-    font-family: monospace;
-  }
-  .mentions--multiLine .mentions__highlighter {
-    padding: 6px 20px;
-    height: 100px;
-    overflow:hidden;
-    color:inherit;
-    font-weight: bold;
-
-  }
-  .mentions--multiLine .mentions__input {
-    padding: 6px 20px;
-    outline: none;
-    height: 100px;
-    border:none;
-    color:inherit;
-
-  }
-  
-  .mentions__suggestions__list {
-    border-radius: 15px;
-    font-size:1.6rem;
+     }
+     &.cmt.mentions--multiLine .mentions__highlighter {
+      min-height: 40px;
+      max-height: 60px;
+      
     
-  }
+     }
+     &.cmt.mentions--multiLine .mentions__input {
+      min-height: 40px;
+      max-height: 60px;
+
+    
+   }
+   &.cmt.mentions--multiLine .mentions__control {
+   font-size: 1.6rem;
+
   
-  .mentions__suggestions__item {
-    padding: 5px 15px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-  }
-  
-  .mentions__suggestions__item--focused {
-    background-color: rgba(0, 0, 0, 0.15);
-  }
-  
-  .mentions__mention {
-    position: relative;
-    z-index: 1;
-    line-height: 1.5;
-    color: var(--primary-light);
-    cursor: pointer !important;
-    margin-bottom:2px;
-    text-shadow: 1px 1px 1px #eee, 1px -1px 1px #eee, -1px 1px 1px #eee,
-      -1px -1px 1px #eee;
-    pointer-events: none;
-    text-align:start;
-   
-    &.dark{
-      color: var(--primary);
-     text-shadow: 1px 1px 1px var(--bg-dark-theme), 1px -1px 1px var(--bg-dark-theme), -1px 1px 1px var(--bg-dark-theme),
-      -1px -1px 1px var(--bg-dark-theme);
-    }
-  }
-  .container{
-    background-color: var(--light-theme);
-    height: 100px;
-    overflow-y: scroll;
-    color: var(--primary-light);
-    &.dark{
-      background-color: var(--dark-theme);
-      color: var(--primary);
+ }
+ &.reply.mentions--multiLine .mentions__highlighter {
+  min-height: 30px;
+  max-height: 30px; 
+
+ }
+ &.reply.mentions--multiLine .mentions__input {
+   min-height: 30px;
+    max-height: 30px;
+ 
+    line-height: normal;
+
+}
+&.reply.mentions--multiLine .mentions__control {
+    font-size: 1.6rem;
      
-    }
-  }
+  line-height: normal;
+
+}
+&.reply .mentions__mention{
+  line-height: normal;
+}
+ }
+
+ 
+ .mentions--singleLine .mentions__control {
+   display: inline-block;
+   width: 130px;
+ }
+ .mentions--singleLine .mentions__highlighter {
+   padding: 1px;
+   border: 2px inset transparent;
+ }
+ .mentions--singleLine .mentions__input {
+   padding: 1px;
+   border: 2px inset;
+ }
+ 
+ .mentions--multiLine .mentions__control {
+   font-size: 2rem;
+   font-family: monospace;
+ }
+ .mentions--multiLine .mentions__highlighter {
+   padding: 6px 20px;
+   min-height: 100px;
+   max-height: 100px;
+   overflow:hidden;
+   color:inherit;
+   font-weight: bold;
+
+ }
+ .mentions--multiLine .mentions__input {
+   padding: 6px 20px;
+   outline: none;
+   min-height: 100px;
+   max-height: 100px;
+   border:none;
+   color:inherit;
+
+ }
+ 
+ .mentions__suggestions__list {
+   border-radius: 15px;
+   font-size:1.6rem;
+   
+ }
+ 
+ .mentions__suggestions__item {
+   padding: 5px 15px;
+   border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+ }
+ 
+ .mentions__suggestions__item--focused {
+   background-color: rgba(0, 0, 0, 0.15);
+ }
+ 
+ .mentions__mention {
+   position: relative;
+   z-index: 1;
+   line-height: 1.5;
+   color: var(--primary-light);
+   cursor: pointer !important;
+   margin-bottom:2px;
+   text-shadow: 1px 1px 1px #eee, 1px -1px 1px #eee, -1px 1px 1px #eee,
+     -1px -1px 1px #eee;
+   pointer-events: none;
+   text-align:start;
+  
+   &.dark{
+     color: var(--primary);
+    text-shadow: 1px 1px 1px var(--bg-dark-theme), 1px -1px 1px var(--bg-dark-theme), -1px 1px 1px var(--bg-dark-theme),
+     -1px -1px 1px var(--bg-dark-theme);
+   }
+ }
+ .container{
+   background-color: var(--light-theme);
+   height: 100px;
+   overflow-y: scroll;
+   color: var(--primary-light);
+   &.dark{
+     background-color: var(--dark-theme);
+     color: var(--primary);
+    
+   }
+ }

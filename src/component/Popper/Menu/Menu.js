@@ -58,7 +58,7 @@ function Menu({
   
     const handleOutofHoverMenu = () => {
       setHistory((prev) => prev.slice(0, 1));
-       setIsOpen(false)
+  
     };
   
     const renderResult = (attrs) => (

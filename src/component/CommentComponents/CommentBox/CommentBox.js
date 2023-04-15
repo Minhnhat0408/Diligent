@@ -2,34 +2,92 @@ import classNames from 'classnames/bind';
 import styles from './CommentBox.module.scss';
 import Comment from '~/component/CommentComponents/Comment/Comment';
 import MyComment from '~/component/CommentComponents/MyComment/MyComment';
+import { useEffect, useState } from 'react';
+import { addDoc, collection, doc, getDocs, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
+import Image from '~/component/Image/Image';
+import image from '~/assets/images';
+import { UserAuth } from '~/contexts/authContext';
+import type from '~/config/typeNotification';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
-const comments = [
-    {
-        avatar: 'https://scontent.fhan15-2.fna.fbcdn.net/v/t1.6435-1/147677418_1119459815159609_3387462793116236375_n.jpg?stp=dst-jpg_p100x100&_nc_cat=104&ccb=1-7&_nc_sid=7206a8&_nc_ohc=y_xkM1TEpE8AX-s4V6A&_nc_ad=z-m&_nc_cid=1229&_nc_ht=scontent.fhan15-2.fna&oh=00_AfC9FFHBtWRfbeZVmWdRFAl7z4noGNMC6qmxPZ3PHqG7-g&oe=643FA667',
-        username: 'Sếp Khoa',
-        paragraph: 'Ngon vkl',
-        img: 'https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/282784957_3154917814757054_2260434140125186522_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=vPEnTA0MOFIAX9SThQJ&_nc_ht=scontent.fhan15-1.fna&oh=00_AfDIFmevc9bbhdYocGCOf0pZl0Efbn2DUSxM4mBVfSjTKQ&oe=641DA3A3',
-    },
-];
 
-function CommentBox() {
+
+function CommentBox({id,data}) {
+    const [comments,setComments] = useState([]);
+    const {fileUpload,user,userData,posts} = UserAuth();
+    useEffect(() => {
+        const fetchComment = async () => {
+            const  tmp = []
+            const docs = await getDocs(collection(db,'posts',id,'comments'));
+            docs.forEach((doc) => {
+                tmp.push({ id: doc.id, data: doc.data() });
+            });
+            setComments(tmp);
+        }
+        fetchComment()
+    },[posts])
+    console.log(comments)
+
+    const handleSubmit = async(inpData) =>{
+        const image = null;
+        if(inpData.image) {
+           image= await fileUpload(inpData.image,inpData.image.name)
+        }
+
+        
+        await addDoc(collection(db,'posts',id,'comments'),{
+            text:inpData.text,
+            image:image?.url || '',
+            time:serverTimestamp(),
+            isEdited:false,
+            user:{
+                name: userData.user_name,
+                id: user.uid,
+                avatar: userData.user_avatar,
+            },
+            like:{
+                count:0,
+                list:[]
+            }
+
+        })
+        await updateDoc(doc(db,'posts',id),{
+            commentNumber:data.commentNumber+1,
+        })
+        if(data.user.id !== user.uid){
+            await addDoc(collection(db,'users',data.user.id,'notifications'),{
+                title: type.comment,
+                url: routes.post + id,
+                sender: {
+                    id: user.uid,
+                    name: userData.user_name,
+                    avatar: userData.user_avatar,
+                },
+                type: 'comment',
+                time: new Date(),
+                read: false,
+            })
+
+        }
+      
+    }
     return (
         <div className={cx('wrapper')}>
-            {comments.map((comment, index) => {
+            {comments.length !== 0 ? comments.map((comment) => {
                 return (
                     <Comment
-                        key={index}
-                        avatar={comment.avatar}
-                        username={comment.username}
-                        img={comment.img}
-                        paragraph={comment.paragraph}
+                        key={comment.id}
+                       data={comment.data}
                     />
                 );
-            })}
+            }) :  (
+                <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
+            )}
 
-            <MyComment />
+            <MyComment onClick={handleSubmit}/>
         </div>
     );
 }

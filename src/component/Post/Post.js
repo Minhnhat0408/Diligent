@@ -24,35 +24,35 @@ const cx = classNames.bind(styles);
 function Post({ id, data }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user, deletePost, savePost } = UserAuth();
+    const { userData, user, deletePost, savePost, posts, hidePost } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
-    const [text,setText] = useState('');
-    const userLink = (id)=> {
-        navigate(routes.user + id)
-    }
+    const [text, setText] = useState('');
+    const userLink = (id) => {
+        navigate(routes.user + id);
+    };
+
     useEffect(() => {
         const regex = /@[^)]+\)/g;
         const test = /\([^(]+\w+/g;
-    
-        setText(data.text.replace(regex, (spc) => {
-          const id = spc.match(test)[0].substring(1);
-          const name = spc.substring(0, spc.indexOf('('));
-          return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
-        }));
-      }, []);
+
+        setText(
+            data.text.replace(regex, (spc) => {
+                const id = spc.match(test)[0].substring(1);
+                const name = spc.substring(0, spc.indexOf('('));
+                return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
+            }),
+        );
+    }, [posts]);
     const replace = (domNode) => {
-        if (domNode.attribs && domNode.attribs.id === "mentions") {
-          return (
-              <strong
-                onClick={() => userLink(domNode.attribs.data)}
-                className={cx('mention')}
-              >
-                {domNode.attribs.name}
-              </strong>
-          );
+        if (domNode.attribs && domNode.attribs.id === 'mentions') {
+            return (
+                <strong onClick={() => userLink(domNode.attribs.data)} className={cx('mention')}>
+                    {domNode.attribs.name}
+                </strong>
+            );
         }
-      };
+    };
     const handleClickLike = async () => {
         try {
             const dis = data.react === -1 ? data.dislike.count - 1 : data.dislike.count;
@@ -111,6 +111,7 @@ function Post({ id, data }) {
     const handlePostOptions = (item) => {
         switch (item.type) {
             case 'hide':
+                hidePost(id);
                 break;
             case 'save':
                 savePost(id, data);
@@ -125,7 +126,6 @@ function Post({ id, data }) {
     const handleClickDislike = async () => {
         try {
             const lik = data.react === 1 ? data.like.count - 1 : data.like.count;
-            console.log(lik);
             await updateDoc(doc(db, 'posts', id), {
                 dislike: {
                     count: data.dislike.count + 1,
@@ -179,14 +179,6 @@ function Post({ id, data }) {
         }
     };
 
-    // const norm =/\<strong[^(\<\/strong\>)]+(\<\/strong\>)/g
-
-    // const final = msg.replace(regex, (spc) => {
-    //     const id = spc.match(test)[0].substring(1);
-    //     const name = spc.substring(0, spc.indexOf('('));
-    //     return `<strong id="${id}">${name}</strong>`;
-    // });
-
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {focusPost && (
@@ -219,15 +211,17 @@ function Post({ id, data }) {
                                 </div>
                             </div>
 
-                            <Menu
-                                // chinh ben trai / chieu cao so vs ban dau
-                                item={data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
-                                onClick={handlePostOptions}
-                            >
-                                <div className={cx('options')}>
-                                    <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
-                                </div>
-                            </Menu>
+                            {user && (
+                                <Menu
+                                    // chinh ben trai / chieu cao so vs ban dau
+                                    item={data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
+                                    onClick={handlePostOptions}
+                                >
+                                    <div className={cx('options')}>
+                                        <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                                    </div>
+                                </Menu>
+                            )}
                         </div>
                         <div className={cx('title-wrapper')}>
                             <h4 className={cx('title')}>{data.title}</h4>
@@ -237,7 +231,7 @@ function Post({ id, data }) {
                                 })}
                             </ul>
                         </div>
-                        <p className={cx('content')}>{data.text} </p>
+                        <div className={cx('content')}>{parse(text, { replace })}</div>
                         {data.files.others.length !== 0 && (
                             <div className={cx('file-show')}>
                                 {data.files.others.map((f, id) => {
@@ -321,7 +315,7 @@ function Post({ id, data }) {
                             </div>
                         </div>
 
-                        {isCommentVisible && <CommentBox />}
+                        {isCommentVisible && <CommentBox id={id} data={data}/>}
                     </div>
                 </div>
             )}
@@ -341,15 +335,17 @@ function Post({ id, data }) {
                     </div>
                 </div>
 
-                <Menu
-                    // chinh ben trai / chieu cao so vs ban dau
-                    item={data.user.id === user?.uid ? USER_POST_OPTIONS : POST_OPTIONS}
-                    onClick={handlePostOptions}
-                >
-                    <div className={cx('options')}>
-                        <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
-                    </div>
-                </Menu>
+                {user && (
+                    <Menu
+                        // chinh ben trai / chieu cao so vs ban dau
+                        item={data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
+                        onClick={handlePostOptions}
+                    >
+                        <div className={cx('options')}>
+                            <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                        </div>
+                    </Menu>
+                )}
             </div>
 
             <div className={cx('title-wrapper')}>
@@ -360,11 +356,7 @@ function Post({ id, data }) {
                     })}
                 </ul>
             </div>
-            <div className={cx('content')} >
-                {
-                    parse(text,{ replace })
-                }
-            </div>
+            <div className={cx('content')}>{parse(text, { replace })}</div>
             {data.files.others.length !== 0 && (
                 <div className={cx('file-show')}>
                     {data.files.others.map((f, id) => {
@@ -447,7 +439,6 @@ function Post({ id, data }) {
                 </div>
             </div>
 
-            {isCommentVisible && <CommentBox />}
         </div>
     );
 }

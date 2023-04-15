@@ -94,12 +94,16 @@ function Profile() {
             setPageUser(userData);
         }
 
+
+    }, [id, usersList]);
+    useEffect(() => {
         setUserPosts(
             posts.filter((post) => {
-                return post.data.user.id === id;
+                console.log(post)
+                return post.data.user.id === id || post.data.mentions.includes(id);
             }),
         );
-    }, [id, usersList]);
+    },[posts])
 
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];

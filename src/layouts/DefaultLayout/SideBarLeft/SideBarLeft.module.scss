@@ -1,7 +1,6 @@
 .wrapper {
     width: var(--defaultLayout-sidebar-left-width);
     padding:  20px 8px 26px 8px;
-    background-color: var(--sidebar-color);
     position: fixed;
     top: var(--defaultLayout-header-height);
     bottom: 0;
@@ -20,9 +19,6 @@
         box-shadow: none;
     }
 
-    &.dark {
-        background-color: var(--bg-dark-theme);
-    }
     &.dark .menu-header{
         color:var(--text-color-dark); 
     }

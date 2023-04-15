@@ -49,6 +49,7 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
+        console.log(user.uid,'create')
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
@@ -116,7 +117,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_theme: 'light',
                 user_friendRequests: [],
                 user_friends: [],
-                user_postNumber: 0,
+                user_postNumber: 0, 
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
@@ -275,12 +276,13 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     // Post handle 
-    const createPost = async (files, title,text ,tags) => {
-        await addDoc(collection(db, 'posts'), {
+    const createPost = async (files, title,text ,tags,mentions) => {
+        const docRef = await addDoc(collection(db, 'posts'), {
             title:title,
             text: text,
             files: files,
             tags:tags,
+            mentions:mentions,
             user: {
                 id: user.uid,
                 avatar: userData.user_avatar,
@@ -290,8 +292,9 @@ export const AuthContextProvider = ({ children }) => {
             like: {count:0,list:[]},
             dislike: {count:0,list:[]},
             commentNumber: 0,
-            latest_comment: {},
+            hide:[],
         });
+        return docRef;
     };
 
     const deletePost = async (id) => {
@@ -300,7 +303,11 @@ export const AuthContextProvider = ({ children }) => {
             user_postNumber:userData.user_postNumber-1,
         })
     }
-
+    const hidePost = async (id) =>{
+        await updateDoc(doc(db,'posts',id),{
+            hide:arrayUnion(user.uid),
+        })
+    }
     const savePost = async (id,data) => {
         await setDoc(doc(db,'users',user.uid,'saves',id),{
             title: data.title,
@@ -322,10 +329,13 @@ export const AuthContextProvider = ({ children }) => {
             
             if (currentUser) {
                 setUser(currentUser);
-                await updateDoc(doc(userRef, currentUser.uid), {
-                    user_status: 'online',
-                });
-
+                console.log(currentUser.uid,'update')
+                if(window.location.pathname !== routes.updateInfo){
+                    await updateDoc(doc(userRef, currentUser.uid), {
+                        user_status: 'online',
+                    });
+                }
+               
                 //fetch user list realtime
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
                     const data = [];
@@ -343,7 +353,7 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setUsersList(data);
                 });
-
+              
                 // fetch posts change realtime
                 onSnapshot(collection(db, 'posts'), (docs) => {
                     let data1 = [];
@@ -425,6 +435,7 @@ export const AuthContextProvider = ({ children }) => {
         fileUpload,
         createPost,
         deletePost,
+        hidePost,
         savePost,
         deleteSavePost,
         handleDecline,
