@@ -87,7 +87,7 @@ function CommentBox({id,data}) {
                 <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
             )}
 
-            <MyComment onClick={handleSubmit}/>
+            {user && <MyComment onClick={handleSubmit}/>}
         </div>
     );
 }

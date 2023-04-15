@@ -47,7 +47,7 @@ function Post({ id, data }) {
     const replace = (domNode) => {
         if (domNode.attribs && domNode.attribs.id === 'mentions') {
             return (
-                <strong onClick={() => userLink(domNode.attribs.data)} className={cx('mention')}>
+                <strong onClick={() => userLink(domNode.attribs.data)} className={cx('mention',{dark:context.theme === 'dark'})}>
                     {domNode.attribs.name}
                 </strong>
             );

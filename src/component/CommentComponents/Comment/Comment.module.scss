@@ -1,6 +1,12 @@
 .wrapper {
     display: flex;
     margin-top: 10px;
+    &.dark .username{
+        color:var(--primary)
+    }
+    &.dark .mention{
+        color: var(--primary);
+    }
 }
 
 .avatar {
@@ -26,7 +32,7 @@
 
     .username {
         font-size: 1.4rem;
-        color: var(--primary);
+        color: var(--primary-light);
 
         &:hover {
             text-decoration: underline;
@@ -47,9 +53,10 @@
     }
 }
 .mention{
-    color: var(--primary);
+    color: var(--primary-light);
     z-index: 12;
     cursor: pointer;
+    
 }
 .actions {
     display: flex;

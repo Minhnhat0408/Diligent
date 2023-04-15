@@ -8,6 +8,9 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import getTimeDiff from '~/utils/timeDiff';
+import { UserAuth } from '~/contexts/authContext';
+import { useContext } from 'react';
+import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
@@ -15,7 +18,9 @@ function Comment({ data }) {
     const [likeActive, setLikeActive] = useState(false);
     const [isReply, setIsReply] = useState(false);
     const [text, setText] = useState('');
+    const {userData, user} =UserAuth()
     const navigate = useNavigate();
+    const context = useContext(ThemeContext)
     const handleClickLike = () => {
         setLikeActive(!likeActive);
     };
@@ -49,7 +54,7 @@ function Comment({ data }) {
         }
     };
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
             <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
             <div className={cx('comment')}>
                 <h5 className={cx('username')}>{data.user.name}</h5>
@@ -77,7 +82,7 @@ function Comment({ data }) {
                         disable={true}
                     />
                 )} */}
-                {isReply && <MyComment tag={{name:'quyen',id:'fdfasdfasf'}}/>}
+                {isReply && user &&  <MyComment tag={{name:'quyen',id:'fdfasdfasf'}}/>}
             </div>
         </div>
     );

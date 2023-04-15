@@ -330,11 +330,7 @@ export const AuthContextProvider = ({ children }) => {
             if (currentUser) {
                 setUser(currentUser);
                 console.log(currentUser.uid,'update')
-                if(window.location.pathname !== routes.updateInfo){
-                    await updateDoc(doc(userRef, currentUser.uid), {
-                        user_status: 'online',
-                    });
-                }
+               
                
                 //fetch user list realtime
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
@@ -378,7 +374,11 @@ export const AuthContextProvider = ({ children }) => {
                     data1.sort((a,b) => b.data.time.seconds - a.data.time.seconds)
                     setPosts(data1);
                 });
-
+                if(window.location.pathname !== routes.updateInfo){
+                    await updateDoc(doc(userRef, currentUser.uid), {
+                        user_status: 'online',
+                    });
+                }
                 //fetch user data change realtime
                 onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
                     console.log('data of user change');
@@ -408,6 +408,7 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setSavePostData(result);
                 });
+           
             } else {
                 setUser(null);
             }

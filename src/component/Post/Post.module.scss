@@ -30,6 +30,9 @@ $time-color: #adb5bd;
         border-color: var(--primary);
         color: var(--primary);
     }
+    &.dark .mention{
+        color: var(--primary);
+    }
     
 }
 
@@ -124,7 +127,7 @@ $time-color: #adb5bd;
 
 }
 .mention{
-    color: var(--primary);
+    color: var(--primary-light);
     z-index: 12;
     cursor: pointer;
 }
