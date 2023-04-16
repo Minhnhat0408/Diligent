@@ -189,13 +189,13 @@ function CreateStory() {
                             </div>
                         </div>
 
-                        <div className={cx('color')}>
+                        {/* <div className={cx('color')}>
                             <h3 className={cx('title')}>Background color</h3>
                             <div className={cx('lists')}>
                                 <div className={cx('items')}>{backgroundColorItems.slice(0, 8)}</div>
                                 <div className={cx('items')}>{backgroundColorItems.slice(8)}</div>
                             </div>
-                        </div>
+                        </div> */}
                     </>
                 )}
 
@@ -263,7 +263,7 @@ function CreateStory() {
                                     style={{ transform: `scale(${scale})` }}
                                 />
                             </div>
-                            <input type="range" min="0" max="100" onChange={handleSliderChange} />
+                            {/* <input type="range" min="0" max="100" onChange={handleSliderChange} /> */}
                         </div>
                     </div>
                 )}
