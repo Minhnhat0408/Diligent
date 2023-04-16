@@ -19,6 +19,7 @@ function CommentBox({ id, data }) {
     const [comments, setComments] = useState([]);
     const { fileUpload, user, userData, posts } = UserAuth();
     const [loading, setLoading] = useState(false);
+    const [update,setUpdate] =useState(false);
     useEffect(() => {
         const fetchComment = async () => {
             const tmp = [];
@@ -27,11 +28,62 @@ function CommentBox({ id, data }) {
                 tmp.push({ id: doc.id, data: doc.data() });
             });
             setComments(tmp);
+            console.log('reload')
         };
         fetchComment();
-    }, [posts]);
-    console.log(comments);
+   
+    }, [posts,update]);
 
+    const handleUpdate = async (inpData) =>{
+        let image = null;
+        if (inpData.image) {
+            setLoading(true);
+            image = await fileUpload({ file: inpData.image, name: inpData.image.name });
+            await updateDoc(doc(db, 'posts', inpData.postId, 'comments',inpData.cmtId), {
+                text: inpData.text,
+                image: image?.url,
+                time: serverTimestamp(),
+                isEdited: true,
+            });
+        }else{
+            await updateDoc(doc(db, 'posts', inpData.postId, 'comments',inpData.cmtId), {
+                text: inpData.text,
+                time: serverTimestamp(),
+                isEdited: true,
+            });
+        }
+
+        const tagUser = [];
+        if (inpData.text.match(regex)) {
+            inpData.text.match(regex).forEach((spc) => {
+                const user_id = spc.match(getIdInMentions)[0].substring(1);
+                if (!tagUser.includes(user_id)) {
+                    tagUser.push(user_id);
+                }
+            });
+        }
+        if (tagUser.length !== 0) {
+            await Promise.all(
+                tagUser.map((user_id) => {
+                    return addDoc(collection(db, 'users', user_id, 'notifications'), {
+                        title: type.menCmt,
+                        url: routes.post + id,
+                        sender: {
+                            id: user.uid,
+                            name: userData.user_name,
+                            avatar: userData.user_avatar,
+                        },
+                        type: 'mention',
+                        time: serverTimestamp(),
+                        read: false,
+                    });
+                }),
+            );
+        }
+        setUpdate((prev) => !prev)
+        setLoading(false);
+       
+    }
     const handleSubmit = async (inpData) => {
         let image = null;
         if (inpData.image) {
@@ -107,7 +159,8 @@ function CommentBox({ id, data }) {
             <div className={cx('wrapper')}>
                 {comments.length !== 0 ? (
                     comments.map((comment) => {
-                        return <Comment key={comment.id} data={comment.data} />;
+                        console.log('rerun')
+                        return <Comment key={comment.id} handleUpdate={handleUpdate} data={comment.data} id={comment.id} postId={id} postData={data} />;
                     })
                 ) : (
                     <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
