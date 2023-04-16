@@ -212,6 +212,14 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: rgba(17, 17, 17, 0.93);
+
+            .image {
+                display: block;
+                max-width: 100%;
+                height: auto;
+                object-fit: cover !important;
+            }
         }
 
         input[type='range'] {
