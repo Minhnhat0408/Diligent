@@ -260,3 +260,6 @@ export const PROFILE_OPTIONS = [
     },
    
 ];
+
+export const regex = /@[^)]+\)/g;//extract the tag part
+export const getIdInMentions = /\([^(]+\w+/g;//extract id part of the tag part EX @Doan Ngoc Anh(kfjalksdlf243)

@@ -99,9 +99,12 @@ function MyComment({ tag, onClick }) {
                             id="upload"
                             className={cx('d-none')}
                             onChange={handleImageChange}
-                            key={counter}
                         />
-                        <FontAwesomeIcon icon={faPaperPlane} className={cx('upload-icon')} onClick={() => onClick({text:text,image:selectedFile})} />
+                        <FontAwesomeIcon icon={faPaperPlane} className={cx('upload-icon')} onClick={() => {
+                            setText('');
+                            setSelectedFile(null);
+                            setImagePreview(null)
+                            return onClick({text:text,image:selectedFile})}} />
                     </div>
                     {imagePreview && (
                         <div className={cx('add-img')}>

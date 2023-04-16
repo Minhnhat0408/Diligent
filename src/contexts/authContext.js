@@ -374,7 +374,7 @@ export const AuthContextProvider = ({ children }) => {
                     data1.sort((a,b) => b.data.time.seconds - a.data.time.seconds)
                     setPosts(data1);
                 });
-                if(window.location.pathname !== routes.updateInfo){
+                if(window.location.pathname !== routes.login){
                     await updateDoc(doc(userRef, currentUser.uid), {
                         user_status: 'online',
                     });

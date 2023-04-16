@@ -9,10 +9,14 @@ $time-color: #adb5bd;
     box-shadow: 1px 1px 5px #888888;
     color:var(--text-color);
     transition: all 0.8s;
+
     &.dark {
         background-color: var(--dark-theme);
         box-shadow: none;
         color: var(--text-color-dark);
+    }
+    &.dark .post-wrapper{
+        border-color: #eee;
     }
     &.dark .header .info .username{
         color:var(--primary)
@@ -285,6 +289,7 @@ $time-color: #adb5bd;
     box-shadow: 1px 1px 5px #ccc;
     color: var(--text-color);
     transition: all 0.8s;
+    
     & .header{
         margin-top: 16px;
     }
@@ -314,9 +319,12 @@ $time-color: #adb5bd;
         margin-left:26px;
     }
     text-align: center;
-    
+   
 }
-
+.post-wrapper{
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ccc;
+}
 .esc{
     font-size: 2.6rem;
     font-weight: 600;

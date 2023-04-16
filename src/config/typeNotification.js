@@ -5,6 +5,7 @@ const type = {
     dislike:'dislike your post.',
     comment:'comment on your post.',
     mention:'mentioned you in a post.',
+    menCmt:'mentioned you in a comment',
     reply:'replied to your comment.'
 }
 

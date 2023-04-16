@@ -22,7 +22,7 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/fi
 import { db } from '~/firebase';
 import { RingLoader } from 'react-spinners';
 import Menu from '../Popper/Menu/Menu';
-import { CATEGORY_OPTIONS } from '~/utils/constantValue';
+import { CATEGORY_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
 import Tippy from '@tippyjs/react';
 import Mentions from '../Mentions/Mentions';
 import type from '~/config/typeNotification';
@@ -159,13 +159,12 @@ function CreatePost() {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_postNumber: userData.user_postNumber + 1,
             });
-            const regex = /@[^)]+\)/g;
-            const test = /\([^(]+\w+/g;
+           
 
             const tagUser = [];
             if (textFinal.text.match(regex)) {
                 textFinal.text.match(regex).forEach((spc) => {
-                    const id = spc.match(test)[0].substring(1);
+                    const id = spc.match(getIdInMentions)[0].substring(1);
                     if (!tagUser.includes(id)) {
                         tagUser.push(id);
                     }

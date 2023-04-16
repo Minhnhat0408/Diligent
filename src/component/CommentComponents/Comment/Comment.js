@@ -11,6 +11,10 @@ import getTimeDiff from '~/utils/timeDiff';
 import { UserAuth } from '~/contexts/authContext';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { POST_OPTIONS, USER_POST_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
+import Menu from '~/component/Popper/Menu/Menu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEllipsis, faFilePen, faTrash } from '@fortawesome/free-solid-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -18,27 +22,23 @@ function Comment({ data }) {
     const [likeActive, setLikeActive] = useState(false);
     const [isReply, setIsReply] = useState(false);
     const [text, setText] = useState('');
-    const {userData, user} =UserAuth()
+    const { userData, user } = UserAuth();
     const navigate = useNavigate();
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     const handleClickLike = () => {
         setLikeActive(!likeActive);
     };
 
     const handleClickReply = () => {
-      
         setIsReply(!isReply);
     };
     const userLink = (id) => {
         navigate(routes.user + id);
     };
     useEffect(() => {
-        const regex = /@[^)]+\)/g;
-        const test = /\([^(]+\w+/g;
-
         setText(
             data.text.replace(regex, (spc) => {
-                const id = spc.match(test)[0].substring(1);
+                const id = spc.match(getIdInMentions)[0].substring(1);
                 const name = spc.substring(0, spc.indexOf('('));
                 return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
             }),
@@ -54,12 +54,38 @@ function Comment({ data }) {
         }
     };
     return (
-        <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
             <div className={cx('comment')}>
                 <h5 className={cx('username')}>{data.user.name}</h5>
-                <div className={cx('message')}>
-                    <div className={cx('content')}>{parse(text, { replace })}</div>
+                <div className={cx('row')}>
+                    <div className={cx('message')}>
+                        <div className={cx('content')}>{parse(text, { replace })}</div>
+                    </div>
+                    {data.user.id === user?.uid && (
+                        <Menu
+                            // chinh ben trai / chieu cao so vs ban dau
+                            item={
+                                [
+                                    {
+                                        icon:<FontAwesomeIcon icon={faFilePen} />,
+                                        title: 'Update',
+                                        type: 'update' 
+                                    },
+                                    {
+                                        icon:<FontAwesomeIcon icon={faTrash} />,
+                                        title: 'Delete',
+                                        type: 'delete' 
+                                    },
+                                ]
+                            }
+                            // onClick={handlePostOptions}
+                        >
+                            <div className={cx('options')}>
+                                <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                            </div>
+                        </Menu>
+                    )}
                 </div>
                 {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
 
@@ -71,7 +97,7 @@ function Comment({ data }) {
                         Reply
                     </span>
                     <span className={cx('time')}>{getTimeDiff(Date.now(), data.time.toMillis())}</span>
-                </div>  
+                </div>
 
                 {/* {isReply && (
                     <Comment
@@ -82,7 +108,7 @@ function Comment({ data }) {
                         disable={true}
                     />
                 )} */}
-                {isReply && user &&  <MyComment tag={{name:'quyen',id:'fdfasdfasf'}}/>}
+                {isReply && user && <MyComment tag={{ name: 'quyen', id: 'fdfasdfasf' }} />}
             </div>
         </div>
     );
