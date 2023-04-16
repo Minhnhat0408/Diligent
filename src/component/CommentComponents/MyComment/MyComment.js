@@ -11,14 +11,14 @@ import { ThemeContext } from '~/contexts/Context';
 import { useEffect } from 'react';
 const cx = classNames.bind(styles);
 
-function MyComment({ tag, onClick }) {
+function MyComment({ tag, onClick,update = null }) {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
     const { userData } = UserAuth();
-    const [imagePreview, setImagePreview] = useState(null);
+    const [imagePreview, setImagePreview] = useState(update ? update.data.image : '');
     const [counter, setCounter] = useState(0);
     const [mentionData, setMentionData] = useState([]);
-    const [text, setText] = useState('');
+    const [text, setText] = useState(update ? update.data.text : '');
     const context = useContext(ThemeContext);
   
     useEffect(() => {
@@ -104,7 +104,7 @@ function MyComment({ tag, onClick }) {
                             setText('');
                             setSelectedFile(null);
                             setImagePreview(null)
-                            return onClick({text:text,image:selectedFile})}} />
+                            return onClick({text:text,image:selectedFile,cmtId:update.id,postId:update.postId})}} />
                     </div>
                     {imagePreview && (
                         <div className={cx('add-img')}>
