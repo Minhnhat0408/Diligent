@@ -1,7 +1,8 @@
 import classNames from 'classnames/bind';
 import Image from '~/component/Image';
 import styles from './CreateStory.module.scss';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useContext } from 'react';
+import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
@@ -157,8 +158,10 @@ function CreateStory() {
         setTextPreview(false)
     };
 
+    const context = useContext(ThemeContext)
+
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', {dark: context.theme === 'dark'})}>
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Your Story</h1>
                 <hr />
@@ -189,13 +192,13 @@ function CreateStory() {
                             </div>
                         </div>
 
-                        {/* <div className={cx('color')}>
+                        <div className={cx('color')}>
                             <h3 className={cx('title')}>Background color</h3>
                             <div className={cx('lists')}>
                                 <div className={cx('items')}>{backgroundColorItems.slice(0, 8)}</div>
                                 <div className={cx('items')}>{backgroundColorItems.slice(8)}</div>
                             </div>
-                        </div> */}
+                        </div>
                     </>
                 )}
 
@@ -263,7 +266,7 @@ function CreateStory() {
                                     style={{ transform: `scale(${scale})` }}
                                 />
                             </div>
-                            {/* <input type="range" min="0" max="100" onChange={handleSliderChange} /> */}
+                            <input type="range" min="0" max="100" onChange={handleSliderChange} />
                         </div>
                     </div>
                 )}

@@ -2,12 +2,15 @@ import classNames from 'classnames/bind';
 import { Link } from 'react-router-dom';
 import Image from '../../Image';
 import styles from './StoryItem.module.scss';
+import { ThemeContext } from '~/contexts/Context';
+import { useContext } from 'react';
 
 const cx = classNames.bind(styles);
 
 function StoryItem({ avatar, title, detail, to }) {
+    const context = useContext(ThemeContext)
     return (
-        <Link className={cx('wrapper')} to={to}>
+        <Link className={cx('wrapper', { dark: context.theme === 'dark' })} to={to}>
             {avatar === undefined ? (
                 <div className={cx('add')}>
                     <i class="fa-light fa-plus"></i>

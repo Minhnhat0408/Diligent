@@ -1,4 +1,21 @@
 .wrapper {
+
+    &.dark { 
+        & .info {
+            .title {
+                color: var(--text-color-dark);
+            }
+
+            .detail {
+                color: var(--text-color-dark);
+            }
+        }
+
+        &:hover {
+            background-color: var(--bg-dark-theme);
+        }
+    }
+
     width: 330px;
     height: 75px;
     border-radius: 10px;

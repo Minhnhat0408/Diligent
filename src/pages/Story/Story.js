@@ -2,14 +2,14 @@ import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
 import Image from '~/component/Image';
-import React from 'react';
+import React, { useContext } from 'react';
 import Stories from 'react-insta-stories';
+import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
 const stories = [
     {
         url: 'https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2FScreenshot%202023-03-27%20211538.png?alt=media&token=7d94d948-6db7-4b87-b624-c51553929415',
-        duration: 5000,
         header: {
             heading: 'Minh Nhat',
             subheading: '30m ago',
@@ -19,7 +19,6 @@ const stories = [
     },
     {
         url: 'https://scontent.fhan4-3.fna.fbcdn.net/v/t1.6435-9/66179411_1146487765533259_122620302688518144_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=buXzQB9ZHcAAX-kpv8g&_nc_ht=scontent.fhan4-3.fna&oh=00_AfA0mEOTIM-vcPk1i9FsS2iR5zRF6AFKR6nBbFBzaMOi1A&oe=6463222C',
-        duration: 5000,
         header: {
             heading: 'Minh Nhat',
             subheading: '30m ago',
@@ -31,7 +30,7 @@ const stories = [
         },
     },
     {
-        duration: 5000,
+        url: 'https://static.independent.co.uk/2022/05/09/11/SEI102882096.jpg',
         header: {
             heading: 'Minh Nhat',
             subheading: '30m ago',
@@ -42,7 +41,8 @@ const stories = [
     },
 ];
 
-function Story({ posX = 150, posY = 150 }) {
+function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) {
+    const context = useContext(ThemeContext);
     const MyCustomHeader = React.useMemo(
         () =>
             ({ heading, subheading, profileImage, paragraph }) => {
@@ -83,7 +83,7 @@ function Story({ posX = 150, posY = 150 }) {
     );
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Story</h1>
                 <div className={cx('my-story')} to="/createstory">
@@ -123,7 +123,8 @@ function Story({ posX = 150, posY = 150 }) {
                     width={330}
                     height={550}
                     defaultInterval={1500}
-                    storyStyles={{ padding: 0 }}
+                    storyStyles={{ scale: scale, padding: 0 }}
+                    storyContainerStyles={{ backgroundColor: backgroundColor, borderRadius: '10px' }}
                     header={MyCustomHeader}
                 />
 
