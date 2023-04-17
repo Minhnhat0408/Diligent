@@ -1,7 +1,7 @@
 .wrapper {
     display: flex;
     margin-top: 20px;
-    
+    width: 650px;
     &.dark .username{
         color:var(--primary)
     }

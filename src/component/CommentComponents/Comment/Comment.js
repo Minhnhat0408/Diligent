@@ -11,20 +11,26 @@ import getTimeDiff from '~/utils/timeDiff';
 import { UserAuth } from '~/contexts/authContext';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import { POST_OPTIONS, USER_POST_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
+import { getIdInMentions, regex } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faFilePen, faTrash } from '@fortawesome/free-solid-svg-icons';
-
+import { deleteDoc,doc, updateDoc,addDoc,collection } from 'firebase/firestore';
+import { db } from '~/firebase';
+import type from '~/config/typeNotification';
+import { RingLoader } from 'react-spinners';
+import { serverTimestamp } from 'firebase/firestore';
 const cx = classNames.bind(styles);
-
-function Comment({ data }) {
+function Comment({data, id,handleUpdate,postId,postData}) {
     const [likeActive, setLikeActive] = useState(false);
     const [isReply, setIsReply] = useState(false);
     const [text, setText] = useState('');
-    const { userData, user } = UserAuth();
+    const { userData, user,fileUpload } = UserAuth();
+    const [loading,setLoading] = useState(false)
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
+    const [update,setUpdate] = useState(false);
+    
     const handleClickLike = () => {
         setLikeActive(!likeActive);
     };
@@ -53,9 +59,30 @@ function Comment({ data }) {
             );
         }
     };
+
+   
+    const handleCommentOptions = async (item) => {
+        let type = item.type
+        console.log(type);
+        if (type === 'update') {
+            setUpdate(true);
+            await updateDoc(doc(db, 'posts', postId), {
+                commentNumber: postData.commentNumber,
+            })
+        } else if (type === 'delete') {
+            await deleteDoc(doc(db, 'posts', postId, 'comments', id));
+            await updateDoc(doc(db, 'posts', postId), {
+                commentNumber: postData.commentNumber-1,
+            })
+        }
+ 
+    }
+    console.log(update);
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
-            <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
+            {
+                !update ?  <>
+                <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
             <div className={cx('comment')}>
                 <h5 className={cx('username')}>{data.user.name}</h5>
                 <div className={cx('row')}>
@@ -79,7 +106,7 @@ function Comment({ data }) {
                                     },
                                 ]
                             }
-                            // onClick={handlePostOptions}
+                            onClick={handleCommentOptions}
                         >
                             <div className={cx('options')}>
                                 <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
@@ -99,17 +126,21 @@ function Comment({ data }) {
                     <span className={cx('time')}>{getTimeDiff(Date.now(), data.time.toMillis())}</span>
                 </div>
 
-                {/* {isReply && (
+                {isReply && (
                     <Comment
-                        avatar="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-1/277751572_1315302068964376_895612620486881878_n.jpg?stp=dst-jpg_p100x100&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=y6DgmDpQOo4AX_5dLAS&_nc_oc=AQmUBH4fWQYChiEt-Q8p-YbMmNFVnHE-bS3BNLHH4eA557wPleTncZFkK0_zQfCkt0A&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan5-9.fna&oh=00_AfACNGCK4LgQWwYDYAKqbgfTkRrjb_LH5MmmHGw4QRWxtg&oe=641EFB00"
-                        username="Minh Nhat"
-                        paragraph="em nay ngon vkl vay"
-                        img="https://scontent.fhan15-1.fna.fbcdn.net/v/t39.30808-6/282784957_3154917814757054_2260434140125186522_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=vPEnTA0MOFIAX9SThQJ&_nc_ht=scontent.fhan15-1.fna&oh=00_AfDIFmevc9bbhdYocGCOf0pZl0Efbn2DUSxM4mBVfSjTKQ&oe=641DA3A3"
-                        disable={true}
+                        data={data}
                     />
-                )} */}
-                {isReply && user && <MyComment tag={{ name: 'quyen', id: 'fdfasdfasf' }} />}
+                )}
+                {isReply && user && <MyComment tag={{ name: data.user.name, id: data.user.id }} />}
             </div>
+                </> : <>
+                <MyComment tag={{ name: data.user.name, id: data.user.id }} onClick={(e) => {
+                    setUpdate(false);
+                    return handleUpdate(e)
+               }} update={{id: id,postId:postId,data:data}}/>
+                </>
+            }
+             
         </div>
     );
 }
