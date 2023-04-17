@@ -32,9 +32,13 @@ const SpaceFlash = () => {
         if (virPos===0 ) {
             fp0.pop();
         } else if (virPos===1) {
-            fp1.pop()
+            var current = fp1.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
         }else if (virPos===2) {
-            fp2.pop(); 
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]); 
         }else {
             console.log('roong')
         }
@@ -59,24 +63,23 @@ const SpaceFlash = () => {
         if (virPos === 0) {
             fp0.pop();
         }else if (virPos ===1) {
-            fp1.pop();
-        } else {
-            fp2.pop();
-        }
-        if(titile === fp1[fp1.length-1]) {
-            fp1[fp1.length-1].pos = 0;
-            setFp1([...fp1]);
             var current = fp1.pop();
             fp0.push(current);
             setFp0([...fp0]);
+        } else {
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+        }
+
+        if(titile === fp1[fp1.length-1]) {
+            fp1[fp1.length-1].pos = 0;
+            setFp1([...fp1]);
             virPos=1;
             setVirPos(virPos);
         } else {
             fp2[fp2.length-1].pos = 0;
             setFp2([...fp2]);
-            var current = fp2.pop();
-            fp0.push(current);
-            setFp0([...fp0]);
             virPos=2;
             setVirPos(virPos);
         }
@@ -89,6 +92,15 @@ const SpaceFlash = () => {
         <>
         <div className={cx('container')}>
             {
+                fp0.map((item, index) => {
+                    return (
+                        <> 
+                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                        </> 
+                    )  
+                })
+            }
+            {
                 fp1.map((item, index) => {
                     return (
                         <> 
@@ -99,15 +111,6 @@ const SpaceFlash = () => {
             }
             {
                 fp2.map((item, index) => {
-                    return (
-                        <> 
-                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
-                        </> 
-                    )  
-                })
-            }
-            {
-                fp0.map((item, index) => {
                     return (
                         <> 
                         <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>

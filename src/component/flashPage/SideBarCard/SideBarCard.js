@@ -16,7 +16,7 @@ const SideBarCard = () => {
         {id:7, name:'ngoc'}]   ) 
 
     const handleShow = (item) => {
-        console.log("anawdas");
+        console.log(item);
     }
 
         
@@ -25,12 +25,12 @@ const SideBarCard = () => {
         <div className={cx('sidebar')}>
             {listCard.map((item, index) => {
                 return (
-                    <div className={cx('boxscroll')}>
-                        <div className={cx('boxcard')} >
+                    <div className={cx('boxscroll')} >
+                        <div className={cx('boxcard')} onClick={() => handleShow(item)} >
                         <FaceCard key={item.id} child={item.name} />
                         </div> 
-                        <div className={cx("blanket")} onclick={() => handleShow(item)}>
-                        </div>
+                        
+                        
                     </div>
                 )
             })}
