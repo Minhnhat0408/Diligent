@@ -1,8 +1,18 @@
+.contain{
+    height: 340px;
+    width: 240px;
+    transform-style: preserve-3d;
+    transition: all 0.8s  ease;
+    position: absolute;
+}
+
+
+
+
 .card{
     background-color: burlywood;
     height: 340px;
     width: 240px;
-    position: absolute;
     transform-style: preserve-3d;
     transition: all 0.8s  ease;
     box-shadow: 5px 5px 15px 0 rgba(0,0,0,0.2);

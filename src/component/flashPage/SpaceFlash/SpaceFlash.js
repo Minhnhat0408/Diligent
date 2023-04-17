@@ -22,40 +22,66 @@ const SpaceFlash = () => {
     
     const [fp0, setFp0] = useState([...file.reverse()]);
     const [fp1, setFp1] = useState([]);
-    var [virPos, setVirPos] = useState([]);
+    const [fp2, setFp2] = useState([]);
+    var [virPos, setVirPos] = useState(3);
     
     const handleRenenber = (a) => {
-        if (fp0.length === 0 ) {
+        if (fp0.length === 1 ) {
             return;
         }
-        if (virPos.length === 0 ) {
-            console.log('roong')
-        } else {
+        if (virPos===0 ) {
             fp0.pop();
-            
+        } else if (virPos===1) {
+            fp1.pop()
+        }else if (virPos===2) {
+            fp2.pop(); 
+        }else {
+            console.log('roong')
         }
-
+        
         fp0[fp0.length -1].pos = a;
         setFp0([...fp0]);
-        virPos = fp0.pop();
-        fp1.push(virPos);
-        setFp1([...fp1])
+        var current = fp0.pop();
+        virPos=0;
+        if (a===1) {
+            fp1.push(current);
+            setFp1([...fp1])
+        } else {
+            fp2.push(current);
+            setFp2([...fp2])
+        }
+        
         setVirPos(virPos);
        
     }
 
     const getOldPos0 = (titile) => {
-        if (titile === virPos) {
-          fp0[fp0.length -1].pos = 0;
-          setFp0([...fp0]); 
-          virPos = [];
-          setVirPos(virPos);
+        if (virPos === 0) {
+            fp0.pop();
+        }else if (virPos ===1) {
+            fp1.pop();
         } else {
-
-
-
-
+            fp2.pop();
         }
+        if(titile === fp1[fp1.length-1]) {
+            fp1[fp1.length-1].pos = 0;
+            setFp1([...fp1]);
+            var current = fp1.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+            virPos=1;
+            setVirPos(virPos);
+        } else {
+            fp2[fp2.length-1].pos = 0;
+            setFp2([...fp2]);
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+            virPos=2;
+            setVirPos(virPos);
+        }
+        
+        
     }
    
     return (
@@ -64,6 +90,15 @@ const SpaceFlash = () => {
         <div className={cx('container')}>
             {
                 fp1.map((item, index) => {
+                    return (
+                        <> 
+                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                        </> 
+                    )  
+                })
+            }
+            {
+                fp2.map((item, index) => {
                     return (
                         <> 
                         <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
@@ -82,6 +117,7 @@ const SpaceFlash = () => {
             }
             <button className={cx('renember')} onClick={() => handleRenenber(1)}>clicl moveon</button>
             <button className={cx('wakaranai')} onClick={() => handleRenenber(2)}>clicl moveunder</button>
+            
             
         </div>
         </>

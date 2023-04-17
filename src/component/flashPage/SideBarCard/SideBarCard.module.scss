@@ -13,13 +13,27 @@
     display: none;
 }
 
-.boxcard{
-    width: 55%;
-    height: 28%;
+.boxscroll{
+    height: 30%;
+    padding: 5% 20%;
     background-color: hsl(0, 33%, 96%);
+    position: relative;
+}
+
+.boxcard{
+    height: 100%;
     padding: 15px;
-    margin: 12% auto;
     border: 2px solid rgb(231, 189, 216);
+}
+
+.blanket{
+    position: absolute;
+    height: 100%;
+    background-color: burlywood;
+    top:5%;
+    left: 20%;
+    bottom: 5%;
+    right: 20%;
 }
 
 ::-webkit-scrollbar {

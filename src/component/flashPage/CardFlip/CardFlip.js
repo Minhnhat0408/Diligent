@@ -33,18 +33,18 @@ const CardFlip = ({titile, getOldPos0}) => {
 
     return (
         <>
-        <div className={cx("card", 
+        <div className={cx('contain',
         'card0',
         {'cardmoveon': pos1},
-        {'cardmoveunder' : pos2},
-        {'cardflip':!flip})} 
-        onClick= {() => handleClick(titile)}
-            >
-            <div className={cx('front')}>
-                <FaceCard child = {titile.title}/>
-            </div>
-            <div className={cx('back')}>
-                <FaceCard child = {titile.back}/>
+        {'cardmoveunder' : pos2})}>
+            <div className={cx("card",{'cardflip':!flip})} 
+            onClick= {() => handleClick(titile)}>
+                <div className={cx('front')}>
+                    <FaceCard child = {titile.title}/>
+                </div>
+                <div className={cx('back')}>
+                    <FaceCard child = {titile.back}/>
+                </div>
             </div>
         </div>
 

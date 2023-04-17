@@ -6,21 +6,32 @@ const cx = classNames.bind(styles);
 
 const SideBarCard = () => {
 
-    let [listCard, setLisCard] = useState( [{age:10, name:'quyen'},
-        {age:11, name: 'dung'},
-        {age: 12, name:'phuong'},
-        {age:14, name:'minh'},
-        {age:16, name: 'khai'},
-        {age: 15, name:'thuy'},
-        {age:17, name:'ngoc'}]    ) 
+    let [listCard, setLisCard] = useState( [
+        {id:1, name:'quyen'},
+        {id:2, name:'dung'},
+        {id:3, name:'phuong'},
+        {id:4, name:'minh'},
+        {id:5, name:'khai'},
+        {id:6, name:'thuy'},
+        {id:7, name:'ngoc'}]   ) 
+
+    const handleShow = (item) => {
+        console.log("anawdas");
+    }
+
+        
     return (
         <>
         <div className={cx('sidebar')}>
             {listCard.map((item, index) => {
                 return (
-                    <div className={cx('boxcard')}>
-                        <FaceCard key={index} child={item.name} />
-                    </div> 
+                    <div className={cx('boxscroll')}>
+                        <div className={cx('boxcard')} >
+                        <FaceCard key={item.id} child={item.name} />
+                        </div> 
+                        <div className={cx("blanket")} onclick={() => handleShow(item)}>
+                        </div>
+                    </div>
                 )
             })}
         </div>
