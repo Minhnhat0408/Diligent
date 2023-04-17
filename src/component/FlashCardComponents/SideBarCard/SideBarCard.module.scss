@@ -1,0 +1,32 @@
+.sidebar{
+    position: fixed ;
+    top: 96px;
+    left: 0;
+    background-color: rgba(219, 210, 210, 0.623);
+    width: 15%;
+    height: 100%;
+    text-align: center;
+    overflow-y: scroll; 
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.boxcard{
+    width: 55%;
+    height: 28%;
+    background-color: hsl(0, 33%, 96%);
+    padding: 15px;
+    margin: 12% auto;
+    border: 2px solid rgb(231, 189, 216);
+}
+
+::-webkit-scrollbar {
+    width:0.4em;
+    overflow-x: none;
+}
+
+::-webkit-scrollbar-track {
+    background-color: #242942;
+}
