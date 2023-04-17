@@ -33,8 +33,6 @@ function Post({ id, data }) {
     };
 
     useEffect(() => {
-
-
         setText(
             data.text.replace(regex, (spc) => {
                 const id = spc.match(getIdInMentions)[0].substring(1);
@@ -46,7 +44,10 @@ function Post({ id, data }) {
     const replace = (domNode) => {
         if (domNode.attribs && domNode.attribs.id === 'mentions') {
             return (
-                <strong onClick={() => userLink(domNode.attribs.data)} className={cx('mention',{dark:context.theme === 'dark'})}>
+                <strong
+                    onClick={() => userLink(domNode.attribs.data)}
+                    className={cx('mention', { dark: context.theme === 'dark' })}
+                >
                     {domNode.attribs.name}
                 </strong>
             );
@@ -204,13 +205,16 @@ function Post({ id, data }) {
                                         alt="avatar"
                                     />
                                     <div className={cx('user')}>
-                                        <h5 className={cx('username')} onClick={() => navigate(routes.user + data.user.id)}>
+                                        <h5
+                                            className={cx('username')}
+                                            onClick={() => navigate(routes.user + data.user.id)}
+                                        >
                                             {data.user.name}
                                         </h5>
                                         <p className={cx('time')}>{getTimeDiff(Date.now(), data.time.toMillis())}</p>
                                     </div>
                                 </div>
-    
+
                                 {user && (
                                     <Menu
                                         // chinh ben trai / chieu cao so vs ban dau
@@ -247,37 +251,44 @@ function Post({ id, data }) {
                             )}
                             <div className={cx('image-holders')}>
                                 {data.files.media.map((url, id) => {
-                                    let result = undefined;
-                                    if (isImageUrl(url)) {
-                                        result = (
-                                            // trao doi vi tri anh
-                                            <div
-                                                key={id}
-                                                className={cx('image-box', { plenty: data.files.media.length > 2 })}
-                                            >
-                                                <Image
-                                                    src={url}
-                                                    alt="preview"
-                                                    className={cx('image', { plenty: data.files.media.length > 2 })}
-                                                />
-                                            </div>
-                                        );
-                                    } else if (isVideoUrl(url)) {
-                                        result = (
-                                            <div
-                                                key={id}
-                                                className={cx('image-box', { plenty: data.files.media.length > 2 })}
-                                            >
-                                                <video
-                                                    controls
-                                                    className={cx('image', { plenty: data.files.media.length > 2 })}
+                                    if (id < 3) {
+                                        let result = undefined;
+
+                                        if (isImageUrl(url)) {
+                                            result = (
+                                                // trao doi vi tri anh
+                                                <div
+                                                    key={id}
+                                                    className={cx('image-box', { plenty: data.files.media.length > 2 })}
                                                 >
-                                                    <source src={url} />
-                                                </video>
-                                            </div>
-                                        );
+                                                    <Image
+                                                        src={url}
+                                                        alt="preview"
+                                                        className={cx('image', { plenty: data.files.media.length > 2 })}
+                                                    />
+                                                    {data.files.media.length > 3 && id === 2 && (
+                                                        <div className={cx('more')}>+{data.files.media.length - 2}</div>
+                                                    )}
+                                                </div>
+                                            );
+                                        } else if (isVideoUrl(url)) {
+                                            result = (
+                                                <div
+                                                    key={id}
+                                                    className={cx('image-box', { plenty: data.files.media.length > 2 })}
+                                                >
+                                                    <video
+                                                        controls
+                                                        className={cx('image', { plenty: data.files.media.length > 2 })}
+                                                    >
+                                                        <source src={url} />
+                                                    </video>
+                                                </div>
+                                            );
+                                        }
+                                        return result;
                                     }
-                                    return result;
+                                    return <></>;
                                 })}
                             </div>
                             <div className={cx('actions')}>
@@ -294,7 +305,7 @@ function Post({ id, data }) {
                                         />
                                         <p className={cx('nums')}>{data.like.count}</p>
                                     </div>
-    
+
                                     <div className={cx('dislike-action')}>
                                         <FontAwesomeIcon
                                             icon={faThumbsDown}
@@ -307,7 +318,7 @@ function Post({ id, data }) {
                                         />
                                         <p className={cx('nums')}>{data.dislike.count}</p>
                                     </div>
-    
+
                                     <div className={cx('comment-action')}>
                                         <FontAwesomeIcon icon={faComment} className={cx('icon')} />
                                         <p className={cx('nums')}>{data.commentNumber}</p>
@@ -315,8 +326,8 @@ function Post({ id, data }) {
                                 </div>
                             </div>
                         </div>
-                        
-                        {isCommentVisible && <CommentBox id={id} data={data}/>}
+
+                        {isCommentVisible && <CommentBox id={id} data={data} />}
                     </div>
                 </div>
             )}
@@ -373,28 +384,35 @@ function Post({ id, data }) {
             )}
             <div className={cx('image-holders')}>
                 {data.files.media.map((url, id) => {
-                    let result = undefined;
-                    if (isImageUrl(url)) {
-                        result = (
-                            // trao doi vi tri anh
-                            <div key={id} className={cx('image-box', { plenty: data.files.media.length > 2 })}>
-                                <Image
-                                    src={url}
-                                    alt="preview"
-                                    className={cx('image', { plenty: data.files.media.length > 2 })}
-                                />
-                            </div>
-                        );
-                    } else if (isVideoUrl(url)) {
-                        result = (
-                            <div key={id} className={cx('image-box', { plenty: data.files.media.length > 2 })}>
-                                <video controls className={cx('image', { plenty: data.files.media.length > 2 })}>
-                                    <source src={url} />
-                                </video>
-                            </div>
-                        );
+                    if (id < 3) {
+                        let result = undefined;
+
+                        if (isImageUrl(url)) {
+                            result = (
+                                // trao doi vi tri anh
+                                <div key={id} className={cx('image-box', { plenty: data.files.media.length > 2 })}>
+                                    <Image
+                                        src={url}
+                                        alt="preview"
+                                        className={cx('image', { plenty: data.files.media.length > 2 })}
+                                    />
+                                    {data.files.media.length > 3 && id === 2 && (
+                                        <div className={cx('more')}>+{data.files.media.length - 2}</div>
+                                    )}
+                                </div>
+                            );
+                        } else if (isVideoUrl(url)) {
+                            result = (
+                                <div key={id} className={cx('image-box', { plenty: data.files.media.length > 2 })}>
+                                    <video controls className={cx('image', { plenty: data.files.media.length > 2 })}>
+                                        <source src={url} />
+                                    </video>
+                                </div>
+                            );
+                        }
+                        return result;
                     }
-                    return result;
+                    return <></>;
                 })}
             </div>
 
@@ -439,7 +457,6 @@ function Post({ id, data }) {
                     </div>
                 </div>
             </div>
-
         </div>
     );
 }

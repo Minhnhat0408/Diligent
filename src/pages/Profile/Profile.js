@@ -63,6 +63,7 @@ function Profile() {
     useEffect(() => {
         console.log('rendrererer');
         if (user?.uid !== id) {
+            let count = 0;
             usersList.forEach((doc) => {
                 if (doc.id === id) {
                     const friendRq = doc.data.user_friendRequests;
@@ -88,8 +89,14 @@ function Profile() {
                         }
                     }
                     return;
+                }else{
+                    count++;
                 }
             });
+            if(count === usersList.length){
+                navigate(routes.notFound)
+            }
+            
         } else {
             setPageUser(userData);
         }

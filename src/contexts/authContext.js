@@ -49,7 +49,7 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
-        console.log(user.uid,'create')
+        console.log(user.uid, 'create');
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
@@ -58,34 +58,29 @@ export const AuthContextProvider = ({ children }) => {
         return response;
     };
 
-
+    async function fetchUserData() {
+        const data = [];
+        console.log('fetch user list first time');
+        const q = query(userRef, orderBy('user_name'));
+        const docs = await getDocs(q);
+        docs.forEach((doc) => {
+            data.push({ id: doc.id, data: doc.data() });
+        });
+        setUsersList(data);
+    }
+    async function fetchPosts() {
+        const data = [];
+        console.log('fetch posts first time');
+        const q = query(collection(db, 'posts'), orderBy('time', 'desc'));
+        const docs = await getDocs(q);
+        docs.forEach((doc) => {
+            data.push({ id: doc.id, data: doc.data() });
+        });
+        setPosts(data);
+    }
     useEffect(() => {
-
         if (!!user) {
-            async function fetchData() {
-                const data = [];
-                console.log('fetch user list first time');
-                const q = query(userRef, orderBy('user_name'));
-                const docs = await getDocs(q);
-                docs.forEach((doc) => {
-                    data.push({ id: doc.id, data: doc.data() });
-                });
-                setUsersList(data);
-            }
-            async function fetchPosts() {
-                const data = [];
-                console.log('fetch posts first time');
-                const q = query(collection(db,'posts'), orderBy('time','desc'));
-                const docs = await getDocs(q);
-                docs.forEach((doc) => {
-                    data.push({ id: doc.id, data: doc.data() });
-                });
-                setPosts(data);
-            }
-
-            fetchData();
-
-            
+            fetchUserData();
             fetchPosts();
         }
     }, []);
@@ -117,7 +112,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_theme: 'light',
                 user_friendRequests: [],
                 user_friends: [],
-                user_postNumber: 0, 
+                user_postNumber: 0,
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
@@ -236,7 +231,7 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     console.log('auth rerender');
-    const fileUpload = ({file, name, location = 'images', bg_upload = false}) => {
+    const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `${location}/${name}`);
             const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
@@ -266,72 +261,70 @@ export const AuthContextProvider = ({ children }) => {
                         updateDoc(doc(db, 'users', user.uid), {
                             user_bg: downloadURL,
                         });
-                        resolve('succesful')
+                        resolve('succesful');
                     } else {
                         console.log(downloadURL);
-                        resolve({url:downloadURL,name:name}); // resolve the Promise with the downloaded URL
+                        resolve({ url: downloadURL, name: name }); // resolve the Promise with the downloaded URL
                     }
                 },
             );
         });
     };
-    // Post handle 
-    const createPost = async (files, title,text ,tags,mentions) => {
+    // Post handle
+    const createPost = async (files, title, text, tags, mentions) => {
         const docRef = await addDoc(collection(db, 'posts'), {
-            title:title,
+            title: title,
             text: text,
             files: files,
-            tags:tags,
-            mentions:mentions,
+            tags: tags,
+            mentions: mentions,
             user: {
                 id: user.uid,
                 avatar: userData.user_avatar,
                 name: userData.user_name,
             },
             time: new Date(),
-            like: {count:0,list:[]},
-            dislike: {count:0,list:[]},
+            like: { count: 0, list: [] },
+            dislike: { count: 0, list: [] },
             commentNumber: 0,
-            hide:[],
+            hide: [],
         });
         return docRef;
     };
 
     const deletePost = async (id) => {
-        await deleteDoc(doc(db,'posts',id))
-        await updateDoc(doc(db,'users',user.uid),{
-            user_postNumber:userData.user_postNumber-1,
-        })
-    }
-    const hidePost = async (id) =>{
-        await updateDoc(doc(db,'posts',id),{
-            hide:arrayUnion(user.uid),
-        })
-    }
-    const savePost = async (id,data) => {
-        await setDoc(doc(db,'users',user.uid,'saves',id),{
+        await deleteDoc(doc(db, 'posts', id));
+        await updateDoc(doc(db, 'users', user.uid), {
+            user_postNumber: userData.user_postNumber - 1,
+        });
+    };
+    const hidePost = async (id) => {
+        await updateDoc(doc(db, 'posts', id), {
+            hide: arrayUnion(user.uid),
+        });
+    };
+    const savePost = async (id, data) => {
+        await setDoc(doc(db, 'users', user.uid, 'saves', id), {
             title: data.title,
             tags: data.tags,
             user: {
                 name: data.user.name,
                 avatar: data.user.avatar,
-            }
-        })
-    }
+            },
+        });
+    };
 
     const deleteSavePost = async (id) => {
-        await deleteDoc(doc(db,'users',user.uid,'saves',id))
-    }
+        await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
+    };
 
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
-            
             if (currentUser) {
                 setUser(currentUser);
-                console.log(currentUser.uid,'update')
-               
-               
+                console.log(currentUser.uid, 'update');
+
                 //fetch user list realtime
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
                     const data = [];
@@ -349,32 +342,32 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setUsersList(data);
                 });
-              
+
                 // fetch posts change realtime
                 onSnapshot(collection(db, 'posts'), (docs) => {
                     let data1 = [];
                     console.log('posts change');
                     docs.forEach((doc) => {
-                        if(doc.data().like.list.some((u) => {
-                            
-                            return u.id === currentUser.uid
-                        })){
-                            data1.push({id:doc.id,data:{...doc.data(),react:1}});// 1 mean like
-                        }else if(doc.data().dislike.list.some((u) => {
-                         
-                            return u.id === currentUser.uid
-                        })){
-
-                            data1.push({id:doc.id,data:{...doc.data(),react:-1}});// -1 mean dislike
-                        }else{
-                            
-                            data1.push({id:doc.id,data:{...doc.data(),react:0}});// 0 mean neutral
+                        if (
+                            doc.data().like.list.some((u) => {
+                                return u.id === currentUser.uid;
+                            })
+                        ) {
+                            data1.push({ id: doc.id, data: { ...doc.data(), react: 1 } }); // 1 mean like
+                        } else if (
+                            doc.data().dislike.list.some((u) => {
+                                return u.id === currentUser.uid;
+                            })
+                        ) {
+                            data1.push({ id: doc.id, data: { ...doc.data(), react: -1 } }); // -1 mean dislike
+                        } else {
+                            data1.push({ id: doc.id, data: { ...doc.data(), react: 0 } }); // 0 mean neutral
                         }
                     });
-                    data1.sort((a,b) => b.data.time.seconds - a.data.time.seconds)
+                    data1.sort((a, b) => b.data.time.seconds - a.data.time.seconds);
                     setPosts(data1);
                 });
-                if(window.location.pathname !== routes.login){
+                if (window.location.pathname !== routes.login) {
                     await updateDoc(doc(userRef, currentUser.uid), {
                         user_status: 'online',
                     });
@@ -397,7 +390,7 @@ export const AuthContextProvider = ({ children }) => {
                                 readNoti++;
                             }
                         });
-                        setNotifications({id:doc.id ,data: data1, unread: readNoti });
+                        setNotifications({ id: doc.id, data: data1, unread: readNoti });
                     },
                 );
                 // fetch savepost realtime
@@ -408,7 +401,6 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setSavePostData(result);
                 });
-           
             } else {
                 setUser(null);
             }
