@@ -26,7 +26,7 @@ const publicRoutes = [
     { path: routes.postpage,component:PostPage,layout:HeadSideLayout},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
-    { path: '/*', component: NotFounded, layout: null },
+    { path: '/*', component: NotFounded, layout:HeaderOnly },
 ];
 
 // Router dang nhap moi xem duoc //TO DO

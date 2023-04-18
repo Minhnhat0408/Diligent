@@ -1,0 +1,90 @@
+.container{
+    height: 100%;
+    width: 85%;
+    background-color: aqua;
+    
+    position: fixed; 
+    right:0px;
+    top: 96px;
+}
+ 
+ 
+.finish {
+    display: block;
+    position: absolute;
+    color: palevioletred;
+    background-color: palegreen;
+    text-align: center;
+    padding: auto;
+    height: 40px;
+    width: 100px;
+    bottom: 19%;
+    right: 51%;
+    
+}
+ 
+.skip {
+    display: block;
+    position: absolute;
+    color: palevioletred;
+    background-color: palegreen;
+    text-align: center;
+    padding: auto;
+    height: 40px;
+    width: 100px;
+    bottom: 19%;
+    right: 66%;
+}
+ 
+.finishbox{
+   background-color: aliceblue;
+    position: absolute;
+    display :flex;
+    justify-content: center;
+    top: 23px;
+    right: 26px;
+    height: 40%;
+    width: 15%;
+    box-sizing: border-box;
+    z-index: -5;
+    border: 1px solid violet;
+    border-radius: 5%;
+    padding-top: 1%;
+}
+
+.skipbox{
+   background-color: aliceblue;
+    position: absolute;
+    display :flex;
+    justify-content: center;
+    bottom: 110px;
+    right: 26px;
+    height: 40%;
+    width: 15%;
+    box-sizing: border-box;
+    z-index: -5;
+    border: 1px solid violet;
+    border-radius: 5%;
+    padding-top: 1%;
+
+}
+
+.shadowbox{
+   background-color: rgb(181, 191, 199);
+   position: absolute;
+   height: 340px;
+   width: 240px;
+   bottom: 0px;
+   transform: scale(0.4);
+}
+
+
+.number{
+   position: absolute;
+   bottom: 5px;
+   left: 80px;
+   height: 23px;
+   width: 78px;
+   color: blueviolet;
+}
+ 

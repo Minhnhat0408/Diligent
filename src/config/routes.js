@@ -14,7 +14,8 @@ const routes = {
     userUpdate:'/user/updateinfor',
     createStory: '/createstory',
     saveposts:'/saves/:id',
-    saves:'/saves/' // shortcut for saves
+    saves:'/saves/', // shortcut for save
+    notFound:'/notfound'
 }
 
 export default routes

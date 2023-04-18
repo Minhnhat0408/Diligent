@@ -22,9 +22,10 @@
 
 .image {
     margin-top: 5px;
-    width: 250px;
     max-width: 250px;
     height: 200px;
+    object-fit: cover;
+    object-position: left;
     border-radius: 20px;
 }
 
@@ -33,7 +34,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-
+    width: 100%;
     .username {
         font-size: 1.4rem;
         color: var(--primary-light);
@@ -97,7 +98,12 @@
             text-decoration: underline;
         }
     }
-
+    .edit{
+        margin-left: 4px;
+        font-size: 1.2rem;
+        color: var(--text-color-dark);
+        font-weight: 700;
+    }
     .time {
         font-size: 1rem;
         color: var(--time-color);
@@ -108,7 +114,8 @@
         }
     }
 
-    .time, .reply {
+    .time, .reply,.edit {
         margin-left: 12px;
     }
+  
 }

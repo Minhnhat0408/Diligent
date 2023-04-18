@@ -175,8 +175,23 @@ $time-color: #adb5bd;
     &.plenty{
         height: 250px;
     }
+    
 }
 
+.more{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    border-radius: 10px;
+
+}
 
 .image-box{
     position: relative;

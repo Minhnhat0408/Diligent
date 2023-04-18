@@ -1,0 +1,73 @@
+.contain{
+    //background-color: blueviolet;
+    height: 340px;
+    width: 240px;
+    transform-style: preserve-3d;
+    transition: all 0.8s  ease;
+    position: absolute;
+    border-radius: 10px;
+}
+
+.card{
+    background-color: burlywood;
+    height: 340px;
+    width: 240px;
+    position: absolute;
+    transform-style: preserve-3d;
+    transition: all 0.8s  ease;
+    box-shadow: 5px 5px 15px 0 rgba(0,0,0,0.2);
+    border-radius: 10px;
+}
+.cardflip {
+        //transition: all 0.8s ease;
+        transform:rotateY(180deg);
+}
+.front{
+    height: 100%;
+    width: 100%;
+    background-color: bisque;
+    border-radius: 10px;
+    backface-visibility: hidden;
+}
+
+.back{
+    height: 100%;
+    width: 100%;
+    background-color: aquamarine;
+    position: absolute;
+    top: 0px;
+    backface-visibility: hidden;
+    border-radius: 10px;
+    transform: rotateY(180deg);
+}
+
+.card0{
+    top: 20%;
+    right: 53%;
+}
+.cardmoveon {
+    top: 4px;
+    right: 15px;
+    transform: scale(0.4);
+}
+
+.cardmoveunder{
+    top: 353px;
+    right: 15px;
+    transform: scale(0.4);
+}
+
+.cardback1 {
+    top: 200px;
+    right: 500px;
+    transform-origin: bottom right;
+    transform: rotate(9deg);
+}
+
+.cardback2 {
+    top: 200px;
+    right: 500px;
+    transform-origin: bottom left;
+    transform: rotate(-9deg);
+}
+
