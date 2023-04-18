@@ -1,3 +1,13 @@
+.contain{
+    //background-color: blueviolet;
+    height: 340px;
+    width: 240px;
+    transform-style: preserve-3d;
+    transition: all 0.8s  ease;
+    position: absolute;
+    border-radius: 10px;
+}
+
 .card{
     background-color: burlywood;
     height: 340px;
@@ -6,7 +16,7 @@
     transform-style: preserve-3d;
     transition: all 0.8s  ease;
     box-shadow: 5px 5px 15px 0 rgba(0,0,0,0.2);
-    
+    border-radius: 10px;
 }
 .cardflip {
         //transition: all 0.8s ease;
@@ -16,6 +26,7 @@
     height: 100%;
     width: 100%;
     background-color: bisque;
+    border-radius: 10px;
     backface-visibility: hidden;
 }
 
@@ -26,22 +37,23 @@
     position: absolute;
     top: 0px;
     backface-visibility: hidden;
+    border-radius: 10px;
     transform: rotateY(180deg);
 }
 
 .card0{
-    top: 196px;
-    right: 616px;
+    top: 20%;
+    right: 53%;
 }
 .cardmoveon {
-    top: 2px;
-    right: -57px;
+    top: 4px;
+    right: 15px;
     transform: scale(0.4);
 }
 
 .cardmoveunder{
-    top: 281px;
-    right: -57px;
+    top: 353px;
+    right: 15px;
     transform: scale(0.4);
 }
 

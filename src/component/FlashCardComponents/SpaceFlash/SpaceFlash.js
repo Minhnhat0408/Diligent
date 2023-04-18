@@ -22,46 +22,84 @@ const SpaceFlash = () => {
     
     const [fp0, setFp0] = useState([...file.reverse()]);
     const [fp1, setFp1] = useState([]);
-    var [virPos, setVirPos] = useState([]);
+    const [fp2, setFp2] = useState([]);
+    var [virPos, setVirPos] = useState(3);
     
     const handleRenenber = (a) => {
-        if (fp0.length === 0 ) {
+        if (fp0.length === 1 ) {
             return;
         }
-        if (virPos.length === 0 ) {
-            console.log('roong')
-        } else {
+        if (virPos===0 ) {
             fp0.pop();
-            
+        } else if (virPos===1) {
+            var current = fp1.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+        }else if (virPos===2) {
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]); 
+        }else {
+            console.log('roong')
         }
-
+        
         fp0[fp0.length -1].pos = a;
         setFp0([...fp0]);
-        virPos = fp0.pop();
-        fp1.push(virPos);
-        setFp1([...fp1])
+        var current = fp0.pop();
+        virPos=0;
+        if (a===1) {
+            fp1.push(current);
+            setFp1([...fp1])
+        } else {
+            fp2.push(current);
+            setFp2([...fp2])
+        }
+        
         setVirPos(virPos);
        
     }
 
     const getOldPos0 = (titile) => {
-        if (titile === virPos) {
-          fp0[fp0.length -1].pos = 0;
-          setFp0([...fp0]); 
-          virPos = [];
-          setVirPos(virPos);
+        if (virPos === 0) {
+            fp0.pop();
+        }else if (virPos ===1) {
+            var current = fp1.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
         } else {
-
-
-
-
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
         }
+
+        if(titile === fp1[fp1.length-1]) {
+            fp1[fp1.length-1].pos = 0;
+            setFp1([...fp1]);
+            virPos=1;
+            setVirPos(virPos);
+        } else {
+            fp2[fp2.length-1].pos = 0;
+            setFp2([...fp2]);
+            virPos=2;
+            setVirPos(virPos);
+        }
+        
+        
     }
    
     return (
         
         <>
         <div className={cx('container')}>
+        {
+                fp0.map((item, index) => {
+                    return (
+                        <> 
+                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                        </> 
+                    )  
+                })
+            }
             {
                 fp1.map((item, index) => {
                     return (
@@ -72,7 +110,7 @@ const SpaceFlash = () => {
                 })
             }
             {
-                fp0.map((item, index) => {
+                fp2.map((item, index) => {
                     return (
                         <> 
                         <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
@@ -80,8 +118,31 @@ const SpaceFlash = () => {
                     )  
                 })
             }
-            <button className={cx('renember')} onClick={() => handleRenenber(1)}>clicl moveon</button>
-            <button className={cx('wakaranai')} onClick={() => handleRenenber(2)}>clicl moveunder</button>
+            <div className={cx('finishbox')}>
+                <div>
+                    đã thuộc
+                </div>
+                <div className={cx('shadowbox')}>
+                    
+                </div>
+                <button className={cx('number')}>
+                    {virPos === 1 ?   fp1.length -1 : fp1.length}
+                </button>
+            </div>
+            <div className={cx('skipbox')}>
+                <div>
+                    chưa thuộc
+                </div>
+                <div className={cx('shadowbox')}>
+                    
+                </div>
+                <button className={cx('number')}>
+                    {virPos === 2 ?   fp2.length -1 : fp2.length}
+                </button>
+            </div>
+           
+            <button className={cx('finish')} onClick={() => handleRenenber(1)}>thuộc</button>
+            <button className={cx('skip')} onClick={() => handleRenenber(2)}>quên</button>
             
         </div>
         </>
