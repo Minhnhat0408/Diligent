@@ -132,7 +132,7 @@ function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) 
                     <textarea className={cx('reply')} placeholder="Reply..."></textarea>
                     <div className={cx('action')}>
                         <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                            <i class="fa-regular fa-thumbs-up"></i>
+                            <i class="fa-solid fa-thumbs-up"></i>
                         </div>
                         <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
                             <i class="fa-solid fa-thumbs-down"></i>
