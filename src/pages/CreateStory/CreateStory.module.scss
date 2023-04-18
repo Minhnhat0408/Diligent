@@ -207,8 +207,8 @@
     }
 
     .preview {
-        width: 900px;
-        height: 600px;
+        width: 40vw;
+        height: 85vh;
         border-radius: 10px;
         background-color: #fff;
         box-shadow: 1px 1px 5px #ccc;
@@ -236,8 +236,8 @@
         }
 
         .image-wrap {
-            width: 330px;
-            height: 550px;
+            width: 30vw;
+            height: 80vh;
             border: 1px solid #ccc;
             border-radius: 10px;
             overflow: hidden;
@@ -250,7 +250,7 @@
                 display: block;
                 max-width: 100%;
                 height: auto;
-                object-fit: cover !important;
+                object-fit: cover ;
             }
         }
 

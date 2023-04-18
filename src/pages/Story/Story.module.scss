@@ -18,8 +18,16 @@
 
             & .react {
                 & .reply {
-                    color: var(--text-color-dark);
+                    color: var(--primary);
                     background-color: var(--bg-dark-theme);
+                }
+
+                & .action {
+                    & .icon {
+                        & i {
+                            color: var(--primary);
+                        }
+                    }
                 }
             }
         }
@@ -128,15 +136,20 @@
         margin-top: 10px;
         display: flex;
         align-items: center;
-
+        justify-content: space-between;
+        width: 30vw;
         .reply {
-            width: 300px;
+            flex: 1;
             background-color: #f0f2f5;
             color: var(--text-color);
             border: 1px solid #ccc;
             border-radius: 12px;
             padding: 4px;
             resize: none;
+        }
+
+        .action {
+            display: flex;
         }
 
         .icon {

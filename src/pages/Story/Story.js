@@ -120,8 +120,8 @@ function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) 
                 {/* phần hiển thị story  */}
                 <Stories
                     stories={stories}
-                    width={330}
-                    height={550}
+                    width={'30vw'}
+                    height={'80vh'}
                     defaultInterval={1500}
                     storyStyles={{ scale: scale, padding: 0 }}
                     storyContainerStyles={{ backgroundColor: backgroundColor, borderRadius: '10px' }}
@@ -130,17 +130,13 @@ function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) 
 
                 <div className={cx('react')}>
                     <textarea className={cx('reply')} placeholder="Reply..."></textarea>
-                    <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                        <i class="fa-regular fa-thumbs-up"></i>
-                    </div>
-                    <div className={cx('icon')} style={{ backgroundColor: '#ec2d49' }}>
-                        <i class="fa-solid fa-circle-heart"></i>
-                    </div>
-                    <div className={cx('icon')} style={{ backgroundColor: '#fddc63' }}>
-                        <i class="fa-sharp fa-regular fa-face-awesome" style={{ color: '#e45305' }}></i>
-                    </div>
-                    <div className={cx('icon')} style={{ backgroundColor: '#e45305' }}>
-                        <i class="fa-regular fa-face-angry"></i>
+                    <div className={cx('action')}>
+                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
+                            <i class="fa-regular fa-thumbs-up"></i>
+                        </div>
+                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
+                            <i class="fa-solid fa-thumbs-down"></i>
+                        </div>
                     </div>
                 </div>
             </div>
