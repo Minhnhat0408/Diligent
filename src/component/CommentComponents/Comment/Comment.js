@@ -15,27 +15,94 @@ import { getIdInMentions, regex } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faFilePen, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { deleteDoc, doc, updateDoc, addDoc, collection, query, where, getDocs } from 'firebase/firestore';
+import {
+    deleteDoc,
+    doc,
+    updateDoc,
+    addDoc,
+    collection,
+    query,
+    where,
+    getDocs,
+    arrayUnion,
+    arrayRemove,
+} from 'firebase/firestore';
 import { db } from '~/firebase';
+import type from '~/config/typeNotification';
 
 const cx = classNames.bind(styles);
-function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
-    const [likeActive, setLikeActive] = useState(false);
+function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData }) {
+    const [like,setLike] = useState(false);
     const [isReply, setIsReply] = useState(false);
     const [text, setText] = useState('');
-    const { user } = UserAuth();
+    const { user, userData } = UserAuth();
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const [update, setUpdate] = useState(false);
     const [subComments, setSubComments] = useState([]);
-    const handleClickLike = () => {
-        setLikeActive(!likeActive);
+    const handleClickLike = async () => {
+        try {
+            const lik = data.like.list.some((u) => {
+                return u.id === user.uid;
+            });
+            setLike((prev) => !prev)
+            if (lik) {
+                await updateDoc(doc(db, 'posts', postId, 'comments', id), {
+                    like: {
+                        count: data.like.count - 1,
+                        list: arrayRemove({
+                            id: user.uid,
+                            name: userData.user_name,
+                            ava: userData.user_avatar,
+                        }),
+                    },
+                });
+            } else {
+                await updateDoc(doc(db, 'posts', postId, 'comments', id), {
+                    like: {
+                        count: data.like.count + 1,
+                        list: arrayUnion({
+                            id: user.uid,
+                            name: userData.user_name,
+                            ava: userData.user_avatar,
+                        }),
+                    },
+                });
+            }
+
+            if (user.uid !== data.user.id) {
+                const q = query(
+                    collection(db, 'users', data.user.id, 'notifications'),
+                    where('sender.id', '==', user.uid),
+                    where('url', '==', routes.post + id),
+                    where('type', '==', 'likecmt'),
+                );
+                getDocs(q).then(async (result) => {
+                    if (result.docs.length === 0) {
+                        await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
+                            title: type.likecmt,
+                            url: routes.post + id,
+                            sender: {
+                                id: user.uid,
+                                name: userData.user_name,
+                                avatar: userData.user_avatar,
+                            },
+                            type: 'like',
+                            time: new Date(),
+                            read: false,
+                        });
+                    } else {
+                        await deleteDoc(doc(db, 'users', data.user.id, 'notifications', result.docs[0].id));
+                    }
+                });
+            }
+        } catch (err) {
+            console.log(err);
+        }
     };
 
     const handleClickReply = () => {
-
         setIsReply(!isReply);
-      
     };
     const userLink = (id) => {
         navigate(routes.user + id);
@@ -44,19 +111,25 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
         const q = query(collection(db, 'posts', postId, 'comments'), where('fatherCmt', '==', id));
         const tmp = [];
         const docs = await getDocs(q);
-        docs.forEach((doc) => {
 
-            tmp.push({ id: doc.id, data: doc.data() });
+        docs.forEach((doc) => {
+            if (
+                doc.data().like.list.some((u) => {
+                    return u.id === user.uid;
+                })
+            ) {
+                tmp.push({ id: doc.id, data: doc.data(), react: 1 });
+            } else {
+                tmp.push({ id: doc.id, data: doc.data(), react: 0 });
+            }
         });
-        console.log(tmp)
+        console.log(tmp);
         setSubComments(tmp);
     };
     useEffect(() => {
-        
-
         if (isReply) {
             fetchSubComment();
-        }else{
+        } else {
             setText(
                 data.text.replace(regex, (spc) => {
                     const id = spc.match(getIdInMentions)[0].substring(1);
@@ -66,7 +139,7 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
             );
         }
         setUpdate(false);
-    }, [data,isReply]);
+    }, [data, isReply]);
 
     const replace = (domNode) => {
         if (domNode.attribs && domNode.attribs.id === 'mentions') {
@@ -92,6 +165,7 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
             });
         }
     };
+
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {!update ? (
@@ -132,13 +206,15 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
                             <span
                                 className={cx('like')}
                                 onClick={handleClickLike}
-                                style={{ color: likeActive && '#13a0f8' }}
+                                style={{ color: (react === 1 || like) && '#13a0f8' }}
                             >
                                 Like
                             </span>
-                            {isReply && <span className={cx('reply')} onClick={handleClickReply}>
-                                Reply
-                            </span>}
+                            {!data.fatherCmt && (
+                                <span className={cx('reply')} onClick={handleClickReply}>
+                                    Reply
+                                </span>
+                            )}
                             {data.isEdited && <span className={cx('edit')}>Edited</span>}
                             <span className={cx('time')}>{getTimeDiff(Date.now(), data.time.toMillis())}</span>
                         </div>
@@ -150,7 +226,6 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
                                     <Comment
                                         key={comment.id}
                                         handleUpdate={handleUpdate}
-                                   
                                         data={comment.data}
                                         id={comment.id}
                                         postId={id}
@@ -159,7 +234,10 @@ function Comment({ data, id, handleUpdate,handleSubmit, postId, postData }) {
                                 );
                             })}
                         {isReply && user && (
-                            <MyComment tag={{ name: data.user.name, id: data.user.id,father:id }} onClick={handleSubmit} />
+                            <MyComment
+                                tag={{ name: data.user.name, id: data.user.id, father: id }}
+                                onClick={handleSubmit}
+                            />
                         )}
                     </div>
                 </>

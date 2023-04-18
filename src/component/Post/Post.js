@@ -79,6 +79,7 @@ function Post({ id, data }) {
                     collection(db, 'users', data.user.id, 'notifications'),
                     where('sender.id', '==', user.uid),
                     where('url', '==', routes.post + id),
+                    where('type','==','like')
                 );
                 getDocs(q).then(async (result) => {
                     if (result.docs.length === 0) {
