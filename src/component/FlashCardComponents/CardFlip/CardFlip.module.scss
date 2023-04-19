@@ -1,17 +1,18 @@
 .contain{
     //background-color: blueviolet;
-    height: 340px;
-    width: 240px;
+    height: 65vh;
+    width: 45vh;
     transform-style: preserve-3d;
     transition: all 0.8s  ease;
     position: absolute;
     border-radius: 10px;
+    z-index: 10;
 }
 
 .card{
     background-color: burlywood;
-    height: 340px;
-    width: 240px;
+    height: 100%;
+    width: 100%;
     position: absolute;
     transform-style: preserve-3d;
     transition: all 0.8s  ease;
@@ -42,20 +43,22 @@
 }
 
 .card0{
-    top: 20%;
-    right: 53%;
+    top: 15%;
+    right: 35%;
 }
 .cardmoveon {
-    top: 4px;
-    right: 15px;
-    transform: scale(0.4);
+    top: 21vh;
+    right: 85px;
+   width: 150px;
+   height: calc(150px*(65/45));
 }
 
 .cardmoveunder{
-    top: 353px;
-    right: 15px;
-    transform: scale(0.4);
-}
+    top: 63vh;
+    right: 85px;
+    width: 150px;
+    height: calc(150px*(65/45));
+}   
 
 .cardback1 {
     top: 200px;
