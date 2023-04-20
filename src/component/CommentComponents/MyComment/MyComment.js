@@ -19,7 +19,7 @@ function MyComment({ tag = null, onClick,update = null }) {
     const [mentionData, setMentionData] = useState([]);
     const [text, setText] = useState(() => {
         if(tag && tag.id !== user.uid) {
-            return `@${tag.name}(${tag.id})`
+            return `@${tag.name}(${tag.id}) `
         }
         return update ? update.data.text : ''});
     const context = useContext(ThemeContext);
@@ -27,7 +27,7 @@ function MyComment({ tag = null, onClick,update = null }) {
     useEffect(() => {
         if (userData) {
             setMentionData(
-                userData.user_friends.map((u) => {
+                userData.user_friends.map((u) => {  
                     return { display: u.name, id: u.id };
                 }),
             );

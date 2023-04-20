@@ -4,6 +4,8 @@ import classNames from "classnames/bind";
 import CardFlip from "../CardFlip/";
 
 import styles from './SpaceFlash.module.scss';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
 
 const SpaceFlash = () => {
@@ -122,32 +124,36 @@ const SpaceFlash = () => {
                     )  
                 })
             }
-            <div className={cx('finishbox')}>
-                <div>
-                    đã thuộc
+             <div className={cx('options')}>
+                <button className={cx('finish')} onClick={() => handleRenenber(1)}><FontAwesomeIcon icon={faCheck}/></button>
+                <button className={cx('skip')} onClick={() => handleRenenber(2)}><FontAwesomeIcon icon={faXmark}/></button>
+           </div>
+          <div className={cx('rightside')}>
+                <div className={cx('finishbox')}>
+                    <div>
+                        đã thuộc
+                    </div>
+                    <div className={cx('shadowbox')}>
+                        
+                    </div>
+                    <button className={cx('number')}>
+                        {virPos === 1 ?   fp1.length -1 : fp1.length}
+                    </button>
                 </div>
-                <div className={cx('shadowbox')}>
-                    
+                <div className={cx('skipbox')}>
+                    <div>
+                        chưa thuộc
+                    </div>
+                    <div className={cx('shadowbox')}>
+                        
+                    </div>
+                    <button className={cx('number')}>
+                        {virPos === 2 ?   fp2.length -1 : fp2.length}
+                    </button>
                 </div>
-                <button className={cx('number')}>
-                    {virPos === 1 ?   fp1.length -1 : fp1.length}
-                </button>
-            </div>
-            <div className={cx('skipbox')}>
-                <div>
-                    chưa thuộc
-                </div>
-                <div className={cx('shadowbox')}>
-                    
-                </div>
-                <button className={cx('number')}
-                onClick={() => handlePull()}>
-                    {virPos === 2 ?   fp2.length -1 : fp2.length}
-                </button>
-            </div>
+          </div>
            
-            <button className={cx('finish')} onClick={() => handleRenenber(1)}>thuộc</button>
-            <button className={cx('skip')} onClick={() => handleRenenber(2)}>quên</button>
+          
             
         </div>
         </>

@@ -26,8 +26,17 @@ function CommentBox({ id, data }) {
         const q = query(collection(db, 'posts', id, 'comments'), where('fatherCmt', '==', ''));
         const docs = await getDocs(q);
         docs.forEach((doc) => {
-            tmp.push({ id: doc.id, data: doc.data() });
+            if( doc.data().like.list.some((u) => {
+                console.log(u.id)
+                return u.id === user.uid;
+            })){
+                tmp.push({ id: doc.id, data: doc.data(),react:1 });
+            }else{
+                tmp.push({ id: doc.id, data: doc.data(),react: 0 });
+            }
+    
         });
+        console.log(tmp)
         setComments(tmp);
     };
     useEffect(() => {
@@ -160,7 +169,7 @@ function CommentBox({ id, data }) {
             <div className={cx('wrapper')}>
                 {comments.length !== 0 ? (
                     comments.map((comment) => {
-                        return <Comment key={comment.id} handleSubmit={handleSubmit} handleUpdate={handleUpdate} data={comment.data} id={comment.id} postId={id} postData={data} />;
+                        return <Comment key={comment.id} handleSubmit={handleSubmit} handleUpdate={handleUpdate} data={comment.data} react={comment.react} id={comment.id} postId={id} postData={data} />;
                     })
                 ) : (
                     <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />

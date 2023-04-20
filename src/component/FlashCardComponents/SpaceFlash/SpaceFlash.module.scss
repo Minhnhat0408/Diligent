@@ -1,68 +1,85 @@
 .container{
-    height: 100%;
-    width: 85%;
-    background-color: aqua;
-    
-    position: fixed; 
-    right:0px;
-    top: 96px;
+    transition: all 0.8s;
+    background-color: var(--bg-dark-theme);
+    min-height: 100vh;
+   
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
+    padding-right: 280px;
 }
  
- 
+ .options{
+    display: flex;
+    position: absolute;
+    bottom: 60px;
+    width: 45vh;
+    justify-content: space-around;
+    right: 35%;
+ }
 .finish {
-    display: block;
-    position: absolute;
     color: palevioletred;
     background-color: palegreen;
     text-align: center;
-    padding: auto;
-    height: 40px;
-    width: 100px;
-    bottom: 19%;
-    right: 51%;
+    width: 50px;
+    height: 50px;
+    font-size: 4rem;
     
-}
  
+    border-radius: 50%;
+}
+
 .skip {
-    display: block;
-    position: absolute;
+
     color: palevioletred;
     background-color: palegreen;
     text-align: center;
-    padding: auto;
-    height: 40px;
-    width: 100px;
-    bottom: 19%;
-    right: 66%;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    font-size: 4rem;
+  
 }
  
+.rightside{
+ 
+    width: 250px;
+    padding: 20px 8px 26px 8px;
+    margin-right: 30px;
+    position: fixed;
+    top: var(--defaultLayout-header-height);
+    right: 0;
+    bottom: 0;
+   
+    overflow-y: scroll;
+    overflow-x: hidden;
+    transition: all 0.8s;
+}
 .finishbox{
    background-color: aliceblue;
-    position: absolute;
-    display :flex;
-    justify-content: center;
-    top: 3%;
-    right: 2%;
-    height: 40%;
-    width: 15%;
+   display:flex;
+   flex-direction: column;
+    justify-content: space-around;
+    height: 40vh;
     box-sizing: border-box;
-    z-index: -5;
     border: 1px solid violet;
     border-radius: 5%;
     padding-top: 1%;
+    margin-bottom: 20px;
+    align-items: center;
 }
 
 .skipbox{
+    display:flex;
+    flex-direction: column;
    background-color: aliceblue;
-    position: absolute;
-    display :flex;
-    justify-content: center;
-    bottom: 110px;
-    right: 26px;
-    height: 40%;
-    width: 15%;
+   justify-content: space-around;
+    align-items: center;
+    height: 40vh;
     box-sizing: border-box;
-    z-index: -5;
     border: 1px solid violet;
     border-radius: 5%;
     padding-top: 1%;
@@ -71,18 +88,16 @@
 
 .shadowbox{
    background-color: rgb(181, 191, 199);
-   position: absolute;
-   height: 340px;
-   width: 240px;
-   bottom: 0px;
-   transform: scale(0.4);
+ 
+   height: 200px;
+   width: 120px;
+
+
 }
 
 
 .number{
-   position: absolute;
-   bottom: 5px;
-   left: 80px;
+
    height: 23px;
    width: 78px;
    color: blueviolet;
