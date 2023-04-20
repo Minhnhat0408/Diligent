@@ -86,6 +86,10 @@ const SpaceFlash = () => {
         
         
     }
+
+    const handlePull = () => {
+        console.log('laodkas')
+    }
    
     return (
         
@@ -136,7 +140,8 @@ const SpaceFlash = () => {
                 <div className={cx('shadowbox')}>
                     
                 </div>
-                <button className={cx('number')}>
+                <button className={cx('number')}
+                onClick={() => handlePull()}>
                     {virPos === 2 ?   fp2.length -1 : fp2.length}
                 </button>
             </div>
