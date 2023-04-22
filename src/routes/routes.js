@@ -16,6 +16,7 @@ import HeadSideLayout from '~/layouts/HeadSideLayout';
 import CreateStory  from '~/pages/CreateStory';
 import SavePosts from '~/pages/SavePosts';
 import PostPage from '~/pages/PostPage/PostPage';
+import Documents from '~/pages/Documents';
 
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
@@ -26,6 +27,7 @@ const publicRoutes = [
     { path: routes.postpage,component:PostPage,layout:HeadSideLayout},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
+    { path: routes.documents, component: Documents, layout: HeadSideLayout},
     { path: '/*', component: NotFounded, layout:HeaderOnly },
 ];
 

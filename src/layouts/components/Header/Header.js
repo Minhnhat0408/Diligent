@@ -106,10 +106,10 @@ function Header() {
                         <i className={`${styles.icon} fa-regular fa-house`}></i>
                     </Link>
                     <Link
-                        to={routes.friend}
-                        className={cx('middle-btn', { active: window.location.pathname === routes.friend })}
+                        to={routes.documents}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.documents })}
                     >
-                        <i className={`${styles.icon} fa-regular fa-user-group`}></i>
+                         <i className={`${styles.icon} fa-regular fa-file`}></i>
                     </Link>
                     <Link
                         to={routes.flashcard}
@@ -122,6 +122,12 @@ function Header() {
                         className={cx('middle-btn', { active: window.location.pathname === routes.story })}
                     >
                          <i className={`${styles.icon} fa-regular fa-bolt`}></i>
+                    </Link>
+                    <Link
+                        to={routes.friend}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.friend })}
+                    >
+                        <i className={`${styles.icon} fa-regular fa-user-group`}></i>
                     </Link>
                 </div>
 

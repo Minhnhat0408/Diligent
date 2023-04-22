@@ -1,0 +1,27 @@
+.wrapper{
+    height: 800px;  
+    display: flex; 
+ 
+    min-height: 1000px;
+    height: 100%;
+     padding-top: 10px;
+     margin: 0 100px 0 30px;
+    transition: all 0.8s;   
+    justify-content: center;
+    color:var(--text-color) ;
+   
+}
+
+.user-options{
+    width: 200px;
+    height: 300px;
+    margin: 0 20px;
+    background-color: var(--dark-theme);
+
+}
+.content{
+    width: 760px;
+    height: 100vh;  
+    background-color: var(--dark-theme);
+    border-radius: 15px;
+}

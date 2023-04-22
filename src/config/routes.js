@@ -15,7 +15,8 @@ const routes = {
     createStory: '/createstory',
     saveposts:'/saves/:id',
     saves:'/saves/', // shortcut for save
-    notFound:'/notfound'
+    notFound:'/notfound',
+    documents:'/documents'
 }
 
 export default routes
