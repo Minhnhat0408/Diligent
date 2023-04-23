@@ -8,6 +8,7 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from '~/contexts/Context';
 import 'tippy.js/animations/scale.css';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 function Menu({
@@ -103,4 +104,4 @@ Menu.propTypes = {
     item: PropTypes.array,
     onChange: PropTypes.func,
 };
-export default Menu;
+export default memo(Menu);

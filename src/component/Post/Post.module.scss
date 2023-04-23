@@ -9,7 +9,7 @@ $time-color: #adb5bd;
     box-shadow: 1px 1px 5px #888888;
     color:var(--text-color);
     transition: all 0.8s;
-
+    
     &.dark {
         background-color: var(--dark-theme);
         box-shadow: none;

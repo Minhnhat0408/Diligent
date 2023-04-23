@@ -5,6 +5,7 @@ import CreatePost from '~/component/CreatePost';
 import Post from '~/component/Post';
 import { UserAuth } from '~/contexts/authContext';
 import { useEffect } from 'react';
+import { PostProvider } from '~/contexts/Provider';
 
 const cx = classNames.bind(styles);
 
@@ -23,10 +24,13 @@ function Home() {
             {posts &&
                 posts
                     .filter((post) => {
-
                         return user ? !post.data.hide.includes(user.uid) : true;
                     })
-                    .map((post, id) => <Post key={id} id={post.id} data={post.data} />)}
+                    .map((post, id) => (
+                        <PostProvider key={id} id={post.id} data={post.data}>
+                            <Post />
+                        </PostProvider>
+                    ))}
         </div>
     );
 }

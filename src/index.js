@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import App from './App';
 import Globalstyle from './component/Globalstyle';
-import { ThemeProvider } from './contexts';
+import { ThemeProvider } from './contexts/Provider';
 import { AuthContextProvider } from './contexts/authContext';
 import reportWebVitals from './reportWebVitals';
 

@@ -5,9 +5,6 @@ function getTimeDiff(timeA,timeB) {
     let s = timeA -timeB
     var ms = s % 1000;
     s = (s - ms) / 1000;
-    if(s === 0 ) {
-        return ms + ' milliseconds ago'
-    }
     var secs = s % 60;
     s = (s - secs) / 60;
     if(s === 0 ) {

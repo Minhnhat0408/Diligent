@@ -5,7 +5,7 @@ import Button from '~/component/Button';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { UserAuth } from '~/contexts/authContext';
-
+import { memo } from 'react';
 
 
 const cx = classNames.bind(styles);
@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 function FriendItem({ data }) {
     const context = useContext(ThemeContext);
     const {handleAccept,handleDecline } = UserAuth();
-  
+    
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('body')}>
@@ -35,4 +35,4 @@ function FriendItem({ data }) {
     );
 }
 
-export default FriendItem;
+export default memo(FriendItem);

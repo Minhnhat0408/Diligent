@@ -10,7 +10,7 @@ import routes from '~/config/routes';
 import getTimeDiff from '~/utils/timeDiff';
 import { UserAuth } from '~/contexts/authContext';
 import { useContext } from 'react';
-import { ThemeContext } from '~/contexts/Context';
+import { PostContext, ThemeContext } from '~/contexts/Context';
 import { getIdInMentions, regex } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -29,10 +29,11 @@ import {
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import type from '~/config/typeNotification';
+import { memo } from 'react';
 
 const cx = classNames.bind(styles);
-function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData }) {
-    const [like,setLike] = useState(false);
+function Comment({ data, id, react }) {
+    const [like, setLike] = useState(false);
     const [isReply, setIsReply] = useState(false);
     const [text, setText] = useState('');
     const { user, userData } = UserAuth();
@@ -40,14 +41,48 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
     const context = useContext(ThemeContext);
     const [update, setUpdate] = useState(false);
     const [subComments, setSubComments] = useState([]);
+    const post = useContext(PostContext)
+    useEffect(() => {
+        const fetchSubComment = async () => {
+            const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
+            const tmp = [];
+            const docs = await getDocs(q);
+
+            docs.forEach((doc) => {
+                if (
+                    doc.data().like.list.some((u) => {
+                        return u.id === user.uid;
+                    })
+                ) {
+                    tmp.push({ id: doc.id, data: doc.data(), react: 1 });
+                } else {
+                    tmp.push({ id: doc.id, data: doc.data(), react: 0 });
+                }
+            });
+            console.log(tmp);
+            setSubComments(tmp);
+        };
+        if (isReply) {
+            fetchSubComment();
+        }else{
+            setText(
+                data.text.replace(regex, (spc) => {
+                    const id = spc.match(getIdInMentions)[0].substring(1);
+                    const name = spc.substring(0, spc.indexOf('('));
+                    return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
+                }),
+            );
+        }
+        setUpdate(false);
+    }, [data, isReply]);
     const handleClickLike = async () => {
         try {
             const lik = data.like.list.some((u) => {
                 return u.id === user.uid;
             });
-            setLike((prev) => !prev)
+            setLike((prev) => !prev);
             if (lik) {
-                await updateDoc(doc(db, 'posts', postId, 'comments', id), {
+                await updateDoc(doc(db, 'posts', post.id, 'comments', id), {
                     like: {
                         count: data.like.count - 1,
                         list: arrayRemove({
@@ -58,7 +93,7 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
                     },
                 });
             } else {
-                await updateDoc(doc(db, 'posts', postId, 'comments', id), {
+                await updateDoc(doc(db, 'posts', post.id, 'comments', id), {
                     like: {
                         count: data.like.count + 1,
                         list: arrayUnion({
@@ -87,7 +122,7 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
                                 name: userData.user_name,
                                 avatar: userData.user_avatar,
                             },
-                            type: 'like',
+                            type: 'likecmt',
                             time: new Date(),
                             read: false,
                         });
@@ -107,39 +142,6 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
     const userLink = (id) => {
         navigate(routes.user + id);
     };
-    const fetchSubComment = async () => {
-        const q = query(collection(db, 'posts', postId, 'comments'), where('fatherCmt', '==', id));
-        const tmp = [];
-        const docs = await getDocs(q);
-
-        docs.forEach((doc) => {
-            if (
-                doc.data().like.list.some((u) => {
-                    return u.id === user.uid;
-                })
-            ) {
-                tmp.push({ id: doc.id, data: doc.data(), react: 1 });
-            } else {
-                tmp.push({ id: doc.id, data: doc.data(), react: 0 });
-            }
-        });
-        console.log(tmp);
-        setSubComments(tmp);
-    };
-    useEffect(() => {
-        if (isReply) {
-            fetchSubComment();
-        } else {
-            setText(
-                data.text.replace(regex, (spc) => {
-                    const id = spc.match(getIdInMentions)[0].substring(1);
-                    const name = spc.substring(0, spc.indexOf('('));
-                    return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
-                }),
-            );
-        }
-        setUpdate(false);
-    }, [data, isReply]);
 
     const replace = (domNode) => {
         if (domNode.attribs && domNode.attribs.id === 'mentions') {
@@ -155,19 +157,16 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
         let type = item.type;
         if (type === 'update') {
             setUpdate(true);
-            await updateDoc(doc(db, 'posts', postId), {
-                commentNumber: postData.commentNumber,
-            });
         } else if (type === 'delete') {
-            await deleteDoc(doc(db, 'posts', postId, 'comments', id));
-            await updateDoc(doc(db, 'posts', postId), {
-                commentNumber: postData.commentNumber - 1,
+            await deleteDoc(doc(db, 'posts', post.id, 'comments', id));
+            await updateDoc(doc(db, 'posts', post.id), {
+                commentNumber: post.data.commentNumber - 1,
             });
         }
     };
 
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark',page:post.page })}>
             {!update ? (
                 <>
                     <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
@@ -225,18 +224,14 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
                                 return (
                                     <Comment
                                         key={comment.id}
-                                        handleUpdate={handleUpdate}
                                         data={comment.data}
                                         id={comment.id}
-                                        postId={id}
-                                        postData={data}
                                     />
                                 );
                             })}
                         {isReply && user && (
                             <MyComment
                                 tag={{ name: data.user.name, id: data.user.id, father: id }}
-                                onClick={handleSubmit}
                             />
                         )}
                     </div>
@@ -244,10 +239,9 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
             ) : (
                 <>
                     <MyComment
-                        onClick={(e) => {
-                            return handleUpdate(e);
-                        }}
-                        update={{ id: id, postId: postId, data: data }}
+                        postData={data} postId={id}
+                        update={{ id: id,data:data}}
+                        
                     />
                 </>
             )}
@@ -255,4 +249,4 @@ function Comment({ data, id, handleUpdate, handleSubmit, react, postId, postData
     );
 }
 
-export default Comment;
+export default memo(Comment);

@@ -3,6 +3,7 @@ import styles from './AccountItem.module.scss';
 import Image from '../Image';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types'
+import { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import routes from '~/config/routes';
@@ -25,4 +26,4 @@ function AccountItem({user,search=false,chat=false,dark,...props}) {
 AccountItem.propTypes = {
     user: PropTypes.object.isRequired
 }
-export default AccountItem;
+export default memo(AccountItem);
