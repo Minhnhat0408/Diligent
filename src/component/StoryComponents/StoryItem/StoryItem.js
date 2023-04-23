@@ -13,7 +13,7 @@ function StoryItem({ avatar, title, detail, to }) {
         <Link className={cx('wrapper', { dark: context.theme === 'dark' })} to={to}>
             {avatar === undefined ? (
                 <div className={cx('add')}>
-                    <i class="fa-light fa-plus"></i>
+                    <i className="fa-light fa-plus"></i>
                 </div>
             ) : (
                 <Image src={avatar} alt="avatar" className={cx('avatar')} />

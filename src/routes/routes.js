@@ -23,7 +23,7 @@ const publicRoutes = [
     { path: routes.login, component: Login, layout: null },
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story, layout: HeaderOnly },
-    { path: routes.postpage,component:PostPage,layout:HeadSideLayout},
+    { path: routes.postpage,component:PostPage,layout:HeaderOnly},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
     { path: '/*', component: NotFounded, layout:HeaderOnly },

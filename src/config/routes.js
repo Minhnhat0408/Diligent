@@ -1,7 +1,7 @@
 const routes = {
     home:'/',
     profile:'/user/:id',
-    postpage:'/post/:id',
+    postpage:'/post/:id/:num',
     post:'/post/',// shortcut too
     chat:'/chat',
     friend:'/friend',

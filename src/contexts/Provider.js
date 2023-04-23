@@ -1,10 +1,10 @@
 import {  useState } from 'react';
 import { UserAuth } from './authContext';
-import  { ThemeContext } from './Context';
+import  { PostContext, ThemeContext } from './Context';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 
-function ThemeProvider({ children }) {
+export function ThemeProvider({ children }) {
     const { userData, user } = UserAuth();
     const [theme, setTheme] = useState('light');
 
@@ -26,4 +26,14 @@ function ThemeProvider({ children }) {
     );
 }
 
-export default ThemeProvider;
+export function PostProvider({id,data,children,page = false}) {
+    const [loading,setLoading] = useState(false);
+    const [update,setUpdate] = useState(0);
+    
+    return (
+        <PostContext.Provider value={{loading,setLoading,update,setUpdate,id,data,page}}>
+            <   >{children}</  >
+        </PostContext.Provider>
+    )
+
+}

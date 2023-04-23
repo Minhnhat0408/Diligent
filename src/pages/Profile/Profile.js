@@ -42,6 +42,7 @@ import Post from '~/component/Post';
 import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
+import { PostProvider } from '~/contexts/Provider';
 
 const cx = classNames.bind(styles);
 
@@ -106,7 +107,6 @@ function Profile() {
     useEffect(() => {
         setUserPosts(
             posts.filter((post) => {
-                console.log(post)
                 return post.data.user.id === id || post.data.mentions.includes(id);
             }),
         );
@@ -367,7 +367,9 @@ function Profile() {
                         {user && <CreatePost />}
                         {userPosts &&
                             userPosts.map((post) => {
-                                return <Post id={post.id} data={post.data} />;
+                                return  <PostProvider key={id} id={post.id} data={post.data}>
+                                    <Post />
+                            </PostProvider>;
                             })}
                     </div>
                     {previewAvatar && (

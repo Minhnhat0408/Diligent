@@ -45,7 +45,7 @@ function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData,notifications,handleReadNoti } = UserAuth();
     const notif = useRef();
-    USER_MENU = [
+        USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: userData?.user_name || 'View Profile',
