@@ -62,7 +62,7 @@ function CommentBox({page}) {
                    <div className={cx('nothing')}> <Image src={image.noContent} alt="nothing here" className={cx('no-content')} /></div>
                 )}
 
-                {user && <MyComment />}
+                
                 <div className={cx('filter')} onClick={() => setAnimation(!animation)}>
                     {filter ? <span>Filter by: {filter}</span> : <span>Filter</span>}
                 </div>
