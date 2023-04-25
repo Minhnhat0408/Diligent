@@ -4,15 +4,19 @@
     display: flex;
     padding: 20px 10%;
     padding-top:calc(var(--defaultLayout-header-height) + 20px) ;
-
+    justify-content: center;
     overflow: hidden;
-    background-color:var(--bg-dark-theme)
+    background-color:var(--bg-light-theme);
+    &.dark{
+      background-color:var(--bg-dark-theme);
+    }
 }   
 
 .post-info{
   flex: 1;
   border-radius: 15px;
   margin-left: 20px;
+  max-width: 800px;
   
 }
 
@@ -45,7 +49,7 @@
     }
 }
 .image-display{
-    width: 800px;
+    width: 65%;
     border-radius: 15px;
     background-color: black;
     height: 100%;

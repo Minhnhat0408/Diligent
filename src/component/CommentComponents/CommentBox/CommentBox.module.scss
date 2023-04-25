@@ -1,8 +1,12 @@
 .wrapper {
     margin-top: 20px;
     position: relative;
-    &.page{
+    &.dark .filter{
+        background-color: var(--bg-dark-theme);
+    }
 
+    &.dark .filter-opt{
+        background-color: var(--bg-dark-theme);
     }
 }
 .nothing{
@@ -21,10 +25,11 @@
     position:absolute;
     top:0;
     right: 0;
-    background-color: var(--bg-dark-theme);
-    padding: 5px 20px;
+    background-color: #eee;
+    padding: 5px 10px;
     border-radius: 15px;
     cursor:pointer;
+  
  }
 
  .filter-opt{
@@ -32,7 +37,7 @@
     top:40px;
     right: 0;
     border-radius:15px;
-    background-color: var(--bg-dark-theme);
+    background-color: #eee;
     height: 112px;
     overflow: hidden;
     padding: 0 10px;

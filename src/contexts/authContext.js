@@ -40,6 +40,7 @@ export const AuthContextProvider = ({ children }) => {
     const [notifications, setNotifications] = useState();
     const [savePostData, setSavePostData] = useState([]);
     const [posts, setPosts] = useState();
+    
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();

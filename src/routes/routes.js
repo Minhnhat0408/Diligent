@@ -25,6 +25,7 @@ const publicRoutes = [
     { path: routes.setting, component: Setting },
     { path: routes.story, component: Story, layout: HeaderOnly },
     { path: routes.postpage,component:PostPage,layout:HeaderOnly},
+    { path: routes.postpagespecific,component:PostPage,layout:HeaderOnly},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
     { path: routes.documents, component: Documents, layout: HeadSideLayout},

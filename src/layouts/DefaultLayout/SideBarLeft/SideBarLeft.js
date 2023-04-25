@@ -49,7 +49,7 @@ function SideBarLeft() {
                     color="#fff"
                     onClick={() => {
              
-                        navigate(routes.story)}
+                        navigate(routes.documents)}
                     }
                 />
                 <SidebarMenuItems
@@ -79,16 +79,6 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
               
-                />
-                <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faUser} />}
-                    title="Author Profile"
-                    backGroundColor="linear-gradient(135deg, #05f, #09f)"
-                    color="#fff"
-                    onClick={() => {
-                        
-                        return user ? navigate(routes.user+user.uid): navigate('/login')}
-                    }
                 />
             </div>
 

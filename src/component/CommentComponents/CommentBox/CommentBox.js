@@ -11,7 +11,7 @@ import { UserAuth } from '~/contexts/authContext';
 
 import { RingLoader } from 'react-spinners';
 import { useContext } from 'react';
-import { PostContext } from '~/contexts/Context';
+import { PostContext, ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
@@ -22,6 +22,7 @@ function CommentBox({page}) {
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
     const post = useContext(PostContext);
+    const context = useContext(ThemeContext)
     useEffect(() => {
         const fetchComment = async () => {
             const tmp = [];
@@ -52,7 +53,7 @@ function CommentBox({page}) {
     }, [animation]);
     return (
         <>
-            <div className={cx('wrapper')}>
+            <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
                 {comments.length !== 0 ? (
                     comments.map((comment) => {
                         return <Comment key={comment.id} data={comment.data} react={comment.react} id={comment.id} />;
@@ -64,7 +65,7 @@ function CommentBox({page}) {
 
                 
                 <div className={cx('filter')} onClick={() => setAnimation(!animation)}>
-                    {filter ? <span>Filter by: {filter}</span> : <span>Filter</span>}
+                    {filter ? <span>{filter}</span> : <span>Filter</span>}
                 </div>
                 {showFilter && (
                     <div
