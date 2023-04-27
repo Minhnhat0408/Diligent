@@ -14,7 +14,7 @@ import { PostContext, ThemeContext } from '~/contexts/Context';
 import { getIdInMentions, regex } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faFilePen, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEllipsis, faFilePen, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons';
 import {
     deleteDoc,
     doc,
@@ -26,6 +26,7 @@ import {
     getDocs,
     arrayUnion,
     arrayRemove,
+    onSnapshot,
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import type from '~/config/typeNotification';
@@ -33,21 +34,26 @@ import { memo } from 'react';
 
 const cx = classNames.bind(styles);
 function Comment({ data, id, react }) {
-    const [like, setLike] = useState(false);
+    const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
-    const [text, setText] = useState('');
+    const [text, setText] = useState(
+        data.text.replace(regex, (spc) => {
+            const id = spc.match(getIdInMentions)[0].substring(1);
+            const name = spc.substring(0, spc.indexOf('('));
+            return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
+        }),
+    );
     const { user, userData } = UserAuth();
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const [update, setUpdate] = useState(false);
     const [subComments, setSubComments] = useState([]);
-    const post = useContext(PostContext)
+    const post = useContext(PostContext);
     useEffect(() => {
-        const fetchSubComment = async () => {
-            const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
-            const tmp = [];
-            const docs = await getDocs(q);
+        const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
 
+        const unsubscribe = onSnapshot(q, (docs) => {
+            const tmp = [];
             docs.forEach((doc) => {
                 if (
                     doc.data().like.list.some((u) => {
@@ -61,20 +67,21 @@ function Comment({ data, id, react }) {
             });
             console.log(tmp);
             setSubComments(tmp);
-        };
-        if (isReply) {
-            fetchSubComment();
-        }else{
-            setText(
-                data.text.replace(regex, (spc) => {
-                    const id = spc.match(getIdInMentions)[0].substring(1);
-                    const name = spc.substring(0, spc.indexOf('('));
-                    return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
-                }),
-            );
-        }
+        });
+
+        return () => unsubscribe();
+    }, []);
+    useEffect(() => {
+        setText(
+            data.text.replace(regex, (spc) => {
+                const id = spc.match(getIdInMentions)[0].substring(1);
+                const name = spc.substring(0, spc.indexOf('('));
+                return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
+            }),
+        );
         setUpdate(false);
-    }, [data, isReply]);
+       
+    }, [post.update]);
     const handleClickLike = async () => {
         try {
             const lik = data.like.list.some((u) => {
@@ -166,10 +173,18 @@ function Comment({ data, id, react }) {
     };
 
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark',page:post.page })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark', page: post.page })}>
             {!update ? (
                 <>
-                    <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
+                    <div className={cx('ava-like')}>
+                        <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
+                        {data.like.count > 0 && (
+                            <div className={cx('like-count')}>
+                                <span>{data.like.count}</span>
+                                <FontAwesomeIcon className={cx('like-icon')} icon={faThumbsUp} />
+                            </div>
+                        )}
+                    </div>
                     <div className={cx('comment')}>
                         <h5 className={cx('username')}>{data.user.name}</h5>
                         <div className={cx('row')}>
@@ -192,6 +207,7 @@ function Comment({ data, id, react }) {
                                         },
                                     ]}
                                     onClick={handleCommentOptions}
+                                    small
                                 >
                                     <div className={cx('options')}>
                                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
@@ -215,7 +231,7 @@ function Comment({ data, id, react }) {
                                 </span>
                             )}
                             {data.isEdited && <span className={cx('edit')}>Edited</span>}
-                            <span className={cx('time')}>{getTimeDiff(Date.now(), data.time.toMillis())}</span>
+                            <span className={cx('time')}>{getTimeDiff(Date.now(), data.time?.toMillis())}</span>
                         </div>
 
                         {isReply &&
@@ -226,23 +242,16 @@ function Comment({ data, id, react }) {
                                         key={comment.id}
                                         data={comment.data}
                                         id={comment.id}
+                                        react={comment.react}
                                     />
                                 );
                             })}
-                        {isReply && user && (
-                            <MyComment
-                                tag={{ name: data.user.name, id: data.user.id, father: id }}
-                            />
-                        )}
+                        {isReply && user && <MyComment tag={{ name: data.user.name, id: data.user.id, father: id }} />}
                     </div>
                 </>
             ) : (
                 <>
-                    <MyComment
-                        postData={data} postId={id}
-                        update={{ id: id,data:data}}
-                        
-                    />
+                    <MyComment postData={data} postId={id} update={{ id: id, data: data }} />
                 </>
             )}
         </div>

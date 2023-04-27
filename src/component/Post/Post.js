@@ -30,6 +30,7 @@ import Menu from '../Popper/Menu/Menu';
 import { POST_OPTIONS, USER_POST_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
 import parse from 'html-react-parser';
 import { MyComment } from '../CommentComponents/MyComment';
+import PostForm from '../PostForm/PostForm';
 
 const cx = classNames.bind(styles);
 
@@ -41,6 +42,7 @@ function Post({ page = false }) {
     const navigate = useNavigate();
     const post = useContext(PostContext);
     const [text, setText] = useState('');
+    const [updatePost, setUpdatePost] = useState(false);
     const userLink = (id) => {
         navigate(routes.user + id);
     };
@@ -168,6 +170,10 @@ function Post({ page = false }) {
             case 'delete':
                 deletePost(post.id);
                 break;
+            case 'update':
+                setUpdatePost(true);
+
+                break;
             default:
                 break;
         }
@@ -264,8 +270,9 @@ function Post({ page = false }) {
 
     return (
         <>
+            {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} />}
             {page ? (
-                <div className={cx('wrapper','postpage', { dark: context.theme === 'dark' })}>
+                <div className={cx('wrapper', 'postpage', { dark: context.theme === 'dark' })}>
                     <div className={cx('scroll-box')}>
                         <div className={cx('post-wrapper')}>
                             <div className={cx('header')}>
@@ -283,9 +290,13 @@ function Post({ page = false }) {
                                         >
                                             {post.data.user.name}
                                         </h5>
-                                        <p className={cx('time')}>
-                                            {getTimeDiff(Date.now(), post.data.time.toMillis())}
-                                        </p>
+
+                                       <div className={cx('side-info')}>
+                                            <p className={cx('time')}>
+                                                {getTimeDiff(Date.now(), post.data.time.toMillis())}
+                                            </p>
+                                            {post.data.updated && <p className={cx('updated')}>Updated</p>}
+                                       </div>
                                     </div>
                                 </div>
 
@@ -408,9 +419,12 @@ function Post({ page = false }) {
                                                     >
                                                         {post.data.user.name}
                                                     </h5>
-                                                    <p className={cx('time')}>
-                                                        {getTimeDiff(Date.now(), post.data.time.toMillis())}
-                                                    </p>
+                                                    <div className={cx('side-info')}>
+                                                        <p className={cx('time')}>
+                                                            {getTimeDiff(Date.now(), post.data.time.toMillis())}
+                                                        </p>
+                                                        {post.data.updated && <p className={cx('updated')}>Updated</p>}
+                                                    </div>
                                                 </div>
                                             </div>
 
@@ -568,8 +582,13 @@ function Post({ page = false }) {
                                 >
                                     {post.data.user.name}
                                 </h5>
-                                <p className={cx('time')}>{getTimeDiff(Date.now(), post.data.time.toMillis())}</p>
+                                
+                                <div className={cx('side-info')}>
+                                    <p className={cx('time')}>{getTimeDiff(Date.now(), post.data.time.toMillis())}</p>
+                                    {post.data.updated && <p className={cx('updated')}>Updated</p>}
+                                </div>
                             </div>
+
                         </div>
 
                         {user && (

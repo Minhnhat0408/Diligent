@@ -272,24 +272,39 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     // Post handle
-    const createPost = async (files, title, text, tags, mentions) => {
-        const docRef = await addDoc(collection(db, 'posts'), {
-            title: title,
-            text: text,
-            files: files,
-            tags: tags,
-            mentions: mentions,
-            user: {
-                id: user.uid,
-                avatar: userData.user_avatar,
-                name: userData.user_name,
-            },
-            time: new Date(),
-            like: { count: 0, list: [] },
-            dislike: { count: 0, list: [] },
-            commentNumber: 0,
-            hide: [],
-        });
+    const createPost = async (files, title, text, tags, mentions, update =null) => {
+        let docRef =null;
+        if(update){
+            docRef = await updateDoc(doc(db,'posts',update.id),{
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                updated: true,
+                hide: [],
+            })
+        }else{
+            docRef = await addDoc(collection(db, 'posts'), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                user: {
+                    id: user.uid,
+                    avatar: userData.user_avatar,
+                    name: userData.user_name,
+                },
+                time: new Date(),
+                like: { count: 0, list: [] },
+                dislike: { count: 0, list: [] },
+                commentNumber: 0,
+                hide: [],
+                updated:false,
+            });
+        }
+        
         return docRef;
     };
 

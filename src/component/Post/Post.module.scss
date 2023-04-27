@@ -74,10 +74,18 @@ $time-color: #adb5bd;
                 font-weight: 700;
                 cursor: pointer;
             }
-
+            .side-info{
+                display: flex;
+                align-items: center;
+            }
             .time {
                 font-size: 1.2rem;
                 font-weight: 500;
+            }
+            .updated{
+                margin-left: 1rem;
+                font-size: 1.4rem;
+                font-weight: 600;
             }
         }
     }
@@ -104,6 +112,7 @@ $time-color: #adb5bd;
 .title-wrapper {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     margin-top: 10px;
     margin-bottom: 5px;
 }
