@@ -11,7 +11,7 @@ import getTimeDiff from '~/utils/timeDiff';
 import { UserAuth } from '~/contexts/authContext';
 import { useContext } from 'react';
 import { PostContext, ThemeContext } from '~/contexts/Context';
-import { getIdInMentions, regex } from '~/utils/constantValue';
+import { getIdInMentions, regex, report } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsis, faFilePen, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons';
@@ -80,7 +80,6 @@ function Comment({ data, id, react }) {
             }),
         );
         setUpdate(false);
-       
     }, [post.update]);
     const handleClickLike = async () => {
         try {
@@ -177,7 +176,14 @@ function Comment({ data, id, react }) {
             {!update ? (
                 <>
                     <div className={cx('ava-like')}>
-                        <Image src={data.user.avatar} className={cx('avatar')} alt="ava" />
+                        <Image
+                            src={data.user.avatar}
+                            onClick={() => {
+                                navigate(routes.user + data.user.id);
+                            }}
+                            className={cx('avatar')}
+                            alt="ava"
+                        />
                         {data.like.count > 0 && (
                             <div className={cx('like-count')}>
                                 <span>{data.like.count}</span>
@@ -186,26 +192,39 @@ function Comment({ data, id, react }) {
                         )}
                     </div>
                     <div className={cx('comment')}>
-                        <h5 className={cx('username')}>{data.user.name}</h5>
+                        <h5
+                            className={cx('username')}
+                            onClick={() => {
+                                navigate(routes.user + data.user.id);
+                            }}
+                        >
+                            {data.user.name}
+                        </h5>
                         <div className={cx('row')}>
                             <div className={cx('message')}>
                                 <div className={cx('content')}>{parse(text, { replace })}</div>
                             </div>
-                            {data.user.id === user?.uid && (
-                                <Menu
+                            <Menu
                                     // chinh ben trai / chieu cao so vs ban dau
-                                    item={[
+                                    item={ data.user.id === user?.uid ? ([
                                         {
                                             icon: <FontAwesomeIcon icon={faFilePen} />,
                                             title: 'Update',
                                             type: 'update',
                                         },
                                         {
+                                        icon: <FontAwesomeIcon icon={faTrash} />,
+                                        title: 'Delete',
+                                        type: 'delete',
+                                    },]): (user?.isAdmin ? [
+                                        {
                                             icon: <FontAwesomeIcon icon={faTrash} />,
                                             title: 'Delete',
                                             type: 'delete',
                                         },
-                                    ]}
+                                    ]:[
+                                       report
+                                    ])}
                                     onClick={handleCommentOptions}
                                     small
                                 >
@@ -213,7 +232,6 @@ function Comment({ data, id, react }) {
                                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
                                     </div>
                                 </Menu>
-                            )}
                         </div>
                         {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
 
@@ -231,7 +249,7 @@ function Comment({ data, id, react }) {
                                 </span>
                             )}
                             {data.isEdited && <span className={cx('edit')}>Edited</span>}
-                            <span className={cx('time')}>{getTimeDiff(Date.now(), data.time?.toMillis())}</span>
+                            <span className={cx('time')}>{getTimeDiff(Date.now(), data.time?.toMillis())} ago</span>
                         </div>
 
                         {isReply &&

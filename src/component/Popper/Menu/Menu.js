@@ -13,6 +13,7 @@ const cx = classNames.bind(styles);
 
 function Menu({
     placement = 'bottom',
+    disabled,
     offset,
     small = false,
     children,
@@ -85,6 +86,7 @@ function Menu({
     return (
       <>
         <Tippy
+          disabled={disabled}
           visible={isOpen} // Added to control the menu visibility
           onHide={handleOutofHoverMenu}
           onClickOutside={() => setIsOpen(false)} // Added to close the menu on outside click

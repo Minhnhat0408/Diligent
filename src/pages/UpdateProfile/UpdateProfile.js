@@ -183,7 +183,7 @@ function UpdateProfile() {
                         <label className={cx('ava-btn')} htmlFor="bg">
                             Avatar
                         </label>
-                        <input onChange={handleAvatar} type="file" id="bg" className={cx('d-none')} />
+                        <input onChange={handleAvatar} type="file" id="bg" accept='image/*' className={cx('d-none')} />
                         <span className={cx('msg')}>{validatorMsg.avatar}</span>
                     </div>
                     {file?.preview && (

@@ -27,7 +27,14 @@ import type from '~/config/typeNotification';
 import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 import { useNavigate } from 'react-router-dom';
 import Menu from '../Popper/Menu/Menu';
-import { POST_OPTIONS, USER_POST_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
+import {
+    ADMIN_POST_OPTIONS,
+    POST_OPTIONS,
+    USER_POST_OPTIONS,
+    adminId,
+    getIdInMentions,
+    regex,
+} from '~/utils/constantValue';
 import parse from 'html-react-parser';
 import { MyComment } from '../CommentComponents/MyComment';
 import PostForm from '../PostForm/PostForm';
@@ -37,7 +44,8 @@ const cx = classNames.bind(styles);
 function Post({ page = false }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData, user, deletePost, savePost, posts, hidePost } = UserAuth();
+    const { deletePost, savePost, posts, hidePost } = useContext(PostContext)
+    const { userData, user} = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
     const post = useContext(PostContext);
@@ -172,7 +180,9 @@ function Post({ page = false }) {
                 break;
             case 'update':
                 setUpdatePost(true);
-
+                break;
+            case 'report':
+                
                 break;
             default:
                 break;
@@ -284,26 +294,37 @@ function Post({ page = false }) {
                                         alt="avatar"
                                     />
                                     <div className={cx('user')}>
-                                        <h5
-                                            className={cx('username')}
-                                            onClick={() => navigate(routes.user + post.data.user.id)}
-                                        >
-                                            {post.data.user.name}
-                                        </h5>
+                                        <div className={cx('row')}>
+                                            <h5
+                                                className={cx('username')}
+                                                onClick={() => navigate(routes.user + post.data.user.id)}
+                                            >
+                                                {post.data.user.name}
+                                            </h5>
+                                            {post.data.user.id === adminId && (
+                                                <span className={cx('badge')}>Admin</span>
+                                            )}
+                                        </div>
 
-                                       <div className={cx('side-info')}>
+                                        <div className={cx('row')}>
                                             <p className={cx('time')}>
-                                                {getTimeDiff(Date.now(), post.data.time.toMillis())}
+                                                {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
                                             </p>
                                             {post.data.updated && <p className={cx('updated')}>Updated</p>}
-                                       </div>
+                                        </div>
                                     </div>
                                 </div>
 
                                 {user && (
                                     <Menu
                                         // chinh ben trai / chieu cao so vs ban dau
-                                        item={post.data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
+                                        item={
+                                            post.data.user.id === user.uid
+                                                ? USER_POST_OPTIONS
+                                                : user?.isAdmin
+                                                ? ADMIN_POST_OPTIONS
+                                                : POST_OPTIONS
+                                        }
                                         onClick={handlePostOptions}
                                         small
                                     >
@@ -413,15 +434,20 @@ function Post({ page = false }) {
                                                     alt="avatar"
                                                 />
                                                 <div className={cx('user')}>
-                                                    <h5
-                                                        className={cx('username')}
-                                                        onClick={() => navigate(routes.user + post.data.user.id)}
-                                                    >
-                                                        {post.data.user.name}
-                                                    </h5>
-                                                    <div className={cx('side-info')}>
+                                                    <div className={cx('row')}>
+                                                        <h5
+                                                            className={cx('username')}
+                                                            onClick={() => navigate(routes.user + post.data.user.id)}
+                                                        >
+                                                            {post.data.user.name}
+                                                        </h5>
+                                                        {post.data.user.id === adminId && (
+                                                            <span className={cx('badge')}>Admin</span>
+                                                        )}
+                                                    </div>
+                                                    <div className={cx('row')}>
                                                         <p className={cx('time')}>
-                                                            {getTimeDiff(Date.now(), post.data.time.toMillis())}
+                                                            {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
                                                         </p>
                                                         {post.data.updated && <p className={cx('updated')}>Updated</p>}
                                                     </div>
@@ -434,6 +460,8 @@ function Post({ page = false }) {
                                                     item={
                                                         post.data.user.id === user.uid
                                                             ? USER_POST_OPTIONS
+                                                            : user?.isAdmin
+                                                            ? ADMIN_POST_OPTIONS
                                                             : POST_OPTIONS
                                                     }
                                                     onClick={handlePostOptions}
@@ -576,25 +604,35 @@ function Post({ page = false }) {
                                 alt="avatar"
                             />
                             <div className={cx('user')}>
-                                <h5
-                                    className={cx('username')}
-                                    onClick={() => navigate(routes.user + post.data.user.id)}
-                                >
-                                    {post.data.user.name}
-                                </h5>
-                                
-                                <div className={cx('side-info')}>
-                                    <p className={cx('time')}>{getTimeDiff(Date.now(), post.data.time.toMillis())}</p>
+                                <div className={cx('row')}>
+                                    <h5
+                                        className={cx('username')}
+                                        onClick={() => navigate(routes.user + post.data.user.id)}
+                                    >
+                                        {post.data.user.name}
+                                    </h5>
+                                    {post.data.user.id === adminId && <span className={cx('badge')}>Admin</span>}
+                                </div>
+
+                                <div className={cx('row')}>
+                                    <p className={cx('time')}>
+                                        {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
+                                    </p>
                                     {post.data.updated && <p className={cx('updated')}>Updated</p>}
                                 </div>
                             </div>
-
                         </div>
 
                         {user && (
                             <Menu
                                 // chinh ben trai / chieu cao so vs ban dau
-                                item={post.data.user.id === user.uid ? USER_POST_OPTIONS : POST_OPTIONS}
+                                item={
+                                    post.data.user.id === user.uid
+                                        ? USER_POST_OPTIONS
+                                        : user?.isAdmin
+                                        ? ADMIN_POST_OPTIONS
+                                        : POST_OPTIONS
+                                }
                                 onClick={handlePostOptions}
                                 small
                             >

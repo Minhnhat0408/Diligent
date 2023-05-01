@@ -125,6 +125,10 @@ body {
 .d-none {
     display: none;
 }
+.row{
+    display: flex;
+    align-items: center;
+}
 .indicators{
     position: absolute;
     bottom: 30px;

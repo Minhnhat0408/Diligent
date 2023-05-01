@@ -31,6 +31,10 @@ $time-color: #adb5bd;
     &.dark .header .info .username {
         color: var(--primary);
     }
+    &.dark .header .info .badge {
+        color: var(--primary-light);
+        background-color: var(--primary);
+    }
     &.dark .file-show .file-link {
         border-color: var(--text-color-dark);
         & a {
@@ -74,9 +78,16 @@ $time-color: #adb5bd;
                 font-weight: 700;
                 cursor: pointer;
             }
-            .side-info{
-                display: flex;
-                align-items: center;
+            
+            .badge{
+                padding: 0 6px;
+                background-color: var(--primary-light);
+                color:var(--primary);
+                border-radius: 20px;
+                font-size: 1.1rem;
+                margin-left: 10px;
+                user-select: none;
+                font-weight: 600;
             }
             .time {
                 font-size: 1.2rem;

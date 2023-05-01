@@ -28,6 +28,8 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/fi
 import { db } from '~/firebase';
 import { isImageUrl } from '~/utils/checkFile';
 import { isVideoUrl } from '~/utils/checkFile';
+import getTimeDiff from '~/utils/timeDiff';
+import Ban from '../Ban/Ban';
 const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update }) {
@@ -70,7 +72,7 @@ function PostForm({ onXmark, update }) {
     const handleDeleteImage = (id) => {
         setImagePreview((prev) => prev.filter((_, index) => index !== id));
     };
-
+    console.log(imagePreview);
     const moveLeft = (index) => {
         // Make sure the index is not out of range
         if (index > 0 && index < imagePreview.length) {
@@ -118,7 +120,9 @@ function PostForm({ onXmark, update }) {
 
     //handle post
     const titleContent = useRef();
-    const [textFinal, setTextFinal] = useState({title:'',text:''});
+    const [textFinal, setTextFinal] = useState(() => {
+        return update ? { title: update.data.title, text: update.data.text } : { title: '', text: '' };
+    });
     const [invalid, setInvalid] = useState(false);
     const [text, setText] = useState(() => {
         return update ? update.data.text : '';
@@ -148,7 +152,9 @@ function PostForm({ onXmark, update }) {
                         .filter((img) => img?.file)
                         .map((img) => fileUpload({ file: img.file, name: img.file.name })),
                 );
-                files.media = update ? update.data.files.media.concat(results.map((obj) => obj.url)) : results.map((obj) => obj.url) ;
+                files.media = update
+                    ? imagePreview.filter((img) => !img?.file).concat(results.map((obj) => obj.url))
+                    : results.map((obj) => obj.url);
             }
 
             if (others.length !== 0) {
@@ -157,7 +163,7 @@ function PostForm({ onXmark, update }) {
                         .filter((file) => file?.file)
                         .map((file) => fileUpload({ file: file.file, name: file.file.name, location: 'others' })),
                 );
-                files.others = update ? update.data.files.others.concat(results) : results;
+                files.others = update ? others.filter((file) => !file?.file).concat(results) : results;
             }
 
             if (!update) {
@@ -175,7 +181,9 @@ function PostForm({ onXmark, update }) {
                     }
                 });
             }
-            const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser,{id:update.id});
+            const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser, {
+                id: update.id,
+            });
             if (tagUser.length !== 0) {
                 refPost.then(async (res) => {
                     await Promise.all(
@@ -206,246 +214,257 @@ function PostForm({ onXmark, update }) {
         }
     };
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
-            <div className={cx('pop-up')}>
-                {loading && (
-                    <div className="pop-up loader">
-                        <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                    </div>
-                )}
-                <div className={cx('create-box', { dark: context.theme === 'dark' })}>
-                    <div className={cx('header')}>
-                        <div></div>
-                        <h1 className={cx('title')}>{update ? 'Update Post' : 'Create post'}</h1>
-                        <div className={cx('icon')} onClick={handleClickCloseBox}>
-                            <FontAwesomeIcon icon={faXmark} />
-                        </div>
-                    </div>
+        <>
+            {userData?.user_status === 'ban' ? (
+                <Ban onXmark={onXmark}>You have been banned from posting for inappropriate behaviors</Ban>
+            ) : (
+                <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+                    <div className={cx('pop-up')}>
+                        {loading && (
+                            <div className="pop-up loader">
+                                <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                            </div>
+                        )}
 
-                    <hr />
+                        <div className={cx('create-box', { dark: context.theme === 'dark' })}>
+                            <div className={cx('header')}>
+                                <div></div>
+                                <h1 className={cx('title')}>{update ? 'Update Post' : 'Create post'}</h1>
+                                <div className={cx('out')} onClick={handleClickCloseBox}>
+                                    <FontAwesomeIcon icon={faXmark} />
+                                </div>
+                            </div>
 
-                    <div className={cx('body', { dark: context.theme === 'dark' })}>
-                        <div className={cx('info')}>
-                            <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
-                            <Menu
-                                offset={[0, 30]}
-                                // chinh ben trai / chieu cao so vs ban dau
-                                placement="right"
-                                item={CATEGORY_OPTIONS}
-                                small
-                                onClick={handleAddCategory}
-                            >
-                                <div>
-                                    <h5 className={cx('username')}>{userData.user_name}</h5>
-                                    <div className={cx('category')}>
-                                        <p>Choose category</p>
-                                        <i className="fa-solid fa-chevron-right"></i>
+                            <hr />
+
+                            <div className={cx('body', { dark: context.theme === 'dark' })}>
+                                <div className={cx('info')}>
+                                    <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
+                                    <Menu
+                                        offset={[0, 30]}
+                                        // chinh ben trai / chieu cao so vs ban dau
+                                        placement="right"
+                                        item={CATEGORY_OPTIONS}
+                                        small
+                                        onClick={handleAddCategory}
+                                    >
+                                        <div>
+                                            <h5 className={cx('username')}>{userData.user_name}</h5>
+                                            <div className={cx('category')}>
+                                                <p>Choose category</p>
+                                                <i className="fa-solid fa-chevron-right"></i>
+                                            </div>
+                                        </div>
+                                    </Menu>
+                                </div>
+                                <textarea
+                                    placeholder="What have been questioning you ?"
+                                    defaultValue={update ? update.data.title : ''}
+                                    ref={titleContent}
+                                    onFocus={() => {
+                                        setInvalid(false);
+                                    }}
+                                    onBlur={() => {
+                                        setTextFinal((prev) => {
+                                            return { ...prev, title: titleContent.current.value };
+                                        });
+                                    }}
+                                    className={cx('input', 'inp-title', { invalid: invalid })}
+                                />
+                                <Mentions
+                                    data={mentionData}
+                                    value={text}
+                                    onBlur={(e) =>
+                                        setTextFinal((prev) => {
+                                            console.log(text);
+                                            return { ...prev, text: text };
+                                        })
+                                    }
+                                    placeholder="Describe your question..."
+                                    dark={context.theme === 'dark'}
+                                    onChange={(e) => setText(e.target.value)}
+                                />
+                                <div className={cx('file-show')}>
+                                    {others.length !== 0 &&
+                                        others.map((f, id) => {
+                                            return (
+                                                <div className={cx('file-link')}>
+                                                    <a href={f.url} download={!f?.file ? f.name : f.file.name}>
+                                                        {!f?.file ? f.name : f.file.name}
+                                                    </a>
+                                                    <FontAwesomeIcon
+                                                        icon={faXmark}
+                                                        className={cx('delete-file')}
+                                                        onClick={() => handleDeleteOthers(id)}
+                                                    />
+                                                </div>
+                                            );
+                                        })}
+                                </div>
+                                <div className={cx('show-img')}>
+                                    {imagePreview.length !== 0 &&
+                                        imagePreview.map((img, id) => {
+                                            let result = undefined;
+                                            let checkImage = false;
+                                            let checkVideo = false;
+                                            let url = '';
+                                            if (!img?.file) {
+                                                checkImage = isImageUrl(img);
+                                                checkVideo = isVideoUrl(img);
+                                                url = img;
+                                            } else {
+                                                checkImage = isImage(img.file);
+                                                checkVideo = isVideo(img.file);
+                                                url = img.url;
+                                            }
+                                            if (checkImage) {
+                                                result = (
+                                                    // trao doi vi tri anh
+                                                    <div
+                                                        key={id}
+                                                        className={cx('show-img-content', {
+                                                            plenty: imagePreview.length > 2,
+                                                        })}
+                                                    >
+                                                        <img
+                                                            src={url}
+                                                            alt="preview"
+                                                            style={{}}
+                                                            className={cx('your-img', {
+                                                                plenty: imagePreview.length > 2,
+                                                            })}
+                                                        />
+                                                        <FontAwesomeIcon
+                                                            icon={faXmark}
+                                                            className={cx('delete')}
+                                                            onClick={() => handleDeleteImage(id)}
+                                                        />
+                                                        {imagePreview.length > 1 && (
+                                                            <>
+                                                                <FontAwesomeIcon
+                                                                    icon={faArrowLeft}
+                                                                    className={cx('left')}
+                                                                    onClick={() => moveLeft(id)}
+                                                                />
+                                                                <FontAwesomeIcon
+                                                                    icon={faArrowRight}
+                                                                    className={cx('right')}
+                                                                    onClick={() => moveRight(id)}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                );
+                                            } else if (checkVideo) {
+                                                result = (
+                                                    <div
+                                                        key={id}
+                                                        className={cx('show-img-content', {
+                                                            plenty: imagePreview.length > 2,
+                                                        })}
+                                                    >
+                                                        <video
+                                                            className={cx('your-img', {
+                                                                plenty: imagePreview.length > 2,
+                                                            })}
+                                                        >
+                                                            <source src={url} />
+                                                        </video>
+                                                        <FontAwesomeIcon icon={faCirclePlay} className={cx('play')} />
+                                                        <FontAwesomeIcon
+                                                            icon={faXmark}
+                                                            className={cx('delete')}
+                                                            onClick={() => handleDeleteImage(id)}
+                                                        />
+                                                        {imagePreview.length > 1 && (
+                                                            <>
+                                                                <FontAwesomeIcon
+                                                                    icon={faArrowLeft}
+                                                                    className={cx('left')}
+                                                                    onClick={() => moveLeft(id)}
+                                                                />
+                                                                <FontAwesomeIcon
+                                                                    icon={faArrowRight}
+                                                                    className={cx('right')}
+                                                                    onClick={() => moveRight(id)}
+                                                                />
+                                                            </>
+                                                        )}
+                                                    </div>
+                                                );
+                                            }
+                                            return result;
+                                        })}
+                                </div>
+
+                                <ul className={cx('selected-category')}>
+                                    {selectedCategories.map((category, index) => (
+                                        <li key={index} onClick={() => handleDeleteCategory(category)}>
+                                            <p>{category}</p>
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </li>
+                                    ))}
+                                </ul>
+
+                                <div className={cx('options')}>
+                                    <h4 className={cx('title')}>Add to your post</h4>
+                                    <div className={cx('option')}>
+                                        <label htmlFor="create-post-img">
+                                            <FontAwesomeIcon icon={faImages} className={cx('img')} />
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="create-post-img"
+                                            accept="image/*,video/*"
+                                            className={cx('d-none')}
+                                            onChange={handleImageChange}
+                                        />
+                                        <label htmlFor="create-post-file">
+                                            <FontAwesomeIcon icon={faPaperclip} className={cx('attach')} />
+                                        </label>
+                                        <input
+                                            type="file"
+                                            id="create-post-file"
+                                            accept=".pdf,.docx,.doc,.xls,.xlsx,.rar,.zip"
+                                            className={cx('d-none')}
+                                            onChange={handleFileChange}
+                                        />
+                                        <Tippy
+                                            placement="right"
+                                            trigger="click"
+                                            interactive
+                                            offset={[0, 20]}
+                                            arrow={false}
+                                            content={
+                                                <div className={cx('tag-box')}>
+                                                    <span className={cx('tag-name')}>Use '@' to mention</span>
+                                                </div>
+                                            }
+                                        >
+                                            <div>
+                                                <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
+                                            </div>
+                                        </Tippy>
                                     </div>
                                 </div>
-                            </Menu>
-                        </div>
-                        <textarea
-                            placeholder="What have been questioning you ?"
-                            defaultValue={update ? update.data.title : ''}
-                            ref={titleContent}
-                            onFocus={() => {
-                                setInvalid(false);
-                            }}
-                            onBlur={() => {
-                                setTextFinal((prev) => {
-                                    return { ...prev, title: titleContent.current.value };
-                                });
-                            }}
-                            className={cx('input', 'inp-title', { invalid: invalid })}
-                        />
-                        <Mentions
-                            data={mentionData}
-                            value={text}
-                            onBlur={(e) =>
-                                setTextFinal((prev) => {
-                                    console.log(text);
-                                    return { ...prev, text: text };
-                                })
-                            }
-                            placeholder="Describe your question..."
-                            dark={context.theme === 'dark'}
-                            onChange={(e) => setText(e.target.value)}
-                        />
-                        <div className={cx('file-show')}>
-                            {others.length !== 0 &&
-                                others.map((f, id) => {
-                                    return (
-                                        <div className={cx('file-link')}>
-                                            <a href={f.url} download={!f?.file ? f.name : f.file.name}>
-                                                {!f?.file ? f.name : f.file.name}
-                                            </a>
-                                            <FontAwesomeIcon
-                                                icon={faXmark}
-                                                className={cx('delete-file')}
-                                                onClick={() => handleDeleteOthers(id)}
-                                            />
-                                        </div>
-                                    );
-                                })}
-                        </div>
-                        <div className={cx('show-img')}>
-                            {imagePreview.length !== 0 &&
-                                imagePreview.map((img, id) => {
-                                    let result = undefined;
-                                    let checkImage = false;
-                                    let checkVideo = false;
-                                    let url = '';
-                                    if (!img?.file) {
-                                        checkImage = isImageUrl(img);
-                                        checkVideo = isVideoUrl(img);
-                                        url = img;
-                                    } else {
-                                        checkImage = isImage(img.file);
-                                        checkVideo = isVideo(img.file);
-                                        url = img.url;
-                                    }
-                                    if (checkImage) {
-                                        result = (
-                                            // trao doi vi tri anh
-                                            <div
-                                                key={id}
-                                                className={cx('show-img-content', {
-                                                    plenty: imagePreview.length > 2,
-                                                })}
-                                            >
-                                                <img
-                                                    src={url}
-                                                    alt="preview"
-                                                    style={{}}
-                                                    className={cx('your-img', {
-                                                        plenty: imagePreview.length > 2,
-                                                    })}
-                                                />
-                                                <FontAwesomeIcon
-                                                    icon={faXmark}
-                                                    className={cx('delete')}
-                                                    onClick={() => handleDeleteImage(id)}
-                                                />
-                                                {imagePreview.length > 1 && (
-                                                    <>
-                                                        <FontAwesomeIcon
-                                                            icon={faArrowLeft}
-                                                            className={cx('left')}
-                                                            onClick={() => moveLeft(id)}
-                                                        />
-                                                        <FontAwesomeIcon
-                                                            icon={faArrowRight}
-                                                            className={cx('right')}
-                                                            onClick={() => moveRight(id)}
-                                                        />
-                                                    </>
-                                                )}
-                                            </div>
-                                        );
-                                    } else if (checkVideo) {
-                                        result = (
-                                            <div
-                                                key={id}
-                                                className={cx('show-img-content', {
-                                                    plenty: imagePreview.length > 2,
-                                                })}
-                                            >
-                                                <video
-                                                    className={cx('your-img', {
-                                                        plenty: imagePreview.length > 2,
-                                                    })}
-                                                >
-                                                    <source src={url} />
-                                                </video>
-                                                <FontAwesomeIcon icon={faCirclePlay} className={cx('play')} />
-                                                <FontAwesomeIcon
-                                                    icon={faXmark}
-                                                    className={cx('delete')}
-                                                    onClick={() => handleDeleteImage(id)}
-                                                />
-                                                {imagePreview.length > 1 && (
-                                                    <>
-                                                        <FontAwesomeIcon
-                                                            icon={faArrowLeft}
-                                                            className={cx('left')}
-                                                            onClick={() => moveLeft(id)}
-                                                        />
-                                                        <FontAwesomeIcon
-                                                            icon={faArrowRight}
-                                                            className={cx('right')}
-                                                            onClick={() => moveRight(id)}
-                                                        />
-                                                    </>
-                                                )}
-                                            </div>
-                                        );
-                                    }
-                                    return result;
-                                })}
-                        </div>
-
-                        <ul className={cx('selected-category')}>
-                            {selectedCategories.map((category, index) => (
-                                <li key={index} onClick={() => handleDeleteCategory(category)}>
-                                    <p>{category}</p>
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </li>
-                            ))}
-                        </ul>
-
-                        <div className={cx('options')}>
-                            <h4 className={cx('title')}>Add to your post</h4>
-                            <div className={cx('option')}>
-                                <label htmlFor="create-post-img">
-                                    <FontAwesomeIcon icon={faImages} className={cx('img')} />
-                                </label>
-                                <input
-                                    type="file"
-                                    id="create-post-img"
-                                    className={cx('d-none')}
-                                    onChange={handleImageChange}
-                                />
-                                <label htmlFor="create-post-file">
-                                    <FontAwesomeIcon icon={faPaperclip} className={cx('attach')} />
-                                </label>
-                                <input
-                                    type="file"
-                                    id="create-post-file"
-                                    className={cx('d-none')}
-                                    onChange={handleFileChange}
-                                />
-                                <Tippy
-                                    placement="right"
-                                    trigger="click"
-                                    interactive
-                                    offset={[0, 20]}
-                                    arrow={false}
-                                    content={
-                                        <div className={cx('tag-box')}>
-                                            <span className={cx('tag-name')}>Use '@' to mention</span>
-                                        </div>
-                                    }
-                                >
-                                    <div>
-                                        <FontAwesomeIcon icon={faUserTag} className={cx('user-tag')} />
-                                    </div>
-                                </Tippy>
                             </div>
+
+                            <Button
+                                primary
+                                disabled={
+                                    imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value
+                                }
+                                dark={context.theme === 'dark'}
+                                onClick={handlePost}
+                                className={cx('upload')}
+                            >
+                                Upload
+                            </Button>
                         </div>
                     </div>
-
-                    <Button
-                        primary
-                        disabled={imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value}
-                        dark={context.theme === 'dark'}
-                        onClick={handlePost}
-                        className={cx('upload')}
-                    >
-                        Upload
-                    </Button>
                 </div>
-            </div>
-        </div>
+            )}
+        </>
     );
 }
 

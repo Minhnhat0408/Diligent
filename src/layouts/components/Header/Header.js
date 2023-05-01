@@ -69,7 +69,7 @@ function Header() {
                             }}
                             key={ind}
                             data={data}
-                            time={getTimeDiff(Date.now(), data.time.toMillis())}
+                            time={getTimeDiff(Date.now(), data.time.toMillis()) + ' ago'}
                         />
                     );
                 })}

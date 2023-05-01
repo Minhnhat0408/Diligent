@@ -70,7 +70,7 @@ function PostPage() {
                                             } else if (isVideoUrl(url)) {
                                                 result = (
                                                     <div className={cx('each-slide-effect')}>
-                                                        <video className={cx('image')}>
+                                                        <video controls  className={cx('image')}>
                                                             <source src={url} />
                                                         </video>
                                                     </div>

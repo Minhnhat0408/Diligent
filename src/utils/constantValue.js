@@ -1,9 +1,64 @@
-import { faEyeSlash, faFilePen, faFlag, faLock, faSave, faTrash, faUserXmark } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faBan,
+    faEyeSlash,
+    faFilePen,
+    faFlag,
+    faLock,
+    faSave,
+    faTrash,
+    faUserXmark,
+} from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
+const currentDate = new Date();
+export const adminId = 'rFB2DyO43uTTjubLtoi8BhPQcNu1';
+export const report = {
+    icon: <FontAwesomeIcon icon={faFlag} />,
+    title: 'Report',
+    children: {
+        title: 'Report',
+        data: [
+            {
+                type: 'report',
+                title: 'Fake account',
+                children: {
+                    title: 'Success',
+                    data: [
+                        {
+                            title: 'Not Working',
+                        },
+                    ],
+                },
+            },
+            {
+                type: 'report',
+                title: 'Harassment/Bully',
+                children: {
+                    title: 'Success',
+                    data: [
+                        {
+                            title: 'Not Working',
+                        },
+                    ],
+                },
+            },
+            {
+                type: 'report',
+                title: 'Inappropriate post',
+                children: {
+                    title: 'Success',
+                    data: [
+                        {
+                            title: 'Not Working',
+                        },
+                    ],
+                },
+            },
+        ],
+    },
+};
 export const CATEGORY_OPTIONS = [
     {
-    
         title: 'Japanese',
         children: {
             title: 'Japanese',
@@ -19,10 +74,8 @@ export const CATEGORY_OPTIONS = [
                 },
             ],
         },
-        
     },
     {
-    
         title: 'English',
         children: {
             title: 'English',
@@ -38,10 +91,8 @@ export const CATEGORY_OPTIONS = [
                 },
             ],
         },
-        
     },
     {
-    
         title: 'Korean',
         children: {
             title: 'Korean',
@@ -54,10 +105,8 @@ export const CATEGORY_OPTIONS = [
                 },
             ],
         },
-        
     },
     {
-    
         title: 'Math',
         children: {
             title: 'Math',
@@ -76,134 +125,98 @@ export const CATEGORY_OPTIONS = [
                 },
             ],
         },
-        
     },
-]
+];
 export const USER_POST_OPTIONS = [
     {
-        icon:<FontAwesomeIcon icon={faFilePen} />,
+        icon: <FontAwesomeIcon icon={faFilePen} />,
         title: 'Update',
-        type: 'update' 
+        type: 'update',
     },
     {
-        icon:<FontAwesomeIcon icon={faTrash} />,
+        icon: <FontAwesomeIcon icon={faTrash} />,
         title: 'Delete',
-        type: 'delete' 
+        type: 'delete',
     },
     {
-        icon:<FontAwesomeIcon icon={faSave} />,
+        icon: <FontAwesomeIcon icon={faSave} />,
         title: 'Save',
-        type: 'save' 
+        type: 'save',
     },
-
-]
+];
+export const ADMIN_POST_OPTIONS = [
+    {
+        icon: <FontAwesomeIcon icon={faBan} />,
+        title: 'Disable',
+        type: 'disable',
+    },
+    {
+        icon: <FontAwesomeIcon icon={faTrash} />,
+        title: 'Delete',
+        type: 'delete',
+    },
+    {
+        icon: <FontAwesomeIcon icon={faSave} />,
+        title: 'Save',
+        type: 'save',
+    },
+    {
+        icon: <FontAwesomeIcon icon={faEyeSlash} />,
+        title: 'Hide',
+        type: 'hide',
+    },
+];
 export const POST_OPTIONS = [
     {
-        icon:<FontAwesomeIcon icon={faSave} />,
+        icon: <FontAwesomeIcon icon={faSave} />,
         title: 'Save',
-        type: 'save' 
+        type: 'save',
     },
     {
-        icon: <FontAwesomeIcon icon={faFlag} />,
-        title: 'Report',
-        children: {
-            title: 'Report',
-            data: [
-                {
-                    type: 'report',
-                    title: 'Fake account',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Harassment/Bully',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Inappropriate post',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    },
-    {
-        icon:<FontAwesomeIcon icon={faEyeSlash} />,
+        icon: <FontAwesomeIcon icon={faEyeSlash} />,
         title: 'Hide',
-        type: 'hide' 
+        type: 'hide',
     },
-]
+    report,
+];
 
-export const PROFILE_FRIEND_OPTIONS =[
+export const PROFILE_FRIEND_OPTIONS = [
+    report,
+    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
+];
+
+export const PROFILE_ADMIN_OPTIONS = [
+    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
     {
-        icon: <FontAwesomeIcon icon={faFlag} />,
-        title: 'Report',
+        icon: <FontAwesomeIcon icon={faBan} />,
+        title: 'Ban',
         children: {
-            title: 'Report',
+            title: 'Duration',
             data: [
                 {
-                    type: 'report',
-                    title: 'Fake account',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
+                    type: 'ban',
+                    title: '1 day',
+                    duration: new Date(currentDate.setDate(currentDate.getDate() + 1)),
                 },
                 {
-                    type: 'report',
-                    title: 'Harassment/Bully',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
+                    type: 'ban',
+                    title: '3 days',
+                    duration: new Date(currentDate.setDate(currentDate.getDate() + 3)),
                 },
                 {
-                    type: 'report',
-                    title: 'Inappropriate post',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
+                    type: 'ban',
+                    title: '7 days',
+                    duration: new Date(currentDate.setDate(currentDate.getDate() + 7)),
+                },
+                {
+                    type: 'ban',
+                    title: '1 month',
+                    duration: new Date(currentDate.setDate(currentDate.getDate() + 30)),
                 },
             ],
         },
     },
-    { icon: <FontAwesomeIcon icon={faUserXmark} />, title: 'Unfriend', type: 'unfriend' },
-]
-
+];
 export const PROFILE_OPTIONS = [
     // {
     //     icon: <FontAwesomeIcon icon={faEarthAsia} />,
@@ -213,53 +226,8 @@ export const PROFILE_OPTIONS = [
     //         data: listLanguage,
     //     },
     // },
-    {
-        icon: <FontAwesomeIcon icon={faFlag} />,
-        title: 'Report',
-        children: {
-            title: 'Report',
-            data: [
-                {
-                    type: 'report',
-                    title: 'Fake account',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Harassment/Bully',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-                {
-                    type: 'report',
-                    title: 'Inappropriate post',
-                    children: {
-                        title: 'Success',
-                        data: [
-                            {
-                                title: 'Not Working',
-                            },
-                        ],
-                    },
-                },
-            ],
-        },
-    },
-   
+    report,
 ];
 
-export const regex = /@[^)]+\)/g;//extract the tag part
-export const getIdInMentions = /\([^(]+\w+/g;//extract id part of the tag part EX @Doan Ngoc Anh(kfjalksdlf243)
+export const regex = /@[^)]+\)/g; //extract the tag part
+export const getIdInMentions = /\([^(]+\w+/g; //extract id part of the tag part EX @Doan Ngoc Anh(kfjalksdlf243)

@@ -14,6 +14,7 @@ import routes from '~/config/routes';
 import { getIdInMentions, regex } from '~/utils/constantValue';
 import { db } from '~/firebase';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import Ban from '~/component/Ban/Ban';
 const cx = classNames.bind(styles);
 
 function MyComment({ tag = null, update = null }) {
@@ -22,7 +23,8 @@ function MyComment({ tag = null, update = null }) {
     const { userData, user, fileUpload } = UserAuth();
     const [imagePreview, setImagePreview] = useState(update ? update.data.image : '');
     const [mentionData, setMentionData] = useState([]);
-    const post = useContext(PostContext)
+    const post = useContext(PostContext);
+    const [ban, setBan] = useState(false);
     const [text, setText] = useState(() => {
         if (tag && tag.id !== user.uid) {
             return `@${tag.name}(${tag.id}) `;
@@ -56,7 +58,6 @@ function MyComment({ tag = null, update = null }) {
         let image = null;
         post.setLoading(true);
         if (inpData.image) {
-            
             image = await fileUpload({ file: inpData.image, name: inpData.image.name });
             await updateDoc(doc(db, 'posts', post.id, 'comments', inpData.cmtId), {
                 text: inpData.text,
@@ -99,15 +100,13 @@ function MyComment({ tag = null, update = null }) {
                 }),
             );
         }
-        post.setUpdate((prev) => prev+1);
+        post.setUpdate((prev) => prev + 1);
         post.setLoading(false);
-        
     };
     const handleSubmit = async (inpData) => {
         let image = null;
         post.setLoading(true);
         if (inpData.image) {
-            
             image = await fileUpload({ file: inpData.image, name: inpData.image.name });
         }
 
@@ -176,11 +175,22 @@ function MyComment({ tag = null, update = null }) {
     };
     return (
         <div className={cx('wrapper')}>
-            <div className={cx('my-comment', { reply: tag, dark: context.theme === 'dark' })}>
+            {
+                ban && <Ban onXmark={setBan}>You have been banned from commenting because of your inappropriate behaviours</Ban>
+            }
+            <div
+                className={cx('my-comment', { reply: tag, dark: context.theme === 'dark' })}
+                onClick={() => {
+                    if (userData.user_status === 'ban') {
+                        setBan(true);
+                    }
+                }}
+            >
                 <Image src={userData.user_avatar} className={cx('avatar')} alt="avatar" />
                 <div className={cx('box-input')}>
                     <div className={cx('input')}>
                         <Mentions
+                            disabled={ban}
                             data={mentionData}
                             value={text}
                             placeholder={!tag ? 'Write your comment...' : 'Reply '}
@@ -191,7 +201,7 @@ function MyComment({ tag = null, update = null }) {
                                 setText(e.target.value);
                             }}
                         />
-                        <label htmlFor="upload">
+                        <label htmlFor={!ban && 'upload'}>
                             <FontAwesomeIcon icon={faCamera} className={cx('upload-icon')} />
                         </label>
                         <input type="file" id="upload" className={cx('d-none')} onChange={handleImageChange} />
@@ -202,19 +212,22 @@ function MyComment({ tag = null, update = null }) {
                                 setText('');
                                 setSelectedFile(null);
                                 setImagePreview(null);
-                                if (update) {
-                                    handleUpdate({
-                                        text: text,
-                                        image: selectedFile,
-                                        cmtId: update?.id,
-                                    });
-                                } else {
-                                    handleSubmit({
-                                        text: text,
-                                        image: selectedFile,
-                                        father: tag?.father,
-                                    });
+                                if(text !== '' && userData.user_status !== 'ban') {
+                                    if (update) {
+                                        handleUpdate({
+                                            text: text,
+                                            image: selectedFile,
+                                            cmtId: update?.id,
+                                        });
+                                    } else {
+                                        handleSubmit({
+                                            text: text,
+                                            image: selectedFile,
+                                            father: tag?.father,
+                                        });
+                                    }
                                 }
+                              
                             }}
                         />
                     </div>
