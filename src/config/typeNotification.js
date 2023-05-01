@@ -8,6 +8,7 @@ const type = {
     menCmt:'mentioned you in a comment.',
     reply:'replied to your comment.',
     likecmt:'like your comment.',
+    report:'report about ',
 }
 
 export default type;

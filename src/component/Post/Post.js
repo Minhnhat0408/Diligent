@@ -45,7 +45,7 @@ function Post({ page = false }) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, posts, hidePost } = useContext(PostContext)
-    const { userData, user} = UserAuth();
+    const { userData, user,sendReport} = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
     const post = useContext(PostContext);
@@ -182,7 +182,7 @@ function Post({ page = false }) {
                 setUpdatePost(true);
                 break;
             case 'report':
-                
+                sendReport(item.title,post.id,'post');
                 break;
             default:
                 break;

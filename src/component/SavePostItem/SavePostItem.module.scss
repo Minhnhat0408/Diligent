@@ -21,12 +21,14 @@
 .content{
     display: flex;
     align-items: center;
-    margin-bottom: 10px;
+  
+    flex-wrap: wrap;
    
 }
 .title{
     font-size: 2rem;
     margin-right: 10px;
+    padding-bottom: 10px;
     cursor: pointer;
 }
 .selected-category {
@@ -47,6 +49,7 @@
 
 .contributor{
     display: flex;
+    margin-top: 10px;
     align-items: center;
     & p{
         margin-left: 10px;

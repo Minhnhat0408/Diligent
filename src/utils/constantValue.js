@@ -20,39 +20,15 @@ export const report = {
         data: [
             {
                 type: 'report',
-                title: 'Fake account',
-                children: {
-                    title: 'Success',
-                    data: [
-                        {
-                            title: 'Not Working',
-                        },
-                    ],
-                },
+                title: 'Fake account.',
             },
             {
                 type: 'report',
-                title: 'Harassment/Bully',
-                children: {
-                    title: 'Success',
-                    data: [
-                        {
-                            title: 'Not Working',
-                        },
-                    ],
-                },
+                title: 'Harassment/Bully.',
             },
             {
                 type: 'report',
-                title: 'Inappropriate post',
-                children: {
-                    title: 'Success',
-                    data: [
-                        {
-                            title: 'Not Working',
-                        },
-                    ],
-                },
+                title: 'Inappropriate post.',
             },
         ],
     },

@@ -32,6 +32,7 @@ import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
+import { adminId } from '~/utils/constantValue';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -289,6 +290,22 @@ export const AuthContextProvider = ({ children }) => {
         await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
     };
 
+    //send report
+    const sendReport = async (content,id,rtype) =>{
+        await addDoc(collection(db, 'users', adminId, 'notifications'), {
+            title: type.report + content,
+            url: rtype === 'post' ? routes.post + id : routes.user +id,
+            sender: {
+                id: user.uid,
+                name: userData.user_name,
+                avatar: userData.user_avatar,
+            },
+            type: 'report',
+            time: serverTimestamp(),
+            read: false,
+        });
+    }
+
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
@@ -403,6 +420,7 @@ export const AuthContextProvider = ({ children }) => {
         savePostData,
         handleReadNoti,
         fileUpload,
+        sendReport,
         deleteSavePost,
         handleDecline,
         handleAccept,

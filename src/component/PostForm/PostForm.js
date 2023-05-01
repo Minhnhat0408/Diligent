@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './PostForm.module.scss';
 import { useContext } from 'react';
-import { ThemeContext } from '~/contexts/Context';
+import { PostContext, ThemeContext } from '~/contexts/Context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft,
@@ -28,13 +28,13 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/fi
 import { db } from '~/firebase';
 import { isImageUrl } from '~/utils/checkFile';
 import { isVideoUrl } from '~/utils/checkFile';
-import getTimeDiff from '~/utils/timeDiff';
 import Ban from '../Ban/Ban';
 const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload, createPost } = UserAuth();
+    const { userData, user, fileUpload } = UserAuth();
+    const {createPost} = useContext(PostContext)
     const [loading, setLoading] = useState(false);
     const handleClickCloseBox = () => {
         onXmark(false);
