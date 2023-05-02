@@ -33,8 +33,7 @@ const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload } = UserAuth();
-    const {createPost} = useContext(PostContext)
+    const { userData, user, fileUpload ,createPost} = UserAuth();
     const [loading, setLoading] = useState(false);
     const handleClickCloseBox = () => {
         onXmark(false);
@@ -181,9 +180,7 @@ function PostForm({ onXmark, update }) {
                     }
                 });
             }
-            const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser, {
-                id: update.id,
-            });
+            const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser, update);
             if (tagUser.length !== 0) {
                 refPost.then(async (res) => {
                     await Promise.all(
@@ -216,7 +213,7 @@ function PostForm({ onXmark, update }) {
     return (
         <>
             {userData?.user_status === 'ban' ? (
-                <Ban onXmark={onXmark}>You have been banned from posting for inappropriate behaviors</Ban>
+                <Ban onXmark={onXmark}>You have been banned from posting because of your inappropriate behaviors</Ban>
             ) : (
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('pop-up')}>

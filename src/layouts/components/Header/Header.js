@@ -168,7 +168,7 @@ function Header() {
                     )}
                     <span onClick={context.toggleTheme} className={cx('end-btn')}>
                         {context.theme === 'dark' ? (
-                            <i className="fa-solid fa-sun"></i>
+                            <i className={"fa-solid fa-sun"}></i>
                         ) : (
                             <i className="fa-duotone fa-moon"></i>
                         )}

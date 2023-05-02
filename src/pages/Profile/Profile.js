@@ -313,6 +313,7 @@ function Profile() {
                                                     onClick={() => {
                                                         navigate(routes.chat);
                                                     }}
+                                                    className={cx('btn')}
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>

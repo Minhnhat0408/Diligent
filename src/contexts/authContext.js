@@ -153,15 +153,18 @@ export const AuthContextProvider = ({ children }) => {
     };
     const handleReadNoti = async (data) => {
         console.log('read');
-        const q = query(
-            collection(db, 'users', user?.uid, 'notifications'),
-            where('sender.id', '==', data.sender.id),
-            where('read', '==', false),
-        );
-        const docs = await getDocs(q);
-        await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
-            read: true,
-        });
+        if(data.read === false){
+            const q = query(
+                collection(db, 'users', user?.uid, 'notifications'),
+                where('sender.id', '==', data.sender.id),
+                where('read', '==', false),
+            );
+            const docs = await getDocs(q);
+            await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
+                read: true,
+            });
+        }
+   
     };
 
     const handleDecline = async (data) => {
@@ -232,7 +235,6 @@ export const AuthContextProvider = ({ children }) => {
             }),
         });
     };
-    console.log(auth);
     const banUser = async ({ id, duration }) => {
         await updateDoc(doc(db, 'users', id), {
             user_status: 'ban',
@@ -284,6 +286,41 @@ export const AuthContextProvider = ({ children }) => {
                 },
             );
         });
+    };
+    const createPost = async (files, title, text, tags, mentions, update = null) => {
+        let docRef = null;
+        if (update) {
+            docRef = await updateDoc(doc(db, 'posts', update.id), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                updated: true,
+                hide: [],
+            });
+        } else {
+            docRef = await addDoc(collection(db, 'posts'), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                user: {
+                    id: user.uid,
+                    avatar: userData.user_avatar,
+                    name: userData.user_name,
+                },
+                time: new Date(),
+                like: { count: 0, list: [] },
+                dislike: { count: 0, list: [] },
+                commentNumber: 0,
+                hide: [],
+                updated: false,
+            });
+        }
+
+        return docRef;
     };
     //save post handle
     const deleteSavePost = async (id) => {
@@ -354,21 +391,21 @@ export const AuthContextProvider = ({ children }) => {
                     setPosts(data1);
                 });
                 //fetch user data change realtime
-                onSnapshot(doc(db, 'users', currentUser.uid), async (doc) => {
+                onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
                     console.log('data of user change');
-                    setUserData(doc.data());
-                    if (doc.data().user_status !== 'online') {
-                        if (doc.data().user_status !== 'ban') {
-                            console.log(doc.data().user_status, 'false');
+                    setUserData(result.data());
+                    if (result.data().user_status !== 'online') {
+                        if (result.data().user_status !== 'ban') {
                             await updateDoc(doc(userRef, currentUser.uid), {
                                 user_status: 'online',
                             });
-                        } else if (doc.data().user_banUntil.toMillis() < new Date()) {
-                            await updateDoc(doc(userRef, currentUser.uid), {
+                        } else if (result.data().user_banUntil.toMillis() < new Date()) {
+                            await updateDoc(doc(db,'users', currentUser.uid), {
                                 user_status: 'online',
                                 user_banUntil: deleteField(),
                             });
                         }
+                       
                     }
                 });
                 //fetch user notifications realtime
@@ -421,6 +458,7 @@ export const AuthContextProvider = ({ children }) => {
         handleReadNoti,
         fileUpload,
         sendReport,
+        createPost,
         deleteSavePost,
         handleDecline,
         handleAccept,

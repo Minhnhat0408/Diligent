@@ -87,9 +87,9 @@ function PostPage() {
                             </div>
                         )}
 
-                        {console.log(postData, 'fefefe')}
+                        {console.log(postData, 'fefefe')}           
                         <div className={cx('post-info')}>
-                            <Post page />
+                            <Post />
                         </div>
                     </div>
                 </PostProvider>

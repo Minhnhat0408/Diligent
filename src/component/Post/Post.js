@@ -41,7 +41,7 @@ import PostForm from '../PostForm/PostForm';
 
 const cx = classNames.bind(styles);
 
-function Post({ page = false }) {
+function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, posts, hidePost } = useContext(PostContext)
@@ -56,6 +56,7 @@ function Post({ page = false }) {
     };
 
     useEffect(() => {
+        console.log(post.data.text,'refreash text');
         setText(
             post.data.text.replace(regex, (spc) => {
                 const id = spc.match(getIdInMentions)[0].substring(1);
@@ -63,7 +64,7 @@ function Post({ page = false }) {
                 return `<strong id="mentions" data='${id}' name="${name}" >${name}</strong>`;
             }),
         );
-    }, [posts]);
+    }, [post]);
     const replace = (domNode) => {
         if (domNode.attribs && domNode.attribs.id === 'mentions') {
             return (
@@ -166,7 +167,6 @@ function Post({ page = false }) {
             console.log(err);
         }
     };
-    console.log(post);
     const handlePostOptions = (item) => {
         switch (item.type) {
             case 'hide':
@@ -281,7 +281,7 @@ function Post({ page = false }) {
     return (
         <>
             {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} />}
-            {page ? (
+            {post.page ? (
                 <div className={cx('wrapper', 'postpage', { dark: context.theme === 'dark' })}>
                     <div className={cx('scroll-box')}>
                         <div className={cx('post-wrapper')}>

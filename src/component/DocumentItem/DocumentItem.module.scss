@@ -17,11 +17,15 @@
     }
 }
 
+.content {
+    display: flex;
+    max-width: 95%;
+}
 .title {
-    font-size: 2rem;
-    max-width: 90%;
+    max-width: 84%;
+    font-size: 3rem;
     margin-right: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     cursor: pointer;
     display: -webkit-box;
     -webkit-line-clamp: 1;
@@ -50,9 +54,17 @@
     display: flex;
     margin-top: 10px;
     align-items: center;
+    justify-content: space-between;
     & p {
         margin-left: 10px;
         font-size: 1.4rem;
+    }
+
+    & a {
+        color: white;
+        &:hover {
+            text-decoration: underline;
+        }
     }
 }
 
@@ -69,12 +81,42 @@
     margin-right: 6px;
 }
 
-.delete {
+.download {
     position: absolute;
-    font-size: 4rem;
+    font-size: 3.6rem;
     color: #888;
-    top:50%;
-    right: 30px;
-    transform: translateY(-50%);
+    right: 33px;
+    top: 30%;
+
     cursor: pointer;
+
+    &:hover {
+        color: var(--primary);
+    }
+}
+
+.file-preview {
+
+    color: #3bc361;
+    font-size: 4rem;
+    cursor: pointer;
+}
+
+
+.upload-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.time-wrapper {
+    display: flex;
+    align-items: center;
+    & p {
+        font-size: 1.4rem;
+    }
+
+    & span {
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
 }

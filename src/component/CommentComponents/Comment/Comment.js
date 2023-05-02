@@ -65,7 +65,6 @@ function Comment({ data, id, react }) {
                     tmp.push({ id: doc.id, data: doc.data(), react: 0 });
                 }
             });
-            console.log(tmp);
             setSubComments(tmp);
         });
 

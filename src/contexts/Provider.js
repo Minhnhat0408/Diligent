@@ -5,7 +5,7 @@ import { addDoc, arrayUnion, collection, deleteDoc, doc, setDoc, updateDoc } fro
 import { db } from '~/firebase';
 
 export function ThemeProvider({ children }) {
-    const { userData, user } = UserAuth();
+    const { userData, user,usersList} = UserAuth();
     const [theme, setTheme] = useState('light');
 
     const toggleTheme = async () => {
@@ -29,47 +29,14 @@ export function ThemeProvider({ children }) {
 export function PostProvider({ id, data, children, page = false }) {
     const [loading, setLoading] = useState(false);
     const [update, setUpdate] = useState(0);
-    const { user, userData } = UserAuth();
-    const createPost = async (files, title, text, tags, mentions, update = null) => {
-        let docRef = null;
-        if (update) {
-            docRef = await updateDoc(doc(db, 'posts', update.id), {
-                title: title,
-                text: text,
-                files: files,
-                tags: tags,
-                mentions: mentions,
-                updated: true,
-                hide: [],
-            });
-        } else {
-            docRef = await addDoc(collection(db, 'posts'), {
-                title: title,
-                text: text,
-                files: files,
-                tags: tags,
-                mentions: mentions,
-                user: {
-                    id: user.uid,
-                    avatar: userData.user_avatar,
-                    name: userData.user_name,
-                },
-                time: new Date(),
-                like: { count: 0, list: [] },
-                dislike: { count: 0, list: [] },
-                commentNumber: 0,
-                hide: [],
-                updated: false,
-            });
-        }
+    const { user, usersList } = UserAuth();
+  
 
-        return docRef;
-    };
+    const deletePost = async (id,uid) => {
 
-    const deletePost = async (id) => {
         await deleteDoc(doc(db, 'posts', id));
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_postNumber: userData.user_postNumber - 1,
+        await updateDoc(doc(db, 'users', uid), {
+            user_postNumber: usersList.filter((obj) => obj.id === uid)[0].data.user_postNumber - 1,
         });
     };
     const hidePost = async (id) => {
@@ -95,7 +62,6 @@ export function PostProvider({ id, data, children, page = false }) {
         id,
         data,
         page,
-        createPost,
         deletePost,
         savePost,
         hidePost

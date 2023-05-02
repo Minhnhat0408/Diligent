@@ -42,12 +42,11 @@ function CommentBox() {
                         tmp.push({ id: doc.id, data: doc.data(), react: 0 });
                     }
                 });
-               console.log('rerender all cmt')
                 setComments(tmp);
             },
         );
         return () => unsubscribe();
-    }, []);
+    }, [post]);
 
     const onAnimationEnd = () => {
         if (!animation) setShowFilter(false);
