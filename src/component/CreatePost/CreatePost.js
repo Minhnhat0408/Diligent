@@ -148,7 +148,7 @@ function CreatePost() {
                 );
                 files.media = results.map((obj) => obj.url);
             }
-
+            
             if (others.length !== 0) {
                 const results = await Promise.all(
                     others.map((file) => fileUpload({ file: file.file, name: file.file.name, location: 'others' })),

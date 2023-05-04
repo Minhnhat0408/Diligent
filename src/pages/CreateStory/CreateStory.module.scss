@@ -208,7 +208,7 @@
 
     .preview {
         width: 40vw;
-        height: 85vh;
+        height: 85vh;   
         border-radius: 10px;
         background-color: #fff;
         box-shadow: 1px 1px 5px #ccc;
@@ -216,7 +216,6 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        position: relative;
 
         .message {
             position: absolute;
@@ -245,6 +244,7 @@
             justify-content: center;
             align-items: center;
             background-color: rgba(17, 17, 17, 0.93);
+            position: relative;
 
             .image {
                 display: block;

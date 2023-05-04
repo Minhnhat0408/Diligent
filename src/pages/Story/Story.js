@@ -2,85 +2,132 @@ import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
 import Image from '~/component/Image';
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import Stories from 'react-insta-stories';
 import { ThemeContext } from '~/contexts/Context';
+import { UserAuth } from '~/contexts/authContext';
+import { collection, doc, getDocs, query } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { useEffect } from 'react';
 const cx = classNames.bind(styles);
 
-const stories = [
-    {
-        url: 'https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2FScreenshot%202023-03-27%20211538.png?alt=media&token=7d94d948-6db7-4b87-b624-c51553929415',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            profileImage:
-                'https://scontent.fhan3-5.fna.fbcdn.net/v/t39.30808-1/277751572_1315302068964376_895612620486881878_n.jpg?stp=dst-jpg_p100x100&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=i9xUP-lu3fQAX9t9ZAi&_nc_oc=AQkDh0txZldmxh4b32rTYj8LOe9ClH6tGq-_Wr1TieJ8QhFTJLqi3vXePK6_UBIk5uIg4u8jqNFcqU9iLudg85sA&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan3-5.fna&oh=00_AfCQurnzumG-_DgI-BujlIkItfRFJMHY92alHVPn2CTo7w&oe=64409940',
-        },
-    },
-    {
-        url: 'https://scontent.fhan4-3.fna.fbcdn.net/v/t1.6435-9/66179411_1146487765533259_122620302688518144_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=buXzQB9ZHcAAX-kpv8g&_nc_ht=scontent.fhan4-3.fna&oh=00_AfA0mEOTIM-vcPk1i9FsS2iR5zRF6AFKR6nBbFBzaMOi1A&oe=6463222C',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            profileImage:
-                'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
-        },
-        styles: {
-            backgroundColor: 'blue',
-        },
-    },
-    {
-        url: 'https://static.independent.co.uk/2022/05/09/11/SEI102882096.jpg',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            paragraph: 'alo alo',
-            profileImage:
-                'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
-        },
-    },
-];
+// const stories = [
+//     {
+//         url: 'https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2FScreenshot%202023-03-27%20211538.png?alt=media&token=7d94d948-6db7-4b87-b624-c51553929415',
+//         header: {
+//             heading: 'Minh Nhat',
+//             subheading: '30m ago',
+//             profileImage:
+//                 'https://scontent.fhan3-5.fna.fbcdn.net/v/t39.30808-1/277751572_1315302068964376_895612620486881878_n.jpg?stp=dst-jpg_p100x100&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=i9xUP-lu3fQAX9t9ZAi&_nc_oc=AQkDh0txZldmxh4b32rTYj8LOe9ClH6tGq-_Wr1TieJ8QhFTJLqi3vXePK6_UBIk5uIg4u8jqNFcqU9iLudg85sA&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan3-5.fna&oh=00_AfCQurnzumG-_DgI-BujlIkItfRFJMHY92alHVPn2CTo7w&oe=64409940',
+//             posX: 150,
+//             posY: 150,
+//             scale: 1.6,
+//         },
+//         storyContainerStyles: {
+//             backgroundColor: '#000',
+//         },
+//     },
+//     {
+//         url: 'https://scontent.fhan4-3.fna.fbcdn.net/v/t1.6435-9/66179411_1146487765533259_122620302688518144_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=buXzQB9ZHcAAX-kpv8g&_nc_ht=scontent.fhan4-3.fna&oh=00_AfA0mEOTIM-vcPk1i9FsS2iR5zRF6AFKR6nBbFBzaMOi1A&oe=6463222C',
+//         header: {
+//             heading: 'Minh Nhat',
+//             subheading: '30m ago',
+//             profileImage:
+//                 'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
+//             posX: 150,
+//             posY: 150,
+//             scale: 1.6,
+//         },
+//     },
+//     {
+//         url: 'https://static.independent.co.uk/2022/05/09/11/SEI102882096.jpg',
+//         header: {
+//             heading: 'Minh Nhat',
+//             subheading: '30m ago',
+//             paragraph: 'alo alo',
+//             profileImage:
+//                 'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
+//             posX: 150,
+//             posY: 300,
+//             scale: 1.6,
+//         },
+//     },
+// ];
 
-function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) {
+function Story() {
     const context = useContext(ThemeContext);
-    const MyCustomHeader = React.useMemo(
-        () =>
-            ({ heading, subheading, profileImage, paragraph }) => {
-                return (
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Image src={profileImage} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    marginLeft: '8px',
-                                    color: '#fff',
-                                }}
-                            >
-                                <h1 style={{ fontSize: '1.4rem' }}>{heading}</h1>
-                                <h2 style={{ fontSize: '1.2rem' }}>{subheading}</h2>
-                            </div>
-                        </div>
-                        {paragraph && (
-                            <p
-                                style={{
-                                    color: '#fff',
-                                    fontSize: '2rem',
-                                    textAlign: 'center',
-                                    wordWrap: 'break-word',
-                                    transform: `translate(${posX}px, ${posY}px)`,
-                                }}
-                            >
-                                {paragraph}
-                            </p>
-                        )}
+
+    const [storiesData, setStoriesData] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        async function fetchStories() {
+            const q = query(collection(db, 'stories'));
+            const querySnapshot = await getDocs(q);
+            const docs = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                ...doc.data(),
+            }));
+            setStoriesData(docs);
+            setIsLoading(false);
+        }
+
+        fetchStories();
+    }, []);
+
+    if (isLoading) {
+        return <p>Loading...</p>;
+    }
+
+    const stories = storiesData.map((story) => ({
+        url: story.media[0],
+        header: {
+            heading: story.user.name,
+            subheading: '30m ago',
+            profileImage: story.user.avatar,
+            posX: story.content.posX,
+            posY: story.content.posY,
+            paragraph: story.content.text,
+            textColor: story.content.textColor,
+        },
+    }));
+
+    console.log(stories);
+
+    const MyCustomHeader = ({ heading, subheading, profileImage, paragraph, posX, posY, textColor }) => {
+        return (
+            <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                    <Image src={profileImage} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
+                    <div
+                        style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            justifyContent: 'center',
+                            marginLeft: '8px',
+                            color: '#fff',
+                        }}
+                    >
+                        <h1 style={{ fontSize: '1.4rem' }}>{heading}</h1>
+                        <h2 style={{ fontSize: '1.2rem' }}>{subheading}</h2>
                     </div>
-                );
-            },
-        [posX, posY],
-    );
+                </div>
+                {paragraph && (
+                    <p
+                        className={cx('message')}
+                        style={{
+                            color: `${textColor}`,
+                            transform: `translate(${posX}px, ${posY}px)`,
+                            marginTop: '274px',
+                            marginLeft: '240px'
+                        }}
+                    >
+                        {paragraph}
+                    </p>
+                )}
+            </div>
+        );
+    };
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
@@ -123,9 +170,8 @@ function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) 
                     width={'30vw'}
                     height={'80vh'}
                     defaultInterval={1500}
-                    storyStyles={{ scale: scale, padding: 0 }}
-                    storyContainerStyles={{ backgroundColor: backgroundColor, borderRadius: '10px' }}
                     header={MyCustomHeader}
+                    storyContainerStyles={{position: 'relative'}}
                 />
 
                 <div className={cx('react')}>

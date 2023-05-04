@@ -3,6 +3,10 @@ import Image from '~/component/Image';
 import styles from './CreateStory.module.scss';
 import { useState, useMemo, useCallback, useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import app, { db } from '~/firebase';
+import { addDoc, getDocs, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
+import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
@@ -42,7 +46,7 @@ const backgroundColors = [
     'linear-gradient( 109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% )',
     'linear-gradient(25deg,#d64c7f,#ee4758 50%)',
     'linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% )',
-]
+];
 
 function CreateStory() {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
@@ -138,12 +142,12 @@ function CreateStory() {
     const backgroundColorItems = useMemo(() => {
         return backgroundColors.map((backgroundColor) => (
             <div
-            key={backgroundColor}
-            className={cx('item', backgroundColor)}
-            style={{ backgroundImage: backgroundColor }}
-            onClick={() => {
-                handleClickBackGroundColor(backgroundColor);
-            }}
+                key={backgroundColor}
+                className={cx('item', backgroundColor)}
+                style={{ backgroundImage: backgroundColor }}
+                onClick={() => {
+                    handleClickBackGroundColor(backgroundColor);
+                }}
             ></div>
         ));
     }, []);
@@ -155,13 +159,49 @@ function CreateStory() {
         setColor('black');
         setBackgroundColor('white');
         setPosition({ x: 0, y: 0 });
-        setTextPreview(false)
+        setTextPreview(false);
     };
 
-    const context = useContext(ThemeContext)
+    
+    const handleClickShare = async () => {
+
+        let fileName;
+        try {
+            const results = await fileUpload({ file: selectedFile, name: selectedFile.name });
+            fileName = results.url;
+        } catch (error) {
+            console.log('Upload failed', error);
+        }
+        
+        const data = {
+            content: {
+              bgColor: backgroundColor,
+              posX: position.x,
+              posY: position.y,
+              text: addText,
+              textColor: color,
+            },
+            media: [fileName || ''],
+            scale: scale,
+            time: serverTimestamp(),
+            user: {
+              avatar: userData.user_avatar,
+              id: user.uid,
+              name: userData.user_name,
+            },
+          };
+
+        const docRef = await addDoc(collection(db, 'stories'), data);
+        handleClickCancel();
+        return docRef;
+    };
+
+    const context = useContext(ThemeContext);
+
+    const { user, userData, fileUpload } = UserAuth();
 
     return (
-        <div className={cx('wrapper', {dark: context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Your Story</h1>
                 <hr />
@@ -207,7 +247,9 @@ function CreateStory() {
                         <button className={cx('cancel')} onClick={handleClickCancel}>
                             Cancel
                         </button>
-                        <button className={cx('share')}>Share</button>
+                        <button className={cx('share')} onClick={handleClickShare}>
+                            Share
+                        </button>
                     </div>
                 )}
             </div>
@@ -246,6 +288,7 @@ function CreateStory() {
                         {/* <h1 className={cx('header')}>Preview</h1> */}
 
                         <div className={cx('preview')}>
+
                             <div className={cx('image-wrap')} style={{ backgroundImage: backgroundColor }}>
                                 {addText && (
                                     <div
@@ -266,6 +309,7 @@ function CreateStory() {
                                     style={{ transform: `scale(${scale})` }}
                                 />
                             </div>
+                            
                             <input type="range" min="0" max="100" onChange={handleSliderChange} />
                         </div>
                     </div>
