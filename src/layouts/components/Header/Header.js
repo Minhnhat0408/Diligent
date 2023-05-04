@@ -45,7 +45,7 @@ function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData,notifications,handleReadNoti } = UserAuth();
     const notif = useRef();
-    USER_MENU = [
+        USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
             title: userData?.user_name || 'View Profile',
@@ -69,7 +69,7 @@ function Header() {
                             }}
                             key={ind}
                             data={data}
-                            time={getTimeDiff(Date.now(), data.time.toMillis())}
+                            time={getTimeDiff(Date.now(), data.time.toMillis()) + ' ago'}
                         />
                     );
                 })}
@@ -106,10 +106,10 @@ function Header() {
                         <i className={`${styles.icon} fa-regular fa-house`}></i>
                     </Link>
                     <Link
-                        to={routes.friend}
-                        className={cx('middle-btn', { active: window.location.pathname === routes.friend })}
+                        to={routes.documents}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.documents })}
                     >
-                        <i className={`${styles.icon} fa-regular fa-user-group`}></i>
+                         <i className={`${styles.icon} fa-regular fa-file`}></i>
                     </Link>
                     <Link
                         to={routes.flashcard}
@@ -122,6 +122,12 @@ function Header() {
                         className={cx('middle-btn', { active: window.location.pathname === routes.story })}
                     >
                          <i className={`${styles.icon} fa-regular fa-bolt`}></i>
+                    </Link>
+                    <Link
+                        to={routes.friend}
+                        className={cx('middle-btn', { active: window.location.pathname === routes.friend })}
+                    >
+                        <i className={`${styles.icon} fa-regular fa-user-group`}></i>
                     </Link>
                 </div>
 
@@ -162,7 +168,7 @@ function Header() {
                     )}
                     <span onClick={context.toggleTheme} className={cx('end-btn')}>
                         {context.theme === 'dark' ? (
-                            <i className="fa-solid fa-sun"></i>
+                            <i className={"fa-solid fa-sun"}></i>
                         ) : (
                             <i className="fa-duotone fa-moon"></i>
                         )}

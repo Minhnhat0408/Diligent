@@ -18,7 +18,9 @@ function SavePostItem({ savePostId, savePostData }) {
         <div className={cx('wrapper',{dark: context.theme === 'dark'})} >
             <div className={cx('content')}>
                 <h4 className={cx('title')} onClick={() => navigate(routes.post + savePostId)}>{savePostData.title}</h4>
-                <ul className={cx('selected-category')}>
+               
+            </div>
+            <ul className={cx('selected-category')}>
                     {savePostData.tags.map((tag, index) => {
                         return (
                             <li key={index}>
@@ -27,8 +29,6 @@ function SavePostItem({ savePostId, savePostData }) {
                         );
                     })}
                 </ul>
-            </div>
-
             <div className={cx('contributor')}>
                 <p>Contributor</p>
                 <p className={cx('name')}>{savePostData.user.name}</p>

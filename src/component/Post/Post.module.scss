@@ -4,40 +4,53 @@ $time-color: #adb5bd;
 .wrapper {
     margin-bottom: 20px;
     padding: 20px;
+
+    position: relative;
     border-radius: 10px;
     background-color: var(--light-theme);
     box-shadow: 1px 1px 5px #888888;
-    color:var(--text-color);
+    color: var(--text-color);
     transition: all 0.8s;
 
+
+    &.postpage {
+        max-height: calc(100vh - 40px - var(--defaultLayout-header-height));
+        overflow: hidden;
+        margin-bottom: 0;
+        flex-direction: column;
+        display: flex;
+    }
     &.dark {
         background-color: var(--dark-theme);
         box-shadow: none;
         color: var(--text-color-dark);
     }
-    &.dark .post-wrapper{
+    &.dark .post-wrapper {
         border-color: #eee;
     }
-    &.dark .header .info .username{
-        color:var(--primary)
+    &.dark .header .info .username {
+        color: var(--primary);
     }
-    &.dark .file-show .file-link{
+    &.dark .header .info .badge {
+        color: var(--primary-light);
+        background-color: var(--primary);
+    }
+    &.dark .file-show .file-link {
         border-color: var(--text-color-dark);
         & a {
-            color:var(--text-color-dark);
+            color: var(--text-color-dark);
         }
     }
-    &.dark .title{
-        color:var(--primary)
+    &.dark .title {
+        color: var(--primary);
     }
-    &.dark .selected-category li{
+    &.dark .selected-category li {
         border-color: var(--primary);
         color: var(--primary);
     }
-    &.dark .mention{
+    &.dark .mention {
         color: var(--primary);
     }
-    
 }
 
 .header {
@@ -48,28 +61,42 @@ $time-color: #adb5bd;
     .info {
         display: flex;
         align-items: center;
-    
+
         .avatar {
             width: 40px;
             height: 40px;
             border-radius: 50%;
             cursor: pointer;
         }
-    
+
         .user {
             margin-left: 12px;
-    
+
             .username {
                 color: $username-color;
                 font-size: 1.4rem;
                 font-weight: 700;
                 cursor: pointer;
             }
-    
+            
+            .badge{
+                padding: 0 6px;
+                background-color: var(--primary-light);
+                color:var(--primary);
+                border-radius: 20px;
+                font-size: 1.1rem;
+                margin-left: 10px;
+                user-select: none;
+                font-weight: 600;
+            }
             .time {
-
                 font-size: 1.2rem;
                 font-weight: 500;
+            }
+            .updated{
+                margin-left: 1rem;
+                font-size: 1.4rem;
+                font-weight: 600;
             }
         }
     }
@@ -93,23 +120,22 @@ $time-color: #adb5bd;
     }
 }
 
-.title-wrapper{
-      display: flex;
+.title-wrapper {
+    display: flex;
     align-items: center;
+    flex-wrap: wrap;
     margin-top: 10px;
     margin-bottom: 5px;
 }
-.title{
- 
-    font-size: 1.8rem ;
-    color:var(--primary-light);
+.title {
+    font-size: 1.8rem;
+    color: var(--primary-light);
     margin-right: 10px;
 }
 
 .selected-category {
-
     display: flex;
-   
+
     li {
         padding: 1px 8px;
         margin-right: 10px;
@@ -125,46 +151,43 @@ $time-color: #adb5bd;
     margin-bottom: 15px;
     font-size: 1.7rem;
     font-weight: 400;
-    overflow: hidden;
     white-space: wrap;
     word-wrap: normal;
-
 }
-.mention{
+.mention {
     color: var(--primary-light);
     z-index: 12;
     cursor: pointer;
 }
-.file-show{
+.file-show {
     display: flex;
     max-width: 100%;
     flex-wrap: wrap;
-    margin-bottom:20px;
-    
+    margin-bottom: 20px;
+}
+.file-link,
+.file-link {
+    margin-right: 10px;
+}
+.file-link {
+    border: 1px solid var(--text-color);
+    text-decoration: none;
+    border-radius: 5px;
+    padding: 0 10px;
+    width: 140px;
+    overflow: hidden;
+    position: relative;
+    & a {
+        display: block;
+        width: 90%;
+        color: var(--text-color);
+        white-space: nowrap;
+        overflow: hidden;
     }
-   .file-link, .file-link{
-       margin-right: 10px;
-   }
-   .file-link{
-       
-       border: 1px solid var(--text-color);
-       text-decoration: none;
-       border-radius: 5px;
-       padding: 0 10px;
-       width: 140px;
-       overflow: hidden;
-       position: relative;
-       & a{
-           display: block;
-           width: 90%;
-           color: var(--text-color);
-           white-space: nowrap;
-           overflow: hidden;
-       }
-   }
-.image-holders{
+}
+.image-holders {
     display: flex;
-    flex-wrap:wrap;
+    flex-wrap: wrap;
 }
 .image {
     width: 100%;
@@ -172,28 +195,27 @@ $time-color: #adb5bd;
     border-radius: 10px;
     box-shadow: 0 0 5px #999;
     object-fit: cover;
-    &.plenty{
+    &.plenty {
         height: 250px;
     }
-    
 }
 
-.more{
+.more {
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 5px;
+    color:var(--text-color-dark);
     background-color: rgba(0, 0, 0, 0.6);
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 5rem;
     border-radius: 10px;
-
 }
 
-.image-box{
+.image-box {
     position: relative;
     display: block;
     flex-grow: 1;
@@ -201,24 +223,24 @@ $time-color: #adb5bd;
     &.plenty {
         &:nth-child(1) {
             flex-basis: 100%;
-            & .image{
+            & .image {
                 height: 350px;
             }
         }
-       
     }
 }
-.image-box, .image-box{
+.image-box,
+.image-box {
     margin-right: 10px;
 }
 
 .actions {
-    margin-top: 10px;   
+    margin-top: 10px;
     margin-bottom: 10px;
     width: 100%;
     display: flex;
     justify-content: space-between;
-
+  
     .default-action {
         display: flex;
         .like-action,
@@ -247,12 +269,9 @@ $time-color: #adb5bd;
                 color: #888;
             }
             .icon.active {
- 
                 color: var(--primary);
             }
         }
-
-
 
         .comment-action {
             .icon {
@@ -264,28 +283,6 @@ $time-color: #adb5bd;
             font-size: 1.6rem;
         }
     }
-
-    .share-action {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-
-        .icon {
-            font-size: 2rem;
-            margin-right: 8px;
-            color:  #f2c14b;
-
-            &:hover {
-                font-size: 2.5rem;
-                opacity: 0.9;
-            }
-        }
-
-        p {
-            font-size: 1.6rem;
-        }
-    }
 }
 
 .popper-wrapper {
@@ -293,19 +290,20 @@ $time-color: #adb5bd;
     box-shadow: 0 0 5px #ccc;
 }
 
-.focus{
-
+.focus {
     background-color: var(--light-theme);
-    max-height: 90%;
+    max-height: 90vh;
     width: 750px;
-    overflow-y:scroll ;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
     padding: 0 20px 20px 20px;
     border-radius: 10px;
     box-shadow: 1px 1px 5px #ccc;
     color: var(--text-color);
     transition: all 0.8s;
-    
-    & .header{
+    position: relative;
+    & .header {
         margin-top: 16px;
     }
     &.dark {
@@ -313,36 +311,46 @@ $time-color: #adb5bd;
         box-shadow: none;
         color: var(--text-color-dark);
     }
-    &.dark .header .info .username{
-        color:var(--primary)
+    &.dark .header .info .username {
+        color: var(--primary);
     }
 
-    &.dark .post{
+    &.dark .post {
         color: var(--primary);
     }
 }
-
-.post{
-    height: 60px;
+.scroll-box {
+    overflow-y: scroll;
+    flex:1;
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+.post {
+    min-height: 60px;
     display: flex;
     justify-content: space-around;
     align-items: center;
     color: var(--primary-light);
-    border-bottom: 1px solid #ccc ;
-    & h3{
-        flex:1;
-        margin-left:26px;
+    border-bottom: 1px solid #ccc;
+
+    & h3 {
+        flex: 1;
+        margin-left: 26px;
     }
     text-align: center;
-   
 }
-.post-wrapper{
+.post-wrapper {
     padding-bottom: 10px;
     border-bottom: 1px solid #ccc;
 }
-.esc{
+.esc {
     font-size: 2.6rem;
     font-weight: 600;
     cursor: pointer;
 }
 
+.input-section {
+    padding: 10px 0 0 0;
+    width: 100%;
+}

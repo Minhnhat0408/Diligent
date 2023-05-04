@@ -1,0 +1,122 @@
+.wrapper {
+    background-color: var(--light-theme);
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    box-shadow: 1px 1px 5px #888;
+    position: relative;
+    transition: all 0.8s;
+    &.dark {
+        background-color: var(--dark-theme);
+        box-shadow: none;
+        color: var(--text-color-dark);
+    }
+    &.dark .selected-category li {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+}
+
+.content {
+    display: flex;
+    max-width: 95%;
+}
+.title {
+    max-width: 84%;
+    font-size: 3rem;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    cursor: pointer;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.selected-category {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 88%;
+    color: var(--primary-light);
+    li {
+        padding: 1px 8px;
+        margin-right: 10px;
+        border: 1px solid var(--primary-light);
+        border-radius: 16px;
+        list-style-type: none;
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+}
+
+.contributor {
+    display: flex;
+    margin-top: 10px;
+    align-items: center;
+    justify-content: space-between;
+    & p {
+        margin-left: 10px;
+        font-size: 1.4rem;
+    }
+
+    & a {
+        color: white;
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.avatar {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.name {
+    font-weight: 600;
+    margin-left: 16px;
+    margin-right: 6px;
+}
+
+.download {
+    position: absolute;
+    font-size: 3.6rem;
+    color: #888;
+    right: 33px;
+    top: 30%;
+
+    cursor: pointer;
+
+    &:hover {
+        color: var(--primary);
+    }
+}
+
+.file-preview {
+
+    color: #3bc361;
+    font-size: 4rem;
+    cursor: pointer;
+}
+
+
+.upload-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.time-wrapper {
+    display: flex;
+    align-items: center;
+    & p {
+        font-size: 1.4rem;
+    }
+
+    & span {
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+}

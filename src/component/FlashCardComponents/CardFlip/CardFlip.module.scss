@@ -1,12 +1,23 @@
+.contain{
+    //background-color: blueviolet;
+    height: 65vh;
+    width: 45vh;
+    transform-style: preserve-3d;
+    transition: all 0.8s  ease;
+    position: absolute;
+    border-radius: 10px;
+    z-index: 10;
+}
+
 .card{
     background-color: burlywood;
-    height: 340px;
-    width: 240px;
+    height: 100%;
+    width: 100%;
     position: absolute;
     transform-style: preserve-3d;
     transition: all 0.8s  ease;
     box-shadow: 5px 5px 15px 0 rgba(0,0,0,0.2);
-    
+    border-radius: 10px;
 }
 .cardflip {
         //transition: all 0.8s ease;
@@ -16,6 +27,7 @@
     height: 100%;
     width: 100%;
     background-color: bisque;
+    border-radius: 10px;
     backface-visibility: hidden;
 }
 
@@ -26,24 +38,27 @@
     position: absolute;
     top: 0px;
     backface-visibility: hidden;
+    border-radius: 10px;
     transform: rotateY(180deg);
 }
 
 .card0{
-    top: 196px;
-    right: 616px;
+    top: 15%;
+    right: 35%;
 }
 .cardmoveon {
-    top: 2px;
-    right: -57px;
-    transform: scale(0.4);
+    top: 21vh;
+    right: 85px;
+   width: 150px;
+   height: calc(150px*(65/45));
 }
 
 .cardmoveunder{
-    top: 281px;
-    right: -57px;
-    transform: scale(0.4);
-}
+    top: 63vh;
+    right: 85px;
+    width: 150px;
+    height: calc(150px*(65/45));
+}   
 
 .cardback1 {
     top: 200px;

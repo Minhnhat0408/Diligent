@@ -8,21 +8,43 @@ import useUnload from './hooks/useUnload';
 import ScrollToTop from './component/ScrollToTop';
 
 function App() {
-    const {logOut} = UserAuth();
+    const { logOut } = UserAuth();
 
-    useUnload(async (e) =>  {
+    useUnload(async (e) => {
         e.preventDefault();
+
         await logOut();
+
         console.log('Closing the tab or window!');
-      });
+    });
 
     return (
-            <Router>
-                <div className="app">
-                    <ScrollToTop/>
-                    <Routes>
-                        
-                        {publicRoutes.map((route, index) => {
+        <Router>
+            <div className="app">
+                <ScrollToTop />
+                <Routes>
+                    {publicRoutes.map((route, index) => {
+                        const Page = route.component;
+                        let Layout = DefaultLayout;
+                        if (route.layout) {
+                            Layout = route.layout;
+                        } else if (route.layout === null) {
+                            Layout = Fragment;
+                        }
+                        return (
+                            <Route
+                                key={index}
+                                path={route.path}
+                                element={
+                                    <Layout>
+                                        <Page />
+                                    </Layout>
+                                }
+                            />
+                        );
+                    })}
+                    <Route element={<PrivateRoute />}>
+                        {privateRoutes.map((route, index) => {
                             const Page = route.component;
                             let Layout = DefaultLayout;
                             if (route.layout) {
@@ -42,31 +64,10 @@ function App() {
                                 />
                             );
                         })}
-                        <Route element={<PrivateRoute />}>
-                            {privateRoutes.map((route, index) => {
-                                const Page = route.component;
-                                let Layout = DefaultLayout;
-                                if (route.layout) {
-                                    Layout = route.layout;
-                                } else if (route.layout === null) {
-                                    Layout = Fragment;
-                                }
-                                return (
-                                    <Route
-                                        key={index}
-                                        path={route.path}
-                                        element={
-                                            <Layout>
-                                                <Page />
-                                            </Layout>
-                                        }
-                                    />
-                                );
-                            })}
-                        </Route>
-                    </Routes>
-                </div>
-            </Router>
+                    </Route>
+                </Routes>
+            </div>
+        </Router>
     );
 }
 

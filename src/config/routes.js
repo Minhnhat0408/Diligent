@@ -2,6 +2,7 @@ const routes = {
     home:'/',
     profile:'/user/:id',
     postpage:'/post/:id',
+    postpagespecific:'/post/:id/:num',
     post:'/post/',// shortcut too
     chat:'/chat',
     friend:'/friend',
@@ -15,7 +16,8 @@ const routes = {
     createStory: '/createstory',
     saveposts:'/saves/:id',
     saves:'/saves/', // shortcut for save
-    notFound:'/notfound'
+    notFound:'/notfound',
+    documents:'/documents'
 }
 
 export default routes

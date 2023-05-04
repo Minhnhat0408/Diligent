@@ -22,6 +22,7 @@ import {
     arrayRemove,
     arrayUnion,
     deleteDoc,
+    deleteField,
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
@@ -31,6 +32,7 @@ import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
+import { adminId } from '~/utils/constantValue';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -40,6 +42,7 @@ export const AuthContextProvider = ({ children }) => {
     const [notifications, setNotifications] = useState();
     const [savePostData, setSavePostData] = useState([]);
     const [posts, setPosts] = useState();
+
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
@@ -85,16 +88,15 @@ export const AuthContextProvider = ({ children }) => {
         }
     }, []);
     const signIn = async (email, password) => {
-        const newUser = await signInWithEmailAndPassword(auth, email, password);
-        return updateDoc(doc(db, 'users', newUser.user.uid), {
-            user_status: 'online',
-        });
+        await signInWithEmailAndPassword(auth, email, password);
         // // Signed in
     };
     const logOut = async () => {
-        await updateDoc(doc(userRef, user.uid), {
-            user_status: 'offline',
-        });
+        if (userData.user_status !== 'ban') {
+            await updateDoc(doc(userRef, user.uid), {
+                user_status: 'offline',
+            });
+        }   
         return signOut(auth);
     };
     const updateProfile = async (data) => {
@@ -130,7 +132,7 @@ export const AuthContextProvider = ({ children }) => {
     const googleSignIn = async () => {
         const response = await signInWithPopup(auth, provider);
         const repuser = response.user;
-
+        console.log(repuser.reload());
         const docs = await getDoc(doc(db, 'users', repuser.uid));
 
         if (!docs.data()) {
@@ -151,15 +153,18 @@ export const AuthContextProvider = ({ children }) => {
     };
     const handleReadNoti = async (data) => {
         console.log('read');
-        const q = query(
-            collection(db, 'users', user?.uid, 'notifications'),
-            where('sender.id', '==', data.sender.id),
-            where('read', '==', false),
-        );
-        const docs = await getDocs(q);
-        await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
-            read: true,
-        });
+        if(data.read === false){
+            const q = query(
+                collection(db, 'users', user?.uid, 'notifications'),
+                where('sender.id', '==', data.sender.id),
+                where('read', '==', false),
+            );
+            const docs = await getDocs(q);
+            await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
+                read: true,
+            });
+        }
+   
     };
 
     const handleDecline = async (data) => {
@@ -230,6 +235,18 @@ export const AuthContextProvider = ({ children }) => {
             }),
         });
     };
+    const banUser = async ({ id, duration }) => {
+        await updateDoc(doc(db, 'users', id), {
+            user_status: 'ban',
+            user_banUntil: duration,
+        });
+    };
+    const unbanUser = async ({ id }) => {
+        await updateDoc(doc(db, 'users', id), {
+            user_status: 'offline',
+            user_banUntil: deleteField(),
+        });
+    };
     console.log('auth rerender');
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
@@ -270,61 +287,67 @@ export const AuthContextProvider = ({ children }) => {
             );
         });
     };
-    // Post handle
-    const createPost = async (files, title, text, tags, mentions) => {
-        const docRef = await addDoc(collection(db, 'posts'), {
-            title: title,
-            text: text,
-            files: files,
-            tags: tags,
-            mentions: mentions,
-            user: {
-                id: user.uid,
-                avatar: userData.user_avatar,
-                name: userData.user_name,
-            },
-            time: new Date(),
-            like: { count: 0, list: [] },
-            dislike: { count: 0, list: [] },
-            commentNumber: 0,
-            hide: [],
-        });
+    const createPost = async (files, title, text, tags, mentions, update = null) => {
+        let docRef = null;
+        if (update) {
+            docRef = await updateDoc(doc(db, 'posts', update.id), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                updated: true,
+                hide: [],
+            });
+        } else {
+            docRef = await addDoc(collection(db, 'posts'), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                user: {
+                    id: user.uid,
+                    avatar: userData.user_avatar,
+                    name: userData.user_name,
+                },
+                time: new Date(),
+                like: { count: 0, list: [] },
+                dislike: { count: 0, list: [] },
+                commentNumber: 0,
+                hide: [],
+                updated: false,
+            });
+        }
+
         return docRef;
     };
-
-    const deletePost = async (id) => {
-        await deleteDoc(doc(db, 'posts', id));
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_postNumber: userData.user_postNumber - 1,
-        });
-    };
-    const hidePost = async (id) => {
-        await updateDoc(doc(db, 'posts', id), {
-            hide: arrayUnion(user.uid),
-        });
-    };
-    const savePost = async (id, data) => {
-        await setDoc(doc(db, 'users', user.uid, 'saves', id), {
-            title: data.title,
-            tags: data.tags,
-            user: {
-                name: data.user.name,
-                avatar: data.user.avatar,
-            },
-        });
-    };
-
+    //save post handle
     const deleteSavePost = async (id) => {
         await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
     };
+
+    //send report
+    const sendReport = async (content,id,rtype) =>{
+        await addDoc(collection(db, 'users', adminId, 'notifications'), {
+            title: type.report + content,
+            url: rtype === 'post' ? routes.post + id : routes.user +id,
+            sender: {
+                id: user.uid,
+                name: userData.user_name,
+                avatar: userData.user_avatar,
+            },
+            type: 'report',
+            time: serverTimestamp(),
+            read: false,
+        });
+    }
 
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
-                setUser(currentUser);
-                console.log(currentUser.uid, 'update');
-
+                setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
                 //fetch user list realtime
                 onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
                     const data = [];
@@ -367,15 +390,23 @@ export const AuthContextProvider = ({ children }) => {
                     data1.sort((a, b) => b.data.time.seconds - a.data.time.seconds);
                     setPosts(data1);
                 });
-                if (window.location.pathname !== routes.login) {
-                    await updateDoc(doc(userRef, currentUser.uid), {
-                        user_status: 'online',
-                    });
-                }
                 //fetch user data change realtime
-                onSnapshot(doc(db, 'users', currentUser.uid), (doc) => {
+                onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
                     console.log('data of user change');
-                    setUserData(doc.data());
+                    setUserData(result.data());
+                    if (result.data().user_status !== 'online') {
+                        if (result.data().user_status !== 'ban') {
+                            await updateDoc(doc(userRef, currentUser.uid), {
+                                user_status: 'online',
+                            });
+                        } else if (result.data().user_banUntil.toMillis() < new Date()) {
+                            await updateDoc(doc(db,'users', currentUser.uid), {
+                                user_status: 'online',
+                                user_banUntil: deleteField(),
+                            });
+                        }
+                       
+                    }
                 });
                 //fetch user notifications realtime
                 onSnapshot(
@@ -426,14 +457,14 @@ export const AuthContextProvider = ({ children }) => {
         savePostData,
         handleReadNoti,
         fileUpload,
+        sendReport,
         createPost,
-        deletePost,
-        hidePost,
-        savePost,
         deleteSavePost,
         handleDecline,
         handleAccept,
         unFriend,
+        banUser,
+        unbanUser,
         signIn,
         logOut,
         createUser,

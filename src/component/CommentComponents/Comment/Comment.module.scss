@@ -2,6 +2,9 @@
     display: flex;
     margin-top: 20px;
     width: 650px;
+    &.page{
+        width: 100%;
+    }
     &.dark .username{
         color:var(--primary)
     }
@@ -11,13 +14,45 @@
     &.dark .message{
         background-color: var(--bg-dark-theme);
     }
+    &.dark .actions{
+        color: var(--text-color-dark) ;
+    }
+    &.dark .like-count{
+        background-color: var(--primary);
+    color: var(--primary-light);
+    }
+    &.dark .options{
+        &:hover {
+            background-color: var(--bg-dark-theme);
+            cursor: pointer;
+        }
+    }
+}
+.ava-like{
+    display: flex;
+    flex-direction: column;
+
 }
 
+.like-count{
+    margin-top: 4px;
+    width: 40px;
+    background-color: var(--primary-light);
+    color: var(--primary);
+    border-radius: 30px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+}
+.like-icon{
+
+}
 .avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     margin-right: 8px;
+    cursor: pointer;
 }
 
 .image {
@@ -38,30 +73,28 @@
     .username {
         font-size: 1.4rem;
         color: var(--primary-light);
-
+        width: fit-content;
         &:hover {
             text-decoration: underline;
             cursor: pointer;
         }
     }
 }
-.row{
-    display:flex;
-    .options {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        .icon {
-            font-size: 1.8rem;
-        }
+.options {
+    width: 30px;
+    height: 30px;
+    margin-left:10px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    .icon {
+        font-size: 1.8rem;
+    }
 
-        &:hover {
-            background-color: rgba(0, 0, 0, 0.2);
-            cursor: pointer;
-        }
+    &:hover {
+        background-color: #eee;
+        cursor: pointer;
     }
 }
 .message {
@@ -86,12 +119,11 @@
     align-items: center;
     margin-top: 4px;
     margin-left: 8px;
-
+    color: var(--text-color);
     .like,
     .reply {
         margin-left: 4px;
         font-size: 1.2rem;
-        color: var(--text-color-dark);
         font-weight: 700;
         &:hover {
             cursor: pointer;
@@ -101,7 +133,6 @@
     .edit{
         margin-left: 4px;
         font-size: 1.2rem;
-        color: var(--text-color-dark);
         font-weight: 700;
     }
     .time {

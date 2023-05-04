@@ -3,12 +3,16 @@ import styles from './AccountItem.module.scss';
 import Image from '../Image';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types'
+import { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import routes from '~/config/routes';
+import { UserAuth } from '~/contexts/authContext';
+import Button from '../Button/Button';
 const cx = classNames.bind(styles);
 
 function AccountItem({user,search=false,chat=false,dark,...props}) {
+
     return (
         <Link to={(search && `/user/${user.id}`) ||(chat && routes.chat) } className={cx('wrapper',{dark:dark})}>
         <Image src={user.data.user_avatar} alt="user" className={cx('avatar')} />
@@ -25,4 +29,4 @@ function AccountItem({user,search=false,chat=false,dark,...props}) {
 AccountItem.propTypes = {
     user: PropTypes.object.isRequired
 }
-export default AccountItem;
+export default memo(AccountItem);

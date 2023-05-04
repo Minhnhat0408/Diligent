@@ -41,30 +41,6 @@
     padding: 0;
 }
 
-//Font embed
-// @font-face {
-//   font-family: ProximaNova;
-//   src: url('/assets/fonts/Proxima-Nova-Regular.woff2');
-//   font-weight: 400;
-// }
-
-// @font-face {
-//   font-family: ProximaNova;
-//   src: url('/assets/fonts/ProximaNova-Semibold.woff2');
-//   font-weight: 600;
-// }
-
-// @font-face {
-//   font-family: ProximaNova;
-//   src: url('/assets/fonts/Proxima-Nova-Bold.woff');
-//   font-weight: 700;
-// }
-
-// @font-face {
-//   font-family: SofiaPro;
-//   src: url('/assets/fonts/sofiapro-bold.woff');
-//   font-weight: 700;
-// }
 
 // Global CSS
 body {
@@ -143,12 +119,48 @@ body {
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 10;
     &.loader{
-
         background-color: rgba(255, 255, 255, 0.6);
-    
     }
-
 }
 .d-none {
     display: none;
+}
+.row{
+    display: flex;
+    align-items: center;
+}
+.indicators{
+    position: absolute;
+    bottom: 30px;
+    left: 0;
+    right: 0;
+}
+
+.react-slideshow-container+ul.indicators {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 20px;
+}
+.react-slideshow-container+ul.indicators .each-slideshow-indicator::before {
+    color:var(--text-color-dark);
+    background-color: white;
+}
+
+.react-slideshow-container .nav:last-of-type {
+    right: 20px;
+
+}
+.react-slideshow-container .nav:first-of-type {
+    left: 20px;
+}
+.react-slideshow-container .default-nav {
+    background-color: transparent;
+    & svg{
+        fill: var(--text-color-dark);
+    }
+}
+.react-slideshow-container .default-nav:hover, .react-slideshow-container .default-nav:focus {
+    background-color: transparent;
+    outline: 0;
 }
