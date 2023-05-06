@@ -85,6 +85,8 @@ function Story() {
         setMyStories(story);
     }
 
+    console.log(myStories == null);
+
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
@@ -109,19 +111,24 @@ function Story() {
 
             <div className={cx('display')}>
                 {/* phần hiển thị story  */}
-                {myStories != null && <Stories stories={myStories} key={JSON.stringify(myStories)} />}
-
-                <div className={cx('react')}>
-                    <textarea className={cx('reply')} placeholder="Reply..."></textarea>
-                    <div className={cx('action')}>
-                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                            <i class="fa-solid fa-thumbs-up"></i>
+                {myStories != null && myStories[0] != undefined ? (
+                    <>
+                        <Stories stories={myStories} key={JSON.stringify(myStories)} />
+                        <div className={cx('react')}>
+                            <textarea className={cx('reply')} placeholder="Reply..."></textarea>
+                            <div className={cx('action')}>
+                                <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
+                                    <i class="fa-solid fa-thumbs-up"></i>
+                                </div>
+                                <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
+                                    <i class="fa-solid fa-thumbs-down"></i>
+                                </div>
+                            </div>
                         </div>
-                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                            <i class="fa-solid fa-thumbs-down"></i>
-                        </div>
-                    </div>
-                </div>
+                    </>
+                ) : (
+                    <p>Bạn chưa đăng story nào, hãy xem story của người khác hoặc tạo cho mình một story</p>
+                )}
             </div>
         </div>
     );
