@@ -4,9 +4,13 @@ import Image from '../Image/Image';
 import { useState, useEffect, useCallback } from 'react';
 import Progressbar from '../Progressbar/Progressbar';
 import getTimeDiff from '~/utils/timeDiff';
+import { UserAuth } from '~/contexts/authContext';
+import { deleteDoc, doc } from 'firebase/firestore';
+import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
 function Stories({ stories }) {
+    const { user } = UserAuth();
     const [activeStoryIndex, setActiveStoryIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
@@ -64,8 +68,13 @@ function Stories({ stories }) {
         }
     }, [activeStoryIndex]);
 
+    async function deleteStory(id) {
+        await deleteDoc(doc(db, 'stories', id));
+    }
+
     const activeStory = stories[activeStoryIndex];
     const progressPercentage = (currentTime / activeStory.duration) * 100;
+    console.log(stories);
 
     return (
         <div className={cx('wrapper')} style={{ background: `${stories[activeStoryIndex].bgColor}` }}>
@@ -109,16 +118,30 @@ function Stories({ stories }) {
             </div>
 
             <div className={cx('header')}>
-                <Image className={cx('avatar')} src={stories[activeStoryIndex].avatar} />
-                <div className={cx('info')}>
-                    <h5 className={cx('username')}>{stories[activeStoryIndex].username}</h5>
-                    <p className={cx('time')}>{getTimeDiff(Date.now(), stories[activeStoryIndex].time.seconds * 1000)} ago</p>
+                <div style={{ display: 'flex' }}>
+                    <Image className={cx('avatar')} src={stories[activeStoryIndex].avatar} />
+                    <div className={cx('info')}>
+                        <h5 className={cx('username')}>{stories[activeStoryIndex].username}</h5>
+                        <p className={cx('time')}>
+                            {getTimeDiff(Date.now(), stories[activeStoryIndex].time.seconds * 1000)} ago
+                        </p>
+                    </div>
                 </div>
+                {/* {stories[activeStoryIndex].userId === user.uid && (
+                    <div className={cx('delete')} onClick={() => deleteStory(stories[activeStoryIndex].storyId)}>
+                        <i class="fa-light fa-trash"></i>
+                    </div>
+                )} */}
             </div>
 
             <div className={cx('content')} onClick={() => handlePauseClick()}>
                 {stories[activeStoryIndex].url !== '' && (
-                    <Image src={stories[activeStoryIndex].url} alt="story-image" className={cx('story-image')} style={{scale: `${stories[activeStoryIndex].scale}`}}/>
+                    <Image
+                        src={stories[activeStoryIndex].url}
+                        alt="story-image"
+                        className={cx('story-image')}
+                        style={{ scale: `${stories[activeStoryIndex].scale}` }}
+                    />
                 )}
                 <div
                     className={cx('message')}

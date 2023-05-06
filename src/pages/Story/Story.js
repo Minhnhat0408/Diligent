@@ -43,8 +43,13 @@ function Story() {
                     text: story.content.text,
                     scale: story.scale,
                     duration: 3000,
+                    userId: story.user.id,
+                    storyId: story.id,
                 }));
-            setMyStories(story);
+
+            const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
+
+            setMyStories(sortedStory);
             setHasFetchedStories(true);
         }
         fetchStories();
@@ -81,8 +86,12 @@ function Story() {
                 text: story.content.text,
                 scale: story.scale,
                 duration: 3000,
+                userId: story.user.id,
+                storyId: story.id,
             }));
-        setMyStories(story);
+        const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
+
+        setMyStories(sortedStory);
     }
 
     console.log(myStories == null);
@@ -103,7 +112,7 @@ function Story() {
                     <h3 className={cx('title')}>All Story</h3>
                     {storyByUserId.map((data) => (
                         <div onClick={() => selectStory(data.userId)} key={data.userId}>
-                            <StoryItem avatar={data.avatar} title={data.username} detail="30m" />
+                            <StoryItem avatar={data.avatar} title={data.username} />
                         </div>
                     ))}
                 </div>

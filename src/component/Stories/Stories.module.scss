@@ -24,8 +24,24 @@
 
     .header {
         display: flex;
+        justify-content: space-between;
+        align-items: center;
         margin-top: 8px;
         margin-left: 8px;
+
+        .delete {
+            margin-right: 8px;
+            z-index: 999;
+            :hover {
+                cursor: pointer;
+                opacity: 0.8;
+            }
+
+            i {
+                color: var(--primary);
+                font-size: 2rem;
+            }
+        }
 
         .avatar {
             width: 40px;
