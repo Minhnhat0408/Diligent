@@ -134,10 +134,12 @@ function CreateStory() {
     }, []);
 
     //change background color
-    const [backgroundColor, setBackgroundColor] = useState('white');
+    const [backgroundColor, setBackgroundColor] = useState('rgba(17, 17, 17, 0.93)');
     const handleClickBackGroundColor = useCallback((value) => {
         setBackgroundColor(value);
     }, []);
+
+    console.log(backgroundColor);
 
     const backgroundColorItems = useMemo(() => {
         return backgroundColors.map((backgroundColor) => (
