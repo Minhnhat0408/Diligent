@@ -16,6 +16,7 @@ function Menu({
     disabled,
     offset,
     small = false,
+    medium = false,
     children,
     item = [],
     onClick = () => {},
@@ -67,7 +68,7 @@ function Menu({
       <div
         tabIndex="-1"
         {...attrs}
-        className={cx('menu-lists', { small: small })}
+        className={cx('menu-lists', { small: small , medium:medium})}
         ref={menu}
       >
         <PopperWrapper

@@ -1,11 +1,16 @@
 import {
+    faArrowDown,
+    faArrowUp,
     faBan,
+    faClock,
+    faDownload,
     faEyeSlash,
     faFilePen,
     faFlag,
     faLock,
     faSave,
     faTrash,
+    faUser,
     faUserXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -33,6 +38,29 @@ export const report = {
         ],
     },
 };
+export const FILTER_OPTIONS = [
+    {
+        icon: <FontAwesomeIcon icon={faClock} />,
+        title: 'Time',
+        children: {
+            title: 'Time',
+            data: [
+                { icon: <FontAwesomeIcon icon={faArrowUp} />, title: 'Latest',type:'latest' },
+                { icon: <FontAwesomeIcon icon={faArrowDown} />, title: 'Oldest',type:'oldest' },
+            ],
+        },
+    },
+    {
+        icon: <FontAwesomeIcon icon={faUser} />,
+        title: 'User',
+        type: 'user',
+    },
+    {
+        icon: <FontAwesomeIcon icon={faDownload} />,
+        title: 'Downloads',
+        type: 'downloads',
+    },
+];
 export const CATEGORY_OPTIONS = [
     {
         title: 'Japanese',

@@ -33,7 +33,7 @@ const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload ,createPost} = UserAuth();
+    const { userData, user, fileUpload, createPost } = UserAuth();
     const [loading, setLoading] = useState(false);
     const handleClickCloseBox = () => {
         onXmark(false);
@@ -58,6 +58,7 @@ function PostForm({ onXmark, update }) {
     });
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
+        console.log(newfile);
         if (!isImage(newfile) && !isVideo(newfile)) {
             const img = { file: newfile, url: URL.createObjectURL(newfile) };
             setOthersPreview((prev) => [...prev, img]);
@@ -422,7 +423,7 @@ function PostForm({ onXmark, update }) {
                                         <input
                                             type="file"
                                             id="create-post-file"
-                                            accept=".pdf,.docx,.doc,.xls,.xlsx,.rar,.zip"
+                                            accept=".pdf,.docx,.doc,.txt,.xls,.xlsx,.rar,.zip,.pptx,.csv"
                                             className={cx('d-none')}
                                             onChange={handleFileChange}
                                         />

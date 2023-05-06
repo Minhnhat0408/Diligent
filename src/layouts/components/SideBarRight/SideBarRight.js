@@ -40,9 +40,10 @@ function SideBarRight() {
                                     See all
                                 </Link>
                             </div>
-                            {usersList?.map((u) => {
+                            {usersList?.map((u,ind) => {
+                                
                                 return (
-                                    user.uid !== u.id &&
+                                    user.uid !== u.id && ind < 8 && 
                                     !u.friend && (
                                         <AccountItem
                                             search
