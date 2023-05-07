@@ -60,8 +60,8 @@ export const AuthContextProvider = ({ children }) => {
                 user_email: user?.email,
                 user_authProvider: response?.providerId || 'email/pasword',
                 user_createdAt: serverTimestamp(),
+                user_status:'online',
             },
-            { merge: true },
         );
         return response;
     };
@@ -432,17 +432,17 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setSavePostData(result);
                 });
-                await setDoc(
+                if(window.location.pathname !== routes.updateInfo)
+                await updateDoc(
                     doc(db, 'users', currentUser.uid),
                     {
                         user_status: 'online',
-                    },
-                    { merge: true },
+                    }
                 );
             } else {
                 setUser(null);
             }
-            console.log(userData);
+        
             // proximate the loading time
             setTimeout(() => {
                 console.log('reload in onauth');

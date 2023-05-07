@@ -61,7 +61,7 @@ function Header() {
     const renderNotifications = (attrs) => (
         <div tabIndex="-1" {...attrs} className={cx('menu-lists')} ref={notif}>  
             <PopperWrapper className={cx('menu-popper', { [context.theme]: context.theme === 'dark' })}>
-                {notifications?.data.map((data,ind) => {
+                {notifications?.data.length > 0 ? notifications.data.map((data,ind) => {
                     return (
                         <Notification
                             onClick={() => {
@@ -72,7 +72,7 @@ function Header() {
                             time={getTimeDiff(Date.now(), data.time.toMillis()) + ' ago'}
                         />
                     );
-                })}
+                }) : <Image src={image.noContent} alt="nothing here" className={cx('no-content')} /> }
             </PopperWrapper>
         </div>
     );

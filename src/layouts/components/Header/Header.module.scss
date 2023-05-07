@@ -140,6 +140,7 @@
 }
 .menu-lists{
   max-height: 350px;
+  max-width: 350px;
   overflow-y:scroll ;
 }
 .menu-popper{
@@ -160,4 +161,9 @@
 .menu{
   color: var(--text-color);
   
+}
+
+.no-content{
+  width: 100%;
+  height: 100%;
 }
