@@ -21,6 +21,7 @@
     "react-calendar": "^4.0.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^18.2.0",
+    "react-dropzone": "^14.2.3",
     "react-insta-stories": "^2.5.9",
     "react-mentions": "^4.4.7",
     "react-native-progress-bar-animated": "^1.0.6",

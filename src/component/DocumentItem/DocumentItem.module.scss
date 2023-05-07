@@ -23,8 +23,8 @@
 }
 .title {
     max-width: 84%;
-    font-size: 3rem;
-    margin-right: 10px;
+    font-size: 2.4rem;
+    margin-right: 20px;
     margin-bottom: 20px;
     cursor: pointer;
     display: -webkit-box;
@@ -80,26 +80,59 @@
     margin-left: 16px;
     margin-right: 6px;
 }
-
-.download {
-    position: absolute;
-    font-size: 3.6rem;
-    color: #888;
+.download-section{
+    position: absolute;  
     right: 33px;
     top: 30%;
-
+}
+.download-btn {
+    font-size: 3.6rem;
+    color: #888;
     cursor: pointer;
-
     &:hover {
         color: var(--primary);
     }
 }
 
-.file-preview {
+.download-count{
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    top:-10px;
+    right: -10px;
+    border-radius: 50%;
+    background-color: var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--primary-light);
+    
+}
 
-    color: #3bc361;
-    font-size: 4rem;
+.file-preview{
+    font-size: 3rem;
     cursor: pointer;
+    &.xls{
+        color:#45bd62
+    }
+    &.xlsx{
+        color:#45bd62
+    }
+    &.pptx{
+        color: orange
+    }
+    &.pdf{
+        color:#f33a58
+    }
+    &.doc{
+        color: #1877f2;
+    }
+    &.docx{
+        color: #1877f2;
+    }
+    &.csv{
+        color: plum;
+    }
 }
 
 

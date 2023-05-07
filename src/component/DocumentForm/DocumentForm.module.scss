@@ -1,6 +1,7 @@
 .wrapper{
     width: 500px;
     padding: 10px;
+    padding-bottom: 20px;
     background-color: var(--light-theme);
     box-shadow: 2px 2px 5px #888;
     border-radius: 20px;
@@ -128,7 +129,7 @@
    
 }
 .selected-category {
-    margin-top: 8px;
+    margin: 8px 0;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -154,51 +155,69 @@
         }
     }
 }
-.options {
+
+.file-container{
     display: flex;
-    align-items: center;
-    margin-top: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    
-    label {
-        cursor: pointer;
-    }
-
-    .title {
-        font-size: 1.6rem;
+    flex-direction: column;
+    & .dropzone{
         flex: 1;
-    }
-
-    .option {
-        margin-left: 50px;
-        margin-right: 0px;
         display: flex;
-        flex: 1;
-        justify-content: space-between;
+        flex-direction: column;
         align-items: center;
-        font-size: 2.4rem;
-
-        .img {
-            color: #45bd62;
-        }
-
-        .user-tag {
-            color: #1877f2;
-        }
-
-
+        padding: 20px;
+        border-width: 2px;
+        border-radius: 20px;
+        border-color: var(--text-color-dark);
+        border-style: dashed;
+        background-color: var(--bg-dark-theme);
+        color: var(--text-color-dark);
+        outline: none;
+        transition: border .24s ease-in-out;
     }
 }
 
+
+.dropzone:focus {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+.dropzone.invalid{
+    border-color:#f33a58;
+    color:#f33a58;
+}
+
 .file-info{
+    padding: 10px 10px;
     display: flex;
     align-items: center;
-    margin-top: 8px;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
+}
+.file-type{
+    font-weight: 600;
+    margin-right: 20px;
+}
+.file-icon{
+    font-size: 2.6rem;
+    &.xls{
+        color:#45bd62
+    }
+    &.xlsx{
+        color:#45bd62
+    }
+    &.pptx{
+        color: orange
+    }
+    &.pdf{
+        color:#f33a58
+    }
+    &.doc{
+        color: #1877f2;
+    }
+    &.docx{
+        color: #1877f2;
+    }
+    &.csv{
+        color: plum;
+    }
 }
 .des{
  flex:1;

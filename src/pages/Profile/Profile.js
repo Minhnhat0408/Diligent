@@ -320,7 +320,7 @@ function Profile() {
 
                                                 <Menu
                                                     offset={[0, 30]}
-                                                    disabled={(pageUser.user_status === 'ban' && !user.isAdmin) || ban}
+                                                    disabled={(pageUser.user_status === 'ban' && !user?.isAdmin) || ban}
                                                     // chinh ben trai / chieu cao so vs ban dau
                                                     placement="right"
                                                     item={
@@ -346,7 +346,7 @@ function Profile() {
                                                         outline
                                                         dark={context.theme === 'dark'}
                                                         disabled={
-                                                            (pageUser.user_status === 'ban' && !user.isAdmin) || ban
+                                                            (pageUser.user_status === 'ban' && !user?.isAdmin) || ban
                                                         }
                                                     >
                                                         <i className="fa-solid fa-ellipsis"></i>
@@ -409,7 +409,7 @@ function Profile() {
                             {userPosts &&
                                 userPosts.map((post) => {
                                     return (
-                                        <PostProvider key={id} id={post.id} data={post.data}>
+                                        <PostProvider key={post.id} id={post.id} data={post.data}>
                                             <Post />
                                         </PostProvider>
                                     );

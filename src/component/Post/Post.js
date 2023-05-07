@@ -56,7 +56,7 @@ function Post() {
     };
 
     useEffect(() => {
-        console.log(post.data.text,'refreash text');
+    
         setText(
             post.data.text.replace(regex, (spc) => {
                 const id = spc.match(getIdInMentions)[0].substring(1);

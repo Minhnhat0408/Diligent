@@ -36,7 +36,8 @@ import { adminId } from '~/utils/constantValue';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
-    const [user, setUser] = useState({});
+    const [user, setUser] = useState();
+
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
@@ -53,39 +54,42 @@ export const AuthContextProvider = ({ children }) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
         console.log(user.uid, 'create');
-        await setDoc(doc(db, 'users', user.uid), {
-            user_email: user?.email,
-            user_authProvider: response?.providerId || 'email/pasword',
-            user_createdAt: serverTimestamp(),
-        });
+        await setDoc(
+            doc(db, 'users', user.uid),
+            {
+                user_email: user?.email,
+                user_authProvider: response?.providerId || 'email/pasword',
+                user_createdAt: serverTimestamp(),
+            },
+            { merge: true },
+        );
         return response;
     };
 
-    async function fetchUserData() {
-        const data = [];
-        console.log('fetch user list first time');
-        const q = query(userRef, orderBy('user_name'));
-        const docs = await getDocs(q);
-        docs.forEach((doc) => {
-            data.push({ id: doc.id, data: doc.data() });
-        });
-        setUsersList(data);
-    }
-    async function fetchPosts() {
-        const data = [];
-        console.log('fetch posts first time');
-        const q = query(collection(db, 'posts'), orderBy('time', 'desc'));
-        const docs = await getDocs(q);
-        docs.forEach((doc) => {
-            data.push({ id: doc.id, data: doc.data() });
-        });
-        setPosts(data);
-    }
     useEffect(() => {
-        if (!!user) {
-            fetchUserData();
-            fetchPosts();
+        async function fetchUserData() {
+            const data = [];
+            console.log('fetch user list first time');
+            const q = query(userRef, orderBy('user_name'));
+            const docs = await getDocs(q);
+            docs.forEach((doc) => {
+                data.push({ id: doc.id, data: doc.data() });
+            });
+            setUsersList(data);
         }
+        async function fetchPosts() {
+            const data = [];
+            console.log('fetch posts first time');
+            const q = query(collection(db, 'posts'), orderBy('time', 'desc'));
+            const docs = await getDocs(q);
+            docs.forEach((doc) => {
+                data.push({ id: doc.id, data: doc.data() });
+            });
+            setPosts(data);
+        }
+
+        fetchUserData();
+        fetchPosts();
     }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);
@@ -93,11 +97,12 @@ export const AuthContextProvider = ({ children }) => {
     };
     const logOut = async () => {
         if (userData.user_status !== 'ban') {
+            console.log('set offline');
             await updateDoc(doc(userRef, user.uid), {
                 user_status: 'offline',
             });
-        }   
-        return signOut(auth);
+        }
+        await signOut(auth);
     };
     const updateProfile = async (data) => {
         if (window.location.pathname === routes.updateInfo) {
@@ -153,7 +158,7 @@ export const AuthContextProvider = ({ children }) => {
     };
     const handleReadNoti = async (data) => {
         console.log('read');
-        if(data.read === false){
+        if (data.read === false) {
             const q = query(
                 collection(db, 'users', user?.uid, 'notifications'),
                 where('sender.id', '==', data.sender.id),
@@ -164,7 +169,6 @@ export const AuthContextProvider = ({ children }) => {
                 read: true,
             });
         }
-   
     };
 
     const handleDecline = async (data) => {
@@ -247,7 +251,7 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
-    console.log('auth rerender');
+    console.log('auth rerender', userData);
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `${location}/${name}`);
@@ -328,10 +332,10 @@ export const AuthContextProvider = ({ children }) => {
     };
 
     //send report
-    const sendReport = async (content,id,rtype) =>{
+    const sendReport = async (content, id, rtype) => {
         await addDoc(collection(db, 'users', adminId, 'notifications'), {
             title: type.report + content,
-            url: rtype === 'post' ? routes.post + id : routes.user +id,
+            url: rtype === 'post' ? routes.post + id : routes.user + id,
             sender: {
                 id: user.uid,
                 name: userData.user_name,
@@ -341,8 +345,7 @@ export const AuthContextProvider = ({ children }) => {
             time: serverTimestamp(),
             read: false,
         });
-    }
-
+    };
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
@@ -393,19 +396,16 @@ export const AuthContextProvider = ({ children }) => {
                 //fetch user data change realtime
                 onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
                     console.log('data of user change');
+
                     setUserData(result.data());
+
                     if (result.data().user_status !== 'online') {
-                        if (result.data().user_status !== 'ban') {
-                            await updateDoc(doc(userRef, currentUser.uid), {
-                                user_status: 'online',
-                            });
-                        } else if (result.data().user_banUntil.toMillis() < new Date()) {
-                            await updateDoc(doc(db,'users', currentUser.uid), {
+                        if (result.data()?.user_banUntil && result.data().user_banUntil.toMillis() < new Date()) {
+                            await updateDoc(doc(db, 'users', currentUser.uid), {
                                 user_status: 'online',
                                 user_banUntil: deleteField(),
                             });
                         }
-                       
                     }
                 });
                 //fetch user notifications realtime
@@ -432,12 +432,20 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setSavePostData(result);
                 });
+                await setDoc(
+                    doc(db, 'users', currentUser.uid),
+                    {
+                        user_status: 'online',
+                    },
+                    { merge: true },
+                );
             } else {
                 setUser(null);
             }
-
+            console.log(userData);
             // proximate the loading time
             setTimeout(() => {
+                console.log('reload in onauth');
                 setLoading(false);
             }, 1000);
         });
