@@ -23,6 +23,7 @@ function Documents() {
     const [documents, setDocuments] = useState();
 
     const [selectedCategories, setSelectedCategories] = useState([]);
+    const [filter, setFilter] = useState(FILTER_OPTIONS);
     const { user } = UserAuth();
     const navigate = useNavigate();
     useEffect(() => {
@@ -59,7 +60,54 @@ function Documents() {
     const handleDeleteCategory = (value) => {
         setSelectedCategories(selectedCategories.filter((category) => category !== value));
     };
-    const handleFilter = (filter) => {};
+    const handleFilter = (item) => {
+        switch (item.type) {
+            case 'latest':
+                setDocuments({
+                    origin: documents.origin,
+                    display: documents.display.sort((a, b) => b.data.createdAt.seconds - a.data.createdAt.seconds),
+                });
+                break;
+            case 'oldest':
+                setDocuments({
+                    origin: documents.origin,
+                    display: documents.display.sort((a, b) => a.data.createdAt.seconds - b.data.createdAt.seconds),
+                });
+                break;
+            case 'downloads':
+                setDocuments({
+                    origin: documents.origin,
+                    display: documents.display.sort((a, b) => b.data.downloads - a.data.downloads),
+                });
+                break;
+            default:
+                break;
+        }
+        let tmp = filter;
+        tmp.forEach((a, ind) => {
+            if (!a.children) {
+                if (a === item) {
+                    a.tick = true;
+                } else if (a.tick === true) {
+                    a.tick = false;
+                }
+            } else {
+                if (a !== item) {
+                    a.tick = false;
+                    a.children.data.forEach((b) => {
+                        if (b === item) {
+                            b.tick = !b.tick;
+                            a.tick = b.tick;
+                        } else if (b.tick === true) {
+                            b.tick = false;
+                        }
+                    });
+                }
+            }
+        });
+        setFilter(tmp);
+        
+    };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('user-options')}>
@@ -82,7 +130,7 @@ function Documents() {
                         offset={[0, 30]}
                         // chinh ben trai / chieu cao so vs ban dau
                         placement="left"
-                        item={FILTER_OPTIONS}
+                        item={filter}
                         medium
                         onClick={handleFilter}
                     >

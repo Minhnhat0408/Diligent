@@ -409,7 +409,7 @@ function Profile() {
                             {userPosts &&
                                 userPosts.map((post) => {
                                     return (
-                                        <PostProvider key={id} id={post.id} data={post.data}>
+                                        <PostProvider key={post.id} id={post.id} data={post.data}>
                                             <Post />
                                         </PostProvider>
                                     );
