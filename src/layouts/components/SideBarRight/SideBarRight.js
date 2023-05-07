@@ -14,7 +14,6 @@ const cx = classNames.bind(styles);
 function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
-    console.log(userData,user)
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             {(user && userData) ? (
@@ -49,7 +48,7 @@ function SideBarRight() {
                                             search
                                             key={u.id}
                                             dark={context.theme === 'dark'}
-                                            user={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
+                                            acc={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
                                         />
                                     )
                                 );
@@ -70,7 +69,7 @@ function SideBarRight() {
                                             chat
                                             key={u.id}
                                             dark={context.theme === 'dark'}
-                                            user={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
+                                            acc={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
                                         />
                                     )
                                 );

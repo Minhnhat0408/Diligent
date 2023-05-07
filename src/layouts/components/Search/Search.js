@@ -64,7 +64,7 @@ function Search() {
                     <PopperWrapper className={context.theme === 'dark' ? [context.theme] : ''}>
                         <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Account</h4>
                         {searchResult.map((user) => {
-                            return <AccountItem key={user.id} search user={user} dark={context.theme === 'dark'} />;
+                            return <AccountItem key={user.id} search acc={user} dark={context.theme === 'dark'} />;
                         })}
                     </PopperWrapper>
                 </div>

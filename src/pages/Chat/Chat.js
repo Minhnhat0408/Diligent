@@ -5,7 +5,13 @@ const cx = classNames.bind(styles);
 function Chat() {
     return (
         <div className={cx('wrapper')}>
-            <h2>Chat page</h2>
+            <div className={cx('user-info')}>
+                
+            </div>
+            <div className={cx('chat-box')}></div>
+            <div className={cx('input')}>
+
+            </div>
         </div>
     );
 }
