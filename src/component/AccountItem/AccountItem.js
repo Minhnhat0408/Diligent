@@ -85,6 +85,6 @@ function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
 }
 
 AccountItem.propTypes = {
-    user: PropTypes.object.isRequired,
+    acc: PropTypes.object.isRequired,
 };
 export default memo(AccountItem);
