@@ -9,7 +9,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
-function Stories({ stories }) {
+function Stories({ stories, onDeleteStory }) {
     const { user } = UserAuth();
     const [activeStoryIndex, setActiveStoryIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -70,11 +70,11 @@ function Stories({ stories }) {
 
     async function deleteStory(id) {
         await deleteDoc(doc(db, 'stories', id));
+        onDeleteStory()
     }
 
     const activeStory = stories[activeStoryIndex];
     const progressPercentage = (currentTime / activeStory.duration) * 100;
-    console.log(stories);
 
     return (
         <div className={cx('wrapper')} style={{ background: `${stories[activeStoryIndex].bgColor}` }}>
@@ -127,11 +127,11 @@ function Stories({ stories }) {
                         </p>
                     </div>
                 </div>
-                {/* {stories[activeStoryIndex].userId === user.uid && (
+                {stories[activeStoryIndex].userId === user.uid && (
                     <div className={cx('delete')} onClick={() => deleteStory(stories[activeStoryIndex].storyId)}>
                         <i class="fa-light fa-trash"></i>
                     </div>
-                )} */}
+                )}
             </div>
 
             <div className={cx('content')} onClick={() => handlePauseClick()}>
