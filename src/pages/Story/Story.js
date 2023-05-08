@@ -42,9 +42,10 @@ function Story() {
                 textColor: story.content.textColor,
                 text: story.content.text,
                 scale: story.scale,
-                duration: 3000,
+                duration: story.type == 'video' ? 15000 : 3000,
                 userId: story.user.id,
                 storyId: story.id,
+                type: story.type
             }));
 
         const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
@@ -89,9 +90,10 @@ function Story() {
             textColor: story.content.textColor,
             text: story.content.text,
             scale: story.scale,
-            duration: 3000,
+            duration: story.type == 'video' ? 15000 : 3000,
             userId: story.user.id,
             storyId: story.id,
+            type: story.type
         }));
 
         setMyStories(formattedStories);

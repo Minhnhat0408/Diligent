@@ -76,6 +76,8 @@ function Stories({ stories, onDeleteStory }) {
     const activeStory = stories[activeStoryIndex];
     const progressPercentage = (currentTime / activeStory.duration) * 100;
 
+    console.log(stories);
+
     return (
         <div className={cx('wrapper')} style={{ background: `${stories[activeStoryIndex].bgColor}` }}>
             <div className={cx('progress-bar')}>
@@ -135,7 +137,7 @@ function Stories({ stories, onDeleteStory }) {
             </div>
 
             <div className={cx('content')} onClick={() => handlePauseClick()}>
-                {stories[activeStoryIndex].url !== '' && (
+                {stories[activeStoryIndex].url !== '' && stories[activeStoryIndex].type === 'image' && (
                     <Image
                         src={stories[activeStoryIndex].url}
                         alt="story-image"
@@ -143,6 +145,11 @@ function Stories({ stories, onDeleteStory }) {
                         style={{ scale: `${stories[activeStoryIndex].scale}` }}
                     />
                 )}
+
+                {stories[activeStoryIndex].url !== '' && stories[activeStoryIndex].type === 'video' && (
+                    <video src={stories[activeStoryIndex].url} controls className={cx('story-video')}/>
+                )}
+
                 <div
                     className={cx('message')}
                     style={{
@@ -152,6 +159,7 @@ function Stories({ stories, onDeleteStory }) {
                 >
                     {stories[activeStoryIndex].text}
                 </div>
+
             </div>
 
             <div className={cx('back')} onClick={() => handleBackClick()}>
