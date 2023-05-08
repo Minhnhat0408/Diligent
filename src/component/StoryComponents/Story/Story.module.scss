@@ -1,6 +1,8 @@
 .wrapper {
     min-width: var(--story-width);
     min-height: var(--story-height);
+    max-width: var(--story-width);
+    max-height: var(--story-height);
     border-radius: 10px;
     display: flex;
     flex-direction: column;
