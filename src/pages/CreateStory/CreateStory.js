@@ -3,8 +3,8 @@ import Image from '~/component/Image';
 import styles from './CreateStory.module.scss';
 import { useState, useMemo, useCallback, useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import app, { db } from '~/firebase';
-import { addDoc, getDocs, getFirestore, serverTimestamp } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { collection } from 'firebase/firestore';
 import { UserAuth } from '~/contexts/authContext';
 
@@ -54,6 +54,7 @@ function CreateStory() {
     const [imagePreview, setImagePreview] = useState(null);
     const [videoPreview, setVideoPreview] = useState(null);
     const [counter, setCounter] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
@@ -178,6 +179,10 @@ function CreateStory() {
     };
 
     const handleClickShare = async () => {
+        //nếu đang load thì không làm gì
+        if (loading) return;
+
+        setLoading(true); // Đặt trạng thái loading thành true
         let fileName;
         try {
             const results = await fileUpload({ file: selectedFile, name: selectedFile.name });
@@ -207,6 +212,8 @@ function CreateStory() {
 
         const docRef = await addDoc(collection(db, 'stories'), data);
         handleClickCancel();
+
+        setLoading(false); // Đặt trạng thái loading thành false sau khi hoàn thành
         return docRef;
     };
 
@@ -220,7 +227,7 @@ function CreateStory() {
                 <h1 className={cx('header')}>Your Story</h1>
                 <hr />
                 <div className={cx('info')}>
-                    <Image src={userData.user_avatar} className={cx('avatar')} />
+                    <Image src={userData.user_avatar} className={cx('avatar')} alt="avatar" />
                     <h3 className={cx('username')}>{userData.user_name}</h3>
                 </div>
                 <hr />
@@ -258,9 +265,15 @@ function CreateStory() {
                         <button className={cx('cancel')} onClick={handleClickCancel}>
                             Cancel
                         </button>
-                        <button className={cx('share')} onClick={handleClickShare}>
-                            Share
-                        </button>
+                        {loading ? (
+                            <button className={cx('share')} disabled>
+                                Loading...
+                            </button>
+                        ) : (
+                            <button className={cx('share')} onClick={handleClickShare}>
+                                Share
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
@@ -312,7 +325,7 @@ function CreateStory() {
                                         {addText}
                                     </div>
                                 )}
-                                <video src={videoPreview} controls className={cx('video')}/>
+                                <video src={videoPreview} controls className={cx('video')} alt={'video'} />
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,6 @@
 import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
-import Image from '~/component/Image';
 import React, { useCallback, useContext, useState } from 'react';
 import Stories from '~/component/Stories/Stories';
 import { ThemeContext } from '~/contexts/Context';
@@ -159,7 +158,7 @@ function Story() {
                         </div>
                     </>
                 ) : (
-                    <p>Bạn chưa đăng story nào, hãy xem story của người khác hoặc tạo cho mình một story</p>
+                    <img src='/static/media/no_content.2175207d31c5a7c61d02.png' alt='nothing-here' />
                 )}
             </div>
         </div>
