@@ -1,15 +1,20 @@
 .container{
     transition: all 0.8s;
-    background-color: var(--bg-dark-theme);
+    // background-color: var(--bg-dark-theme);
     min-height: 100vh;
-   
     display:flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
-
     padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
     padding-right: 280px;
+}
+
+.flash{
+    position: absolute;
+    height: 60vh;
+    width: 40vh;
+    // background-color: rgb(242, 15, 15);
 }
  
  .options{
@@ -20,6 +25,9 @@
     justify-content: space-around;
     right: 35%;
  }
+
+
+
 .finish {
     color: palevioletred;
     background-color: palegreen;
@@ -27,13 +35,10 @@
     width: 50px;
     height: 50px;
     font-size: 4rem;
-    
- 
     border-radius: 50%;
 }
 
 .skip {
-
     color: palevioletred;
     background-color: palegreen;
     text-align: center;
@@ -45,19 +50,18 @@
 }
  
 .rightside{
- 
     width: 250px;
-    padding: 20px 8px 26px 8px;
+    padding: 18px 8px 26px 8px;
     margin-right: 30px;
     position: fixed;
     top: var(--defaultLayout-header-height);
     right: 0;
     bottom: 0;
-   
     overflow-y: scroll;
     overflow-x: hidden;
     transition: all 0.8s;
 }
+
 .finishbox{
    background-color: aliceblue;
    display:flex;
@@ -68,7 +72,7 @@
     border: 1px solid violet;
     border-radius: 5%;
     padding-top: 1%;
-    margin-bottom: 20px;
+    margin-bottom: 22px;
     align-items: center;
 }
 
@@ -89,17 +93,45 @@
 .shadowbox{
    background-color: rgb(181, 191, 199);
  
-   height: 200px;
+   height: 120px*(60/40);
    width: 120px;
 
 
 }
-
-
 .number{
 
    height: 23px;
    width: 78px;
    color: blueviolet;
+}
+
+.progresscontain{
+    height: 200px;
+    width: 300px;
+    position: relative;
+    display: flex;
+    // justify-content: center;
+    text-align: center;
+    align-items: center;
+    border-radius: 5%;
+    background-color: antiquewhite;
+    transition: all 1.0s ease;
+    transform: scale(1);
+}
+
+.progressbox{
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    left: 10px;
+    transition: all 1.0s ease;
+    transform: scale(0.7);
+}
+
+
+.move{
+    position: absolute;
+    top: 0;
+    z-index: 20;
 }
  

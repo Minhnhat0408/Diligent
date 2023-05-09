@@ -1,0 +1,80 @@
+.contain{
+    width: 200px;
+    height: 200px;
+    //background-color: rgb(119, 134, 134);
+    position: relative;
+    // justify-content: center;
+    // text-align: center;
+    // align-items: center;
+}
+
+.outer{
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    box-shadow: 6px 6px 10px -1px rgba(0,0,0,0.15),
+    -6px -6px 10px -1px rgba(255,255,255,0.7);
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.inner{
+    height: 80%;
+    width: 80%;
+    border-radius: 50%;
+    box-shadow: inset 4px 4px 6px -1px rgba(0,0,0,0.2),
+    inset -4px -4px 6px -1px rgba(255,255,255,0.7),
+    -0.5px -0.5px 0px rgba(255,255,255,1),
+    0.5px 0.5px 0px rgba(0,0,0,0.2),
+    0px 12px 10px -10px rgba(0,0,0,0.05);
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+}
+
+.percentage{
+    font-weight: 600;
+    color: rgb(12, 10, 6);
+    font-size: 2rem;
+}
+
+.svg{
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.circle{
+    fill: none;
+    stroke-width: 20px;
+    //stroke: red;
+    // stroke-dasharray: 850;
+    // stroke-dashoffset: 850;
+    transition: stroke-dashoffset 1s linear;
+    animation: animate 2s linear forwards;
+}
+
+
+@keyframes animate {
+    
+    100%{
+        stroke-dashoffset: 565.2;
+        stroke: blueviolet;
+    }
+
+    75%{
+        stroke: aqua;
+    }
+
+    50%{
+        //stroke-dashoffset: 700;
+        stroke: burlywood;
+    }
+
+    25%{
+        stroke: rgb(215, 215, 21);
+    }
+}

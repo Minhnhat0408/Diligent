@@ -18,6 +18,7 @@ const CardFlip = ({titile, getOldPos0}) => {
     const handleClick = (titile) => {
         if(pos1 || pos2) {
             getOldPos0(titile);
+            setFlip(true);
         }else{
            handFlip(); 
         }

@@ -1,34 +1,48 @@
-import  {  useState } from "react";
+import  {  useEffect, useState } from "react";
 import classNames from "classnames/bind";
 
 import CardFlip from "../CardFlip/";
-
+import CricleProgress from "../CircleProgress/CircleProgress";
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { useSpring, useSpringRef,useTransition, animated } from "@react-spring/web";
 const cx = classNames.bind(styles);
 
-const SpaceFlash = () => {
+const color = ['red', 'blue', 'pink']
 
-    const [file, setFile] =useState([
-        {id: 1 , title: "day la the so 1", back: "mat sau the so 1", pos: 0 },
-        {id: 2 , title: "day la the so 2", back: "mat sau the so 2", pos: 0 },
-        {id: 3 , title: "day la the so 3", back: "mat sau the so 3", pos: 0 },
-        {id: 4 , title: "day la the so 4", back: "mat sau the so 4", pos: 0 },
-        {id: 5 , title: "day la the so 5", back: "mat sau the so 5", pos: 0 },
-        {id: 6 , title: "day la the so 6", back: "mat sau the so 6", pos: 0 },
-        {id: 7 , title: "day la the so 7", back: "mat sau the so 7", pos: 0 },
-        {id: 8 , title: "day la the so 8", back: "mat sau the so 8", pos: 0 },
-    ])
+const file1 = [
+    {id: 1 , title: "day la the so 1", back: "mat sau the so 1", pos: 0 },
+    {id: 2 , title: "day la the so 2", back: "mat sau the so 2", pos: 0 },
+    {id: 3 , title: "day la the so 3", back: "mat sau the so 3", pos: 0 },
+    {id: 4 , title: "day la the so 4", back: "mat sau the so 4", pos: 0 },
+    {id: 5 , title: "day la the so 5", back: "mat sau the so 5", pos: 0 },
+    {id: 6 , title: "day la the so 6", back: "mat sau the so 6", pos: 0 },
+    {id: 7 , title: "day la the so 7", back: "mat sau the so 7", pos: 0 },
+    {id: 8 , title: "day la the so 8", back: "mat sau the so 8", pos: 0 },
+]
+
+const file2 = [
+    {id: 1 , title: "day la the so 1.2", back: "mat sau the so 1", pos: 0 },
+    {id: 2 , title: "day la the so 2.2", back: "mat sau the so 2", pos: 0 },
+    {id: 3 , title: "day la the so 3.2", back: "mat sau the so 3", pos: 0 },
+    
+]
+
+
+const SpaceFlash = ({card}) => {
+
+
 
     
-    const [fp0, setFp0] = useState([...file.reverse()]);
+    const [fp0, setFp0] = useState([]);
     const [fp1, setFp1] = useState([]);
     const [fp2, setFp2] = useState([]);
     var [virPos, setVirPos] = useState(3);
+    const [showPer, setShowPer] = useState(false);
     
     const handleRenenber = (a) => {
-        if (fp0.length === 1 ) {
+        if (fp0.length === 1 && virPos === 0 ) {
             return;
         }
         if (virPos===0 ) {
@@ -74,10 +88,10 @@ const SpaceFlash = () => {
             setFp0([...fp0]);
         }
 
-        if(titile === fp1[fp1.length-1]) {
-            fp1[fp1.length-1].pos = 0;
+        if(titile === fp1[fp1.length-1] || titile === fp0[fp0.length -1]) {
+            fp1[fp1.length-1].pos = 0;virPos=1;
             setFp1([...fp1]);
-            virPos=1;
+            
             setVirPos(virPos);
         } else {
             fp2[fp2.length-1].pos = 0;
@@ -89,45 +103,45 @@ const SpaceFlash = () => {
         
     }
 
+
+
+    
+    const api = useSpringRef();
+    const transition = useTransition(card, {
+        ref: api,
+        keys:null,
+        from: {opacity: 0, transform:'translate3d(210%,0,0)'},
+        enter: {opacity: 1, transform:'translate3d(0,0,0)', 
+            // backgroundColor: color[card] 
+        },
+        leave : {opacity: 0, transform:'translate3d(-50%,0,0)'}
+    })
+
+    useEffect(() => {
+        api.start();
+        setFp1([]);
+        setFp2([]);
+        setFp0(card === 0 ? file1 : file2);
+        console.log(file1);
+        console.log(file2)
+
+    }, [card])
+
+
     const handlePull = () => {
-        console.log('laodkas')
+        
     }
-   
+    
     return (
         
         <>
         <div className={cx('container')}>
-        {
-                fp0.map((item, index) => {
-                    return (
-                        <> 
-                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
-                        </> 
-                    )  
-                })
-            }
-            {
-                fp1.map((item, index) => {
-                    return (
-                        <> 
-                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
-                        </> 
-                    )  
-                })
-            }
-            {
-                fp2.map((item, index) => {
-                    return (
-                        <> 
-                        <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
-                        </> 
-                    )  
-                })
-            }
-             <div className={cx('options')}>
+            <div className={cx('options')}>
                 <button className={cx('finish')} onClick={() => handleRenenber(1)}><FontAwesomeIcon icon={faCheck}/></button>
                 <button className={cx('skip')} onClick={() => handleRenenber(2)}><FontAwesomeIcon icon={faXmark}/></button>
-           </div>
+            </div>
+
+            {/* rightside */}
           <div className={cx('rightside')}>
                 <div className={cx('finishbox')}>
                     <div>
@@ -152,6 +166,55 @@ const SpaceFlash = () => {
                     </button>
                 </div>
           </div>
+
+
+
+            {transition((style, i) =>{ 
+                {/* card */}
+                return <animated.div style={style} className={cx('flash')}>
+                {
+                    fp0.map((item, index) => {
+                        return (
+                            <> 
+                            <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                            </> 
+                        )  
+                    })
+                }
+                {
+                    fp1.map((item, index) => {
+                        return (
+                            <> 
+                            <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                            </> 
+                        )  
+                    })
+                }
+                {
+                    fp2.map((item, index) => {
+                        return (
+                            <> 
+                            <CardFlip key={item.id}  titile={item} getOldPos0={getOldPos0}/>
+                            </> 
+                        )  
+                    })
+                }
+                </animated.div>
+                
+            })}
+            
+
+          
+        { showPer &&
+        <div className={cx('progresscontain')}>
+            <div className={cx('progressbox')}> 
+                <CricleProgress percentage={80}/>
+            </div>
+        </div> 
+        }
+          
+
+        
            
           
             
