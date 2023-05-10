@@ -3,13 +3,35 @@
     height: fit-content;
     display: flex;
     align-items: end;
-    color: var(--text-color-dark);
+    color: var(--text-color);
+    &.dark  {
+        color: var(--text-color-dark);
+    }
+    &.dark .section{
+        background-color: var(--bg-dark-theme);
+    }
+    &.dark .user-input{
+        color: var(--text-color-dark);
+    }
+    &.dark .options{
+        color: var(--primary);
+    }
+    &.dark .send{
+        color: var(--primary);
+    }
+    &.dark .others .content{
+        background-color: var(--dark-theme);
+        color: var(--text-color-dark);
+        & .file-name{
+            color: var(--text-color-dark);
+        }
+    }
 }
 
 .section {
     flex: 1;
     height: fit-content;
-    background-color: var(--bg-dark-theme);
+    background-color: #eee;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
@@ -45,12 +67,13 @@
     margin-right: 10px;
    
     & .content {
-        background-color: var(--dark-theme);
+        background-color: var(--light-theme);
+        color: var(--text-color);
         width: 140px;
         height: 60px;
         overflow: hidden;
         padding: 0px 10px;
-        color: var(--text-color-dark);
+     
         border-radius: 10px;
         display: flex;
         align-items: center;
@@ -61,7 +84,7 @@
     }
 
     & .file-name {
-        color: var(--text-color-dark) !important;
+        color: var(--text-color) !important;
         font-size: 1.6rem;
         height: 80%;
         width: 60%;
@@ -81,7 +104,7 @@
 }
 .user-input {
     flex: 1;
-    color: var(--text-color-dark);
+    color: var(--text-color);
     background-color: transparent;
     font-size: 2rem;
     max-height: 200px;
@@ -97,7 +120,7 @@
 .options {
     align-self: flex-end;
     font-size: 3rem;
-    color: var(--primary);
+    color: var(--primary-light);
     margin-left: 20px;
     margin-bottom: 8px;
     cursor: pointer;
@@ -105,7 +128,7 @@
 
 .send {
     font-size: 3rem;
-    color: var(--primary);
+    color: var(--primary-light);
     margin-left: 20px;
     margin-right: 10px;
     margin-bottom: 10px;

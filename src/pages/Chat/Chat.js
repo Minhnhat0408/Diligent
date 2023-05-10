@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Chat.module.scss';
 import Image from '~/component/Image/Image';
 import { Link, useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState } from 'react';
@@ -16,6 +16,7 @@ import ChatItem from '~/component/ChatItem/ChatItem';
 import Mentions from '~/component/Mentions/Mentions';
 import ChatInput from '~/component/ChatInput/ChatInput';
 import { useRef } from 'react';
+import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
 function Chat() {
@@ -26,6 +27,7 @@ function Chat() {
     const [roomData, setRoomData] = useState();
     const [text, setText] = useState();
     const [messages,setMessages]  = useState();
+    const context = useContext(ThemeContext)
     useEffect(() => {
         const fetchRoom = async () => {
             const a = await getDoc(doc(db, 'chats', roomId));
@@ -69,7 +71,7 @@ function Chat() {
     return (
         <>
             {correspondent && (
-                <div className={cx('wrapper')}>
+                <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
                     <div className={cx('user-info')}>
                         <Image src={correspondent.data.user_avatar} className={cx('avatar')} alt="avatar" />
                         <div className={cx('column')}>
