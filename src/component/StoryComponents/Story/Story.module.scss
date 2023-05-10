@@ -14,7 +14,7 @@
     background-size: cover;
     background-image: url('/assets/images/defaultStory.jpg');
     overflow: hidden;
-    box-shadow: 1px 1px 1px #ccc;
+    border: 1px solid #ccc;
 
     .avatar,
     .icon-wrap {

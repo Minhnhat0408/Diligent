@@ -76,8 +76,6 @@ function Stories({ stories, onDeleteStory }) {
     const activeStory = stories[activeStoryIndex];
     const progressPercentage = (currentTime / activeStory.duration) * 100;
 
-    console.log(stories);
-
     return (
         <div className={cx('wrapper')} style={{ background: `${stories[activeStoryIndex].bgColor}` }}>
             <div className={cx('progress-bar')}>

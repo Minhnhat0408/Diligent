@@ -192,7 +192,7 @@ function CreateStory() {
         }
 
         const data = {
-            type: imagePreview ? 'image' : 'video',
+            type: videoPreview ? 'video' : 'image',
             content: {
                 bgColor: backgroundColor,
                 posX: position.x,
@@ -286,7 +286,7 @@ function CreateStory() {
                                 <div className={cx('icon')}>
                                     <i class="fa-regular fa-image"></i>
                                 </div>
-                                <h5 className={cx('title')}>Create image story</h5>
+                                <h5 className={cx('title')}>Create image/video story</h5>
                             </div>
                         </label>
 

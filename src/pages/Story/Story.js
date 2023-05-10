@@ -44,7 +44,7 @@ function Story() {
                 duration: story.type == 'video' ? 15000 : 3000,
                 userId: story.user.id,
                 storyId: story.id,
-                type: story.type
+                type: story.type,
             }));
 
         const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
@@ -92,7 +92,7 @@ function Story() {
             duration: story.type == 'video' ? 15000 : 3000,
             userId: story.user.id,
             storyId: story.id,
-            type: story.type
+            type: story.type,
         }));
 
         setMyStories(formattedStories);
@@ -111,8 +111,6 @@ function Story() {
     const handleDeleteStory = useCallback(() => {
         fetchStories();
     }, []);
-
-    // console.log(storiesData);
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
@@ -145,20 +143,9 @@ function Story() {
                             key={JSON.stringify(myStories)}
                             onDeleteStory={handleDeleteStory}
                         />
-                        <div className={cx('react')}>
-                            <textarea className={cx('reply')} placeholder="Reply..."></textarea>
-                            <div className={cx('action')}>
-                                <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                                    <i class="fa-solid fa-thumbs-up"></i>
-                                </div>
-                                <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                                    <i class="fa-solid fa-thumbs-down"></i>
-                                </div>
-                            </div>
-                        </div>
                     </>
                 ) : (
-                    <img src='/static/media/no_content.2175207d31c5a7c61d02.png' alt='nothing-here' />
+                    <img src="/static/media/no_content.2175207d31c5a7c61d02.png" alt="nothing-here" />
                 )}
             </div>
         </div>
