@@ -52,7 +52,8 @@ function Stories() {
                         userId: story.user.id,
                         username: story.user.name,
                         avatar: story.user.avatar,
-                        img: story.type === 'image' ? story.media[0] : ''
+                        img: story.type === 'image' ? story.media[0] : '',
+                        bgColor: story.content.bgColor
                     };
                     if (!acc[val.userId]) {
                         acc[val.userId] = val;
@@ -66,7 +67,6 @@ function Stories() {
         getStories()
     }, [])
 
-    console.log(stories);
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
@@ -81,7 +81,7 @@ function Stories() {
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
                 <Story icon="faPlus" username="Add story" to="/createStory"/>
                 {stories != null && stories.map((story) => (
-                    <Story img={story.avatar} username={story.username} bg={story.img} to={"/story/"}/>
+                    <Story img={story.avatar} username={story.username} bg={story.img} bgColor={story.bgColor} to="/story" />
                 ))}
             </div>
 
