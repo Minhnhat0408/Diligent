@@ -31,6 +31,7 @@ const Button = forwardRef( ({
   dark = false,
   theme = false,
   xs= false,
+  ml=false,
   xl=false,
   submit = 'button',
   ...passProps
@@ -64,6 +65,7 @@ const Button = forwardRef( ({
     separate,
     dark,
     theme,
+    ml,
     [className]: className,
   });
 

@@ -92,11 +92,23 @@
     position: absolute;  
     right: 33px;
     top: 30%;
+ 
 }
 .download-btn {
     font-size: 3.6rem;
     color: #888;
     cursor: pointer;
+    &:hover {
+        color: var(--primary);
+    }
+}
+.delete{
+    position: absolute;  
+    color: #888;
+    top: 30%;
+    right: 100px;
+    font-size: 3.9rem;
+    margin-left: 10px;
     &:hover {
         color: var(--primary);
     }

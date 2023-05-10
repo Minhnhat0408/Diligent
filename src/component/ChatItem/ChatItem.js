@@ -27,7 +27,14 @@ function ChatItem({ data, me }) {
                 placement={me ? 'left' : 'right'}
                 theme="dark"
                 allowHTML
-                content={<p className={cx('time-tippy')}>{new Date(data?.time?.toMillis()).toLocaleTimeString()}  <FontAwesomeIcon icon={faCheckDouble} className={cx('icon', { 'd-none': !data.seen })} /></p>}
+                content={
+                    <p className={cx('time-tippy')}>
+                        {new Date(data?.time?.toMillis()).toLocaleTimeString()}{' '}
+                        {me && (
+                            <FontAwesomeIcon icon={faCheckDouble} className={cx('icon', { 'd-none': !data.seen })} />
+                        )}
+                    </p>
+                }
             >
                 {typeof data.content === 'string' ? (
                     data.content === ':)' ? (

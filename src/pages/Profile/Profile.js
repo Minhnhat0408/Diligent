@@ -96,7 +96,7 @@ function Profile() {
                 return post.data.user.id === id || post.data.mentions.includes(id);
             }),
         );
-    }, [posts]);
+    }, [id, posts]);
 
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
@@ -343,7 +343,9 @@ function Profile() {
                                                 >
                                                     <Button
                                                         xs
+                                                        ml
                                                         outline
+                                                        className={cx('btn')}
                                                         dark={context.theme === 'dark'}
                                                         disabled={
                                                             (pageUser.user_status === 'ban' && !user?.isAdmin) || ban

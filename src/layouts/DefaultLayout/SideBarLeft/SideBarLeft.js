@@ -36,7 +36,6 @@ function SideBarLeft() {
                     title="Home"
                     backGroundColor="linear-gradient(to right, #0575e6, #021b79)"
                     color="#fff"
-                    numsNotify={590}
                     onClick={() => {
                  
                         navigate(routes.home)}

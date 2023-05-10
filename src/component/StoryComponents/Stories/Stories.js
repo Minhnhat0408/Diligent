@@ -81,7 +81,7 @@ function Stories() {
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
                 <Story icon="faPlus" username="Add story" to="/createStory"/>
                 {stories != null && stories.map((story) => (
-                    <Story img={story.avatar} username={story.username} bg={story.img} to="/story"/>
+                    <Story img={story.avatar} username={story.username} bg={story.img} to={"/story/"}/>
                 ))}
             </div>
 

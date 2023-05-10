@@ -33,7 +33,7 @@ function Chat() {
             if (a.data().id1 === user.uid) {
                 setCorrespondent(usersList.filter((obj) => obj.id === a.data().id2)[0]);
             } else {
-                setCorrespondent(usersList.filter((obj) => obj.id === a.data().id2)[0]);
+                setCorrespondent(usersList.filter((obj) => obj.id === a.data().id1)[0]);
             }
         };
        
