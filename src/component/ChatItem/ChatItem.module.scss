@@ -1,0 +1,129 @@
+.chat-item{
+    align-self: flex-start;
+    margin-top: 20px;
+    height: fit-content;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
+
+    &.right{
+        align-self: flex-end;
+        align-items: flex-end;
+    }
+
+
+}
+
+.right + .right{
+    & .user-info{
+        display: none;
+    }
+    margin-top: 5px;
+}
+.left + .left{
+    & .user-info{
+        display: none;
+    }
+    margin-top: 5px;
+}
+.user-info{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+.column{
+    margin-left: 10px;
+    flex: 1;
+    & .name{
+        font-size: 1.6rem;
+        font-weight: 600;
+    }
+   
+}
+.time{
+    font-size: 1.2rem;
+    font-style: italic;
+}
+
+.icon{
+    margin-left: 10px;
+    height: 14px;
+    color:var(--primary)
+}
+.time-tippy{
+    font-size:1.2rem;
+        font-style: italic;
+    color: var(--text-color-dark);
+    background-color: transparent;
+
+}
+.message{
+    padding: 10px;
+    background-color: var(--bg-dark-theme);
+    border-radius: 10px;
+    max-width: 360px;
+    width: fit-content;
+}
+.emoji{
+    font-size: 4rem;
+    color: var(--primary);
+}
+.ava{
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+}
+.image-holders {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 400px ;
+}
+.image {
+    width: 100%;
+    height: 150px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px #999;
+    object-fit: cover;
+}
+.image-box {
+    position: relative;
+    display: block;
+    flex-grow: 1;
+    flex-basis: calc(50% - 20px);
+    
+}
+.image-box,
+.image-box {
+    margin-right: 10px;
+}
+.content {
+    background-color: var(--primary);
+    flex-grow: 1;
+    flex-basis: calc(50% - 20px);
+    height: 60px;
+    overflow: hidden;
+    padding: 0px 10px;
+    color: var(--primary-light);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+}
+.file-icon {
+    font-size: 2rem;
+    margin: 0 10px;
+}
+
+.file-name {
+    color: var(--primary-light) !important;
+    font-size: 1.6rem;
+    font-weight:  600;
+    height: 80%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+.preview{
+    object-fit: contain;
+   width: 800px;
+   height: 800px;
+}

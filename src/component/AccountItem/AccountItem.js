@@ -39,24 +39,16 @@ function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
         const fetchRoom = async () => {
             const q = query(
                 collection(db, 'chats'),
-                where('user1.id', 'in', [user.uid, acc.id]),
-                where('user2.id', 'in', [user.uid, acc.id]),
+                where('id1', 'in', [user.uid, acc.id]),
+                where('id2', 'in', [user.uid, acc.id]),
             );
             const a = await getDocs(q);
             let tmp = a.docs[0]?.id;
 
             if (!tmp) {
                 const a = await addDoc(collection(db, 'chats'), {
-                    user1: {
-                        name: userData.user_name,
-                        id: user.uid,
-                        ava: userData.user_avatar,
-                    },
-                    user2: {    
-                        name: acc.data.user_name,
-                        id: acc.id,
-                        ava: acc.data.user_avatar,
-                    },
+                    id1:user.uid,
+                    id2:acc.id
                 });
                 tmp = a.id;
             }
@@ -85,6 +77,6 @@ function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
 }
 
 AccountItem.propTypes = {
-    user: PropTypes.object.isRequired,
+    acc: PropTypes.object.isRequired,
 };
 export default memo(AccountItem);

@@ -1,0 +1,113 @@
+.wrapper {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+    align-items: end;
+    color: var(--text-color-dark);
+}
+
+.section {
+    flex: 1;
+    height: fit-content;
+    background-color: var(--bg-dark-theme);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    padding-left: 30px;
+    padding-right: 20px;
+}
+
+
+
+.preview {
+    height: 80px;
+    width: 100%;
+    padding: 10px 0;
+    display: flex;
+}
+.media {
+    position: relative;
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    margin-right: 10px;
+    & .content {
+        width: 60px;
+        height: 60px;
+        border-radius: 10px;
+    }
+}
+.others {
+    position: relative;
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    margin-right: 10px;
+   
+    & .content {
+        background-color: var(--dark-theme);
+        width: 140px;
+        height: 60px;
+        overflow: hidden;
+        padding: 0px 10px;
+        color: var(--text-color-dark);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+    }
+    & .file-icon {
+        font-size: 2rem;
+        margin: 0 10px;
+    }
+
+    & .file-name {
+        color: var(--text-color-dark) !important;
+        font-size: 1.6rem;
+        height: 80%;
+        width: 60%;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+    }
+}
+
+.delete {
+    margin-left: 2px;
+}
+.input-section {
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+}
+.user-input {
+    flex: 1;
+    color: var(--text-color-dark);
+    background-color: transparent;
+    font-size: 2rem;
+    max-height: 200px;
+    outline: none;
+    border: none;
+    padding: 10px 0;
+
+    white-space: pre-wrap;
+    word-break: break-word;
+    resize: none;
+}
+
+.options {
+    align-self: flex-end;
+    font-size: 3rem;
+    color: var(--primary);
+    margin-left: 20px;
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.send {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-left: 20px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    padding: 0;
+}

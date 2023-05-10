@@ -44,8 +44,8 @@ const cx = classNames.bind(styles);
 function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { deletePost, savePost, posts, hidePost } = useContext(PostContext)
-    const { userData, user,sendReport} = UserAuth();
+    const { deletePost, savePost, posts, hidePost } = useContext(PostContext);
+    const { userData, user, sendReport } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
     const post = useContext(PostContext);
@@ -56,7 +56,6 @@ function Post() {
     };
 
     useEffect(() => {
-    
         setText(
             post.data.text.replace(regex, (spc) => {
                 const id = spc.match(getIdInMentions)[0].substring(1);
@@ -182,7 +181,7 @@ function Post() {
                 setUpdatePost(true);
                 break;
             case 'report':
-                sendReport(item.title,post.id,'post');
+                sendReport(item.title, post.id, 'post');
                 break;
             default:
                 break;
