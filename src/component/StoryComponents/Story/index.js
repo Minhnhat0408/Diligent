@@ -8,12 +8,18 @@ const cx = classNames.bind(styles);
 
 const icons = {
     faPlus: faPlus,
-}
+};
 
-function Story({ img, username, icon }) {
+function Story({ img, username, icon, to, bg, bgColor }) {
     const iconObj = icon ? icons[icon] : null;
     return (
-        <Link className={cx('wrapper')}>
+        <Link
+            className={cx('wrapper')}
+            to={{
+                pathname: to,
+            }}
+            style={{ backgroundImage: bg ? `url(${bg})` : bgColor }}
+        >
             {iconObj ? (
                 <div className={cx('icon-wrap')}>
                     <FontAwesomeIcon icon={iconObj} className={cx('icon')} />

@@ -3,6 +3,10 @@ import Image from '~/component/Image';
 import styles from './CreateStory.module.scss';
 import { useState, useMemo, useCallback, useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { db } from '~/firebase';
+import { addDoc, serverTimestamp } from 'firebase/firestore';
+import { collection } from 'firebase/firestore';
+import { UserAuth } from '~/contexts/authContext';
 
 const cx = classNames.bind(styles);
 
@@ -42,32 +46,48 @@ const backgroundColors = [
     'linear-gradient( 109.6deg, rgba(156,252,248,1) 11.2%, rgba(110,123,251,1) 91.1% )',
     'linear-gradient(25deg,#d64c7f,#ee4758 50%)',
     'linear-gradient( 95.2deg, rgba(173,252,234,1) 26.8%, rgba(192,229,246,1) 64% )',
-]
+];
 
 function CreateStory() {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
     const [imagePreview, setImagePreview] = useState(null);
+    const [videoPreview, setVideoPreview] = useState(null);
     const [counter, setCounter] = useState(0);
+    const [loading, setLoading] = useState(false);
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
+    const handleFileInputChange = (event) => {
+        const file = event.target.files[0];
         setSelectedFile(file);
 
         const reader = new FileReader();
         reader.onloadend = () => {
-            setImagePreview(reader.result);
-            setCounter((prevCounter) => prevCounter + 1);
+            const fileURL = reader.result;
+            if (file.type.startsWith('image/')) {
+                // Xử lý khi định dạng là hình ảnh
+                setImagePreview(fileURL);
+                setCounter((prevCounter) => prevCounter + 1);
+            } else if (file.type.startsWith('video/')) {
+                // Xử lý khi định dạng là video
+                setVideoPreview(fileURL);
+                setCounter((prevCounter) => prevCounter + 1);
+            } else {
+                // Xử lý khi định dạng không hợp lệ
+                console.error('Định dạng tệp tin không được hỗ trợ');
+            }
         };
+
         reader.readAsDataURL(file);
     };
 
-    const handleDeleteImage = useCallback(() => {
+    const handleDeleteFile = useCallback(() => {
         URL.revokeObjectURL(imagePreview);
+        URL.revokeObjectURL(videoPreview);
         setSelectedFile(null);
         setImagePreview(null);
+        setVideoPreview(null);
         setCounter((prevCounter) => prevCounter + 1);
-    }, [imagePreview]);
+    }, [imagePreview, videoPreview]);
 
     //resize image
     const [scale, setScale] = useState(1);
@@ -78,7 +98,7 @@ function CreateStory() {
     };
 
     //add text
-    const [addText, setAddText] = useState();
+    const [addText, setAddText] = useState('');
 
     const handleInputText = useCallback((value) => {
         setAddText(value);
@@ -130,7 +150,7 @@ function CreateStory() {
     }, []);
 
     //change background color
-    const [backgroundColor, setBackgroundColor] = useState('white');
+    const [backgroundColor, setBackgroundColor] = useState('rgba(17, 17, 17, 0.93)');
     const handleClickBackGroundColor = useCallback((value) => {
         setBackgroundColor(value);
     }, []);
@@ -138,43 +158,81 @@ function CreateStory() {
     const backgroundColorItems = useMemo(() => {
         return backgroundColors.map((backgroundColor) => (
             <div
-            key={backgroundColor}
-            className={cx('item', backgroundColor)}
-            style={{ backgroundImage: backgroundColor }}
-            onClick={() => {
-                handleClickBackGroundColor(backgroundColor);
-            }}
+                key={backgroundColor}
+                className={cx('item', backgroundColor)}
+                style={{ backgroundImage: backgroundColor }}
+                onClick={() => {
+                    handleClickBackGroundColor(backgroundColor);
+                }}
             ></div>
         ));
     }, []);
 
     //click cancel
     const handleClickCancel = () => {
-        handleDeleteImage();
+        handleDeleteFile();
         setAddText('');
         setColor('black');
         setBackgroundColor('white');
         setPosition({ x: 0, y: 0 });
-        setTextPreview(false)
+        setTextPreview(false);
     };
 
-    const context = useContext(ThemeContext)
+    const handleClickShare = async () => {
+        //nếu đang load thì không làm gì
+        if (loading) return;
+
+        setLoading(true); // Đặt trạng thái loading thành true
+        let fileName;
+        try {
+            const results = await fileUpload({ file: selectedFile, name: selectedFile.name });
+            fileName = results.url;
+        } catch (error) {
+            console.log('Upload failed', error);
+        }
+
+        const data = {
+            type: videoPreview ? 'video' : 'image',
+            content: {
+                bgColor: backgroundColor,
+                posX: position.x,
+                posY: position.y,
+                text: addText,
+                textColor: color,
+            },
+            media: [fileName || ''],
+            scale: scale,
+            time: serverTimestamp(),
+            user: {
+                avatar: userData.user_avatar,
+                id: user.uid,
+                name: userData.user_name,
+            },
+        };
+
+        const docRef = await addDoc(collection(db, 'stories'), data);
+        handleClickCancel();
+
+        setLoading(false); // Đặt trạng thái loading thành false sau khi hoàn thành
+        return docRef;
+    };
+
+    const context = useContext(ThemeContext);
+
+    const { user, userData, fileUpload } = UserAuth();
 
     return (
-        <div className={cx('wrapper', {dark: context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Your Story</h1>
                 <hr />
                 <div className={cx('info')}>
-                    <Image
-                        src="https://scontent.fhan5-1.fna.fbcdn.net/v/t1.6435-1/51132488_1049848925197144_4209746563502702592_n.jpg?stp=dst-jpg_p100x100&_nc_cat=102&ccb=1-7&_nc_sid=7206a8&_nc_ohc=aMIDY0zGRUIAX-WQPC4&_nc_ht=scontent.fhan5-1.fna&oh=00_AfB_ap1gpD8GBQZ1HKx4zQSVyRyxoJ88HZjSjSzDP_y46Q&oe=64466F7E"
-                        className={cx('avatar')}
-                    />
-                    <h3 className={cx('username')}>To Lam Son</h3>
+                    <Image src={userData.user_avatar} className={cx('avatar')} alt="avatar" />
+                    <h3 className={cx('username')}>{userData.user_name}</h3>
                 </div>
                 <hr />
 
-                {(imagePreview || textPreview == true) && (
+                {(imagePreview || videoPreview || textPreview == true) && (
                     <>
                         <textarea
                             className={cx('add-text')}
@@ -202,25 +260,33 @@ function CreateStory() {
                     </>
                 )}
 
-                {(imagePreview || textPreview == true) && (
+                {(imagePreview || videoPreview || textPreview == true) && (
                     <div className={cx('options')}>
                         <button className={cx('cancel')} onClick={handleClickCancel}>
                             Cancel
                         </button>
-                        <button className={cx('share')}>Share</button>
+                        {loading ? (
+                            <button className={cx('share')} disabled>
+                                Loading...
+                            </button>
+                        ) : (
+                            <button className={cx('share')} onClick={handleClickShare}>
+                                Share
+                            </button>
+                        )}
                     </div>
                 )}
             </div>
 
             <div className={cx('display')}>
-                {imagePreview == null && textPreview == false && (
+                {imagePreview == null && videoPreview == null && textPreview == false && (
                     <>
                         <label for="upload-img-story">
                             <div className={cx('image-story')}>
                                 <div className={cx('icon')}>
                                     <i class="fa-regular fa-image"></i>
                                 </div>
-                                <h5 className={cx('title')}>Create image story</h5>
+                                <h5 className={cx('title')}>Create image/video story</h5>
                             </div>
                         </label>
 
@@ -228,8 +294,9 @@ function CreateStory() {
                             type="file"
                             id={cx('upload-img-story')}
                             className={cx('d-none')}
-                            onChange={handleImageChange}
+                            onChange={handleFileInputChange}
                             key={counter}
+                            accept="image/*, video/*"
                         />
 
                         <div className={cx('text-story')} onClick={handleClickTextPreview}>
@@ -239,6 +306,29 @@ function CreateStory() {
                             <h5 className={cx('title')}>Create text story</h5>
                         </div>
                     </>
+                )}
+
+                {videoPreview && (
+                    <div>
+                        {/* <h1 className={cx('header')}>Preview</h1> */}
+                        <div className={cx('preview')}>
+                            <div className={cx('image-wrap')} style={{ backgroundImage: backgroundColor }}>
+                                {addText && (
+                                    <div
+                                        className={cx('message')}
+                                        style={{
+                                            transform: `translate(${position.x}px, ${position.y}px)`,
+                                            color: color,
+                                        }}
+                                        onMouseDown={handleMouseDown}
+                                    >
+                                        {addText}
+                                    </div>
+                                )}
+                                <video src={videoPreview} controls className={cx('video')} alt={'video'} />
+                            </div>
+                        </div>
+                    </div>
                 )}
 
                 {imagePreview && (
@@ -266,6 +356,7 @@ function CreateStory() {
                                     style={{ transform: `scale(${scale})` }}
                                 />
                             </div>
+
                             <input type="range" min="0" max="100" onChange={handleSliderChange} />
                         </div>
                     </div>

@@ -1,183 +1,114 @@
 import classNames from 'classnames/bind';
 import styles from './CommentBox.module.scss';
 import Comment from '~/component/CommentComponents/Comment/Comment';
-import MyComment from '~/component/CommentComponents/MyComment/MyComment';
 import { useEffect, useState } from 'react';
-import { addDoc, collection, doc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore';
+import {
+    collection,
+    onSnapshot,
+    query,
+    where,
+} from 'firebase/firestore';
 import { db } from '~/firebase';
 import Image from '~/component/Image/Image';
 import image from '~/assets/images';
 import { UserAuth } from '~/contexts/authContext';
-import type from '~/config/typeNotification';
-import routes from '~/config/routes';
+
 import { RingLoader } from 'react-spinners';
-import { getIdInMentions, regex, test } from '~/utils/constantValue';
+import { useContext } from 'react';
+import { PostContext, ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
-function CommentBox({ id, data }) {
+function CommentBox() {
     const [comments, setComments] = useState([]);
-    const { fileUpload, user, userData, posts } = UserAuth();
-    const [loading, setLoading] = useState(false);
-    const [update,setUpdate] =useState(false);
-    
-    const fetchComment = async () => {
-        const tmp = [];
-        const q = query(collection(db, 'posts', id, 'comments'), where('fatherCmt', '==', ''));
-        const docs = await getDocs(q);
-        docs.forEach((doc) => {
-            if( doc.data().like.list.some((u) => {
-                console.log(u.id)
-                return u.id === user.uid;
-            })){
-                tmp.push({ id: doc.id, data: doc.data(),react:1 });
-            }else{
-                tmp.push({ id: doc.id, data: doc.data(),react: 0 });
-            }
-    
-        });
-        console.log(tmp)
-        setComments(tmp);
-    };
+    const { user } = UserAuth();
+    const [filter, setFilter] = useState('');
+    const [showFilter, setShowFilter] = useState(false);
+    const [animation, setAnimation] = useState(false);
+    const post = useContext(PostContext);
+    const context = useContext(ThemeContext);
     useEffect(() => {
-        fetchComment();
-    }, [posts,update]);
-
-    const handleUpdate = async (inpData) =>{
-        let image = null;
-        if (inpData.image) {
-            setLoading(true);
-            image = await fileUpload({ file: inpData.image, name: inpData.image.name });
-            await updateDoc(doc(db, 'posts', inpData.postId, 'comments',inpData.cmtId), {
-                text: inpData.text,
-                image: image?.url,
-                time: serverTimestamp(),
-                isEdited: true,
-            });
-        }else{
-            await updateDoc(doc(db, 'posts', inpData.postId, 'comments',inpData.cmtId), {
-                text: inpData.text,
-                time: serverTimestamp(),
-                isEdited: true,
-            });
-        }
-
-        const tagUser = [];
-        if (inpData.text.match(regex)) {
-            inpData.text.match(regex).forEach((spc) => {
-                const user_id = spc.match(getIdInMentions)[0].substring(1);
-                if (!tagUser.includes(user_id)) {
-                    tagUser.push(user_id);
-                }
-            });
-        }
-        if (tagUser.length !== 0) {
-            await Promise.all(
-                tagUser.map((user_id) => {
-                    return addDoc(collection(db, 'users', user_id, 'notifications'), {
-                        title: type.menCmt,
-                        url: routes.post + id,
-                        sender: {
-                            id: user.uid,
-                            name: userData.user_name,
-                            avatar: userData.user_avatar,
-                        },
-                        type: 'mention',
-                        time: serverTimestamp(),
-                        read: false,
-                    });
-                }),
-            );
-        }
-        setUpdate((prev) => !prev)
-        setLoading(false);
-       
-    }
-    const handleSubmit = async (inpData) => {
-        let image = null;
-        if (inpData.image) {
-            setLoading(true);
-            image = await fileUpload({ file: inpData.image, name: inpData.image.name });
-        }
-
-        await addDoc(collection(db, 'posts', id, 'comments'), {
-            fatherCmt:inpData?.father || '',
-            text: inpData.text,
-            image: image?.url || '',
-            time: serverTimestamp(),
-            isEdited: false,
-            user: {
-                name: userData.user_name,
-                id: user.uid,
-                avatar: userData.user_avatar,
+        const unsubscribe = onSnapshot(
+            query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', '')), async (docs) => {
+                let tmp = [];
+                docs.forEach((doc) => {
+                    if (
+                        doc.data().like.list.some((u) => {
+                            return u.id === user.uid;
+                        })
+                    ) {
+                        tmp.push({ id: doc.id, data: doc.data(), react: 1 });
+                    } else {
+                        tmp.push({ id: doc.id, data: doc.data(), react: 0 });
+                    }
+                });
+                setComments(tmp);
             },
-            like: {
-                count: 0,
-                list: [],
-            },
-        });
-        await updateDoc(doc(db, 'posts', id), {
-            commentNumber: data.commentNumber + 1,
-        });
-        if (data.user.id !== user.uid) {
-            await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
-                title: type.comment,
-                url: routes.post + id,
-                sender: {
-                    id: user.uid,
-                    name: userData.user_name,
-                    avatar: userData.user_avatar,
-                },
-                type: 'comment',
-                time: new Date(),
-                read: false,
-            });
-        }
-  
+        );
+        return () => unsubscribe();
+    }, [post]);
 
-        const tagUser = [];
-        if (inpData.text.match(regex)) {
-            inpData.text.match(regex).forEach((spc) => {
-                const user_id = spc.match(getIdInMentions)[0].substring(1);
-                if (!tagUser.includes(user_id)) {
-                    tagUser.push(user_id);
-                }
-            });
-        }
-        if (tagUser.length !== 0) {
-            await Promise.all(
-                tagUser.map((user_id) => {
-                    return addDoc(collection(db, 'users', user_id, 'notifications'), {
-                        title: type.menCmt,
-                        url: routes.post + id,
-                        sender: {
-                            id: user.uid,
-                            name: userData.user_name,
-                            avatar: userData.user_avatar,
-                        },
-                        type: 'mention',
-                        time: serverTimestamp(),
-                        read: false,
-                    });
-                }),
-            );
-        }
-        setLoading(false);
+    const onAnimationEnd = () => {
+        if (!animation) setShowFilter(false);
     };
+
+    useEffect(() => {
+        if (animation) setShowFilter(true);
+    }, [animation]);
     return (
         <>
-            <div className={cx('wrapper')}>
+            <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                 {comments.length !== 0 ? (
                     comments.map((comment) => {
-                        return <Comment key={comment.id} handleSubmit={handleSubmit} handleUpdate={handleUpdate} data={comment.data} react={comment.react} id={comment.id} postId={id} postData={data} />;
+                        return <Comment key={comment.id} data={comment.data} react={comment.react} id={comment.id} />;
                     })
                 ) : (
-                    <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
+                    <div className={cx('nothing')}>
+                        {' '}
+                        <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
+                    </div>
                 )}
 
-                {user && <MyComment onClick={handleSubmit}/>}
+                <div className={cx('filter')} onClick={() => setAnimation(!animation)}>
+                    {filter ? <span>{filter}</span> : <span>Filter</span>}
+                </div>
+                {showFilter && (
+                    <div
+                        className={cx('filter-opt', { show: animation, hide: !animation })}
+                        onAnimationEnd={onAnimationEnd}
+                    >
+                        <div
+                            onClick={() => {
+                                setAnimation(!animation);
+                                setFilter('Latest posts');
+                                setComments((prev) => prev.sort((a, b) => b.data.time.seconds - a.data.time.seconds));
+                            }}
+                        >
+                            Latest posts
+                        </div>
+                        <div
+                            onClick={() => {
+                                setAnimation(!animation);
+                                setFilter('Most like posts');
+                                setComments((prev) => prev.sort((a, b) => b.data.like.count - a.data.like.count));
+                            }}
+                        >
+                            Most like posts
+                        </div>
+                        <div
+                            onClick={() => {
+                                setAnimation(!animation);
+                                setFilter('Oldest posts');
+                                setComments((prev) => prev.sort((a, b) => a.data.time.seconds - b.data.time.seconds));
+                            }}
+                        >
+                            Oldest posts
+                        </div>
+                    </div>
+                )}
             </div>
-            {loading && (
+
+            {post.loading && (
                 <div className="pop-up loader">
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>

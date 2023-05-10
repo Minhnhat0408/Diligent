@@ -8,12 +8,15 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { ThemeContext } from '~/contexts/Context';
 import 'tippy.js/animations/scale.css';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 function Menu({
     placement = 'bottom',
+    disabled,
     offset,
     small = false,
+    medium = false,
     children,
     item = [],
     onClick = () => {},
@@ -30,21 +33,22 @@ function Menu({
     }, [item]);
   
     const renderItem = () => {
-      return current.data.map((a, b) => {
-        const isParent = !!a.children;
+      return current.data.map((item, ind) => {
+        const isParent = !!item.children;
         return (
           <MenuItem
-            key={b}
-            data={a}
+            key={ind}
+            data={item}
+            tick={item?.tick}
             onClick={() => {
               if (isParent) {
-                setHistory((prev) => [...prev, a.children]);
+                setHistory((prev) => [...prev, item.children]);
               } else {
-                onChange(a);
+                onChange(item);
                 setIsOpen(false); // Added to close the menu on selection
               }
-              onClick(a);
-              console.log(history, a);
+              onClick(item);
+              console.log(item);
             }}
           ></MenuItem>
         );
@@ -65,7 +69,7 @@ function Menu({
       <div
         tabIndex="-1"
         {...attrs}
-        className={cx('menu-lists', { small: small })}
+        className={cx('menu-lists', { small: small , medium:medium})}
         ref={menu}
       >
         <PopperWrapper
@@ -84,6 +88,7 @@ function Menu({
     return (
       <>
         <Tippy
+          disabled={disabled}
           visible={isOpen} // Added to control the menu visibility
           onHide={handleOutofHoverMenu}
           onClickOutside={() => setIsOpen(false)} // Added to close the menu on outside click
@@ -103,4 +108,4 @@ Menu.propTypes = {
     item: PropTypes.array,
     onChange: PropTypes.func,
 };
-export default Menu;
+export default memo(Menu);

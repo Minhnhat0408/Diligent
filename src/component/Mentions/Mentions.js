@@ -2,10 +2,11 @@ import { Mention, MentionsInput } from 'react-mentions';
 import classNames from 'classnames/bind'
 import styles from './Mentions.module.scss'
 const cx = classNames.bind(styles)
-function Mentions({ onKeyDown,inpRef,value,cmt,reply, data, onBlur,onChange,placeholder,dark }) {
+function Mentions({ onKeyDown,inpRef,value,cmt,reply, data, onBlur,onChange,placeholder,dark,disabled }) {
     
     return (
             <MentionsInput
+                disabled={disabled}
                 value={value}
                 onChange={onChange}
                 onBlur={onBlur}

@@ -1,11 +1,11 @@
-import {  useState } from 'react';
+import { useState } from 'react';
 import { UserAuth } from './authContext';
-import  { ThemeContext } from './Context';
-import { doc, updateDoc } from 'firebase/firestore';
+import { PostContext, ThemeContext } from './Context';
+import { addDoc, arrayUnion, collection, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 
-function ThemeProvider({ children }) {
-    const { userData, user } = UserAuth();
+export function ThemeProvider({ children }) {
+    const { userData, user,usersList} = UserAuth();
     const [theme, setTheme] = useState('light');
 
     const toggleTheme = async () => {
@@ -26,4 +26,49 @@ function ThemeProvider({ children }) {
     );
 }
 
-export default ThemeProvider;
+export function PostProvider({ id, data, children, page = false }) {
+    const [loading, setLoading] = useState(false);
+    const [update, setUpdate] = useState(0);
+    const { user, usersList } = UserAuth();
+  
+
+    const deletePost = async (id,uid) => {
+
+        await deleteDoc(doc(db, 'posts', id));
+        await updateDoc(doc(db, 'users', uid), {
+            user_postNumber: usersList.filter((obj) => obj.id === uid)[0].data.user_postNumber - 1,
+        });
+    };
+    const hidePost = async (id) => {
+        await updateDoc(doc(db, 'posts', id), {
+            hide: arrayUnion(user.uid),
+        });
+    };
+    const savePost = async (id, data) => {
+        await setDoc(doc(db, 'users', user.uid, 'saves', id), {
+            title: data.title,
+            tags: data.tags,
+            user: {
+                name: data.user.name,
+                avatar: data.user.avatar,
+            },
+        });
+    };
+    const value = {
+        loading,
+        setLoading,
+        update,
+        setUpdate,
+        id,
+        data,
+        page,
+        deletePost,
+        savePost,
+        hidePost
+    };
+    return (
+        <PostContext.Provider value={value}>
+            <>{children}</>
+        </PostContext.Provider>
+    );
+}

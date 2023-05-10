@@ -61,7 +61,17 @@
     color: var(--ban);
   }
 }
-
+.msg-noti{
+  background-color:var(--primary);
+  color: var(--primary-light);
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  font-weight: 600;
+}
 .username {
   font-size: 1.4rem;
   color: rgba(22, 24, 35, 0.5);

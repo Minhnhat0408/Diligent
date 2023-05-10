@@ -14,12 +14,11 @@ const cx = classNames.bind(styles);
 function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
-    
     return (
         <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
-            {user && userData ? (
+            {(user && userData) ? (
                 <>
-                    {(userData?.user_friendRequests.length !== 0) ? (
+                    {userData?.user_friendRequests.length !== 0 ? (
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
                                 <h4 className={cx('menu-header')}>Friend request</h4>
@@ -40,11 +39,17 @@ function SideBarRight() {
                                     See all
                                 </Link>
                             </div>
-                            {usersList?.map((u) => {
+                            {usersList?.map((u,ind) => {
+                                
                                 return (
-                                    user.uid !== u.id &&
+                                    user.uid !== u.id && ind < 8 && 
                                     !u.friend && (
-                                        <AccountItem search key={u.id} dark={context.theme === 'dark'} user={u} />
+                                        <AccountItem
+                                            search
+                                            key={u.id}
+                                            dark={context.theme === 'dark'}
+                                            acc={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
+                                        />
                                     )
                                 );
                             })}
@@ -57,10 +62,16 @@ function SideBarRight() {
                                 <h4 className={cx('menu-header')}>Contacts</h4>
                             </div>
                             {usersList?.map((u) => {
-                         
                                 return (
                                     user.uid !== u.id &&
-                                    u.friend && <AccountItem chat key={u.id} dark={context.theme === 'dark'} user={u} />
+                                    u.friend && (
+                                        <AccountItem
+                                            chat
+                                            key={u.id}
+                                            dark={context.theme === 'dark'}
+                                            acc={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
+                                        />
+                                    )
                                 );
                             })}
                         </div>

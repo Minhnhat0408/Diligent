@@ -1,11 +1,20 @@
 import Header from '../components/Header';
+import classNames from 'classnames/bind';
+import styles from './HeaderOnly.module.scss';
+import { ThemeContext } from "~/contexts/Context";
+import { useContext } from "react";
+
+const cx = classNames.bind(styles)
 
 function HeaderOnly({ children }) {
+  const context = useContext(ThemeContext)
   return (
-    <div>
+    <div className={cx('wrapper')}>
       <Header />
       <div className="container">
-        <div className="content">{children}</div>
+        <div className={cx('content',{'dark':context.theme === 'dark'})}>
+          {children}
+        </div>
       </div>
     </div>
   );

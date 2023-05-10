@@ -1,7 +1,7 @@
 .wrapper {
-  display: flex;
-//   align-items: center;
-  flex-direction: column;
+    display: flex;
+    //   align-items: center;
+    flex-direction: column;
 }
 
 .container {
@@ -14,12 +14,12 @@
 .content {
     transition: all 0.8s;
     background-color: var(--bg-light-theme);
-    min-height:100vh;
+    min-height: calc(100vh - var(--defaultLayout-header-height));
     padding-top: 10px;
-    padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px) ;
-    padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px) ;
-    &.dark{
+    padding-bottom: 10px;
+    padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
+    padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px);
+    &.dark {
         background-color: var(--bg-dark-theme);
-    } 
+    }
 }
-

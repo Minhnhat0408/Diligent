@@ -29,17 +29,28 @@
         border-bottom-right-radius: 30px;
         color:var(--text-color)
     }
+
     .input {
         display: flex;
         align-items: center;
         
         
         &:hover {
-            border-color: #999;
+  
+            border-radius: 10px;
+            border-top-right-radius: 30px;
+            border-bottom-right-radius: 30px;
             box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
         }
 
        
+    }
+
+    &.dark .input{
+        
+        &:hover{
+            box-shadow: 0 0 5px #eee;
+        }
     }
     #upload {
         display: none;

@@ -3,17 +3,17 @@
     display: flex;
     height: 100vh;
 
-    &.dark { 
-        color:var(--text-color-dark) ; 
-        & .sidebar{
+    &.dark {
+        color: var(--text-color-dark);
+        & .sidebar {
             background-color: var(--dark-theme);
-            
-            .header, .title {
+
+            .header,
+            .title {
                 color: var(--text-color-dark);
             }
-
         }
-        & .display{
+        & .display {
             background-color: var(--bg-dark-theme);
 
             & .react {
@@ -31,7 +31,6 @@
                 }
             }
         }
-        
     }
 }
 
@@ -69,23 +68,6 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
-
-        .message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: transparent;
-            color: #000;
-            z-index: 10;
-            max-width: 300px;
-            max-height: 500px;
-            overflow: hidden;
-            font-size: 2rem;
-            text-align: center;
-            word-wrap: break-word;
-            cursor: default;
-        }
 
         .progress {
             position: absolute;
@@ -171,4 +153,21 @@
             }
         }
     }
+}
+
+.message {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: transparent;
+    color: #000;
+    z-index: 10;
+    max-width: 300px;
+    max-height: 500px;
+    overflow: hidden;
+    font-size: 2rem;
+    text-align: center;
+    word-wrap: break-word;
+    cursor: default;
 }

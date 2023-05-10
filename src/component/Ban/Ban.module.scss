@@ -1,0 +1,48 @@
+.wrapper{
+    position: relative;
+    width: 30vw;
+    height: 30vh;
+    background-color: var(--light-theme);
+    border-radius: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--text-color);
+    &.dark{
+        background-color: var(--dark-theme);
+        color:var(--text-color-dark);
+    }
+}
+
+.timer{
+    font-size: 4rem;
+    margin-left: 10px;
+
+}
+.ban-icon{
+    font-size: 4rem;
+}
+
+.text{
+    margin: 2vh 5vw;
+    text-align: center;
+}
+
+.out {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    &:hover {
+        cursor: pointer;
+        background-color: rgba(0, 0, 0, 0.15);
+    }
+}

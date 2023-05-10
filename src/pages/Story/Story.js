@@ -1,86 +1,116 @@
 import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
-import Image from '~/component/Image';
-import React, { useContext } from 'react';
-import Stories from 'react-insta-stories';
+import React, { useCallback, useContext, useState } from 'react';
+import Stories from '~/component/Stories/Stories';
 import { ThemeContext } from '~/contexts/Context';
+import { UserAuth } from '~/contexts/authContext';
+import { collection, deleteDoc, doc, getDocs, query, serverTimestamp } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { useEffect } from 'react';
+import getTimeDiff from '~/utils/timeDiff';
 const cx = classNames.bind(styles);
 
-const stories = [
-    {
-        url: 'https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2FScreenshot%202023-03-27%20211538.png?alt=media&token=7d94d948-6db7-4b87-b624-c51553929415',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            profileImage:
-                'https://scontent.fhan3-5.fna.fbcdn.net/v/t39.30808-1/277751572_1315302068964376_895612620486881878_n.jpg?stp=dst-jpg_p100x100&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=i9xUP-lu3fQAX9t9ZAi&_nc_oc=AQkDh0txZldmxh4b32rTYj8LOe9ClH6tGq-_Wr1TieJ8QhFTJLqi3vXePK6_UBIk5uIg4u8jqNFcqU9iLudg85sA&_nc_ad=z-m&_nc_cid=0&_nc_ht=scontent.fhan3-5.fna&oh=00_AfCQurnzumG-_DgI-BujlIkItfRFJMHY92alHVPn2CTo7w&oe=64409940',
-        },
-    },
-    {
-        url: 'https://scontent.fhan4-3.fna.fbcdn.net/v/t1.6435-9/66179411_1146487765533259_122620302688518144_n.jpg?_nc_cat=103&ccb=1-7&_nc_sid=8bfeb9&_nc_ohc=buXzQB9ZHcAAX-kpv8g&_nc_ht=scontent.fhan4-3.fna&oh=00_AfA0mEOTIM-vcPk1i9FsS2iR5zRF6AFKR6nBbFBzaMOi1A&oe=6463222C',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            profileImage:
-                'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
-        },
-        styles: {
-            backgroundColor: 'blue',
-        },
-    },
-    {
-        url: 'https://static.independent.co.uk/2022/05/09/11/SEI102882096.jpg',
-        header: {
-            heading: 'Minh Nhat',
-            subheading: '30m ago',
-            paragraph: 'alo alo',
-            profileImage:
-                'https://scontent.fhan4-1.fna.fbcdn.net/v/t39.30808-1/333434336_1380339449173709_4761429895030803928_n.jpg?stp=dst-jpg_p320x320&_nc_cat=105&ccb=1-7&_nc_sid=7206a8&_nc_ohc=rHlEQ1lDYQ8AX85SZr1&_nc_ht=scontent.fhan4-1.fna&oh=00_AfAnSH4n3tT1WWAKm1ne_OFAauWV-2iEJj_eivQnf__8uQ&oe=64404314',
-        },
-    },
-];
-
-function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) {
+function Story() {
     const context = useContext(ThemeContext);
-    const MyCustomHeader = React.useMemo(
-        () =>
-            ({ heading, subheading, profileImage, paragraph }) => {
-                return (
-                    <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                            <Image src={profileImage} style={{ width: '40px', height: '40px', borderRadius: '50%' }} />
-                            <div
-                                style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    justifyContent: 'center',
-                                    marginLeft: '8px',
-                                    color: '#fff',
-                                }}
-                            >
-                                <h1 style={{ fontSize: '1.4rem' }}>{heading}</h1>
-                                <h2 style={{ fontSize: '1.2rem' }}>{subheading}</h2>
-                            </div>
-                        </div>
-                        {paragraph && (
-                            <p
-                                style={{
-                                    color: '#fff',
-                                    fontSize: '2rem',
-                                    textAlign: 'center',
-                                    wordWrap: 'break-word',
-                                    transform: `translate(${posX}px, ${posY}px)`,
-                                }}
-                            >
-                                {paragraph}
-                            </p>
-                        )}
-                    </div>
-                );
-            },
-        [posX, posY],
+    const { user } = UserAuth();
+
+    const [storiesData, setStoriesData] = useState([]);
+    const [myStories, setMyStories] = useState(null);
+    const [hasFetchedStories, setHasFetchedStories] = useState(false);
+
+    async function fetchStories() {
+        const q = query(collection(db, 'stories'));
+        const querySnapshot = await getDocs(q);
+        const docs = querySnapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+        }));
+        setStoriesData(docs);
+        const story = docs
+            .filter((story) => story.user.id === user.uid)
+            .map((story) => ({
+                url: story.media[0],
+                username: story.user.name,
+                time: story.time,
+                avatar: story.user.avatar,
+                posX: story.content.posX,
+                posY: story.content.posY,
+                paragraph: story.content.text,
+                bgColor: story.content.bgColor,
+                textColor: story.content.textColor,
+                text: story.content.text,
+                scale: story.scale,
+                duration: story.type == 'video' ? 15000 : 3000,
+                userId: story.user.id,
+                storyId: story.id,
+                type: story.type,
+            }));
+
+        const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
+
+        setMyStories(sortedStory);
+        setHasFetchedStories(true);
+    }
+
+    useEffect(() => {
+        fetchStories();
+        autoDelete();
+    }, [hasFetchedStories]);
+
+    const storyByUserId = Object.values(
+        storiesData.reduce((acc, story) => {
+            const val = {
+                userId: story.user.id,
+                username: story.user.name,
+                avatar: story.user.avatar,
+            };
+            if (!acc[val.userId]) {
+                acc[val.userId] = val;
+            }
+
+            return acc;
+        }, {}),
     );
+
+    async function selectStory(id) {
+        const selectedStories = storiesData.filter((story) => story.user.id === id);
+        const sortedStory = selectedStories.sort((a, b) => a.time.seconds - b.time.seconds);
+
+        const formattedStories = sortedStory.map((story) => ({
+            url: story.media[0],
+            username: story.user.name,
+            time: story.time,
+            avatar: story.user.avatar,
+            posX: story.content.posX,
+            posY: story.content.posY,
+            paragraph: story.content.text,
+            bgColor: story.content.bgColor,
+            textColor: story.content.textColor,
+            text: story.content.text,
+            scale: story.scale,
+            duration: story.type == 'video' ? 15000 : 3000,
+            userId: story.user.id,
+            storyId: story.id,
+            type: story.type,
+        }));
+
+        setMyStories(formattedStories);
+    }
+
+    // Xóa story đã đăng quá 1 ngày
+    async function autoDelete() {
+        storiesData.map((story) => {
+            const time = getTimeDiff(Date.now(), story.time.seconds * 1000);
+            if (time.includes('days')) {
+                deleteDoc(doc(db, 'stories', story.id));
+            }
+        });
+    }
+
+    const handleDeleteStory = useCallback(() => {
+        fetchStories();
+    }, []);
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
@@ -96,49 +126,27 @@ function Story({ scale = 1, backgroundColor = '#000', posX = 150, posY = 150 }) 
                 </div>
                 <div className={cx('all-story')}>
                     <h3 className={cx('title')}>All Story</h3>
-                    <StoryItem
-                        avatar="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-1/290563298_2204820046351865_1105514345478100666_n.jpg?stp=cp0_dst-jpg_p60x60&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=G_s0c8f9rsEAX8441cx&_nc_ht=scontent.fhan5-9.fna&oh=00_AfD8YMmt1ugGVeKV21P_d9PJE77H6pc3QLJJwcdJKPTmlw&oe=6424A0BD"
-                        title="Minh Nhat"
-                        detail="21 giờ"
-                    />
-
-                    <StoryItem
-                        avatar="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-1/290563298_2204820046351865_1105514345478100666_n.jpg?stp=cp0_dst-jpg_p60x60&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=G_s0c8f9rsEAX8441cx&_nc_ht=scontent.fhan5-9.fna&oh=00_AfD8YMmt1ugGVeKV21P_d9PJE77H6pc3QLJJwcdJKPTmlw&oe=6424A0BD"
-                        title="Minh Nhat"
-                        detail="21 giờ"
-                    />
-
-                    <StoryItem
-                        avatar="https://scontent.fhan5-9.fna.fbcdn.net/v/t39.30808-1/290563298_2204820046351865_1105514345478100666_n.jpg?stp=cp0_dst-jpg_p60x60&_nc_cat=109&ccb=1-7&_nc_sid=7206a8&_nc_ohc=G_s0c8f9rsEAX8441cx&_nc_ht=scontent.fhan5-9.fna&oh=00_AfD8YMmt1ugGVeKV21P_d9PJE77H6pc3QLJJwcdJKPTmlw&oe=6424A0BD"
-                        title="Minh Nhat"
-                        detail="21 giờ"
-                    />
+                    {storyByUserId.map((data) => (
+                        <div onClick={() => selectStory(data.userId)} key={data.userId}>
+                            <StoryItem avatar={data.avatar} title={data.username} />
+                        </div>
+                    ))}
                 </div>
             </div>
 
             <div className={cx('display')}>
                 {/* phần hiển thị story  */}
-                <Stories
-                    stories={stories}
-                    width={'30vw'}
-                    height={'80vh'}
-                    defaultInterval={1500}
-                    storyStyles={{ scale: scale, padding: 0 }}
-                    storyContainerStyles={{ backgroundColor: backgroundColor, borderRadius: '10px' }}
-                    header={MyCustomHeader}
-                />
-
-                <div className={cx('react')}>
-                    <textarea className={cx('reply')} placeholder="Reply..."></textarea>
-                    <div className={cx('action')}>
-                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                            <i class="fa-solid fa-thumbs-up"></i>
-                        </div>
-                        <div className={cx('icon')} style={{ backgroundColor: '#2f9df9' }}>
-                            <i class="fa-solid fa-thumbs-down"></i>
-                        </div>
-                    </div>
-                </div>
+                {myStories != null && myStories[0] != undefined ? (
+                    <>
+                        <Stories
+                            stories={myStories}
+                            key={JSON.stringify(myStories)}
+                            onDeleteStory={handleDeleteStory}
+                        />
+                    </>
+                ) : (
+                    <img src="/static/media/no_content.2175207d31c5a7c61d02.png" alt="nothing-here" />
+                )}
             </div>
         </div>
     );
