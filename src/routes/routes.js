@@ -36,6 +36,7 @@ const publicRoutes = [
 const privateRoutes = [
     { path: routes.saveposts, component: SavePosts },
     { path: routes.flashcard, component: FlashCard, layout: HeaderOnly },
+    { path: routes.flashcardDeck, component: FlashCard, layout: HeaderOnly },
     { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: routes.friend, component: Friend },
     { path: routes.chat, component: Chat },

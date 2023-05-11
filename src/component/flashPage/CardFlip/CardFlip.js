@@ -18,7 +18,6 @@ const CardFlip = ({titile, getOldPos0}) => {
     const handleClick = (titile) => {
         if(pos1 || pos2) {
             getOldPos0(titile);
-            setFlip(true);
         }else{
            handFlip(); 
         }
@@ -34,18 +33,19 @@ const CardFlip = ({titile, getOldPos0}) => {
 
     return (
         <>
-        <div className={cx('contain','card0',
+        <div className={cx('contain',
+        'card0',
         {'cardmoveon': pos1},
-        {'cardmoveunder' : pos2},)}>
-        <div className={cx("card", {'cardflip':!flip})} 
+        {'cardmoveunder' : pos2})}>
+            <div className={cx("card",{'cardflip':!flip})} 
             onClick= {() => handleClick(titile)}>
-            <div className={cx('front')}>
-                <FaceCard child = {titile.title}/>
+                <div className={cx('front')}>
+                    <FaceCard child = {titile.title}/>
+                </div>
+                <div className={cx('back')}>
+                    <FaceCard child = {titile.back}/>
+                </div>
             </div>
-            <div className={cx('back')}>
-                <FaceCard child = {titile.back}/>
-            </div>
-        </div>
         </div>
 
        

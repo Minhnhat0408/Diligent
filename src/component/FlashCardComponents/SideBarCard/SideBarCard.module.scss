@@ -1,12 +1,55 @@
+.addCard{
+    background-color: var(--dark-theme);
+    width: var(--defaultLayout-sidebar-left-width);
+    position: fixed;
+    border-radius: 15px;
+    height: 50px;
+    top: var(--defaultLayout-header-height);
+    bottom: 544px;
+    margin: 7px 10px 4px 35px;
+    display: flex;
+    align-items: center;
+}
+
+.boxSearch{
+    background-color: #adb1c4;
+    width: 80%;
+    height: 70%;
+    border-radius: 92px;
+    margin-left: 6px;
+    display: flex;
+    align-items: center;
+    padding-left: 16px;
+    
+}
+
+
+.creatCard{
+    background-color: #4a7070;
+    height: 60%;
+    width: 0%;
+    margin-left: 10px;
+    border-radius: 10px;
+}
+
+.searchCard{
+    background-color: rgb(147, 153, 157);
+    width: 90%;
+    height: 95%;
+    
+}
+
+
+
+
 .sidebar{
     background-color: var(--dark-theme);
     width: var(--defaultLayout-sidebar-left-width);
-    margin: 20px 8px 26px 8px;
+    margin:  65px 10px 10px 35px;
     position: fixed;
     top: var(--defaultLayout-header-height);
     bottom: 0;
     border-radius: 15px;
-    margin-left: 30px;
     overflow-y: scroll;
     overflow-x: hidden;
     transition: all 0.8s;
@@ -17,13 +60,32 @@
     display: none;
 }
 
+.boxSideBar{
+//    background-color: #242942; 
+    // width: ;
+    height: 100vh;
+}
+
 .boxcard{
+    width: 55%;
+    height: 28%;
+    background-color: hsl(190, 7%, 84%);
+    padding: 15px;
+    margin: 12% auto;
+    border: 2px solid rgb(20, 34, 64);
+}
+
+.newCard{
     width: 55%;
     height: 28%;
     background-color: hsl(0, 33%, 96%);
     padding: 15px;
     margin: 12% auto;
-    border: 2px solid rgb(231, 189, 216);
+    border: 2px solid rgb(20, 34, 64);
+}
+
+.footer{
+    height: 1px;
 }
 
 ::-webkit-scrollbar {
