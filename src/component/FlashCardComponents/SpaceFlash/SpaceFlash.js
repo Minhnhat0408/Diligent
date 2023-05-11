@@ -5,7 +5,7 @@ import CardFlip from "../CardFlip/";
 import CricleProgress from "../CircleProgress/CircleProgress";
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faFaceSadTear, faFaceSmile, faFaceSmileBeam, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, useSpringRef,useTransition, animated } from "@react-spring/web";
 const cx = classNames.bind(styles);
 
@@ -205,8 +205,12 @@ const SpaceFlash = ({card}) => {
                             <CricleProgress percentage={fp1.length / (fp1.length + fp2.length)*100}/>
                         </div>
                         <div className={cx('emotion')}>
-
-                        </div>   
+                            {fp1.length/(fp1.length + fp2.length)*100 > 50 ?
+                            <FontAwesomeIcon icon={faFaceSmile} style={{color: "#d4d049", height: '80px', width: '80px'}} />
+                            :
+                            <FontAwesomeIcon icon={faFaceSadTear} style={{color: "#d4d049", height: '80px', width: '80px'}} />
+                            }
+                        </div>  
                         <div className={cx('buttonhoc')}>
                             hoc tiep
                         </div>

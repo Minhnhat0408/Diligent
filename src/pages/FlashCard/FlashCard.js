@@ -64,14 +64,10 @@ function FlashCard() {
         setCard(item.age -1);
 
     }
-
-    
     const creatCard = (card) => {
         setLisCard([card, ...listCard])
         console.log(listCard)
     }
-    
-
     return (
         <div className={cx('wrapper')}>
 
