@@ -161,7 +161,7 @@ function ChatInput({ roomId }) {
                     />
                     <div className={cx('options')}>
                         <FontAwesomeIcon icon={faThumbsUp} onClick={() => {
-                            handleSendMessage({icon: `:)`})
+                            handleSendMessage(`:)`)
                         }} />
                     </div>
                 </div>

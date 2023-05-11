@@ -1,0 +1,35 @@
+.wrapper {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10%;
+    padding-top: calc(var(--defaultLayout-header-height) + 20px);
+    align-items: center;
+    overflow: hidden;
+    background-color: var(--bg-light-theme);
+    &.dark {
+        background-color: var(--bg-dark-theme);
+    }
+}
+
+.user-decks {
+    width: 900px;
+    height: 200px;
+    background-color: var(--dark-theme);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    padding:10px 20px;
+}
+.all {
+    width: 900px;
+    flex: 1;
+    background-color: var(--dark-theme);
+    border-radius: 15px;
+    margin-bottom: 10px;
+}
+.deck{
+    background-color: bisque;
+    height: 100%;
+    aspect-ratio: 4/3;
+}

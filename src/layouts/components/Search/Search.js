@@ -35,8 +35,11 @@ function Search() {
                 });
                 const search = { accounts: searchAccount, posts: searchPost };
 
-                setSearchResult(search);
-                setLoading(false);
+                setTimeout(() => {
+                    setSearchResult(search);
+                    setLoading(false);
+                }, 500);
+
             };
             fetchData(searchValue.trim());
         } else {
@@ -62,7 +65,7 @@ function Search() {
     };
     return (
         <HeadlessTippy
-            visible={showResult && searchResult.accounts.length > 0 && searchResult.posts.length > 0}
+            visible={showResult && (searchResult.accounts.length > 0 || searchResult.posts.length > 0)}
             interactive={true}
             appendTo={() => document.body}
             render={(attrs) => (

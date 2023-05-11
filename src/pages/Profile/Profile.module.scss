@@ -131,12 +131,28 @@
     & .stats_num {
         flex: 1;
     }
+    & .stats_num .stars{
+        font-size: 1.8rem;
+        height: 20px;
+        cursor: pointer;
+        &.active{
+            color: var(--primary);
+        }
+        &:hover{
+            color: var(--primary);
+        }
+
+    }
+    & .stats_num .number{
+        font-size: 1.4rem;
+    }
     & .stats_num h4 {
         font-size: 1.8rem;
         font-weight: 700;
     }
     & .stats_num p {
         font-size: 1rem;
+    
     }
 }
 .options {

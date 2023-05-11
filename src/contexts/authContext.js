@@ -120,6 +120,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_friendRequests: [],
                 user_friends: [],
                 user_postNumber: 0,
+                user_ratings:[],
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
@@ -251,6 +252,7 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
+  
     console.log('auth rerender', userData);
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
