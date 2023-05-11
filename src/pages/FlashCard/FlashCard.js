@@ -20,7 +20,7 @@ function FlashCard() {
 
     const {id} = useParams();
     const [cards,setCards] = useState({});
-    let [listCard, setLisCard] = useState( [{age:1, name:'quyen'},
+    let [listDeck, setLisDeck] = useState( [{age:1, name:'quyen'},
         {age: 2, name: 'dung'},
         {age: 3, name:'phuong'},
         {age: 4, name:'minh'},
@@ -59,20 +59,20 @@ function FlashCard() {
             
         // ]
 
-    const [card, setCard] = useState(0);
+    const [idDeck, setIdDeck] = useState(0);
     const handlePick = (item) => {
-        setCard(item.age -1);
+        setIdDeck(item.age -1);
 
     }
-    const creatCard = (card) => {
-        setLisCard([card, ...listCard])
-        console.log(listCard)
+    const creatDeck = (deck) => {
+        setLisDeck([deck, ...listDeck])
+        console.log(listDeck)
     }
     return (
         <div className={cx('wrapper')}>
 
-            <SideBarCard listCard={listCard} handlePick={handlePick} creatCard={creatCard}/>
-            <SpaceFlash card={card}/>
+            <SideBarCard listDeck={listDeck} handlePick={handlePick} creatDeck={creatDeck}/>
+            <SpaceFlash idDeck={idDeck}/>
             
         </div>
     );

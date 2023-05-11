@@ -30,7 +30,7 @@ const file2 = [
 ]
 
 
-const SpaceFlash = ({card}) => {
+const SpaceFlash = ({idDeck}) => {
 
     const [fp0, setFp0] = useState([]);
     const [fp1, setFp1] = useState([]);
@@ -101,7 +101,7 @@ const SpaceFlash = ({card}) => {
     }
 
     const api = useSpringRef();
-    const transition = useTransition(card, {
+    const transition = useTransition(idDeck, {
         ref: api,
         keys:null,
         from: {opacity: 0, transform:'translate3d(210%,0,0)'},
@@ -115,12 +115,12 @@ const SpaceFlash = ({card}) => {
         api.start();
         setFp1([]);
         setFp2([]);
-        setFp0(card === 0 ? file1 : file2);
+        setFp0(idDeck === 0 ? file1 : file2);
         setShowPer(false);
         console.log(file1);
         console.log(file2)
 
-    }, [card])
+    }, [idDeck])
 
     const [showPer, setShowPer] = useState(false);
     const handlePull = () => {

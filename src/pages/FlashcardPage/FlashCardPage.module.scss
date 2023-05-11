@@ -14,22 +14,32 @@
 }
 
 .user-decks {
-    width: 900px;
-    height: 200px;
+    width: 60vw;
+    height: 25vh;
     background-color: var(--dark-theme);
     border-radius: 15px;
-    margin-bottom: 20px;
-    padding:10px 20px;
+    margin-bottom: 1%;
+    padding:2vh 1vw;
+    // display: flex;
+    // align-items: center;
+    overflow-y: hidden;
+    overflow-x: scroll;
 }
 .all {
-    width: 900px;
+    width: 60vw;
     flex: 1;
     background-color: var(--dark-theme);
     border-radius: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 0;
+    padding:2vh 1vw;
+    overflow-y: scroll;
+    overflow-x: hidden;
 }
 .deck{
+    display: inline-block;
     background-color: bisque;
-    height: 100%;
-    aspect-ratio: 4/3;
+    width: 12%;
+    aspect-ratio: 3/4;
+    margin: +0 4% ;
+    
 }

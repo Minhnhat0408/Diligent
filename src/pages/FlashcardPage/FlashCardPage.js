@@ -20,9 +20,53 @@ function FlashCardPage() {
             <div className={cx('deck')}>
 
             </div>
+            <div className={cx('deck')}>
+
+            </div>
+            <div className={cx('deck')}>
+
+            </div>
+            <div className={cx('deck')}>
+
+            </div>
+            <div className={cx('deck')}>
+
+            </div>
+            <div className={cx('deck')}>
+
+            </div>
+           
         </div>
         <div className={cx('all')}>
-            
+    
+            <div className={cx('deck')}>
+            </div>
+            <div className={cx('deck')}>
+
+</div>
+<div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div><div className={cx('deck')}>
+
+</div>
+
+       
+
+
         </div>
          
     </div> );

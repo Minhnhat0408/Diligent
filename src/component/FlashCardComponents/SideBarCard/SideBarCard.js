@@ -8,7 +8,7 @@ import { useSpring,useSpringRef , animated } from "@react-spring/web";
 import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
 
-function SideBarCard({listCard, handlePick, creatCard}) {
+function SideBarCard({listDeck, handlePick, creatDeck}) {
 
     const apiAddCard = useSpringRef();
     const addCard = useSpring({
@@ -33,12 +33,12 @@ function SideBarCard({listCard, handlePick, creatCard}) {
             <div className={cx('boxSearch')}>
                 <input type='text' className={cx('searchCard')} 
                 // value={nameCard}
-                // onChange={(e) => creatCard(e)}
+                // onChange={(e) => creatDeck(e)}
                 placeholder="dang khong hoat dong"
                 />
             </div>
 
-            <div className={cx('creatCard')} onClick={() => handleAdd()}>
+            <div className={cx('creatDeck')} onClick={() => handleAdd()}>
             <FontAwesomeIcon icon={faSquarePlus} size="2xl" style={{color: "#4a628c",}} />
             </div>
             
@@ -48,11 +48,11 @@ function SideBarCard({listCard, handlePick, creatCard}) {
         {/* sideBar */}
         <div className={cx('sidebar')}>
             <animated.div style={addCard} className={cx('newCard')}>
-                <NewCard creatCard={creatCard} handleAdd={handleAdd}/>
+                <NewCard creatDeck={creatDeck} handleAdd={handleAdd}/>
             </animated.div>
 
             <animated.div style={addCard} className={cx('boxSideBar')}>
-            {listCard.map((item, index) => {
+            {listDeck.map((item, index) => {
                 return (
                     <div className={cx('boxcard')} onClick={() => handlePicks(item)}>
                         <FaceCard key={index} child={item.name}  />
