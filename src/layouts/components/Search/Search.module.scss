@@ -115,3 +115,46 @@
     }
   }
   
+  .posts{
+    display:flex;
+    padding: 10px 16px;
+    overflow: hidden;
+    &.dark .title{
+      color:var(--text-color-dark);
+    }
+    &.dark .first-tag{
+      border-color:  var(--primary);
+      color: var(--primary);
+    }
+  }
+
+  .title{
+    color:var(--text-color);
+    max-width: 70%;
+    font-size: 1.6rem;
+    cursor: pointer;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 10px;
+  }
+
+  .tags{
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: horizontal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .first-tag{
+    padding: 1px 8px;
+    margin-right: 10px;
+    border: 1px solid var(--primary-light);
+    color: var(--primary-light);
+    border-radius: 16px;
+    list-style-type: none;
+    font-size: 1.4rem;
+    
+  }

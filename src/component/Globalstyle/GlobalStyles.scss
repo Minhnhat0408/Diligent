@@ -93,6 +93,10 @@ body {
         font-size: 1.6rem;
         line-height: 22px;
     }
+    .tippy-box[data-theme~=light] {
+        color: #26323d;
+        background-color: var(--light-theme);
+    }
 
     .tippy-arrow {
         color: var(--dark-theme) !important;

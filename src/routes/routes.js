@@ -17,6 +17,7 @@ import CreateStory  from '~/pages/CreateStory';
 import SavePosts from '~/pages/SavePosts';
 import PostPage from '~/pages/PostPage/PostPage';
 import Documents from '~/pages/Documents';
+import FlashCardPage from '~/pages/FlashcardPage/FlashCardPage';
 
 // Router khong can dang nhap cung xem duoc
 const publicRoutes = [
@@ -35,7 +36,7 @@ const publicRoutes = [
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
     { path: routes.saveposts, component: SavePosts },
-    { path: routes.flashcard, component: FlashCard, layout: HeaderOnly },
+    { path: routes.flashcard, component: FlashCardPage, layout: HeaderOnly },
     { path: routes.flashcardDeck, component: FlashCard, layout: HeaderOnly },
     { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: routes.friend, component: Friend },

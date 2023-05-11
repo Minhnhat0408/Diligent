@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
-import { collection, doc, updateDoc, serverTimestamp, addDoc } from 'firebase/firestore';
+import { collection, doc, updateDoc, serverTimestamp, addDoc, arrayRemove } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
@@ -35,6 +35,8 @@ import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
 import { PostProvider } from '~/contexts/Provider';
 import Ban from '~/component/Ban/Ban';
+import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
+import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 
 const cx = classNames.bind(styles);
 
@@ -108,7 +110,18 @@ function Profile() {
             setLoading(false);
         });
     };
-
+    const handleUpRatings = async () => {
+        if(pageUser.user_ratings.includes(user.uid)){
+            await updateDoc(doc(db, 'users', id), {
+                user_ratings: arrayRemove(user.uid),
+            });
+        }else{
+            await updateDoc(doc(db, 'users', id), {
+                user_ratings: [...pageUser.user_ratings,user.uid],
+            });
+        }
+    
+    };
     const handleMenuChange = (menuItem) => {
         switch (menuItem.type) {
             case 'unfriend':
@@ -157,6 +170,7 @@ function Profile() {
             alert(err);
         }
     };
+    console.log(pageUser?.user_ratings.includes(user.uid))
     // console.log(getTimeDiff(pageUser?.user_banUntil.toMillis(),new Date()))
     return (
         <>
@@ -210,8 +224,16 @@ function Profile() {
                                     <p>Posts</p>
                                 </div>
                                 <div className={cx('stats_num')}>
-                                    <h4>{pageUser.user_friends.length}</h4>
-                                    <p>Friends</p>
+                                    <FontAwesomeIcon
+                                        icon={
+                                            pageUser.user_ratings.includes(user.uid)
+                                                ? solidStar
+                                                : regularStar
+                                        }
+                                        onClick={handleUpRatings}
+                                        className={cx('stars',{active:pageUser.user_ratings.includes(user.uid)})}
+                                    />
+                                    <p className={cx('number')}>{pageUser.user_ratings.length}</p>
                                 </div>
 
                                 <div className={cx('stats_num')}>

@@ -6,13 +6,16 @@ import { faCheckDouble, faFile, faThumbsUp } from '@fortawesome/free-solid-svg-i
 import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 import Tippy from '@tippyjs/react';
 import { useState } from 'react';
+import { useContext } from 'react';
+import { ThemeContext } from '~/contexts/Context';
 
 const cx = classNames.bind(styles);
 
 function ChatItem({ data, me }) {
     const [preview, setPreview] = useState(-1);
+    const context = useContext(ThemeContext)
     return (
-        <div className={cx('chat-item', { right: me, left: !me })}>
+        <div className={cx('chat-item', { right: me, left: !me,dark: context.theme === 'dark' })}>
             <div className={cx('user-info')}>
                 <Image src={data.ava} alt="ava" className={cx('ava')} />
                 <div className={cx('column')}>
@@ -25,7 +28,7 @@ function ChatItem({ data, me }) {
             </div>
             <Tippy
                 placement={me ? 'left' : 'right'}
-                theme="dark"
+                theme={context.theme}
                 allowHTML
                 content={
                     <p className={cx('time-tippy')}>

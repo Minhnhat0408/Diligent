@@ -19,6 +19,8 @@ import { db } from '~/firebase';
 import { useRef } from 'react';
 import { UserAuth } from '~/contexts/authContext';
 import { RingLoader } from 'react-spinners';
+import { ThemeContext } from '~/contexts/Context';
+import { useContext } from 'react';
 const cx = classNames.bind(styles);
 
 function ChatInput({ roomId }) {
@@ -26,6 +28,7 @@ function ChatInput({ roomId }) {
     const [text, setText] = useState('');
     const { user, fileUpload } = UserAuth();
     const [loading, setLoading] = useState();
+    const context = useContext(ThemeContext)
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
         if (isImage(newfile) || isVideo(newfile)) {
@@ -89,7 +92,7 @@ function ChatInput({ roomId }) {
         setLoading(false)
     };
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
             {loading && (
                 <div className="pop-up loader">
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
@@ -158,7 +161,7 @@ function ChatInput({ roomId }) {
                     />
                     <div className={cx('options')}>
                         <FontAwesomeIcon icon={faThumbsUp} onClick={() => {
-                            handleSendMessage({icon: `:)`})
+                            handleSendMessage(`:)`)
                         }} />
                     </div>
                 </div>
