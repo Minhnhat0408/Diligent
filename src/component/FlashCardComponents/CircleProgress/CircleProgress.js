@@ -20,11 +20,12 @@ const Number = ({n}) => {
 }   
 
 const CricleProgress = ({percentage}) => {
-    const [value, setValue] = useState(565.2 + percentage/100*565.2);
+    const percen = percentage.toFixed(0);
+    const [value, setValue] = useState(565.2 + percen/100*565.2);
 
 
     useEffect(() => {
-        setValue(565.2 + percentage/100*565.2)
+        setValue(565.2 + percen/100*565.2)
         
     },[percentage])
     return (
@@ -34,6 +35,7 @@ const CricleProgress = ({percentage}) => {
                 <div className={cx('inner')}>
                     <div className={cx('percentage')}>
                         <Number n={percentage}></Number>
+                        {/* <div className={cx('percentype')}>{'%'}</div> */}
                     </div>
                 </div>
             </div>

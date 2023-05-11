@@ -3,7 +3,9 @@ import classNames from "classnames/bind";
 import styles from './SideBarCard.module.scss';
 import FaceCard from "../FaceCard";
 import NewCard from "../NewCard/NewCard";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useSpring,useSpringRef , animated } from "@react-spring/web";
+import { faSquarePlus } from "@fortawesome/free-solid-svg-icons";
 const cx = classNames.bind(styles);
 
 function SideBarCard({listCard, handlePick, creatCard}) {
@@ -37,7 +39,7 @@ function SideBarCard({listCard, handlePick, creatCard}) {
             </div>
 
             <div className={cx('creatCard')} onClick={() => handleAdd()}>
-
+            <FontAwesomeIcon icon={faSquarePlus} size="2xl" style={{color: "#4a628c",}} />
             </div>
             
         </div>

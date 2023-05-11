@@ -32,14 +32,11 @@ const file2 = [
 
 const SpaceFlash = ({card}) => {
 
-
-
-    
     const [fp0, setFp0] = useState([]);
     const [fp1, setFp1] = useState([]);
     const [fp2, setFp2] = useState([]);
     var [virPos, setVirPos] = useState(3);
-    const [showPer, setShowPer] = useState(false);
+    
     
     const handleRenenber = (a) => {
         if (fp0.length === 1 && virPos === 0 ) {
@@ -103,9 +100,6 @@ const SpaceFlash = ({card}) => {
         
     }
 
-
-
-    
     const api = useSpringRef();
     const transition = useTransition(card, {
         ref: api,
@@ -122,14 +116,15 @@ const SpaceFlash = ({card}) => {
         setFp1([]);
         setFp2([]);
         setFp0(card === 0 ? file1 : file2);
+        setShowPer(false);
         console.log(file1);
         console.log(file2)
 
     }, [card])
 
-
+    const [showPer, setShowPer] = useState(false);
     const handlePull = () => {
-        
+        setShowPer(!showPer)
     }
     
     return (
@@ -144,8 +139,8 @@ const SpaceFlash = ({card}) => {
             {/* rightside */}
           <div className={cx('rightside')}>
                 <div className={cx('finishbox')}>
-                    <div>
-                        đã thuộc
+                    <div className={cx('text')}>
+                        ĐÃ THUỘC
                     </div>
                     <div className={cx('shadowbox')}>
                         
@@ -155,8 +150,8 @@ const SpaceFlash = ({card}) => {
                     </button>
                 </div>
                 <div className={cx('skipbox')}>
-                    <div>
-                        chưa thuộc
+                    <div className={cx('text')}>
+                        QUÊN
                     </div>
                     <div className={cx('shadowbox')}>
                         
@@ -166,7 +161,6 @@ const SpaceFlash = ({card}) => {
                     </button>
                 </div>
           </div>
-
 
 
             {transition((style, i) =>{ 
@@ -199,24 +193,34 @@ const SpaceFlash = ({card}) => {
                         )  
                     })
                 }
+
+                <div className={cx('boxshowper')} >
+                    {!showPer ? 
+                    <div className={cx('showper')} onClick={() => handlePull()}>
+                        hoan thanh
+                    </div> 
+                    :
+                    <div className={cx('progresscontain')}>
+                        <div className={cx('progressbox')}> 
+                            <CricleProgress percentage={fp1.length / (fp1.length + fp2.length)*100}/>
+                        </div>
+                        <div className={cx('emotion')}>
+
+                        </div>   
+                        <div className={cx('buttonhoc')}>
+                            hoc tiep
+                        </div>
+                    </div>
+                    }
+                </div>
+
                 </animated.div>
                 
             })}
-            
-
-          
-        { showPer &&
-        <div className={cx('progresscontain')}>
-            <div className={cx('progressbox')}> 
-                <CricleProgress percentage={80}/>
-            </div>
-        </div> 
-        }
-          
 
         
-           
-          
+
+
             
         </div>
         </>
