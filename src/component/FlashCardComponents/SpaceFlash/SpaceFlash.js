@@ -5,7 +5,7 @@ import CardFlip from "../CardFlip/";
 import CricleProgress from "../CircleProgress/CircleProgress";
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheck, faFaceSadTear, faFaceSmile, faFaceSmileBeam, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faArrowRotateBack, faArrowRotateLeft, faCheck, faFaceSadTear, faFaceSmile, faFaceSmileBeam, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useSpring, useSpringRef,useTransition, animated } from "@react-spring/web";
 const cx = classNames.bind(styles);
 
@@ -42,19 +42,7 @@ const SpaceFlash = ({idDeck}) => {
         if (fp0.length === 1 && virPos === 0 ) {
             return;
         }
-        if (virPos===0 ) {
-            fp0.pop();
-        } else if (virPos===1) {
-            var current = fp1.pop();
-            fp0.push(current);
-            setFp0([...fp0]);
-        }else if (virPos===2) {
-            var current = fp2.pop();
-            fp0.push(current);
-            setFp0([...fp0]); 
-        }else {
-            console.log('roong')
-        }
+        getSetEffect();
         
         fp0[fp0.length -1].pos = a;
         setFp0([...fp0]);
@@ -69,26 +57,18 @@ const SpaceFlash = ({idDeck}) => {
         }
         
         setVirPos(virPos);
-       
     }
 
     const getOldPos0 = (titile) => {
-        if (virPos === 0) {
-            fp0.pop();
-        }else if (virPos ===1) {
-            var current = fp1.pop();
-            fp0.push(current);
-            setFp0([...fp0]);
-        } else {
-            var current = fp2.pop();
-            fp0.push(current);
-            setFp0([...fp0]);
-        }
+        getSetEffect();
+        getTurnBack(titile);
+    }
 
+    const getTurnBack = (titile) => {
         if(titile === fp1[fp1.length-1] || titile === fp0[fp0.length -1]) {
-            fp1[fp1.length-1].pos = 0;virPos=1;
+            fp1[fp1.length-1].pos = 0;
             setFp1([...fp1]);
-            
+            virPos=1;
             setVirPos(virPos);
         } else {
             fp2[fp2.length-1].pos = 0;
@@ -96,8 +76,42 @@ const SpaceFlash = ({idDeck}) => {
             virPos=2;
             setVirPos(virPos);
         }
-        
-        
+    }
+
+    const getBack = () => {
+        if (fp2.length + fp1.length === 1 ) {
+            return;
+        }
+        getSetEffect();
+
+        if(fp2.length === 0) {
+            getTurnBack(fp1[fp1.length-1])
+        } else if (fp1.length === 0) {
+            getTurnBack(fp2[fp2.length-1])
+        }
+
+        if (fp1[fp1.length-1].id < fp2[fp2.length-1].id) {
+            getTurnBack(fp1[fp1.length-1])
+        } else {
+            getTurnBack(fp2[fp2.length-1])
+        }
+
+    }
+
+    const getSetEffect = () => {
+        if (virPos === 0) {
+            fp0.pop();
+        }else if (virPos ===1) {
+            var current = fp1.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+        } else if (virPos == 2) {
+            var current = fp2.pop();
+            fp0.push(current);
+            setFp0([...fp0]);
+        } else {
+            console.log('roong')
+        }
     }
 
     const api = useSpringRef();
@@ -134,11 +148,12 @@ const SpaceFlash = ({idDeck}) => {
             <div className={cx('options')}>
                 <button className={cx('finish')} onClick={() => handleRenenber(1)}><FontAwesomeIcon icon={faCheck}/></button>
                 <button className={cx('skip')} onClick={() => handleRenenber(2)}><FontAwesomeIcon icon={faXmark}/></button>
+                <button className={cx('back')} onClick={() => getBack()}><FontAwesomeIcon icon={faArrowRotateLeft}/></button>
             </div>
 
             {/* rightside */}
-          <div className={cx('rightside')}>
-                <div className={cx('finishbox')}>
+          <div className={cx('rightside')}> 
+                <div className={cx('box')}>
                     <div className={cx('text')}>
                         ĐÃ THUỘC
                     </div>
@@ -149,7 +164,7 @@ const SpaceFlash = ({idDeck}) => {
                         {virPos === 1 ?   fp1.length -1 : fp1.length}
                     </button>
                 </div>
-                <div className={cx('skipbox')}>
+                <div className={cx('box')}>
                     <div className={cx('text')}>
                         QUÊN
                     </div>
