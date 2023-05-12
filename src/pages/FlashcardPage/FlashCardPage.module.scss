@@ -20,8 +20,7 @@
     border-radius: 15px;
     margin-bottom: 1%;
     padding:2vh 1vw;
-    // display: flex;
-    // align-items: center;
+    display: flex;
     overflow-y: hidden;
     overflow-x: scroll;
 }
@@ -35,11 +34,18 @@
     overflow-y: scroll;
     overflow-x: hidden;
 }
-.deck{
+.deck1{
+    display: inline;
+    background-color: bisque;
+    width: 12%;
+    aspect-ratio: 3/4;
+    margin: 0 4% ;
+}
+.deck2{
     display: inline-block;
     background-color: bisque;
     width: 12%;
     aspect-ratio: 3/4;
-    margin: +0 4% ;
-    
+    margin: 0 4% ;
 }
+
