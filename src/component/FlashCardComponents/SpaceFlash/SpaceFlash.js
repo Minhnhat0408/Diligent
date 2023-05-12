@@ -58,7 +58,7 @@ const SpaceFlash = ({idDeck}) => {
         
         setVirPos(virPos);
     }
-
+    
     const getOldPos0 = (titile) => {
         getSetEffect();
         getTurnBack(titile);
@@ -153,7 +153,7 @@ const SpaceFlash = ({idDeck}) => {
 
             {/* rightside */}
           <div className={cx('rightside')}> 
-                <div className={cx('box')}>
+                <div className={cx('finishbox')}>
                     <div className={cx('text')}>
                         ĐÃ THUỘC
                     </div>
@@ -164,7 +164,7 @@ const SpaceFlash = ({idDeck}) => {
                         {virPos === 1 ?   fp1.length -1 : fp1.length}
                     </button>
                 </div>
-                <div className={cx('box')}>
+                <div className={cx('skipbox')}>
                     <div className={cx('text')}>
                         QUÊN
                     </div>
