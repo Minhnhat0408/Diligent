@@ -29,6 +29,7 @@ const publicRoutes = [
     { path: routes.postpagespecific,component:PostPage,layout:HeaderOnly},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
     { path: routes.updateInfo, component: UpdateProfile, layout: null },
+    { path: routes.flashcard, component: FlashCardPage, layout: HeaderOnly },   
     { path: routes.documents, component: Documents, layout: HeadSideLayout},
     { path: '/*', component: NotFounded, layout:HeaderOnly },
 ];
@@ -36,7 +37,7 @@ const publicRoutes = [
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
     { path: routes.saveposts, component: SavePosts },
-    { path: routes.flashcard, component: FlashCardPage, layout: HeaderOnly },
+  
     { path: routes.flashcardDeck, component: FlashCard, layout: HeaderOnly },
     { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: routes.friend, component: Friend },

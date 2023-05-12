@@ -12,7 +12,7 @@ const routes = {
     login: '/login',
     user: '/user/', // shortcut for navigate only
     updateInfo: '/updateinfor',
-    flashcard: '/flashcard',
+    flashcard: '/flashcard/',
     flashcardDeck:'/flashcard/:id',
     userUpdate: '/user/updateinfor',
     createStory: '/createstory',

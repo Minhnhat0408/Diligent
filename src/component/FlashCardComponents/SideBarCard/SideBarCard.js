@@ -28,28 +28,14 @@ function SideBarCard({listDeck, handlePick, creatDeck}) {
 
     return (
         <>
-        {/* addCard */}
-        <div className={cx('addCard')}>
-            <div className={cx('boxSearch')}>
-                <input type='text' className={cx('searchCard')} 
-                // value={nameCard}
-                // onChange={(e) => creatDeck(e)}
-                placeholder="dang khong hoat dong"
-                />
-            </div>
-
-            <div className={cx('creatDeck')} onClick={() => handleAdd()}>
-            <FontAwesomeIcon icon={faSquarePlus} size="2xl" style={{color: "#4a628c",}} />
-            </div>
-            
-        </div>
+    
 
 
         {/* sideBar */}
         <div className={cx('sidebar')}>
-            <animated.div style={addCard} className={cx('newCard')}>
+            {/* <animated.div style={addCard} className={cx('newCard')}>
                 <NewCard creatDeck={creatDeck} handleAdd={handleAdd}/>
-            </animated.div>
+            </animated.div> */}
 
             <animated.div style={addCard} className={cx('boxSideBar')}>
             {listDeck.map((item, index) => {

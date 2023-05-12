@@ -137,7 +137,7 @@ const SpaceFlash = ({idDeck}) => {
             </div>
 
             {/* rightside */}
-          <div className={cx('rightside')}>
+          <div className={cx('rightside')}> 
                 <div className={cx('finishbox')}>
                     <div className={cx('text')}>
                         ĐÃ THUỘC

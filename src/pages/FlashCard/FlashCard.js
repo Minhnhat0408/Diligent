@@ -11,7 +11,7 @@ import {
 import { db } from '~/firebase';
 import { useState,useEffect } from 'react';
 import { useParams } from 'react-router';
-import { useSpringRef, useTransition, animated } from '@react-spring/web';
+;
 const cx = classNames.bind(styles);
 
 // const page 
@@ -20,27 +20,19 @@ function FlashCard() {
 
     const {id} = useParams();
     const [cards,setCards] = useState({});
-    let [listDeck, setLisDeck] = useState( [{age:1, name:'quyen'},
-        {age: 2, name: 'dung'},
-        {age: 3, name:'phuong'},
-        {age: 4, name:'minh'},
-        {age: 5, name: 'khai'},
-        {age: 6, name:'thuy'},
-        {age: 7, name:'ngoc'}]   
-    ) 
-
-    // useEffect(() => {
-    //     const unsubscribe = onSnapshot(
-    //         query(collection(db, 'flashcards', id, 'cards')), async (docs) => {
-    //             let tmp = [];
-    //             docs.forEach((doc) => {
-    //                 return {id:doc.id,front:doc.data().front, back:doc.data().back,pos:0}
-    //             });
-    //             setCards(tmp);
-    //         },
-    //     );
-    //     return () => unsubscribe();
-    // },[id])
+    let [listDeck, setLisDeck] = useState([])   
+    useEffect(() => {
+        const unsubscribe = onSnapshot(
+            query(collection(db, 'flashcards', id, 'cards')), async (docs) => {
+                let tmp = [];
+                docs.forEach((doc) => {
+                    return {id:doc.id,front:doc.data().front, back:doc.data().back,pos:0}
+                });
+                setCards(tmp);
+            },
+        );
+        return () => unsubscribe();
+    },[id])
     // const file1 = [
     //     {id: 1 , title: "day la the so 1", back: "mat sau the so 1", pos: 0 },
     //     {id: 2 , title: "day la the so 2", back: "mat sau the so 2", pos: 0 },
@@ -70,10 +62,8 @@ function FlashCard() {
     }
     return (
         <div className={cx('wrapper')}>
-
-            <SideBarCard listDeck={listDeck} handlePick={handlePick} creatDeck={creatDeck}/>
+            {/* <SideBarCard listDeck={listDeck} handlePick={handlePick} creatDeck={creatDeck}/> */}
             <SpaceFlash idDeck={idDeck}/>
-            
         </div>
     );
 }

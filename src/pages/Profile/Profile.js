@@ -111,16 +111,15 @@ function Profile() {
         });
     };
     const handleUpRatings = async () => {
-        if(pageUser.user_ratings.includes(user.uid)){
+        if (pageUser.user_ratings.includes(user.uid)) {
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: arrayRemove(user.uid),
             });
-        }else{
+        } else {
             await updateDoc(doc(db, 'users', id), {
-                user_ratings: [...pageUser.user_ratings,user.uid],
+                user_ratings: [...pageUser.user_ratings, user.uid],
             });
         }
-    
     };
     const handleMenuChange = (menuItem) => {
         switch (menuItem.type) {
@@ -170,7 +169,7 @@ function Profile() {
             alert(err);
         }
     };
-    console.log(pageUser?.user_ratings.includes(user.uid))
+
     // console.log(getTimeDiff(pageUser?.user_banUntil.toMillis(),new Date()))
     return (
         <>
@@ -225,13 +224,9 @@ function Profile() {
                                 </div>
                                 <div className={cx('stats_num')}>
                                     <FontAwesomeIcon
-                                        icon={
-                                            pageUser.user_ratings.includes(user.uid)
-                                                ? solidStar
-                                                : regularStar
-                                        }
+                                        icon={pageUser.user_ratings.includes(user?.uid) ? solidStar : regularStar}
                                         onClick={handleUpRatings}
-                                        className={cx('stars',{active:pageUser.user_ratings.includes(user.uid)})}
+                                        className={cx('stars', { active: pageUser.user_ratings.includes(user?.uid) })}
                                     />
                                     <p className={cx('number')}>{pageUser.user_ratings.length}</p>
                                 </div>
