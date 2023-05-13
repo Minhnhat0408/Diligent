@@ -4,10 +4,9 @@
     min-height: 100vh;
     overflow: hidden;
     padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
-    padding-right: 280px;
-    display:flex;
-    justify-content: center;
-    align-items: center;
+    padding-right: 40vh;
+    position:relative;
+ 
 }
 
 .flash{
@@ -130,7 +129,6 @@
 .progresscontain{
     height: 200px;
     width: 300px;
-    position: relative;
     display: flex;
     // justify-content: center;
     text-align: center;

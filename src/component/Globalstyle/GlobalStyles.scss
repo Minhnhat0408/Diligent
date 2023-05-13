@@ -2,11 +2,10 @@
 @import 'normalize.css';
 :root {
     // Default Layout
-    --defaultLayout-header-height: 96px;
-    --defaultLayout-header-width: 1150px;
+    --defaultLayout-header-height: 10vh;
     --defaultLayout-horizontal-spacer: 20px;
-    --defaultLayout-sidebar-left-width: 280px;
-    --defaultLayout-sidebar-right-width: 340px;
+    --defaultLayout-sidebar-left-width: 16vw;
+    --defaultLayout-sidebar-right-width: 20vw;
     --story-height: 200px;
     --story-width: 125px;
 

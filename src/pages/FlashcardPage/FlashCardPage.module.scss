@@ -28,15 +28,24 @@
     // cursor: grab;
 }
 .all {
+
     width: 60vw;
     flex: 1;
     display: flex;
+    flex-direction: column;
     flex-wrap: wrap;
   
     background-color: var(--dark-theme);
     border-radius: 15px;
     margin-bottom: 0;
     padding:2vh 1vw;
+    overflow-y: scroll;
+
+}
+.all-decks{
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
     overflow-y: scroll;
 
 }
@@ -49,13 +58,40 @@
     background-color: bisque;
     width: 16vh;
     height: 21vh;  
+ 
+    flex-wrap: wrap;
+
     color:var(--text-color);
     display:flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    border-radius:1vh;
+    position: relative;
 }
-
-
+.info{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: 1vh;    
+    
+}
+.name{
+    font-size: 2vh;
+    font-weight: 600;
+}
+.ratings{
+    color:var(--primary-light)
+}
+.num{
+    margin-left: 10px;
+    margin-right: 20px;
+    color:var(--primary-light)
+}
+.time{
+    color: rgb(90, 90, 90);
+    font-size: 1.2rem;
+}
 .deck-full{
     display: flex;
     justify-content: space-evenly;
@@ -68,3 +104,180 @@
       flex-basis: 25%;
     }
   }
+
+  .search {
+    height: 5vh;
+    background-color: transparent !important;
+    border: 2px solid rgb(210, 211, 213);
+    position: relative;
+    border-radius: 20px;
+    padding-left: 16px;
+    display: flex;
+    width: 360px;
+    overflow: hidden;
+    input {
+        height: 100%;
+        font-size: 1.6rem;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        line-height: 22px;
+        padding: 12px 40px 12px 0;
+        caret-color: var(--light-theme);
+        flex: 1;
+        color: var(--text-color-dark);
+        font-family: var(--default-font-family);
+    }
+
+    input:not(:placeholder-shown) ~ .search-button .search-icon {
+        color: rgb(210, 211, 213);
+    }
+
+    &:focus-within {
+        border: 2px solid #eee;
+        box-shadow: 0 0 10px 0 #eee;
+    }
+}
+
+.search-title {
+    padding: 5px 12px;
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-color);
+    &.dark {
+        color: var(--text-color-dark);
+    }
+}
+
+.clear,
+.spinner {
+    color: #eee;
+    background-color: transparent;
+    position: absolute;
+    right: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.spinner {
+    // display: none;
+    // padding: 0;
+    // position: absolute;
+    // right: 60px;
+    // top: 30%;
+    // transform: translateY(-30%);
+    animation: spin 1s linear infinite;
+
+    @keyframes spin {
+        from {
+            transform: translateY(-50%) rotate(0deg);
+        }
+        to {
+            transform: translateY(-50%) rotate(360deg);
+        }
+    }
+}
+
+.search-button {
+    position: relative;
+    width: 52px;
+    height: 100%;
+    border-top-right-radius: var(--search-border-radius);
+    border-bottom-right-radius: var(--search-border-radius);
+    background-color: transparent;
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
+
+    &:active {
+        background-color: rgba(22, 24, 35, 0.06);
+    }
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        display: block;
+        width: 2px;
+        height: 60%;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgb(215, 215, 217);
+    }
+
+    .search-icon {
+        font-size: 1.8rem;
+        color: #eee;
+    }
+
+}
+
+.options{
+    display: flex;
+    align-items: center;
+    height: 6vh;
+    margin-bottom: 1vh;
+    justify-content: space-between;
+}
+.end{
+    position: relative;
+}
+.btn{
+    margin-left: 20px;
+}
+.filter{
+    width: 7vw;
+    font-size: 1.4rem;
+    font-weight: normal;
+}
+ .filter-opt{
+    position:absolute;
+    top:40px;
+    right: 0;
+    color: var(--text-color-dark);
+    width: 7vw;
+    border-bottom-left-radius: 15px ;
+    border-bottom-right-radius: 15px;
+    background-color: var(--dark-theme);
+    height: 112px;
+    overflow: hidden;
+    padding: 0 10px;
+    padding-top: 10px;
+    z-index: 5;
+    cursor:pointer;
+   
+    
+    &.show{
+        
+        animation: lengthen 0.8s ease forwards;
+    }
+    &.hide{
+       
+        animation: shorten 0.8s ease forwards;
+    }
+    & div{
+        padding-bottom: 10px;
+    }
+ }
+
+ @keyframes lengthen {
+    from{
+        display: none;
+        height: 0px;
+    }
+    to{
+        display: block;
+        height: 112px;
+    }
+ }
+
+ @keyframes shorten {
+    from{
+        display: block;
+       height: 146px;
+    }
+    to{
+        display: none;
+        height: 0px;
+    }
+ }

@@ -41,7 +41,7 @@ function Search() {
                 }, 500);
 
             };
-            fetchData(searchValue.trim());
+            fetchData(debounce);
         } else {
             setLoading(false);
             setSearchResult({ accounts: [], posts: [] });

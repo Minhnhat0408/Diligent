@@ -83,7 +83,7 @@ function SideBarLeft() {
 
             {/* More pages */}
             <div className={cx('menu-wrapper')}>
-                <h4 className={cx('menu-header')}>More pages</h4>
+                <h4 className={cx('menu-header')}>Daily Learning</h4>
                 <Calendar className={context.theme === 'dark' && 'dark'}/>
                 
             </div>

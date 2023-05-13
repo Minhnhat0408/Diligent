@@ -164,8 +164,11 @@ function Comment({ data, id, react }) {
             setUpdate(true);
         } else if (type === 'delete') {
             await deleteDoc(doc(db, 'posts', post.id, 'comments', id));
+            subComments.forEach(async (cmt) =>{
+                await deleteDoc(doc(db, 'posts', post.id, 'comments', cmt.id));
+            })
             await updateDoc(doc(db, 'posts', post.id), {
-                commentNumber: post.data.commentNumber - 1,
+                commentNumber: post.data.commentNumber - 1 - subComments.length,
             });
         }
     };
