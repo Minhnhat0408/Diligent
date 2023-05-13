@@ -36,32 +36,7 @@ function FlashCard() {
         });
         return () => unsubscribe();
     }, [id]);
-    // const file1 = [
-    //     {id: 1 , title: "day la the so 1", back: "mat sau the so 1", pos: 0 },
-    //     {id: 2 , title: "day la the so 2", back: "mat sau the so 2", pos: 0 },
-    //     {id: 3 , title: "day la the so 3", back: "mat sau the so 3", pos: 0 },
-    //     {id: 4 , title: "day la the so 4", back: "mat sau the so 4", pos: 0 },
-    //     {id: 5 , title: "day la the so 5", back: "mat sau the so 5", pos: 0 },
-    //     {id: 6 , title: "day la the so 6", back: "mat sau the so 6", pos: 0 },
-    //     {id: 7 , title: "day la the so 7", back: "mat sau the so 7", pos: 0 },
-    //     {id: 8 , title: "day la the so 8", back: "mat sau the so 8", pos: 0 },
-    // ]
 
-    // const file2 = [
-    //     {id: 1 , title: "day la the so 1.2", back: "mat sau the so 1", pos: 0 },
-    //     {id: 2 , title: "day la the so 2.2", back: "mat sau the so 2", pos: 0 },
-    //     {id: 3 , title: "day la the so 3.2", back: "mat sau the so 3", pos: 0 },
-
-    // ]
-
-    // const [idDeck, setIdDeck] = useState(0);
-    // const handlePick = (item) => {
-    //     setIdDeck(item.age - 1);
-    // };
-    // const creatDeck = (deck) => {
-    //     setLisDeck([deck, ...listDeck]);
-    //     console.log(listDeck);
-    // };
     return (
         <>
             {deck && (

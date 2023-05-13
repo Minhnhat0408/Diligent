@@ -23,6 +23,7 @@ const CardFlip = ({ card, getOldPos0 }) => {
         setPos0(card.pos === 0);
         setPos1(card.pos === 1);
         setPos2(card.pos === 2);
+        setFlip(true);
     }, [card.pos]);
 
     return (

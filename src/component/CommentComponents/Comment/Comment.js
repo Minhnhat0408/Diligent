@@ -203,10 +203,13 @@ function Comment({ data, id, react }) {
                             {data.user.name}
                         </h5>
                         <div className={cx('row')}>
-                            <div className={cx('message')}>
-                                <div className={cx('content')}>{parse(text, { replace })}</div>
+                            <div className={cx('m')}>
+                                {text && <div className={cx('message')}>
+                                    <div className={cx('content')}>{parse(text, { replace })}</div>
+                                </div>}
+                                 {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
                             </div>
-                            <Menu
+                             <Menu
                                     // chinh ben trai / chieu cao so vs ban dau
                                     item={ data.user.id === user?.uid ? ([
                                         {
@@ -235,7 +238,7 @@ function Comment({ data, id, react }) {
                                     </div>
                                 </Menu>
                         </div>
-                        {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
+                       
 
                         <div className={cx('actions')}>
                             <span

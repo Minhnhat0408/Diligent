@@ -212,7 +212,7 @@ function MyComment({ tag = null, update = null }) {
                                 setText('');
                                 setSelectedFile(null);
                                 setImagePreview(null);
-                                if(text !== '' && userData.user_status !== 'ban') {
+                                if(userData.user_status !== 'ban') {
                                     if (update) {
                                         handleUpdate({
                                             text: text,

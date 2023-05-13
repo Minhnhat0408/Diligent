@@ -13,6 +13,7 @@ import {
     faMagnifyingGlass,
     faPlusCircle,
     faSpinner,
+    faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -20,6 +21,8 @@ import { useDebounce } from '~/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar } from '@fortawesome/free-regular-svg-icons';
 import Button from '~/component/Button/Button';
+import { RingLoader } from 'react-spinners';
+import Image from '~/component/Image/Image';
 const cx = classNames.bind(styles);
 
 let fakeArr = new Array(15).fill(1);
@@ -28,7 +31,7 @@ function FlashCardPage() {
     const context = useContext(ThemeContext);
     const [userDecks, setUserDecks] = useState();
     const [fullDecks, setFullDecks] = useState({ origin: [], display: [] });
-    const { user } = UserAuth();
+    const { user, userData } = UserAuth();
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(false);
     const inputRef = useRef();
@@ -36,7 +39,8 @@ function FlashCardPage() {
     const [filter, setFilter] = useState('');
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
-
+    const [showAddDeck, setShowAddDeck] = useState(false);
+    const title = useRef();
     const onAnimationEnd = () => {
         if (!animation) setShowFilter(false);
     };
@@ -143,7 +147,7 @@ function FlashCardPage() {
             setSearchValue(value);
         }
     };
-
+    console.log(fullDecks);
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('user-decks')}>
@@ -193,10 +197,21 @@ function FlashCardPage() {
                         </button>
                     </div>
                     <div className={cx('end')}>
-                        <Button dark={context.theme === 'dark'} className={cx('btn')} primary leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}>
+                        <Button
+                            dark={context.theme === 'dark'}
+                            className={cx('btn')}
+                            primary
+                            onClick={() => setShowAddDeck(true)}
+                            leftIcon={<FontAwesomeIcon icon={faPlusCircle} />}
+                        >
                             Add Deck
                         </Button>
-                        <Button outline  className={cx('filter')} dark={context.theme === 'dark'} onClick={() => setAnimation(!animation)}>
+                        <Button
+                            outline
+                            className={cx('filter')}
+                            dark={context.theme === 'dark'}
+                            onClick={() => setAnimation(!animation)}
+                        >
                             {filter ? <span>{filter}</span> : <span>Filter</span>}
                         </Button>
                         {showFilter && (
@@ -208,9 +223,12 @@ function FlashCardPage() {
                                     onClick={() => {
                                         setAnimation(!animation);
                                         setFilter('Latest Decks');
-                                        // setComments((prev) =>
-                                        //     prev.sort((a, b) => b.data.time.seconds - a.data.time.seconds),
-                                        // );
+                                        setFullDecks({
+                                            origin: fullDecks.origin,
+                                            display: fullDecks.display.sort(
+                                                (a, b) => b.data.createdAt.seconds - a.data.createdAt.seconds,
+                                            ),
+                                        });
                                     }}
                                 >
                                     Latest Decks
@@ -219,7 +237,12 @@ function FlashCardPage() {
                                     onClick={() => {
                                         setAnimation(!animation);
                                         setFilter('Popular');
-                                        // setComments((prev) => prev.sort((a, b) => b.data.like.count - a.data.like.count));
+                                        setFullDecks({
+                                            origin: fullDecks.origin,
+                                            display: fullDecks.display.sort(
+                                                (a, b) => b.data.ratings.length - a.data.ratings.length,
+                                            ),
+                                        });
                                     }}
                                 >
                                     Popular
@@ -228,9 +251,12 @@ function FlashCardPage() {
                                     onClick={() => {
                                         setAnimation(!animation);
                                         setFilter('Oldest Decks');
-                                        // setComments((prev) =>
-                                        //     prev.sort((a, b) => a.data.time.seconds - b.data.time.seconds),
-                                        // );
+                                        setFullDecks({
+                                            origin: fullDecks.origin,
+                                            display: fullDecks.display.sort(
+                                                (a, b) => a.data.createdAt.seconds - b.data.createdAt.seconds,
+                                            ),
+                                        });
                                     }}
                                 >
                                     Oldest Decks
@@ -263,6 +289,73 @@ function FlashCardPage() {
                     })}
                 </div>
             </div>
+            {showAddDeck && (
+                <div className={cx('pop-up')}>
+                    {loading && (
+                        <div className="pop-up loader">
+                            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                        </div>
+                    )}
+
+                    <div className={cx('create-box', { dark: context.theme === 'dark' })}>
+                        <div className={cx('header')}>
+                            <div></div>
+                            <h1 className={cx('title')}>Add Deck</h1>
+                            <div className={cx('out')} onClick={() => setShowAddDeck(false)}>
+                                <FontAwesomeIcon icon={faXmark} />
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <div className={cx('body', { dark: context.theme === 'dark' })}>
+                            <div className={cx('user-info')}>
+                                <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
+
+                                <h5 className={cx('username')}>{userData.user_name}</h5>
+                            </div>
+                            <textarea
+                                placeholder="What have been questioning you ?"
+                                ref={title}
+                                // onFocus={() => {
+                                //     setInvalid(false);
+                                // }}
+                                // onBlur={() => {
+                                //     setTextFinal((prev) => {
+                                //         return { ...prev, title: titleContent.current.value };
+                                //     });
+                                // }}
+                                className={cx('input', 'inp-title')}
+                            />
+                            <textarea
+                                placeholder="What have been questioning you ?"
+                                ref={title}
+                                // onFocus={() => {
+                                //     setInvalid(false);
+                                // }}
+                                // onBlur={() => {
+                                //     setTextFinal((prev) => {
+                                //         return { ...prev, title: titleContent.current.value };
+                                //     });
+                                // }}
+                                className={cx('input')}
+                            />
+                        </div>
+
+                        <Button
+                            primary
+                            // disabled={
+                            //     imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value
+                            // }
+                            dark={context.theme === 'dark'}
+                            // onClick={handlePost}
+                            className={cx('upload')}
+                        >
+                            Upload
+                        </Button>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

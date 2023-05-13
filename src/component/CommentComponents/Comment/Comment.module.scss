@@ -80,6 +80,10 @@
         }
     }
 }
+.m{
+    display: flex;
+    flex-direction: column;
+}
 .options {
     width: 30px;
     height: 30px;
@@ -103,7 +107,7 @@
     padding: 4px 8px;
     padding-top: 8px;
     max-width: 637px;
-
+    width: fit-content;
     p {
         font-size: 1.4rem;
     }

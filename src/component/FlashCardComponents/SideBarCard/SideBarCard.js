@@ -13,12 +13,15 @@ import { UserAuth } from '~/contexts/authContext';
 import Button from '~/component/Button/Button';
 import { ThemeContext } from '~/contexts/Context';
 import { useContext } from 'react';
+import PopUp from '../PopUp/PopUp';
 const cx = classNames.bind(styles);
 
-function SideBarCard({ deck,cards }) {
-    const [showList,setShowList] = useState(false)
+function SideBarCard({ deck, cards }) {
+    const [showList, setShowList] = useState(false);
     const { user } = UserAuth();
     const context = useContext(ThemeContext);
+    const [updateCard, setUpdateCard] = useState(false);
+    const [addCard, setAddCard] = useState(false);
     // const apiAddCard = useSpringRef();
     // const addCard = useSpring({
     //     ref:apiAddCard,
@@ -46,13 +49,13 @@ function SideBarCard({ deck,cards }) {
             });
         }
     };
-    const handleDeleteCards = async(id) =>{
-        await deleteDoc(doc(db,'flashcards',deck.id,'cards',id ))
+    const handleDeleteCards = async (id) => {
+        await deleteDoc(doc(db, 'flashcards', deck.id, 'cards', id));
         await updateDoc(doc(db, 'flashcards', deck.id), {
-            cardNumber: deck.data.cardNumber -1,
+            cardNumber: deck.data.cardNumber - 1,
         });
-    }
-    return (  
+    };
+    return (
         <div className={cx('wrapper')}>
             <div className={cx('info')}>
                 <h4 className={cx('title')}>{deck.data.name}</h4>
@@ -83,26 +86,42 @@ function SideBarCard({ deck,cards }) {
                     <Button
                         className={cx('btn')}
                         dark={context.theme === 'dark'}
+                        onClick={() => setAddCard(true)}
                         primary
                     >
                         Add
                     </Button>
-                    <Button className={cx('btn')} onClick={() => setShowList(!showList)} dark={context.theme === 'dark'} outline>
+                    <Button
+                        className={cx('btn')}
+                        onClick={() => setShowList(!showList)}
+                        dark={context.theme === 'dark'}
+                        outline
+                    >
                         List
                     </Button>
                 </div>
             </div>
-            {showList && <div className={cx('list')}>
-                {
-                    cards.map((card) =>{
-                        return <div className={cx('card')}>
-                            <span className={cx('front')}>{card.front}</span>
-                            <span className={cx('back')}>{card.back.content}</span>
-                            <FontAwesomeIcon icon={faXmark} onClick={() => handleDeleteCards(card.id)}  className={cx('delete')}/>
-                        </div>
-                    })
-                }
-                </div>}
+            {showList && (
+                <div className={cx('list')}>
+                    {cards.map((card) => {
+                        return (
+                            <div className={cx('card')}>
+                                <div className={cx('card-content')} onClick={() => setUpdateCard(true)} >
+                                <span className={cx('front')}>{card.front}</span>
+                                <span className={cx('back')} >{card.back.content}</span>
+                                </div>
+                                <FontAwesomeIcon
+                                    icon={faXmark}
+                                    onClick={() => handleDeleteCards(card.id)}
+                                    className={cx('delete')}
+                                />
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+            {addCard && <PopUp setPopup={setAddCard} />}
+            {updateCard && <PopUp setPopup={setUpdateCard}/>}
         </div>
     );
 }
