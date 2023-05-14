@@ -122,7 +122,7 @@ function Stories({ stories }) {
                     <div className={cx('info')}>
                         <h5 className={cx('username')}>{stories[activeStoryIndex].username}</h5>
                         <p className={cx('time')}>
-                            {getTimeDiff(Date.now(), stories[activeStoryIndex].time.seconds * 1000)} ago
+                            {getTimeDiff(Date.now(), stories[activeStoryIndex]?.time?.seconds * 1000)} ago
                         </p>
                     </div>
                 </div>

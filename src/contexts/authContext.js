@@ -154,7 +154,6 @@ export const AuthContextProvider = ({ children }) => {
     const googleSignIn = async () => {
         const response = await signInWithPopup(auth, provider);
         const repuser = response.user;
-        console.log(repuser.reload());
         const docs = await getDoc(doc(db, 'users', repuser.uid));
 
         if (!docs.data()) {

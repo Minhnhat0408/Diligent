@@ -23,7 +23,7 @@ function Stories() {
         // Tính toán vị trí mới của stories
         const newTransX = transX - TRANSX;
         // Tăng currentIndex lên 1
-        currentIndex.current = Math.min(currentIndex.current + 1, stories.length - 1);
+        currentIndex.current = Math.min(currentIndex.current + 1, Object.keys(stories).length - 1);
         setTransX(newTransX);
     };
 
@@ -56,7 +56,7 @@ function Stories() {
         </div>
             {/*  */}
             {/* Nếu vị trí stories hiện tại không phải là vị trí cuối cùng, hiển thị nút điều hướng sang phải */}
-            {currentIndex.current < stories.length - 4 && (
+            {currentIndex.current < Object.keys(stories).length - 4 && (
                 <div className={cx('arrow-right', 'arrow')} onClick={handleClickRight}>
                     <FontAwesomeIcon icon={faArrowRight} />
                 </div>

@@ -87,6 +87,7 @@ function Header() {
                 break;
         }
     };
+
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
             <div className={cx('inner')}>
@@ -118,8 +119,8 @@ function Header() {
                         <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
                     </Link>
                     <Link
-                        to={routes.story}
-                        className={cx('middle-btn', { active: window.location.pathname === routes.story })}
+                        to={routes.story+user.uid}
+                        className={cx('middle-btn', { active: `/${window.location.pathname.split('/')[1]}/` === routes.story })}
                     >
                          <i className={`${styles.icon} fa-regular fa-bolt`}></i>
                     </Link>

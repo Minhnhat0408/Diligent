@@ -70,7 +70,7 @@ function Story() {
                     <StoryItem
                         title="Create Short"
                         detail="You can share a photo or write something"
-                        to="/   "
+                        to={routes.createStory}
                     />
                 </div>
                 <div className={cx('all-story')}>
