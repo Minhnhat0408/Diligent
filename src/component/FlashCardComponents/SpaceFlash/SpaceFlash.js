@@ -15,17 +15,33 @@ import {
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSpring, useSpringRef, useTransition, animated } from '@react-spring/web';
+import routes from '~/config/routes';
+import { Link } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
-    const [fp0, setFp0] = useState([]);
+    const [ fp0, setFp0] = useState([]);
     const [fp1, setFp1] = useState([]);
     const [fp2, setFp2] = useState([]);
     var [virPos, setVirPos] = useState(3);
+    const[showProgress,setShowProgress] = useState(false)
+    const [animation, setAnimation] = useState(false);
+    const [showAddDeck, setShowAddDeck] = useState(false);
+    const onAnimationEnd = () => {
+        if (!animation) setShowProgress(false);
+    };
 
+    useEffect(() => {
+        if (animation) setShowProgress(true);
+    }, [animation]);
     const handleRemember = (a) => {
         if (fp0.length === 1 && virPos === 0) {
             return;
+        }
+        
+        if(fp0.length <= 1) {
+            console.log(fp0)  
+            setAnimation(true);
         }
         getSetEffect();
 
@@ -44,6 +60,7 @@ const SpaceFlash = ({ cards }) => {
     };
 
     const getOldPos0 = (title) => {
+        console.log(title)
         getSetEffect();
         getTurnBack(title);
     };
@@ -60,6 +77,8 @@ const SpaceFlash = ({ cards }) => {
             virPos = 2;
             setVirPos(virPos);
         }
+        setAnimation(false);
+        setShowPer(false)
     };
 
     const getBack = () => {
@@ -73,29 +92,36 @@ const SpaceFlash = ({ cards }) => {
             getTurnBack(fp1[fp1.length - 1]);
         } else if (fp1.length === 0) {
             getTurnBack(fp2[fp2.length - 1]);
+        }else{
+            if (fp1[fp1.length - 1].order < fp2[fp2.length - 1].order) {
+                getTurnBack(fp1[fp1.length - 1]);
+            } else {
+                getTurnBack(fp2[fp2.length - 1]);
+            }
         }
-
-        if (fp1[fp1.length - 1].orders < fp2[fp2.length - 1].orders) {
-            getTurnBack(fp1[fp1.length - 1]);
-        } else {
-            getTurnBack(fp2[fp2.length - 1]);
-        }
+        
+        
         
     };
 
     const getSetEffect = () => {
         if (virPos === 0) {
             fp0.pop();
+           
         } else if (virPos === 1) {
             var current = fp1.pop();
             fp0.push(current);
             setFp0([...fp0]);
+        
         } else if (virPos == 2) {
             var current = fp2.pop();
             fp0.push(current);
             setFp0([...fp0]);
+        
         } else {
             console.log('roong');
+        
+
         }
     };
 
@@ -107,7 +133,7 @@ const SpaceFlash = ({ cards }) => {
         setShowPer(false);
 
     }, [])
-
+    console.log(fp0)
     const [showPer, setShowPer] = useState(false);
     const handlePull = () => {
         setShowPer(!showPer);
@@ -151,10 +177,11 @@ const SpaceFlash = ({ cards }) => {
                     );
                 })}
 
-                <div className={cx('boxshowper')}>
+                {showProgress&&
+                    <div className={cx('boxshowper',{ show: animation, hide: !animation })} onAnimationEnd={onAnimationEnd}>
                     {!showPer ? (
                         <div className={cx('showper')} onClick={() => handlePull()}>
-                            hoan thanh
+                            Congrats you have finished all your cards!!!
                         </div>
                     ) : (
                         <div className={cx('progresscontain')}>
@@ -174,10 +201,10 @@ const SpaceFlash = ({ cards }) => {
                                     />
                                 )}
                             </div>
-                            <div className={cx('buttonhoc')}>hoc tiep</div>
+                            <Link className={cx('buttonhoc')} to={routes.flashcard} >Continue</Link>
                         </div>
                     )}
-                </div>
+                </div>}
             </div>
 
             {/* rightside */}

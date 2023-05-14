@@ -1,11 +1,7 @@
-import { useState, useContext} from 'react';
+import { useState, useContext } from 'react';
 import classNames from 'classnames/bind';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faImages,
-    faPaperclip,
-    faUserTag,
-} from '@fortawesome/free-solid-svg-icons';
+import { faImages, faPaperclip, faUserTag } from '@fortawesome/free-solid-svg-icons';
 import 'tippy.js/themes/light.css';
 import 'tippy.js/dist/tippy.css';
 import { ThemeContext } from '~/contexts/Context';
@@ -18,26 +14,23 @@ import PostForm from '../PostForm/PostForm';
 
 const cx = classNames.bind(styles);
 
-function CreatePost() {
-    const [createBoxVisible, setCreateBoxVisible] = useState(false);
-    const { userData} = UserAuth();
-    
+function CreatePost({ show, setShow }) {
+    const { userData } = UserAuth();
+
     const context = useContext(ThemeContext);
     const handleClickCreateBox = () => {
-        setCreateBoxVisible(true);
+        setShow(true);
     };
 
     //Xử lí khi đóng create box
-   
+
     return (
         <>
             {userData ? (
                 <>
+                    {show && <PostForm onXmark={setShow} />}
                     <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                         {/* Create Post Box  */}
-                        {createBoxVisible && (
-                           <PostForm onXmark={setCreateBoxVisible}/>
-                        )}
 
                         <div className={cx('header')}>
                             <i className="fa-light fa-pen"></i>
@@ -64,7 +57,6 @@ function CreatePost() {
                             </div>
                         </div>
                     </div>
-                   
                 </>
             ) : (
                 <div className="pop-up loader">

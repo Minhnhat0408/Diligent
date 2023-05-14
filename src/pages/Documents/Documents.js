@@ -30,7 +30,7 @@ const cx = classNames.bind(styles);
 
 function Documents() {
     const [uploadFileBox, setUploadFileBox] = useState(false);
-    const [documents, setDocuments] = useState();
+    const [documents, setDocuments] = useState({origin:[],display:[]});
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
@@ -72,7 +72,9 @@ function Documents() {
             };
             fetchData(searchValue.trim());
         } else {
+            setDocuments({ origin: documents.origin, display: documents.origin });
             setLoading(false);
+        
         }
     }, [debounce]);
     useEffect(() => {

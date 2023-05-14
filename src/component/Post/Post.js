@@ -175,7 +175,7 @@ function Post() {
                 savePost(post.id, post.data);
                 break;
             case 'delete':
-                deletePost(post.id);
+                deletePost(post.id,post.data.user.id);
                 break;
             case 'update':
                 setUpdatePost(true);

@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
-import { collection, doc, updateDoc, serverTimestamp, addDoc, arrayRemove } from 'firebase/firestore';
+import { collection, doc, updateDoc, serverTimestamp, addDoc, arrayRemove, query, where, getDocs } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
@@ -52,6 +52,7 @@ function Profile() {
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState();
+    const [createBoxVisible, setCreateBoxVisible] = useState(false);
 
     useEffect(() => {
         if (user?.uid !== id) {
@@ -169,6 +170,16 @@ function Profile() {
             alert(err);
         }
     };
+    const handleNavigateChat = async() => {
+        const q = query(
+            collection(db, 'chats'),
+            where('id1', 'in', [user.uid, id]),
+            where('id2', 'in', [user.uid, id]),
+        );
+        const a = await getDocs(q);
+        let tmp = a.docs[0]?.id;
+        navigate(routes.chatroom + tmp)
+    }
 
     // console.log(getTimeDiff(pageUser?.user_banUntil.toMillis(),new Date()))
     return (
@@ -232,7 +243,7 @@ function Profile() {
                                 </div>
 
                                 <div className={cx('stats_num')}>
-                                    <h4>10</h4>
+                                    <h4>{pageUser.user_decks}</h4>
                                     <p>Decks</p>
                                 </div>
                             </div>
@@ -243,10 +254,10 @@ function Profile() {
                                             disabled={ban}
                                             className={cx('btn')}
                                             dark={context.theme === 'dark'}
-                                            onClick={() => navigate(routes.flashcard)}
+                                            onClick={() => setCreateBoxVisible(true)}
                                             primary
                                         >
-                                            Create
+                                            Post
                                         </Button>
                                         <Button
                                             xs
@@ -261,9 +272,10 @@ function Profile() {
                                             disabled={ban}
                                             className={cx('btn')}
                                             dark={context.theme === 'dark'}
+                                            onClick={() => navigate(routes.flashcard)}
                                             outline
                                         >
-                                            Edit
+                                            Learn
                                         </Button>
                                     </>
                                 ) : (
@@ -324,12 +336,10 @@ function Profile() {
                                                 </Button>
                                                 <Button
                                                     xs
-                                                    disabled={pageUser.user_status === 'ban' || ban}
+                                                    disabled={ disabled !== 'Friend' ||pageUser.user_status === 'ban' || ban}
                                                     outline
                                                     dark={context.theme === 'dark'}
-                                                    onClick={() => {
-                                                        navigate(routes.chat);
-                                                    }}
+                                                    onClick={handleNavigateChat}
                                                     className={cx('btn')}
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
@@ -424,7 +434,7 @@ function Profile() {
                         )
                     ) : (
                         <div className={cx('content')}>
-                            {user && <CreatePost />}
+                            {user && <CreatePost show={createBoxVisible} setShow={setCreateBoxVisible} />}
                             {userPosts &&
                                 userPosts.map((post) => {
                                     return (

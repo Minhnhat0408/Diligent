@@ -72,8 +72,8 @@ export const AuthContextProvider = ({ children }) => {
             console.log('fetch user list first time');
             const q = query(userRef, orderBy('user_name'));
             const docs = await getDocs(q);
-            docs.forEach((doc) => {
-                data.push({ id: doc.id, data: doc.data() });
+            docs.forEach(async (d) => {
+                data.push({ id: d.id, data: d.data() });
             });
             setUsersList(data);
         }
@@ -121,6 +121,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_friends: [],
                 user_postNumber: 0,
                 user_ratings:[],
+                user_decks:0,
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
