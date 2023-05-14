@@ -39,67 +39,74 @@ export const report = {
     },
 };
 export const FILTER_OPTIONS = [
-   
-    { icon: <FontAwesomeIcon icon={faArrowUp} />, title: 'Latest',type:'latest', tick:false, },
-    { icon: <FontAwesomeIcon icon={faArrowDown} />, title: 'Oldest',type:'oldest', tick:false, },
+    { icon: <FontAwesomeIcon icon={faArrowUp} />, title: 'Latest', type: 'latest', tick: false },
+    { icon: <FontAwesomeIcon icon={faArrowDown} />, title: 'Oldest', type: 'oldest', tick: false },
     {
         icon: <FontAwesomeIcon icon={faDownload} />,
         title: 'Downloads',
         type: 'downloads',
-        tick:false,
+        tick: false,
     },
 ];
 export const CATEGORY_OPTIONS = [
     {
-        title: 'Tiếng Nhật',
+        title: 'Ngoại ngữ',
         children: {
-            title: 'Tiếng Nhật',
+            title: 'Ngoại ngữ',
             data: [
                 {
-                    title: 'Từ vựng',
+                    title: 'Tiếng Nhật',
+                    children: {
+                        title: 'Tiếng Nhật',
+                        data: [
+                            {
+                                title: 'Từ vựng',
+                            },
+                            {
+                                title: 'Ngữ pháp',
+                            },
+                            {
+                                title: 'Kanji',
+                            },
+                            {
+                                title: 'Hiragana - Katakana',
+                            },
+                            {
+                                title: 'Phiên âm',
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Ngữ pháp',
+                    title: 'Tiếng Anh',
+                    children: {
+                        title: 'Tiếng Anh',
+                        data: [
+                            {
+                                title: 'Từ vựng',
+                            },
+                            {
+                                title: 'Ngữ pháp',
+                            },
+                            {
+                                title: 'Phiên âm',
+                            },
+                        ],
+                    },
                 },
                 {
-                    title: 'Kanji',
-                },
-                {
-                    title: 'Hiragana - Katakana',
-                },
-                {
-                    title: 'Phiên âm',
-                },
-            ],
-        },
-    },
-    {
-        title: 'Tiếng Anh',
-        children: {
-            title: 'Tiếng Anh',
-            data: [
-                {
-                    title: 'Từ vựng',
-                },
-                {
-                    title: 'Ngữ pháp',
-                },
-                {
-                    title: 'Phiên âm',
-                },
-            ],
-        },
-    },
-    {
-        title: 'Tiếng Hàn',
-        children: {
-            title: 'Tiếng Hàn',
-            data: [
-                {
-                    title: 'Từ vựng',
-                },
-                {
-                    title: 'Ngữ pháp',
+                    title: 'Tiếng Hàn',
+                    children: {
+                        title: 'Tiếng Hàn',
+                        data: [
+                            {
+                                title: 'Từ vựng',
+                            },
+                            {
+                                title: 'Ngữ pháp',
+                            },
+                        ],
+                    },
                 },
             ],
         },
@@ -131,9 +138,9 @@ export const CATEGORY_OPTIONS = [
         },
     },
     {
-        title: 'Physics',
+        title: 'Vật lý',
         children: {
-            title: 'Physics',
+            title: 'Vật lý',
             data: [
                 {
                     title: 'Cơ học',
@@ -157,9 +164,9 @@ export const CATEGORY_OPTIONS = [
         },
     },
     {
-        title: 'Chemistry',
+        title: 'Hóa học',
         children: {
-            title: 'Chemistry',
+            title: 'Hóa học',
             data: [
                 {
                     title: 'Vô cơ',
@@ -210,6 +217,69 @@ export const CATEGORY_OPTIONS = [
                 },
                 {
                     title: 'Sinh - Hóa',
+                },
+            ],
+        },
+    },
+    {
+        title: 'IT',
+        children: {
+            title: 'IT',
+            data: [
+                {
+                    title: 'Ngôn ngữ',
+                    children: {
+                        title: 'Ngôn ngữ',
+                        data: [
+                            {
+                                title: 'C/C++',
+                            },
+                            {
+                                title: 'Java',
+                            },
+                            {
+                                title: 'Javascript',
+                            },
+                            {
+                                title: 'HTML/CSS',
+                            },
+                            {
+                                title: 'Python',
+                            },
+                        ],
+                    },
+                },
+                {
+                    title: 'Môn học',
+                    children: {
+                        title: 'Môn học',
+                        data: [
+                            {
+                                title: 'Nhập môn lập trình',
+                            },
+                            {
+                                title: 'Lập trình nâng cao',
+                            },
+                            {
+                                title: 'Cấu giải',
+                            },
+                            {
+                                title: 'LT hướng đối tượng',
+                            },
+                            {
+                                title: 'Cơ sở dữ liệu',
+                            },
+                            {
+                                title: 'Kiểm thử',
+                            },
+                            {
+                                title: 'Web',
+                            },
+                            {
+                                title: 'Mobile App',
+                            },
+                        ]
+                    }
                 },
             ],
         },
