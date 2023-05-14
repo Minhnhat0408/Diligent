@@ -49,7 +49,7 @@ function Stories() {
 
             {/* Hiển thị các stories */}
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
-                <Story icon="faPlus" username="Add story" to="/createStory" />
+                <Story icon="faPlus" username="Add Shorts" to={routes.createStory}/>
                 {Object.keys(stories).map((key, i) => {
                     return <Story img={stories[key][0].data.user.avatar} username={stories[key][0].data.user.name} bg={stories[key][0].data.media[0]} bgColor={stories[key][0].data.content.bgColor} to={routes.story + key} />;
                 })}

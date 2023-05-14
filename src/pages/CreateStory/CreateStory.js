@@ -233,7 +233,7 @@ function CreateStory() {
                 </div>
             )}
             <div className={cx('sidebar')}>
-                <h1 className={cx('header')}>Your Story</h1>
+                <h1 className={cx('header')}>Your Shorts</h1>
                 <hr />
                 <div className={cx('info')}>
                     <Image src={userData.user_avatar} className={cx('avatar')} alt="avatar" />
@@ -295,7 +295,7 @@ function CreateStory() {
                                 <div className={cx('icon')}>
                                     <i class="fa-regular fa-image"></i>
                                 </div>
-                                <h5 className={cx('title')}>Create image/video story</h5>
+                                <h5 className={cx('title')}>Create image/video short</h5>
                             </div>
                         </label>
 
@@ -312,7 +312,7 @@ function CreateStory() {
                             <div className={cx('icon')}>
                                 <i class="fa-solid fa-font-case"></i>
                             </div>
-                            <h5 className={cx('title')}>Create text story</h5>
+                            <h5 className={cx('title')}>Create text short</h5>
                         </div>
                     </>
                 )}

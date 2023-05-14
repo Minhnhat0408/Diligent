@@ -64,17 +64,17 @@ function Story() {
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
-                <h1 className={cx('header')}>Story</h1>
+                <h1 className={cx('header')}>Shorts</h1>
                 <div className={cx('my-story')} to="/createstory">
-                    <h3 className={cx('title')}>Your Story</h3>
+                    <h3 className={cx('title')}>Your Shorts</h3>
                     <StoryItem
-                        title="Create story"
+                        title="Create Short"
                         detail="You can share a photo or write something"
-                        to="/createstory"
+                        to="/   "
                     />
                 </div>
                 <div className={cx('all-story')}>
-                    <h3 className={cx('title')}>All Story</h3>
+                    <h3 className={cx('title')}>All Shorts</h3>
                     {Object.keys(stories).map((key, i) => {
                         return (
                             <div onClick={() => navigate(routes.story + key)} key={key}>

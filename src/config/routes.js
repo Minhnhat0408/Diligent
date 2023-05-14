@@ -8,15 +8,15 @@ const routes = {
     chatroom: '/chat/', //shortcut
     friend: '/friend',
     setting: '/setting',
-    storyPage: '/story/:id',
-    story:'/story/',//shortcut
+    storyPage: '/short/:id',
+    story:'/short/',//shortcut
     login: '/login',
     user: '/user/', // shortcut for navigate only
     updateInfo: '/updateinfor',
     flashcard: '/flashcard/',
     flashcardDeck:'/flashcard/:id',
     userUpdate: '/user/updateinfor',
-    createStory: '/createstory',
+    createStory: '/createshort',
     saveposts: '/saves/:id',
     saves: '/saves/', // shortcut for save
     notFound: '/notfound',
