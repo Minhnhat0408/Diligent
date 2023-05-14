@@ -84,6 +84,7 @@ function SideBarCard({ deck, cards }) {
                 </div>
                 <div className={cx('options')}>
                     <Button
+                        disabled={user.uid !== deck.data.contributor.id}
                         className={cx('btn')}
                         dark={context.theme === 'dark'}
                         onClick={() => setAddCard(true)}
@@ -120,8 +121,8 @@ function SideBarCard({ deck, cards }) {
                     })}
                 </div>
             )}
-            {addCard && <PopUp setPopup={setAddCard} />}
-            {updateCard && <PopUp setPopup={setUpdateCard}/>}
+            {addCard && <PopUp setPopup={setAddCard}  />}
+            {updateCard && <PopUp setPopup={setUpdateCard} />}
         </div>
     );
 }

@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './FlashCardPage.module.scss';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import { arrayUnion, collection, doc, getDocs, query, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, doc, getDocs, query, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { Slide } from 'react-slideshow-image';
@@ -40,7 +40,9 @@ function FlashCardPage() {
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [showAddDeck, setShowAddDeck] = useState(false);
+    const [invalid,setInvalid] = useState(false)
     const title = useRef();
+    const description = useRef()
     const onAnimationEnd = () => {
         if (!animation) setShowFilter(false);
     };
@@ -147,7 +149,33 @@ function FlashCardPage() {
             setSearchValue(value);
         }
     };
-    console.log(fullDecks);
+    const handleCreateDeck = async () =>{
+        if(title.current.value === '' || description.current.value === '' )
+        {
+            setInvalid(true)
+        }else{
+            setLoading(true)
+            await addDoc(collection(db,'flashcards'),{
+                name:title.current.value,
+                description:description.current.value,
+                contributor:{
+                    id:user.uid,
+                    name: userData.user_name,
+                    ava: userData.user_avatar
+                },
+                ratings:[],
+                cardNumber:0,
+                learners:[user.uid],
+                createdAt:serverTimestamp(),
+            })
+            setLoading(false);
+            title.current.value =''
+            description.current.value = ''
+            setShowAddDeck(false);
+        }
+        
+    }
+
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('user-decks')}>
@@ -315,30 +343,30 @@ function FlashCardPage() {
                                 <h5 className={cx('username')}>{userData.user_name}</h5>
                             </div>
                             <textarea
-                                placeholder="What have been questioning you ?"
+                                placeholder={invalid ? "This field is required" :"Type the name of your deck"}
                                 ref={title}
-                                // onFocus={() => {
-                                //     setInvalid(false);
-                                // }}
+                                onFocus={() => {
+                                    setInvalid(false);
+                                }}
                                 // onBlur={() => {
                                 //     setTextFinal((prev) => {
                                 //         return { ...prev, title: titleContent.current.value };
                                 //     });
                                 // }}
-                                className={cx('input', 'inp-title')}
+                                className={cx('input', 'inp-title',{invalid:invalid})}
                             />
                             <textarea
-                                placeholder="What have been questioning you ?"
-                                ref={title}
-                                // onFocus={() => {
-                                //     setInvalid(false);
-                                // }}
+                                placeholder={invalid ? "This field is required" :"Type the description "}
+                                ref={description}
+                                onFocus={() => {
+                                    setInvalid(false);
+                                }}
                                 // onBlur={() => {
                                 //     setTextFinal((prev) => {
                                 //         return { ...prev, title: titleContent.current.value };
                                 //     });
                                 // }}
-                                className={cx('input')}
+                                className={cx('input',{invalid:invalid})}
                             />
                         </div>
 
@@ -348,7 +376,7 @@ function FlashCardPage() {
                             //     imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value
                             // }
                             dark={context.theme === 'dark'}
-                            // onClick={handlePost}
+                            onClick={handleCreateDeck}
                             className={cx('upload')}
                         >
                             Upload

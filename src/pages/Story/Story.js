@@ -9,109 +9,58 @@ import { collection, deleteDoc, doc, getDocs, query, serverTimestamp } from 'fir
 import { db } from '~/firebase';
 import { useEffect } from 'react';
 import getTimeDiff from '~/utils/timeDiff';
+import { useNavigate, useParams } from 'react-router-dom';
+import routes from '~/config/routes';
 const cx = classNames.bind(styles);
 
 function Story() {
     const context = useContext(ThemeContext);
-    const { user } = UserAuth();
-
+    const { user, stories } = UserAuth();
+    const { id } = useParams();
     const [storiesData, setStoriesData] = useState([]);
     const [myStories, setMyStories] = useState(null);
     const [hasFetchedStories, setHasFetchedStories] = useState(false);
-
-    async function fetchStories() {
-        const q = query(collection(db, 'stories'));
-        const querySnapshot = await getDocs(q);
-        const docs = querySnapshot.docs.map((doc) => ({
-            id: doc.id,
-            ...doc.data(),
-        }));
-        setStoriesData(docs);
-        const story = docs
-            .filter((story) => story.user.id === user.uid)
-            .map((story) => ({
-                url: story.media[0],
-                username: story.user.name,
-                time: story.time,
-                avatar: story.user.avatar,
-                posX: story.content.posX,
-                posY: story.content.posY,
-                paragraph: story.content.text,
-                bgColor: story.content.bgColor,
-                textColor: story.content.textColor,
-                text: story.content.text,
-                scale: story.scale,
-                duration: story.type == 'video' ? 15000 : 3000,
-                userId: story.user.id,
-                storyId: story.id,
-                type: story.type,
-            }));
-
-        const sortedStory = story.sort((a, b) => a.time.seconds - b.time.seconds);
-
-        setMyStories(sortedStory);
-        setHasFetchedStories(true);
-    }
+    const navigate = useNavigate();
 
     useEffect(() => {
-        fetchStories();
+        let story = [];
+        if (stories[id]) {
+            story = stories[id].map((str) => {
+                return {
+                    url: str.data.media[0],
+                    username: str.data.user.name,
+                    time: str.data.time,
+                    avatar: str.data.user.avatar,
+                    posX: str.data.content.posX,
+                    posY: str.data.content.posY,
+                    paragraph: str.data.content.text,
+                    bgColor: str.data.content.bgColor,
+                    textColor: str.data.content.textColor,
+                    text: str.data.content.text,
+                    scale: str.data.scale,
+                    duration: str.data.type == 'video' ? 15000 : 3000,
+                    userId: str.data.user.id,
+                    storyId: str.id,
+                    type: str.data.type,
+                };
+            });
+        }
+
+        setMyStories(story);
         autoDelete();
-    }, [hasFetchedStories]);
-
-    const storyByUserId = Object.values(
-        storiesData.reduce((acc, story) => {
-            const val = {
-                userId: story.user.id,
-                username: story.user.name,
-                avatar: story.user.avatar,
-            };
-            if (!acc[val.userId]) {
-                acc[val.userId] = val;
-            }
-
-            return acc;
-        }, {}),
-    );
-
-    async function selectStory(id) {
-        const selectedStories = storiesData.filter((story) => story.user.id === id);
-        const sortedStory = selectedStories.sort((a, b) => a.time.seconds - b.time.seconds);
-
-        const formattedStories = sortedStory.map((story) => ({
-            url: story.media[0],
-            username: story.user.name,
-            time: story.time,
-            avatar: story.user.avatar,
-            posX: story.content.posX,
-            posY: story.content.posY,
-            paragraph: story.content.text,
-            bgColor: story.content.bgColor,
-            textColor: story.content.textColor,
-            text: story.content.text,
-            scale: story.scale,
-            duration: story.type == 'video' ? 15000 : 3000,
-            userId: story.user.id,
-            storyId: story.id,
-            type: story.type,
-        }));
-
-        setMyStories(formattedStories);
-    }
+    }, [id, stories]);
 
     // Xóa story đã đăng quá 1 ngày
     async function autoDelete() {
-        storiesData.map((story) => {
-            const time = getTimeDiff(Date.now(), story.time.seconds * 1000);
-            if (time.includes('days')) {
-                deleteDoc(doc(db, 'stories', story.id));
-            }
+        Object.keys(stories).map((key, i) => {
+            stories[key].forEach(async (str) => {
+                const time = getTimeDiff(Date.now(), str.data.time.seconds * 1000);
+                if (time.includes('days')) {
+                    await deleteDoc(doc(db, 'stories', str.id));
+                }
+            });
         });
     }
-
-    const handleDeleteStory = useCallback(() => {
-        fetchStories();
-    }, []);
-
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('sidebar')}>
@@ -126,23 +75,24 @@ function Story() {
                 </div>
                 <div className={cx('all-story')}>
                     <h3 className={cx('title')}>All Story</h3>
-                    {storyByUserId.map((data) => (
-                        <div onClick={() => selectStory(data.userId)} key={data.userId}>
-                            <StoryItem avatar={data.avatar} title={data.username} />
-                        </div>
-                    ))}
+                    {Object.keys(stories).map((key, i) => {
+                        return (
+                            <div onClick={() => navigate(routes.story + key)} key={key}>
+                                <StoryItem
+                                    avatar={stories[key][0].data.user.avatar}
+                                    title={stories[key][0].data.user.name}
+                                />
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
-
+            {/*  */}
             <div className={cx('display')}>
                 {/* phần hiển thị story  */}
-                {myStories != null && myStories[0] != undefined ? (
+                {myStories != null && myStories[0] !== undefined ? (
                     <>
-                        <Stories
-                            stories={myStories}
-                            key={JSON.stringify(myStories)}
-                            onDeleteStory={handleDeleteStory}
-                        />
+                        <Stories stories={myStories} key={JSON.stringify(myStories)} />
                     </>
                 ) : (
                     <img src="/static/media/no_content.2175207d31c5a7c61d02.png" alt="nothing-here" />

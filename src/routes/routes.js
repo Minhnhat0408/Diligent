@@ -24,7 +24,7 @@ const publicRoutes = [
     { path: routes.home, component: Home },
     { path: routes.login, component: Login, layout: null },
     { path: routes.setting, component: Setting },
-    { path: routes.story, component: Story, layout: HeaderOnly },
+    { path: routes.storyPage, component: Story, layout: HeaderOnly },
     { path: routes.postpage,component:PostPage,layout:HeaderOnly},
     { path: routes.postpagespecific,component:PostPage,layout:HeaderOnly},
     { path: routes.profile, component: Profile, layout: HeadSideLayout },
@@ -40,7 +40,7 @@ const privateRoutes = [
   
     { path: routes.flashcardDeck, component: FlashCard, layout: HeaderOnly },
     { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
-    { path: routes.friend, component: Friend },
+    { path: routes.friend, component: Friend }, 
     { path: routes.chat, component: Chat },
     { path: routes.userUpdate, component: UpdateProfile}
 ];

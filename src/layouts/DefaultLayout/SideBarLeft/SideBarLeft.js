@@ -68,7 +68,7 @@ function SideBarLeft() {
                     color="#fff"
                     onClick={() => {
              
-                        navigate(routes.story)}
+                        navigate(routes.story + user.uid)}
                     }
                 />
        

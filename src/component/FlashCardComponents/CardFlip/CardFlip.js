@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import styles from './CardFlip.module.scss';
 const cx = classNames.bind(styles);
 
-const CardFlip = ({ card, getOldPos0 }) => {
+const   CardFlip = ({ card, getOldPos0 }) => {
     const [flip, setFlip] = useState(true);
     const [pos0, setPos0] = useState(true);
     const [pos1, setPos1] = useState(false);

@@ -7,6 +7,8 @@ import Story from '../Story';
 import { ThemeContext } from '~/contexts/Context';
 import { collection, getDocs, query, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
+import { UserAuth } from '~/contexts/authContext';
+import routes from '~/config/routes';
 
 const cx = classNames.bind(styles);
 
@@ -34,39 +36,7 @@ function Stories() {
     };
 
     //get stories
-    const [stories, setStories] = useState([]);
-    const [storiesData, setStoriesData] = useState([])
-
-    useEffect(() => {
-        async function getStories() {
-            const q = query(collection(db, 'stories'));
-            const querySnapshot = await getDocs(q);
-            const docs = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            }));
-            setStoriesData(docs);
-            const storyByUserId = Object.values(
-                docs.reduce((acc, story) => {
-                    const val = {
-                        userId: story.user.id,
-                        username: story.user.name,
-                        avatar: story.user.avatar,
-                        img: story.type === 'image' ? story.media[0] : '',
-                        bgColor: story.content.bgColor
-                    };
-                    if (!acc[val.userId]) {
-                        acc[val.userId] = val;
-                    }
-        
-                    return acc;
-                }, {}),
-            );
-            setStories(storyByUserId)
-        }
-        getStories()
-    }, [])
-
+    const { stories } = UserAuth();
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
@@ -79,12 +49,12 @@ function Stories() {
 
             {/* Hiển thị các stories */}
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
-                <Story icon="faPlus" username="Add story" to="/createStory"/>
-                {stories != null && stories.map((story) => (
-                    <Story img={story.avatar} username={story.username} bg={story.img} bgColor={story.bgColor} to="/story" />
-                ))}
-            </div>
-
+                <Story icon="faPlus" username="Add story" to="/createStory" />
+                {Object.keys(stories).map((key, i) => {
+                    return <Story img={stories[key][0].data.user.avatar} username={stories[key][0].data.user.name} bg={stories[key][0].data.media[0]} bgColor={stories[key][0].data.content.bgColor} to={routes.story + key} />;
+                })}
+        </div>
+            {/*  */}
             {/* Nếu vị trí stories hiện tại không phải là vị trí cuối cùng, hiển thị nút điều hướng sang phải */}
             {currentIndex.current < stories.length - 4 && (
                 <div className={cx('arrow-right', 'arrow')} onClick={handleClickRight}>

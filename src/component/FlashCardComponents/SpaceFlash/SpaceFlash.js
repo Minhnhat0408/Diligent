@@ -12,19 +12,26 @@ import {
     faFaceSadTear,
     faFaceSmile,
     faFaceSmileBeam,
+    faStreetView,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { useSpring, useSpringRef, useTransition, animated } from '@react-spring/web';
 import routes from '~/config/routes';
 import { Link } from 'react-router-dom';
+import Image from '~/component/Image/Image';
+import image from '~/assets/images';
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
-    const [ fp0, setFp0] = useState([]);
+    const [fp0, setFp0] = useState(() => {
+        return cards.length >= 10 ? cards.slice(0, 10) : cards;
+    });
     const [fp1, setFp1] = useState([]);
     const [fp2, setFp2] = useState([]);
+    const [fp3, setFp3] = useState([]);
+    const [learnRep, setLearnRep] = useState(0);
     var [virPos, setVirPos] = useState(3);
-    const[showProgress,setShowProgress] = useState(false)
+    const [showProgress, setShowProgress] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [showAddDeck, setShowAddDeck] = useState(false);
     const onAnimationEnd = () => {
@@ -34,20 +41,42 @@ const SpaceFlash = ({ cards }) => {
     useEffect(() => {
         if (animation) setShowProgress(true);
     }, [animation]);
-    const handleRemember = (a) => {
-        if (fp0.length === 1 && virPos === 0) {
-            return;
+
+    useEffect(() => {
+        if (fp0.length < 1 && fp2.length > 0) {
+            let tmp = fp2.reverse();
+
+            tmp.forEach((ob, ind) => {
+                ob.pos = 0;
+                ob.order = ob.order - 10;
+            });
+            setFp0((prev) => [...tmp]);
+            setFp2([]);
+            setVirPos(2);
+        } else if (fp0.length < 1 && fp2.length === 0) {
+            if (learnRep >= 1) {
+                setAnimation(true);
+            } else {
+                setLearnRep((prev) => prev + 1);
+                let tmp = fp1.reverse();
+                tmp.forEach((ob, ind) => {
+                    ob.order = ind + 1;
+                    ob.pos = 0;
+                });
+                setFp0((prev) => [...tmp]);
+            }
         }
-        
-        if(fp0.length <= 1) {
-            console.log(fp0)  
-            setAnimation(true);
+    }, [fp0, fp2]);
+    const handleRemember = (a) => {
+        if (fp0.length === 1 && virPos === 0 && learnRep >= 1) {
+            console.log('finally');
+            return;
         }
         getSetEffect();
 
-        fp0[fp0.length - 1].pos = a;
         setFp0([...fp0]);
         var current = fp0.pop();
+        current.pos = a;
         virPos = 0;
         if (a === 1) {
             fp1.push(current);
@@ -55,12 +84,13 @@ const SpaceFlash = ({ cards }) => {
         } else {
             fp2.push(current);
             setFp2([...fp2]);
+            // let tmp = { ...current,pos:0, order: fp0[0].order - 1 };
+            // fp0.unshift(tmp);
         }
         setVirPos(virPos);
     };
-
+    console.log(fp0, fp2);
     const getOldPos0 = (title) => {
-        console.log(title)
         getSetEffect();
         getTurnBack(title);
     };
@@ -78,12 +108,12 @@ const SpaceFlash = ({ cards }) => {
             setVirPos(virPos);
         }
         setAnimation(false);
-        setShowPer(false)
+        setShowPer(false);
     };
 
     const getBack = () => {
         if (fp2.length + fp1.length === 1) {
-            if(virPos!==0) {
+            if (virPos !== 0) {
                 return;
             }
         }
@@ -92,48 +122,31 @@ const SpaceFlash = ({ cards }) => {
             getTurnBack(fp1[fp1.length - 1]);
         } else if (fp1.length === 0) {
             getTurnBack(fp2[fp2.length - 1]);
-        }else{
+        } else {
             if (fp1[fp1.length - 1].order < fp2[fp2.length - 1].order) {
                 getTurnBack(fp1[fp1.length - 1]);
             } else {
                 getTurnBack(fp2[fp2.length - 1]);
             }
         }
-        
-        
-        
     };
 
     const getSetEffect = () => {
         if (virPos === 0) {
             fp0.pop();
-           
         } else if (virPos === 1) {
             var current = fp1.pop();
             fp0.push(current);
             setFp0([...fp0]);
-        
         } else if (virPos == 2) {
             var current = fp2.pop();
             fp0.push(current);
             setFp0([...fp0]);
-        
         } else {
             console.log('roong');
-        
-
         }
     };
 
-
-    useEffect(() => {
-        setFp1([]);
-        setFp2([]);
-        setFp0(cards);
-        setShowPer(false);
-
-    }, [])
-    console.log(fp0)
     const [showPer, setShowPer] = useState(false);
     const handlePull = () => {
         setShowPer(!showPer);
@@ -142,80 +155,93 @@ const SpaceFlash = ({ cards }) => {
     return (
         <div className={cx('container')}>
             {/* options */}
-            <div className={cx('options')}>
-                <button className={cx('finish')} onClick={() => handleRemember(1)}>
-                    <FontAwesomeIcon icon={faCheck} />
-                </button>
-                <button className={cx('skip')} onClick={() => handleRemember(2)}>
-                    <FontAwesomeIcon icon={faXmark} />
-                </button>
-                <button className={cx('back')} onClick={() => getBack()}>
-                    <FontAwesomeIcon icon={faArrowRotateLeft} />
-                </button>
-            </div>
 
-            <div className={cx('flash')}>
-                {fp0.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
-                {fp1.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
-                {fp2.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
+            {cards.length === 0 ? (
+                <Image className={cx('no-content')} src={image.noContent} />
+            ) : (
+                <>
+                    <div className={cx('options')}>
+                        <button className={cx('finish')} onClick={() => handleRemember(1)}>
+                            <FontAwesomeIcon icon={faCheck} />
+                        </button>
+                        <button className={cx('skip')} onClick={() => handleRemember(2)}>
+                            <FontAwesomeIcon icon={faXmark} />
+                        </button>
+                        <button className={cx('back')} onClick={() => getBack()}>
+                            <FontAwesomeIcon icon={faArrowRotateLeft} />
+                        </button>
+                    </div>
+                    <div className={cx('flash')}>
+                        {fp0.map((item, index) => {
+                            return (
+                                <>
+                                    <CardFlip key={item?.id} card={item} getOldPos0={getOldPos0} />
+                                </>
+                            );
+                        })}
+                        {fp1.map((item, index) => {
+                            return (
+                                <>
+                                    <CardFlip key={item?.id} card={item} getOldPos0={getOldPos0} />
+                                </>
+                            );
+                        })}
+                        {fp2.map((item, index) => {
+                            return (
+                                <>
+                                    <CardFlip key={item?.id} card={item} getOldPos0={getOldPos0} />
+                                </>
+                            );
+                        })}
 
-                {showProgress&&
-                    <div className={cx('boxshowper',{ show: animation, hide: !animation })} onAnimationEnd={onAnimationEnd}>
-                    {!showPer ? (
-                        <div className={cx('showper')} onClick={() => handlePull()}>
-                            Congrats you have finished all your cards!!!
-                        </div>
-                    ) : (
-                        <div className={cx('progresscontain')}>
-                            <div className={cx('progressbox')}>
-                                <CricleProgress percentage={(fp1.length / (fp1.length + fp2.length)) * 100} />
-                            </div>
-                            <div className={cx('emotion')}>
-                                {(fp1.length / (fp1.length + fp2.length)) * 100 > 50 ? (
-                                    <FontAwesomeIcon
-                                        icon={faFaceSmile}
-                                        style={{ color: '#d4d049', height: '80px', width: '80px' }}
-                                    />
+                        {showProgress && (
+                            <div
+                                className={cx('boxshowper', { show: animation, hide: !animation })}
+                                onAnimationEnd={onAnimationEnd}
+                            >
+                                {!showPer ? (
+                                    <div className={cx('showper')} onClick={() => handlePull()}>
+                                        Congrats you have finished all your cards!!!
+                                    </div>
                                 ) : (
-                                    <FontAwesomeIcon
-                                        icon={faFaceSadTear}
-                                        style={{ color: '#d4d049', height: '80px', width: '80px' }}
-                                    />
+                                    <div className={cx('progresscontain')}>
+                                        <div className={cx('progressbox')}>
+                                            <CricleProgress
+                                                percentage={(fp1.length / (fp1.length + fp2.length)) * 100}
+                                            />
+                                        </div>
+                                        <div className={cx('emotion')}>
+                                            {(fp1.length / (fp1.length + fp2.length)) * 100 > 50 ? (
+                                                <FontAwesomeIcon
+                                                    icon={faFaceSmile}
+                                                    style={{ color: '#d4d049', height: '80px', width: '80px' }}
+                                                />
+                                            ) : (
+                                                <FontAwesomeIcon
+                                                    icon={faFaceSadTear}
+                                                    style={{ color: '#d4d049', height: '80px', width: '80px' }}
+                                                />
+                                            )}
+                                        </div>
+                                        <Link className={cx('buttonhoc')} to={routes.flashcard}>
+                                            Continue
+                                        </Link>
+                                    </div>
                                 )}
                             </div>
-                            <Link className={cx('buttonhoc')} to={routes.flashcard} >Continue</Link>
-                        </div>
-                    )}
-                </div>}
-            </div>
-
+                        )}
+                    </div>
+                </>
+            )}
             {/* rightside */}
             <div className={cx('rightside')}>
                 <div className={cx('finishbox')}>
-                    <div className={cx('text')}>ĐÃ THUỘC</div>
+                    <div className={cx('text')}>REMEMBER</div>
                     <div className={cx('shadowbox')}></div>
                     <button className={cx('number')}>{virPos === 1 ? fp1.length - 1 : fp1.length}</button>
                 </div>
                 <div className={cx('skipbox')}>
-                    <div className={cx('text')}>QUÊN</div>
+                    <div className={cx('text')}>FORGET</div>
                     <div className={cx('shadowbox')}></div>
                     <button className={cx('number')}>{virPos === 2 ? fp2.length - 1 : fp2.length}</button>
                 </div>

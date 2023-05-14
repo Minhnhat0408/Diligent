@@ -37,7 +37,7 @@ const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState();
-
+    const [stories, setStories] = useState();
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
@@ -54,15 +54,12 @@ export const AuthContextProvider = ({ children }) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
         console.log(user.uid, 'create');
-        await setDoc(
-            doc(db, 'users', user.uid),
-            {
-                user_email: user?.email,
-                user_authProvider: response?.providerId || 'email/pasword',
-                user_createdAt: serverTimestamp(),
-                user_status:'online',
-            },
-        );
+        await setDoc(doc(db, 'users', user.uid), {
+            user_email: user?.email,
+            user_authProvider: response?.providerId || 'email/pasword',
+            user_createdAt: serverTimestamp(),
+            user_status: 'online',
+        });
         return response;
     };
 
@@ -77,6 +74,23 @@ export const AuthContextProvider = ({ children }) => {
             });
             setUsersList(data);
         }
+        async function fetchStories() {
+            const q = query(collection(db, 'stories'), orderBy('time'));
+            const querySnapshot = await getDocs(q);
+            const docs = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                data: doc.data(),
+            }));
+            let tmp = {};
+            docs.forEach((doc) => {
+                if (tmp[doc.data.user.id]) {
+                    tmp[doc.data.user.id].push(doc);
+                } else {
+                    tmp[doc.data.user.id] = [doc];
+                }
+            });
+            setStories(tmp);
+        }
         async function fetchPosts() {
             const data = [];
             console.log('fetch posts first time');
@@ -90,6 +104,7 @@ export const AuthContextProvider = ({ children }) => {
 
         fetchUserData();
         fetchPosts();
+        fetchStories();
     }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);
@@ -120,8 +135,8 @@ export const AuthContextProvider = ({ children }) => {
                 user_friendRequests: [],
                 user_friends: [],
                 user_postNumber: 0,
-                user_ratings:[],
-                user_decks:0,
+                user_ratings: [],
+                user_decks: 0,
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
@@ -253,7 +268,7 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
-  
+
     console.log('auth rerender', userData);
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
@@ -349,6 +364,7 @@ export const AuthContextProvider = ({ children }) => {
             read: false,
         });
     };
+    console.log(stories);
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
@@ -371,7 +387,17 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setUsersList(data);
                 });
-
+                onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
+                    let tmp = {};
+                    docs.forEach((doc) => {
+                        if (tmp[doc.data().user.id]) {
+                            tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
+                        } else {
+                            tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
+                        }
+                    });
+                    setStories(tmp);
+                });
                 // fetch posts change realtime
                 onSnapshot(collection(db, 'posts'), (docs) => {
                     let data1 = [];
@@ -435,17 +461,14 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setSavePostData(result);
                 });
-                if(window.location.pathname !== routes.updateInfo)
-                await updateDoc(
-                    doc(db, 'users', currentUser.uid),
-                    {
+                if (window.location.pathname !== routes.updateInfo)
+                    await updateDoc(doc(db, 'users', currentUser.uid), {
                         user_status: 'online',
-                    }
-                );
+                    });
             } else {
                 setUser(null);
             }
-        
+
             // proximate the loading time
             setTimeout(() => {
                 console.log('reload in onauth');
@@ -464,6 +487,7 @@ export const AuthContextProvider = ({ children }) => {
         user,
         userData,
         posts,
+        stories,
         notifications,
         savePostData,
         handleReadNoti,

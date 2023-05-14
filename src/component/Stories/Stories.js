@@ -9,7 +9,7 @@ import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
-function Stories({ stories, onDeleteStory }) {
+function Stories({ stories }) {
     const { user } = UserAuth();
     const [activeStoryIndex, setActiveStoryIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
@@ -25,7 +25,7 @@ function Stories({ stories, onDeleteStory }) {
                 if (activeStoryIndex < stories.length - 1) {
                     setActiveStoryIndex(activeStoryIndex + 1);
                     setCurrentTime(0);
-                }
+                }       
             }, activeStory.duration - currentTime);
 
             interval = setInterval(() => {
@@ -70,7 +70,6 @@ function Stories({ stories, onDeleteStory }) {
 
     async function deleteStory(id) {
         await deleteDoc(doc(db, 'stories', id));
-        onDeleteStory()
     }
 
     const activeStory = stories[activeStoryIndex];

@@ -8,7 +8,8 @@ const routes = {
     chatroom: '/chat/', //shortcut
     friend: '/friend',
     setting: '/setting',
-    story: '/story',
+    storyPage: '/story/:id',
+    story:'/story/',//shortcut
     login: '/login',
     user: '/user/', // shortcut for navigate only
     updateInfo: '/updateinfor',

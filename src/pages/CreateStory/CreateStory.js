@@ -7,6 +7,9 @@ import { db } from '~/firebase';
 import { addDoc, serverTimestamp } from 'firebase/firestore';
 import { collection } from 'firebase/firestore';
 import { UserAuth } from '~/contexts/authContext';
+import { useNavigate } from 'react-router-dom';
+import routes from '~/config/routes';
+import { RingLoader } from 'react-spinners';
 
 const cx = classNames.bind(styles);
 
@@ -55,7 +58,7 @@ function CreateStory() {
     const [videoPreview, setVideoPreview] = useState(null);
     const [counter, setCounter] = useState(0);
     const [loading, setLoading] = useState(false);
-
+    const navigate = useNavigate();
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
         setSelectedFile(file);
@@ -213,7 +216,8 @@ function CreateStory() {
         const docRef = await addDoc(collection(db, 'stories'), data);
         handleClickCancel();
 
-        setLoading(false); // Đặt trạng thái loading thành false sau khi hoàn thành
+        setLoading(false);
+        navigate(routes.story + user.uid); // Đặt trạng thái loading thành false sau khi hoàn thành
         return docRef;
     };
 
@@ -223,6 +227,11 @@ function CreateStory() {
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+            {loading && (
+                <div className="pop-up loader">
+                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                </div>
+            )}
             <div className={cx('sidebar')}>
                 <h1 className={cx('header')}>Your Story</h1>
                 <hr />

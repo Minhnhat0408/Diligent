@@ -370,15 +370,17 @@
             padding-top: 6px;
             padding: 6px 20px 6px 20px; 
             resize: none;
+            &.invalid{
+                border: 1px solid #f33a58 ;
+                box-shadow: 0 0 15px 0 #f33a58;
+            }
+            &.invalid::placeholder{
+                color: #f33a58;
+            }
             &.inp-title{
                 height:60px;
-                &.invalid{
-                    border: 1px solid #f33a58 ;
-                    box-shadow: 0 0 15px 0 #f33a58;
-                }
-                &.invalid::placeholder{
-                    color: #f33a58;
-                }
+               
+                
             }
             &.inp-text{
                 height: 100px;

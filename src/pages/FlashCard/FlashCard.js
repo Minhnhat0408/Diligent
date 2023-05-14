@@ -17,10 +17,12 @@ function FlashCard() {
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, 'flashcards', id, 'cards'),orderBy('order')), async (docs) => {
             let tmp = [];
-            docs.forEach((doc) => {
-                tmp.push({ id: doc.id, front: doc.data().front,order:doc.data().order, back: doc.data().back, pos: 0 });
-            });
-            setCards(tmp);
+            tmp = docs.docs
+            const results =[]
+             tmp.forEach((doc,ind) => {
+                results.push({ id: doc.id, front: doc.data().front,order:ind+1, back: doc.data().back, pos: 0 });
+            })
+            setCards(results);
         });
         return () => unsubscribe();
     }, [id]);
@@ -32,7 +34,6 @@ function FlashCard() {
         // fetchDeckInfo();
         const unsubscribe = onSnapshot(query(doc(db, 'flashcards', id)), async (doc) => {
             setDeck({ id: doc.id, data: doc.data() });
-            console.log('change')
         });
         return () => unsubscribe();
     }, [id]);
