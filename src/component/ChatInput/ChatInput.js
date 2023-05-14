@@ -47,6 +47,7 @@ function ChatInput({ roomId }) {
     };
     const handleSendMessage = async (icon = undefined) => {
         if(icon) {
+            console.log(icon)
             setLoading(true)
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
@@ -56,6 +57,7 @@ function ChatInput({ roomId }) {
             });
         }
         if (text) {
+            console.log(text)
             setLoading(true)
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
@@ -66,26 +68,34 @@ function ChatInput({ roomId }) {
         }
         if (filePreview.others.length !== 0 || filePreview.media.length !== 0) {
             setLoading(true)
-            let files = { media: [], others: [] };
+            
             if (filePreview.others.length !== 0) {
+                let files = { media: [], others: [] };
                 const others = await Promise.all(
                     filePreview.others.map((o) => fileUpload({ file: o.file, name: o.file.name })),
                 );
                 files.others = others;
+                await addDoc(collection(db, 'chats', roomId, 'messages'), {
+                    sender: user.uid,
+                    time: serverTimestamp(),
+                    content: files ,
+                    seen: false,
+                });
             }
             if (filePreview.media.length !== 0) {
+                let files = { media: [], others: [] };
                 const media = await Promise.all(
                     filePreview.media.map((m) => fileUpload({ file: m.file, name: m.file.name })),
                 );
                 files.media = media;
+                await addDoc(collection(db, 'chats', roomId, 'messages'), {
+                    sender: user.uid,
+                    time: serverTimestamp(),
+                    content: files ,
+                    seen: false,
+                });
             }
-
-            await addDoc(collection(db, 'chats', roomId, 'messages'), {
-                sender: user.uid,
-                time: serverTimestamp(),
-                content: { ...files },
-                seen: false,
-            });
+            
         }
         setText('');
         setFilePreview({ others: [], media: [] });
@@ -166,7 +176,7 @@ function ChatInput({ roomId }) {
                     </div>
                 </div>
             </div>
-            <Button submit="submit" className={cx('send')} onClick={handleSendMessage}>
+            <Button submit="submit" className={cx('send')} onClick={() => handleSendMessage()}>
                 <FontAwesomeIcon icon={faPaperPlane} />
             </Button>
         </div>
