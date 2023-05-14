@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 
 import CardFlip from '../CardFlip/';
@@ -17,6 +17,7 @@ import {
 import { useSpring, useSpringRef, useTransition, animated } from '@react-spring/web';
 import routes from '~/config/routes';
 import { Link } from 'react-router-dom';
+import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
@@ -28,6 +29,7 @@ const SpaceFlash = ({ cards }) => {
     const [showProgress, setShowProgress] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [showAddDeck, setShowAddDeck] = useState(false);
+    const context = useContext(ThemeContext)
     const onAnimationEnd = () => {
         if (!animation) setShowProgress(false);
     };
@@ -117,11 +119,12 @@ const SpaceFlash = ({ cards }) => {
             console.log('roong');
         }
     };
-
+    useEffect(() => {
+        setFp0(cards);
+    },[cards])
     useEffect(() => {
         setFp1([]);
         setFp2([]);
-        setFp0(cards);
         setShowPer(false);
     }, []);
     console.log(def);
@@ -131,7 +134,7 @@ const SpaceFlash = ({ cards }) => {
     };
 
     return (
-        <div className={cx('container')}>
+        <div className={cx('container',{dark:context.theme === 'dark'})}>
             {/* options */}
             {def.length > 0 && <div className={cx('options')}>
                 <button className={cx('finish')} onClick={() => handleRemember(1)}>

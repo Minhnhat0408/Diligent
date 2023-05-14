@@ -1,4 +1,7 @@
 .wrapper{
  
-    background-color: var(--bg-dark-theme);
+    background-color: var(--bg-light-theme);
+    &.dark{
+        background-color: var(--bg-dark-theme);
+    }
 }

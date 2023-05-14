@@ -51,69 +51,165 @@ export const FILTER_OPTIONS = [
 ];
 export const CATEGORY_OPTIONS = [
     {
-        title: 'Japanese',
+        title: 'Tiếng Nhật',
         children: {
-            title: 'Japanese',
+            title: 'Tiếng Nhật',
             data: [
                 {
-                    title: 'Vocabulary',
+                    title: 'Từ vựng',
                 },
                 {
-                    title: 'Grammar',
+                    title: 'Ngữ pháp',
                 },
                 {
                     title: 'Kanji',
                 },
-            ],
-        },
-    },
-    {
-        title: 'English',
-        children: {
-            title: 'English',
-            data: [
                 {
-                    title: 'Vocabulary',
+                    title: 'Hiragana - Katakana',
                 },
                 {
-                    title: 'Grammar',
-                },
-                {
-                    title: 'Pronunciation',
+                    title: 'Phiên âm',
                 },
             ],
         },
     },
     {
-        title: 'Korean',
+        title: 'Tiếng Anh',
         children: {
-            title: 'Korean',
+            title: 'Tiếng Anh',
             data: [
                 {
-                    title: 'Vocabulary',
+                    title: 'Từ vựng',
                 },
                 {
-                    title: 'Grammar',
+                    title: 'Ngữ pháp',
+                },
+                {
+                    title: 'Phiên âm',
                 },
             ],
         },
     },
     {
-        title: 'Math',
+        title: 'Tiếng Hàn',
         children: {
-            title: 'Math',
+            title: 'Tiếng Hàn',
             data: [
                 {
-                    title: 'Đại số',
+                    title: 'Từ vựng',
                 },
                 {
-                    title: 'Hình Học',
+                    title: 'Ngữ pháp',
+                },
+            ],
+        },
+    },
+    {
+        title: 'Toán',
+        children: {
+            title: 'Toán',
+            data: [
+                {
+                    title: 'Số học',
+                },
+                {
+                    title: 'Hình học',
                 },
                 {
                     title: 'Kinh tế',
                 },
                 {
-                    title: 'Tối ưu',
+                    title: 'Tối ưu hóa',
+                },
+                {
+                    title: 'Giải tích',
+                },
+                {
+                    title: 'Lượng giác',
+                },
+            ],
+        },
+    },
+    {
+        title: 'Physics',
+        children: {
+            title: 'Physics',
+            data: [
+                {
+                    title: 'Cơ học',
+                },
+                {
+                    title: 'Quang học',
+                },
+                {
+                    title: 'Nhiệt động lực học',
+                },
+                {
+                    title: 'Điện - Từ học',
+                },
+                {
+                    title: 'Thuyết tương đối',
+                },
+                {
+                    title: 'Âm học',
+                },
+            ],
+        },
+    },
+    {
+        title: 'Chemistry',
+        children: {
+            title: 'Chemistry',
+            data: [
+                {
+                    title: 'Vô cơ',
+                },
+                {
+                    title: 'Hữu cơ',
+                },
+                {
+                    title: 'Hóa - Lý',
+                },
+                {
+                    title: 'Hóa - Sinh',
+                },
+                {
+                    title: 'Hóa phân tích',
+                },
+                {
+                    title: 'Phản ứng',
+                },
+            ],
+        },
+    },
+    {
+        title: 'Sinh học',
+        children: {
+            title: 'Sinh học',
+            data: [
+                {
+                    title: 'Nhân học',
+                },
+                {
+                    title: 'Động vật học',
+                },
+                {
+                    title: 'Thực vật học',
+                },
+                {
+                    title: 'Vi sinh vật học',
+                },
+                {
+                    title: 'Giải phẫu học',
+                },
+                {
+                    title: 'Sinh học phân tử',
+                },
+                {
+                    title: 'Tiến hóa - Di truyền',
+                },
+                {
+                    title: 'Sinh - Hóa',
                 },
             ],
         },

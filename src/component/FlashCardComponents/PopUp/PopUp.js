@@ -7,20 +7,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from '~/component/Image/Image';
 import Button from '~/component/Button/Button';
 import {
-    faCircle,
-    faCircleXmark,
-    faK,
-    faMagnifyingGlass,
-    faPlusCircle,
-    faSpinner,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { UserAuth } from '~/contexts/authContext';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
-function PopUp({ setPopup,update }) {
+function PopUp({ setPopup,update,deck }) {
     const [loading, setLoading] = useState(false);
     const context = useContext(ThemeContext);
     const { userData,user } = UserAuth();
@@ -35,12 +29,15 @@ function PopUp({ setPopup,update }) {
             setInvalid(true)
         }else{
             setLoading(true)
-            await addDoc(collection(db,'flashcards'),{
+            await addDoc(collection(db,'flashcards',deck.id,'cards'),{
                 front:front.current.value,
                 back:{
                     content:back.current.value,
                     example:example.current.value
                 },
+            })
+            await updateDoc(doc(db,'flashcards',deck.id),{
+                cardNumber: deck.cardNumber+1,
             })
             setLoading(false);
             front.current.value =''

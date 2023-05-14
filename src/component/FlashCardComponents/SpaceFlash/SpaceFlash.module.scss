@@ -6,7 +6,18 @@
     padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
     padding-right: 40vh;
     position:relative;
- 
+   
+    &.dark .text{
+        color:var(--text-color-dark)
+    }
+    &.dark .rightside .finishbox{
+        background-color: var(--dark-theme);
+        box-shadow: none;
+    }
+    &.dark .rightside .skipbox{
+        background-color: var(--dark-theme);
+        box-shadow: none;
+    }
 }
 
 .flash{
@@ -24,7 +35,9 @@
     overflow-y: hidden;
     overflow: hidden;
 }
- 
+ .text{
+    color: var(--text-color);
+ }
  .options{
     z-index: 5;
     display: flex;
@@ -81,7 +94,7 @@
 }
 
 .finishbox{
-    background-color: var(--dark-theme);
+    background-color: var(--light-theme);
     display:flex;
     flex-direction: column;
     justify-content: space-around;
@@ -94,13 +107,15 @@
     box-sizing: border-box;
     border: 1px solid rgb(77, 67, 77);
     border-radius: 5%;
+    box-shadow: 1px 1px 5px #888888;
 }
 
 .skipbox{
-    background-color: var(--dark-theme);
+    background-color: var(--light-theme);
     display:flex;
     flex-direction: column;
     justify-content: space-around;
+    box-shadow: 1px 1px 5px #888888;
     align-items: center;
     height: 40vh;
     left: 10%;
@@ -112,9 +127,7 @@
     border-radius: 5%;
 }
 
-.text{
-    color:rgb(211 220 210 / 63%);
-}
+
 
 .shadowbox{
    background-color: rgb(181, 191, 199);
@@ -124,7 +137,7 @@
 .number{
    height: 23px;
    width: 78px;
-   color: rgb(27, 4, 97);
+
 }
 
 .progresscontain{

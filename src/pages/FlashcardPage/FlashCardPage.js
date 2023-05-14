@@ -2,7 +2,17 @@ import classNames from 'classnames/bind';
 import styles from './FlashCardPage.module.scss';
 import { useContext, useEffect, useRef, useState } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import { addDoc, arrayUnion, collection, doc, getDocs, query, serverTimestamp, updateDoc } from 'firebase/firestore';
+import {
+    addDoc,
+    arrayUnion,
+    collection,
+    deleteDoc,
+    doc,
+    getDocs,
+    query,
+    serverTimestamp,
+    updateDoc,
+} from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { Slide } from 'react-slideshow-image';
@@ -13,9 +23,10 @@ import {
     faMagnifyingGlass,
     faPlusCircle,
     faSpinner,
+    faX,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { useDebounce } from '~/hooks';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -40,9 +51,10 @@ function FlashCardPage() {
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
     const [showAddDeck, setShowAddDeck] = useState(false);
-    const [invalid,setInvalid] = useState(false)
+    const [invalid, setInvalid] = useState(false);
     const title = useRef();
-    const description = useRef()
+    const description = useRef();
+    const navigate = useNavigate()
     const onAnimationEnd = () => {
         if (!animation) setShowFilter(false);
     };
@@ -126,8 +138,8 @@ function FlashCardPage() {
                     <div className={cx('row')}>
                         {grDeck.map((d, ind) => {
                             return (
-                                <Link key={ind} className={cx('deck')} to={routes.flashcard + d.id}>
-                                    <div className={cx('name')}>{d.data.name}</div>
+                                <div key={ind} className={cx('deck')}>
+                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + d.id)}>{d.data.name}</div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{d.data.ratings.length}</span>
@@ -135,7 +147,14 @@ function FlashCardPage() {
                                             {new Date(d.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                </Link>
+                                    {(d.data.contributor.id === user.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(d.id)}
+                                        />
+                                    )}
+                                </div>
                             );
                         })}
                     </div>
@@ -149,33 +168,33 @@ function FlashCardPage() {
             setSearchValue(value);
         }
     };
-    const handleCreateDeck = async () =>{
-        if(title.current.value === '' || description.current.value === '' )
-        {
-            setInvalid(true)
-        }else{
-            setLoading(true)
-            await addDoc(collection(db,'flashcards'),{
-                name:title.current.value,
-                description:description.current.value,
-                contributor:{
-                    id:user.uid,
+    const handleCreateDeck = async () => {
+        if (title.current.value === '' || description.current.value === '') {
+            setInvalid(true);
+        } else {
+            setLoading(true);
+            await addDoc(collection(db, 'flashcards'), {
+                name: title.current.value,
+                description: description.current.value,
+                contributor: {
+                    id: user.uid,
                     name: userData.user_name,
-                    ava: userData.user_avatar
+                    ava: userData.user_avatar,
                 },
-                ratings:[],
-                cardNumber:0,
-                learners:[user.uid],
-                createdAt:serverTimestamp(),
-            })
+                ratings: [],
+                cardNumber: 0,
+                learners: [user.uid],
+                createdAt: serverTimestamp(),
+            });
             setLoading(false);
-            title.current.value =''
-            description.current.value = ''
+            title.current.value = '';
+            description.current.value = '';
             setShowAddDeck(false);
         }
-        
-    }
-
+    };
+    const handleDeleteDeck = async (id) => {
+        await deleteDoc(doc(db, 'flashcards', id));
+    };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('user-decks')}>
@@ -187,16 +206,24 @@ function FlashCardPage() {
                     <div className={cx('row')}>
                         {userDecks?.map((deck, ind) => {
                             return (
-                                <Link key={ind} className={cx('deck')} to={routes.flashcard + deck.id}>
-                                    <div className={cx('name')}>{deck.data.name}</div>
+                                <div key={ind} className={cx('deck')} >
+                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{deck.data.ratings.length}</span>
                                         <div className={cx('time')}>
                                             {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
+                                        
                                     </div>
-                                </Link>
+                                    {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
+                                            <FontAwesomeIcon
+                                                icon={faXmark}
+                                                className={cx('delete')}
+                                                onClick={() => handleDeleteDeck(deck.id)}
+                                            />
+                                        )}
+                                </div>
                             );
                         })}
                     </div>
@@ -298,12 +325,12 @@ function FlashCardPage() {
                     {fullDecks?.display.map((deck, ind) => {
                         return (
                             <div key={ind} className={cx('deck-full')}>
-                                <Link
+                                <div
                                     className={cx('deck')}
-                                    to={routes.flashcard + deck.id}
+                                   
                                     onClick={() => addDeckLearner(deck.id)}
                                 >
-                                    <div className={cx('name')}>{deck.data.name}</div>
+                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{deck.data.ratings.length}</span>
@@ -311,7 +338,14 @@ function FlashCardPage() {
                                             {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                </Link>
+                                    {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )}
+                                </div>
                             </div>
                         );
                     })}
@@ -343,7 +377,7 @@ function FlashCardPage() {
                                 <h5 className={cx('username')}>{userData.user_name}</h5>
                             </div>
                             <textarea
-                                placeholder={invalid ? "This field is required" :"Type the name of your deck"}
+                                placeholder={invalid ? 'This field is required' : 'Type the name of your deck'}
                                 ref={title}
                                 onFocus={() => {
                                     setInvalid(false);
@@ -353,28 +387,20 @@ function FlashCardPage() {
                                 //         return { ...prev, title: titleContent.current.value };
                                 //     });
                                 // }}
-                                className={cx('input', 'inp-title',{invalid:invalid})}
+                                className={cx('input', 'inp-title', { invalid: invalid })}
                             />
                             <textarea
-                                placeholder={invalid ? "This field is required" :"Type the description "}
+                                placeholder={invalid ? 'This field is required' : 'Type the description '}
                                 ref={description}
                                 onFocus={() => {
                                     setInvalid(false);
                                 }}
-                                // onBlur={() => {
-                                //     setTextFinal((prev) => {
-                                //         return { ...prev, title: titleContent.current.value };
-                                //     });
-                                // }}
-                                className={cx('input',{invalid:invalid})}
+                                className={cx('input', { invalid: invalid })}
                             />
                         </div>
 
                         <Button
                             primary
-                            // disabled={
-                            //     imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value
-                            // }
                             dark={context.theme === 'dark'}
                             onClick={handleCreateDeck}
                             className={cx('upload')}

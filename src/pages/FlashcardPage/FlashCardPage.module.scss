@@ -11,15 +11,22 @@
     &.dark {
         background-color: var(--bg-dark-theme);
     }
+    &.dark .user-decks{
+        background-color: var(--dark-theme);
+    }
+    &.dark .all{
+        background-color: var(--dark-theme);
+    }
 }
 
 .user-decks {
     width: 60vw;
     height: 25vh;
-    background-color: var(--dark-theme);
+    background-color: var(--light-theme);
     border-radius: 15px;
     margin-bottom: 1%;
     padding:2vh 1vw;
+    box-shadow: 1px 1px 5px #888888;
     // display: flex;
     // overflow-x: scroll;
     // &::-webkit-scrollbar{
@@ -34,8 +41,8 @@
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-  
-    background-color: var(--dark-theme);
+    box-shadow: 1px 1px 5px #888888;
+    background-color: var(--light-theme);
     border-radius: 15px;
     margin-bottom: 0;
     padding:2vh 1vw;
@@ -58,9 +65,7 @@
     background-color: bisque;
     width: 16vh;
     height: 21vh;  
- 
     flex-wrap: wrap;
-
     color:var(--text-color);
     display:flex;
     flex-direction: column;
@@ -76,9 +81,16 @@
     bottom: 1vh;    
     
 }
+.delete{
+  position:absolute;
+  right: 10px;   
+  top: 10px;
+    cursor: pointer;
+}
 .name{
     font-size: 2vh;
     font-weight: 600;
+    cursor: pointer;
 }
 .ratings{
     color:var(--primary-light)
@@ -107,7 +119,7 @@
 
   .search {
     height: 5vh;
-    background-color: transparent !important;
+    background-color: #eee !important;
     border: 2px solid rgb(210, 211, 213);
     position: relative;
     border-radius: 20px;
@@ -115,6 +127,11 @@
     display: flex;
     width: 360px;
     overflow: hidden;
+    color: var(--text-color);
+    &.dark {
+        color: var(--text-color-dark);
+    }
+    
     input {
         height: 100%;
         font-size: 1.6rem;
@@ -125,7 +142,7 @@
         padding: 12px 40px 12px 0;
         caret-color: var(--light-theme);
         flex: 1;
-        color: var(--text-color-dark);
+    
         font-family: var(--default-font-family);
     }
 
@@ -184,7 +201,7 @@
     height: 100%;
     border-top-right-radius: var(--search-border-radius);
     border-bottom-right-radius: var(--search-border-radius);
-    background-color: transparent;
+
     &:hover {
         background-color: rgba(22, 24, 35, 0.03);
     }
@@ -207,7 +224,7 @@
 
     .search-icon {
         font-size: 1.8rem;
-        color: #eee;
+        color:rgba(22, 24, 35, 0.34)
     }
 
 }

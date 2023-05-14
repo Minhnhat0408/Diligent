@@ -22,21 +22,6 @@ function SideBarCard({ deck, cards }) {
     const context = useContext(ThemeContext);
     const [updateCard, setUpdateCard] = useState(false);
     const [addCard, setAddCard] = useState(false);
-    // const apiAddCard = useSpringRef();
-    // const addCard = useSpring({
-    //     ref:apiAddCard,
-    //     from: {y:-190},
-    // })
-
-    // const handleAdd = () => {
-    //     apiAddCard.start({
-    //        to: {y:addCard.y.get() === 0 ? -190 : 0},
-    //     })
-    // }
-
-    // const handlePicks = (item) => {
-    //     handlePick(item);
-    // }
 
     const handleUpRatings = async () => {
         if (deck.data.ratings.includes(user.uid)) {
@@ -56,7 +41,7 @@ function SideBarCard({ deck, cards }) {
         });
     };
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
             <div className={cx('info')}>
                 <h4 className={cx('title')}>{deck.data.name}</h4>
                 <p className={cx('description')}>"{deck.data.description}"</p>
@@ -121,7 +106,7 @@ function SideBarCard({ deck, cards }) {
                     })}
                 </div>
             )}
-            {addCard && <PopUp setPopup={setAddCard}  />}
+            {addCard && <PopUp setPopup={setAddCard} deck={deck} />}
             {updateCard && <PopUp setPopup={setUpdateCard} />}
         </div>
     );
