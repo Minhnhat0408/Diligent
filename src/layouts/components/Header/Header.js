@@ -119,7 +119,7 @@ function Header() {
                         <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
                     </Link>
                     <Link
-                        to={routes.story+user.uid}
+                        to={routes.story+user?.uid}
                         className={cx('middle-btn', { active: `/${window.location.pathname.split('/')[1]}/` === routes.story })}
                     >
                          <i className={`${styles.icon} fa-regular fa-bolt`}></i>
