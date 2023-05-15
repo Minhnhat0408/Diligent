@@ -263,7 +263,7 @@ function Profile() {
                                             xs
                                             disabled={ban}
                                             dark={context.theme === 'dark'}
-                                            onClick={() => navigate(routes.story)}
+                                            onClick={() => navigate(routes.story+user.uid)}
                                             outline
                                         >
                                             <i className={`fa-regular fa-bolt`}></i>

@@ -42,7 +42,7 @@ const SpaceFlash = ({ cards }) => {
             return;
         }
 
-        if (fp0.length <= 1) {
+        if (fp0.length <= 2) {
             console.log(fp0);
             setAnimation(true);
         }
