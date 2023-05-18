@@ -103,11 +103,6 @@ function ChatInput({ roomId }) {
     };
     return (
         <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
-            {loading && (
-                <div className="pop-up loader">
-                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                </div>
-            )}
             <div className={cx('section')}>
                 {(filePreview.others.length !== 0 || filePreview.media.length !== 0) && (
                     <div className={cx('preview')}>

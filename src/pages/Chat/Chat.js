@@ -67,7 +67,7 @@ function Chat() {
         if(correspondent) {
              chat.current.scrollTop = chat.current.scrollHeight;
         }
-    },[correspondent])
+    },[correspondent,messages]  )
     return (
         <>
             {correspondent && (
