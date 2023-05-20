@@ -324,6 +324,7 @@ function Post() {
                                                 ? ADMIN_POST_OPTIONS
                                                 : POST_OPTIONS
                                         }
+                                        placement='right'
                                         onClick={handlePostOptions}
                                         small
                                     >
@@ -465,6 +466,7 @@ function Post() {
                                                     }
                                                     onClick={handlePostOptions}
                                                     small
+                                                    placement='right'
                                                 >
                                                     <div className={cx('options')}>
                                                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
@@ -618,7 +620,7 @@ function Post() {
                                         {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
                                     </p>
                                     {post.data.updated && <p className={cx('updated')}>Updated</p>}
-                                </div>
+                                </div>  
                             </div>
                         </div>
 
@@ -632,6 +634,7 @@ function Post() {
                                         ? ADMIN_POST_OPTIONS
                                         : POST_OPTIONS
                                 }
+                                placement='right'
                                 onClick={handlePostOptions}
                                 small
                             >

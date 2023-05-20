@@ -62,7 +62,7 @@
 
 }
 .deck{
-    background-color: white;
+    background-color: bisque;
     width: 16vh;
     height: 21vh;  
     flex-wrap: wrap;
@@ -308,13 +308,23 @@
     border-radius: 20px;
      max-height: 600px;
     overflow-y: scroll;
+    &.dark {
+        color:var(--text-color-dark);
+        background-color: var(--dark-theme);
+
+    }
+    &.dark .body .input{
+        background-color: var(--bg-dark-theme);
+        color:var(--text-color-dark);
+    }
     .header {
         display: flex;
         justify-content: space-between;
         margin-bottom: 4px;
 
-        .tittle {
-            font-size: 1.4rem
+        .title {
+            font-size: 3.2rem;
+            margin:0;
         }
 
         .out {
@@ -376,7 +386,7 @@
         .input {
             margin-top: 8px;
             width: 100%;
-            font-size: 1.8rem;
+            font-size: 2rem;
             border: none;
             height: 100px;
             outline: none;

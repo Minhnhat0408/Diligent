@@ -2,15 +2,12 @@ import {
     faArrowDown,
     faArrowUp,
     faBan,
-    faClock,
     faDownload,
     faEyeSlash,
     faFilePen,
     faFlag,
-    faLock,
     faSave,
     faTrash,
-    faUser,
     faUserXmark,
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -227,9 +224,9 @@ export const CATEGORY_OPTIONS = [
             title: 'IT',
             data: [
                 {
-                    title: 'Ngôn ngữ',
+                    title: 'Ngôn ngữ LT',
                     children: {
-                        title: 'Ngôn ngữ',
+                        title: 'Ngôn ngữ LT',
                         data: [
                             {
                                 title: 'C/C++',
@@ -250,9 +247,9 @@ export const CATEGORY_OPTIONS = [
                     },
                 },
                 {
-                    title: 'Môn học',
+                    title: 'Môn học LT',
                     children: {
-                        title: 'Môn học',
+                        title: 'Môn học LT',
                         data: [
                             {
                                 title: 'Nhập môn lập trình',
@@ -303,11 +300,6 @@ export const USER_POST_OPTIONS = [
     },
 ];
 export const ADMIN_POST_OPTIONS = [
-    {
-        icon: <FontAwesomeIcon icon={faBan} />,
-        title: 'Disable',
-        type: 'disable',
-    },
     {
         icon: <FontAwesomeIcon icon={faTrash} />,
         title: 'Delete',

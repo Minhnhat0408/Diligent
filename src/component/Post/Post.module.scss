@@ -293,11 +293,11 @@ $time-color: #adb5bd;
 .focus {
     background-color: var(--light-theme);
     max-height: 90vh;
-    width: 750px;
+    width: 44vw;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: 0 20px 20px 20px;
+    padding: 0 1.2vw 1.2vw 1.2vw;
     border-radius: 10px;
     box-shadow: 1px 1px 5px #ccc;
     color: var(--text-color);

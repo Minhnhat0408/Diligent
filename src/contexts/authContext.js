@@ -53,7 +53,6 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
-        console.log(user.uid, 'create');
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
@@ -66,7 +65,6 @@ export const AuthContextProvider = ({ children }) => {
     useEffect(() => {
         async function fetchUserData() {
             const data = [];
-            console.log('fetch user list first time');
             const q = query(userRef, orderBy('user_name'));
             const docs = await getDocs(q);
             docs.forEach(async (d) => {
@@ -93,7 +91,6 @@ export const AuthContextProvider = ({ children }) => {
         }
         async function fetchPosts() {
             const data = [];
-            console.log('fetch posts first time');
             const q = query(collection(db, 'posts'), orderBy('time', 'desc'));
             const docs = await getDocs(q);
             docs.forEach((doc) => {
@@ -112,7 +109,6 @@ export const AuthContextProvider = ({ children }) => {
     };
     const logOut = async () => {
         if (userData.user_status !== 'ban') {
-            console.log('set offline');
             await updateDoc(doc(userRef, user.uid), {
                 user_status: 'offline',
             });
@@ -121,7 +117,6 @@ export const AuthContextProvider = ({ children }) => {
     };
     const updateProfile = async (data) => {
         if (window.location.pathname === routes.updateInfo) {
-            console.log(user, user?.uid);
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
                 user_name: data.fullname.trimEnd(),
@@ -173,7 +168,6 @@ export const AuthContextProvider = ({ children }) => {
         return true;
     };
     const handleReadNoti = async (data) => {
-        console.log('read');
         if (data.read === false) {
             const q = query(
                 collection(db, 'users', user?.uid, 'notifications'),
@@ -268,7 +262,6 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
 
-    console.log('auth rerender', userData);
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `${location}/${name}`);
@@ -281,10 +274,8 @@ export const AuthContextProvider = ({ children }) => {
                     console.log('Upload is ' + progress + '% done');
                     switch (snapshot.state) {
                         case 'paused':
-                            console.log('Upload is paused');
                             break;
                         case 'running':
-                            console.log('Upload is running');
                             break;
                         default:
                             break;
@@ -301,7 +292,6 @@ export const AuthContextProvider = ({ children }) => {
                         });
                         resolve('succesful');
                     } else {
-                        console.log(downloadURL);
                         resolve({ url: downloadURL, name: name }); // resolve the Promise with the downloaded URL
                     }
                 },
@@ -363,7 +353,6 @@ export const AuthContextProvider = ({ children }) => {
             read: false,
         });
     };
-    console.log(stories);
     // update realtime database when changes happen
     const userStateChanged = async () => {
         onAuthStateChanged(auth, async (currentUser) => {
@@ -470,7 +459,6 @@ export const AuthContextProvider = ({ children }) => {
 
             // proximate the loading time
             setTimeout(() => {
-                console.log('reload in onauth');
                 setLoading(false);
             }, 1000);
         });

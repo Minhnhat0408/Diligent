@@ -3,17 +3,14 @@ import styles from './Chat.module.scss';
 import Image from '~/component/Image/Image';
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
-import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc, where } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc,  } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState } from 'react';
 import { UserAuth } from '~/contexts/authContext';
-import image from '~/assets/images';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAt, faCircle, faCircleInfo, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
-import Button from '~/component/Button/Button';
+import { faAt, faCircle, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 import routes from '~/config/routes';
 import ChatItem from '~/component/ChatItem/ChatItem';
-import Mentions from '~/component/Mentions/Mentions';
 import ChatInput from '~/component/ChatInput/ChatInput';
 import { useRef } from 'react';
 import { ThemeContext } from '~/contexts/Context';
@@ -22,6 +19,7 @@ const cx = classNames.bind(styles);
 function Chat() {
     const { roomId } = useParams();
     const chat = useRef();
+    const [loading,setLoading] = useState(false)
     const { user,usersList,userData } = UserAuth();
     const [correspondent, setCorrespondent] = useState();
     const [roomData, setRoomData] = useState();
@@ -60,14 +58,14 @@ function Chat() {
                 setMessages(tmp);
             },
         );
-        console.log('rerender')
+
         return () => unsubscribe();
     }, [roomId]);
     useEffect(() => {
         if(correspondent) {
              chat.current.scrollTop = chat.current.scrollHeight;
         }
-    },[correspondent,messages]  )
+    },[correspondent,messages,loading]  )
     return (
         <>
             {correspondent && (
@@ -103,9 +101,10 @@ function Chat() {
                                 return <ChatItem key={id} data={data} me={me}/>
                             })
                         }
+                        {loading && <ChatItem loading={true} data={{name:userData.user_name,ava:userData.user_avatar}} me={true} />}
                     </div>
                     <div className={cx('input')}>
-                        <ChatInput roomId={roomId}/>
+                        <ChatInput roomId={roomId} setLoading={setLoading}/>
                     </div>
                 </div>
             )}

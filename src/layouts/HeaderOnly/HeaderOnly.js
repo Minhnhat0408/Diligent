@@ -11,7 +11,7 @@ function HeaderOnly({ children }) {
   return (
     <div className={cx('wrapper')}>
       <Header />
-      <div className="container">
+      <div className={cx('container')}>
         <div className={cx('content',{'dark':context.theme === 'dark'})}>
           {children}
         </div>

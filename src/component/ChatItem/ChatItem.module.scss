@@ -26,6 +26,12 @@
             color: var(--primary-light) !important;
         }
     }
+    &.dark .icon {
+        color: var(--primary);
+    }
+    &.dark .loading{
+        background-color: var(--bg-dark-theme);
+    }
     
 }
 
@@ -144,4 +150,24 @@
     object-fit: contain;
     width: 800px;
     height: 800px;
+}
+
+
+.loading{
+    padding: 10px;
+    background-color: #eee;
+    border-radius: 10px;
+    width: 200px;
+    height: 50px;
+    white-space: pre-wrap;
+
+}
+.animate-pulse {
+    animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
+}
+@keyframes pulse {
+    50%{
+        opacity: .7;
+    }
+    
 }

@@ -6,54 +6,50 @@ import { RingLoader } from 'react-spinners';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from '~/component/Image/Image';
 import Button from '~/component/Button/Button';
-import {
-    faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { UserAuth } from '~/contexts/authContext';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
-function PopUp({ setPopup,update,deck }) {
+function PopUp({ setPopup, update, deck }) {
     const [loading, setLoading] = useState(false);
     const context = useContext(ThemeContext);
-    const { userData,user } = UserAuth();
+    const { userData, user } = UserAuth();
     const [invalid, setInvalid] = useState(false);
     const front = useRef();
     const back = useRef();
     const example = useRef();
 
-    const handleAddCard = async () =>{
-        if(front.current.value === '' || back.current.value === '' )
-        {
-            setInvalid(true)
-        }else{
-            setLoading(true)
-            await addDoc(collection(db,'flashcards',deck.id,'cards'),{
-                front:front.current.value,
-                back:{
-                    content:back.current.value,
-                    example:example.current.value
+    const handleAddCard = async () => {
+        if (front.current.value === '' || back.current.value === '') {
+            setInvalid(true);
+        } else {
+            setLoading(true);
+            await addDoc(collection(db, 'flashcards', deck.id, 'cards'), {
+                front: front.current.value,
+                back: {
+                    content: back.current.value,
+                    example: example.current.value,
                 },
-            })
-            await updateDoc(doc(db,'flashcards',deck.id),{
-                cardNumber: deck.cardNumber+1,
-            })
+            });
+            await updateDoc(doc(db, 'flashcards', deck.id), {
+                cardNumber: deck.cardNumber + 1,
+            });
             setLoading(false);
-            front.current.value =''
-            back.current.value = ''
+            front.current.value = '';
+            back.current.value = '';
             setPopup(false);
         }
-        
-    }
+    };
     return (
         <>
             <div className={cx('pop-up')}>
                 {loading && (
-                        <div className="pop-up loader">
-                            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                        </div>
-                    )}
+                    <div className="pop-up loader">
+                        <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
+                    </div>
+                )}
 
                 <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                     <div className={cx('header')}>
@@ -75,7 +71,7 @@ function PopUp({ setPopup,update,deck }) {
                         <textarea
                             placeholder={invalid ? 'This field is required' : 'Front content'}
                             ref={front}
-                            defaultValue={ update && update.front}
+                            defaultValue={update && update.front}
                             onFocus={() => {
                                 setInvalid(false);
                             }}
@@ -89,7 +85,7 @@ function PopUp({ setPopup,update,deck }) {
                         <textarea
                             placeholder={invalid ? 'This field is required' : 'Back content'}
                             ref={back}
-                            defaultValue={ update && update.back.content}
+                            defaultValue={update && update.back.content}
                             onFocus={() => {
                                 setInvalid(false);
                             }}
@@ -98,13 +94,12 @@ function PopUp({ setPopup,update,deck }) {
                             //         return { ...prev, title: titleContent.current.value };
                             //     });
                             // }}
-                            className={cx('input','inp-title', { invalid: invalid })}
-                          
+                            className={cx('input', 'inp-title', { invalid: invalid })}
                         />
-                         <textarea
-                            placeholder='Example'
+                        <textarea
+                            placeholder="Example"
                             ref={example}
-                            defaultValue={ update && update.back.example}
+                            defaultValue={update && update.back.example}
                             onFocus={() => {
                                 setInvalid(false);
                             }}

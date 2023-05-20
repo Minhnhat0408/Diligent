@@ -72,13 +72,12 @@ function DocumentForm({ onXmark }) {
         setSelectedCategories(selectedCategories.filter((category) => category !== value));
     };
     const handleUpload = async () => {
-        
         let tmpfile = null;
         if (!file) {
             setInvalid(true);
             return;
         } else {
-            setLoading(true)
+            setLoading(true);
             tmpfile = await fileUpload({
                 file: file.ref,
                 name: title.current.value + '.' + file.type || file.name,
@@ -98,7 +97,11 @@ function DocumentForm({ onXmark }) {
             },
             tag: selectedCategories,
         });
-        setLoading(false)
+        setFile();
+        setSelectedCategories([])
+        title.current.value = ''
+        onXmark(false)
+        setLoading(false);
     };
     return (
         <div className={cx('pop-up')}>
@@ -151,7 +154,7 @@ function DocumentForm({ onXmark }) {
                             ))}
                         </ul>
                     )}
-                    <div className={cx('file-container')}>
+                    <div className={cx('file-container',{dark:context.theme === 'dark'})}>
                         <div
                             {...getRootProps({
                                 className: invalid ? `${styles.dropzone} ${styles.invalid}` : styles.dropzone,

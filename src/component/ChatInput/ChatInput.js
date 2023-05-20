@@ -23,11 +23,11 @@ import { ThemeContext } from '~/contexts/Context';
 import { useContext } from 'react';
 const cx = classNames.bind(styles);
 
-function ChatInput({ roomId }) {
+function ChatInput({ roomId, setLoading }) {
     const [filePreview, setFilePreview] = useState({ others: [], media: [] });
     const [text, setText] = useState('');
     const { user, fileUpload } = UserAuth();
-    const [loading, setLoading] = useState();
+
     const context = useContext(ThemeContext);
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
@@ -68,7 +68,8 @@ function ChatInput({ roomId }) {
         }
         if (filePreview.others.length !== 0 || filePreview.media.length !== 0) {
             setLoading(true);
-
+            setText('');
+            setFilePreview({ others: [], media: [] });
             if (filePreview.others.length !== 0) {
                 let files = { media: [], others: [] };
                 const others = await Promise.all(
@@ -96,8 +97,7 @@ function ChatInput({ roomId }) {
                 });
             }
         }
-        setText('');
-        setFilePreview({ others: [], media: [] });
+
         setLoading(false);
     };
     return (

@@ -23,8 +23,9 @@
         justify-content: space-between;
         margin-bottom: 4px;
 
-        .tittle {
-            font-size: 1.4rem
+        .title {
+            font-size: 3.2  rem;
+            margin: 0;
         }
 
         .out {
@@ -87,7 +88,7 @@
         .input {
             margin-top: 8px;
             width: 100%;
-            font-size: 1.8rem;
+            font-size: 2rem;
             border: none;
             outline: none;
             color: var(--text-color);

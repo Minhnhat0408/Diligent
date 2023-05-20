@@ -51,7 +51,7 @@ function Comment({ data, id, react }) {
     const post = useContext(PostContext);
     useEffect(() => {
         const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
-
+        console.log('fsafd');
         const unsubscribe = onSnapshot(q, (docs) => {
             const tmp = [];
             docs.forEach((doc) => {
@@ -164,9 +164,9 @@ function Comment({ data, id, react }) {
             setUpdate(true);
         } else if (type === 'delete') {
             await deleteDoc(doc(db, 'posts', post.id, 'comments', id));
-            subComments.forEach(async (cmt) =>{
+            subComments.forEach(async (cmt) => {
                 await deleteDoc(doc(db, 'posts', post.id, 'comments', cmt.id));
-            })
+            });
             await updateDoc(doc(db, 'posts', post.id), {
                 commentNumber: post.data.commentNumber - 1 - subComments.length,
             });
@@ -204,41 +204,47 @@ function Comment({ data, id, react }) {
                         </h5>
                         <div className={cx('row')}>
                             <div className={cx('m')}>
-                                {text && <div className={cx('message')}>
-                                    <div className={cx('content')}>{parse(text, { replace })}</div>
-                                </div>}
-                                 {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
-                            </div>
-                             <Menu
-                                    // chinh ben trai / chieu cao so vs ban dau
-                                    item={ data.user.id === user?.uid ? ([
-                                        {
-                                            icon: <FontAwesomeIcon icon={faFilePen} />,
-                                            title: 'Update',
-                                            type: 'update',
-                                        },
-                                        {
-                                        icon: <FontAwesomeIcon icon={faTrash} />,
-                                        title: 'Delete',
-                                        type: 'delete',
-                                    },]): (user?.isAdmin ? [
-                                        {
-                                            icon: <FontAwesomeIcon icon={faTrash} />,
-                                            title: 'Delete',
-                                            type: 'delete',
-                                        },
-                                    ]:[
-                                       report
-                                    ])}
-                                    onClick={handleCommentOptions}
-                                    small
-                                >
-                                    <div className={cx('options')}>
-                                        <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                                {text && (
+                                    <div className={cx('message')}>
+                                        <div className={cx('content')}>{parse(text, { replace })}</div>
                                     </div>
-                                </Menu>
+                                )}
+                                {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
+                            </div>
+                            <Menu
+                                // chinh ben trai / chieu cao so vs ban dau
+                                item={
+                                    data.user.id === user?.uid
+                                        ? [
+                                              {
+                                                  icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                  title: 'Update',
+                                                  type: 'update',
+                                              },
+                                              {
+                                                  icon: <FontAwesomeIcon icon={faTrash} />,
+                                                  title: 'Delete',
+                                                  type: 'delete',
+                                              },
+                                          ]
+                                        : user?.isAdmin
+                                        ? [
+                                              {
+                                                  icon: <FontAwesomeIcon icon={faTrash} />,
+                                                  title: 'Delete',
+                                                  type: 'delete',
+                                              },
+                                          ]
+                                        : [report]
+                                }
+                                onClick={handleCommentOptions}
+                                small
+                            >
+                                <div className={cx('options')}>
+                                    <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                                </div>
+                            </Menu>
                         </div>
-                       
 
                         <div className={cx('actions')}>
                             <span
@@ -250,7 +256,7 @@ function Comment({ data, id, react }) {
                             </span>
                             {!data.fatherCmt && (
                                 <span className={cx('reply')} onClick={handleClickReply}>
-                                    Reply
+                                    Reply {subComments.length > 0 && subComments.length}
                                 </span>
                             )}
                             {data.isEdited && <span className={cx('edit')}>Edited</span>}

@@ -22,9 +22,10 @@
     &.dark .others .content{
         background-color: var(--dark-theme);
         color: var(--text-color-dark);
-        & .file-name{
-            color: var(--text-color-dark);
-        }
+        
+    }
+    &.dark .others .file-name{
+        color: var(--text-color-dark);
     }
 }
 
@@ -84,7 +85,7 @@
     }
 
     & .file-name {
-        color: var(--text-color) !important;
+        color: var(--text-color) ;
         font-size: 1.6rem;
         height: 80%;
         width: 60%;
