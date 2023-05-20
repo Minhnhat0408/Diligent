@@ -9,6 +9,8 @@ import { collection, getDocs, query, serverTimestamp } from 'firebase/firestore'
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
+import Image from '~/component/Image/Image';
+import image from '~/assets/images';
 
 const cx = classNames.bind(styles);
 
@@ -50,9 +52,11 @@ function Stories() {
             {/* Hiển thị các stories */}
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
                 <Story icon="faPlus" username="Add Shorts" to={routes.createStory}/>
-                {Object.keys(stories).map((key, i) => {
+                {Object.keys(stories).length > 0 ? Object.keys(stories).map((key, i) => {
                     return <Story img={stories[key][0].data.user.avatar} username={stories[key][0].data.user.name} bg={stories[key][0].data.media[0]} bgColor={stories[key][0].data.content.bgColor} to={routes.story + key} />;
-                })}
+                }) : <div className={cx('no-content')}>
+                     <Image src={image.noContent}/>
+                     </div>}
         </div>
             {/*  */}
             {/* Nếu vị trí stories hiện tại không phải là vị trí cuối cùng, hiển thị nút điều hướng sang phải */}

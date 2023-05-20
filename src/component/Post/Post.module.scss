@@ -12,7 +12,6 @@ $time-color: #adb5bd;
     color: var(--text-color);
     transition: all 0.8s;
 
-
     &.postpage {
         max-height: calc(100vh - 40px - var(--defaultLayout-header-height));
         overflow: hidden;
@@ -197,6 +196,7 @@ $time-color: #adb5bd;
     object-fit: cover;
     &.plenty {
         height: 250px;
+        margin-bottom: 10px;
     }
 }
 

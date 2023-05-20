@@ -1,9 +1,8 @@
 .wrapper{
-    padding:10px 24px;
+    padding:10px 16px;
 
     display: flex;
     align-items: center;
-    width: 350px;
     &.dark .info{
         color:var(--text-color-dark)
     }
@@ -27,6 +26,7 @@
     font-size: 1.6rem;
     line-height: 1.8rem;
     font-weight: 100;
+    flex: 1;
     text-align: start;
     color: var(--text-color);
 }

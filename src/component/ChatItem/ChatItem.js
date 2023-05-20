@@ -31,7 +31,7 @@ function ChatItem({ data, me }) {
                 theme={context.theme}
                 allowHTML
                 content={
-                    <p className={cx('time-tippy')}>
+                    <p className={cx('time-tippy',{dark:context.theme ==='dark'})}>
                         {new Date(data?.time?.toMillis()).toLocaleTimeString()}{' '}
                         {me && (
                             <FontAwesomeIcon icon={faCheckDouble} className={cx('icon', { 'd-none': !data.seen })} />

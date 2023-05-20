@@ -10,6 +10,7 @@
 
 .wrapper {
     min-width: 100%;
+    max-height: var(--story-height);
     max-width: var(--stories-width);
     margin-bottom: 20px;
     display: flex;
@@ -55,7 +56,13 @@
         height: 48px;
     }
 }
+.no-content{
+    display: flex;
 
+    justify-content: center;
+    height: 100%;
+
+}
 .stories-wrapper {
     display: flex;
     will-change: transform;

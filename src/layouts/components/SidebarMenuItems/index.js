@@ -9,11 +9,10 @@ const cx = classNames.bind(styles)
 function SidebarMenuItems({onClick,icon, title, backGroundColor, color, numsNotify}) {
     return ( 
         <div  onClick={onClick} className={cx('wrapper')}>
-            <div>
+            <div className={cx('row')}>
                 <div className={cx('icon-wrapper')} style={{background: backGroundColor, color: color}}>
                     {icon}
                 </div>
-    
                 <span className={cx('title')}>{title}</span>
             </div >
 

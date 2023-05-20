@@ -76,12 +76,12 @@
   color: var(--icon-color) ;
   text-align: center;
   margin: 8px;
-  font-size: 3vh;  
+  font-size: 1.7vw;  
   display: flex;
   justify-content: center;
   align-items: center;
-  width:  6vh;
-  height: 6vh;
+  width:  3vw;
+  aspect-ratio:1/1;
   border-radius: 50%;
   background-color: #f5f5f5;
   transition: all 0.5s;
@@ -100,11 +100,10 @@
   flex:1;
   display: flex;
   align-items: center;
-  
 }
 .end-btn{
   color:var(--primary-light);
-  font-size: 3.5vh;
+  font-size: 2vw;
   padding: 8px;
   text-align: center;
   position:relative;
@@ -136,12 +135,12 @@
 }
 
 .user-avatar{
-    width: 40px;
-    height: 40px;
+    width: 3vw;
+    aspect-ratio: 1/1;
     object-fit: cover;
-  border-radius: 50%; 
-  margin-left:32px;
-  cursor: pointer;
+    border-radius: 50%; 
+    margin-left:32px;
+    cursor: pointer;
 
 }
 .menu-lists{
@@ -174,8 +173,8 @@
   height: 100%;
 }
 
-@media (max-width: 1400px) {
-  .middle-btn {
-    display: none;
-  }
-}
+// @media (max-width: 1400px) {
+//   .middle-btn {
+//     display: none;
+//   }
+// }

@@ -28,7 +28,7 @@ function ChatInput({ roomId }) {
     const [text, setText] = useState('');
     const { user, fileUpload } = UserAuth();
     const [loading, setLoading] = useState();
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
         if (isImage(newfile) || isVideo(newfile)) {
@@ -46,9 +46,9 @@ function ChatInput({ roomId }) {
         }));
     };
     const handleSendMessage = async (icon = undefined) => {
-        if(icon) {
-            console.log(icon)
-            setLoading(true)
+        if (icon) {
+            console.log(icon);
+            setLoading(true);
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -56,9 +56,9 @@ function ChatInput({ roomId }) {
                 seen: false,
             });
         }
-        if (text) {
-            console.log(text)
-            setLoading(true)
+        if (!!text.trim()) {
+            console.log(text);
+            setLoading(true);
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -67,8 +67,8 @@ function ChatInput({ roomId }) {
             });
         }
         if (filePreview.others.length !== 0 || filePreview.media.length !== 0) {
-            setLoading(true)
-            
+            setLoading(true);
+
             if (filePreview.others.length !== 0) {
                 let files = { media: [], others: [] };
                 const others = await Promise.all(
@@ -78,7 +78,7 @@ function ChatInput({ roomId }) {
                 await addDoc(collection(db, 'chats', roomId, 'messages'), {
                     sender: user.uid,
                     time: serverTimestamp(),
-                    content: files ,
+                    content: files,
                     seen: false,
                 });
             }
@@ -91,18 +91,17 @@ function ChatInput({ roomId }) {
                 await addDoc(collection(db, 'chats', roomId, 'messages'), {
                     sender: user.uid,
                     time: serverTimestamp(),
-                    content: files ,
+                    content: files,
                     seen: false,
                 });
             }
-            
         }
         setText('');
         setFilePreview({ others: [], media: [] });
-        setLoading(false)
+        setLoading(false);
     };
     return (
-        <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('section')}>
                 {(filePreview.others.length !== 0 || filePreview.media.length !== 0) && (
                     <div className={cx('preview')}>
@@ -140,16 +139,15 @@ function ChatInput({ roomId }) {
                 <div className={cx('input-section')}>
                     <TextareaAutosize
                         value={text}
-                        onChange={(e) => setText(e.target.value)}
                         minRows={1}
                         onKeyDown={(e) => {
-
                             if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
                                 handleSendMessage();
-                            }else{
-                                console.log('no')
                             }
                         }}
+                        wrap="off"
+                        onChange={(e) => setText(e.target.value)}
                         maxRows={4}
                         placeholder="Start typing now"
                         className={cx('user-input')}
@@ -165,9 +163,12 @@ function ChatInput({ roomId }) {
                         onChange={handleFileChange}
                     />
                     <div className={cx('options')}>
-                        <FontAwesomeIcon icon={faThumbsUp} onClick={() => {
-                            handleSendMessage(`:)`)
-                        }} />
+                        <FontAwesomeIcon
+                            icon={faThumbsUp}
+                            onClick={() => {
+                                handleSendMessage(`:)`);
+                            }}
+                        />
                     </div>
                 </div>
             </div>

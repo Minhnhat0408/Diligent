@@ -62,6 +62,7 @@
     "babel-plugin-module-resolver": "^5.0.0",
     "customize-cra": "^1.0.0",
     "react-app-rewired": "^2.2.1",
-    "sass": "^1.58.3"
+    "sass": "^1.58.3",
+    "tailwindcss": "^3.3.2"
   }
 }

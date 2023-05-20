@@ -5,7 +5,7 @@ const cx = classNames.bind(styles);
 function Friend() {
     return (
         <div className={cx('wrapper')}>
-            <h2>Friend page</h2>
+            <h2 className="flex flex-col text-white justify-center items-center">Friend page</h2>
         </div>
     );
 }

@@ -42,6 +42,7 @@ function MyComment({ tag = null, update = null }) {
             );
         }
     }, [userData]);
+    
     const handleImageChange = (e) => {
         const file = e.target.files[0];
         setSelectedFile(file);
@@ -105,11 +106,12 @@ function MyComment({ tag = null, update = null }) {
     };
     const handleSubmit = async (inpData) => {
         let image = null;
+     
+        if(!inpData.text.trim() && !inpData.image) return;
         post.setLoading(true);
         if (inpData.image) {
             image = await fileUpload({ file: inpData.image, name: inpData.image.name });
         }
-
         await addDoc(collection(db, 'posts', post.id, 'comments'), {
             fatherCmt: inpData?.father || '',
             text: inpData.text,
@@ -121,7 +123,7 @@ function MyComment({ tag = null, update = null }) {
                 id: user.uid,
                 avatar: userData.user_avatar,
             },
-            like: {
+            like: { 
                 count: 0,
                 list: [],
             },
@@ -175,9 +177,11 @@ function MyComment({ tag = null, update = null }) {
     };
     return (
         <div className={cx('wrapper')}>
-            {
-                ban && <Ban onXmark={setBan}>You have been banned from commenting because of your inappropriate behaviours</Ban>
-            }
+            {ban && (
+                <Ban onXmark={setBan}>
+                    You have been banned from commenting because of your inappropriate behaviours
+                </Ban>
+            )}
             <div
                 className={cx('my-comment', { reply: tag, dark: context.theme === 'dark' })}
                 onClick={() => {
@@ -212,7 +216,7 @@ function MyComment({ tag = null, update = null }) {
                                 setText('');
                                 setSelectedFile(null);
                                 setImagePreview(null);
-                                if(userData.user_status !== 'ban') {
+                                if (userData.user_status !== 'ban') {
                                     if (update) {
                                         handleUpdate({
                                             text: text,
@@ -227,7 +231,6 @@ function MyComment({ tag = null, update = null }) {
                                         });
                                     }
                                 }
-                              
                             }}
                         />
                     </div>

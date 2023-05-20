@@ -26,10 +26,9 @@
             color: var(--primary-light) !important;
         }
     }
-    &.dark .icon {
-        color: var(--primary);
-    }
+    
 }
+
 
 .right + .right {
     & .user-info {
@@ -69,7 +68,9 @@
 .time-tippy {
     font-size: 1.2rem;
     font-style: italic;
-
+    &.dark .icon {
+        color: var(--primary);
+    }
     background-color: transparent;
 }
 .message {
