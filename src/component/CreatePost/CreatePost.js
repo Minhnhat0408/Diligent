@@ -29,7 +29,12 @@ function CreatePost({ show, setShow }) {
             {userData ? (
                 <>
                     {show && <PostForm onXmark={setShow} />}
-                    <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+                    <div
+                        className={
+                            cx('wrapper', { dark: context.theme === 'dark' }) +
+                            ' sml-max:!min-w-[100%] sml-max:!max-w-[100%] mdx-max:max-w-full'
+                        }
+                    >
                         {/* Create Post Box  */}
 
                         <div className={cx('header')}>

@@ -175,7 +175,7 @@ function Post() {
                 savePost(post.id, post.data);
                 break;
             case 'delete':
-                deletePost(post.id,post.data.user.id);
+                deletePost(post.id, post.data.user.id);
                 break;
             case 'update':
                 setUpdatePost(true);
@@ -281,7 +281,12 @@ function Post() {
         <>
             {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} />}
             {post.page ? (
-                <div className={cx('wrapper', 'postpage', { dark: context.theme === 'dark' })}>
+                <div
+                    className={
+                        'sml-max:!min-w-[100%] sml-max:!max-w-[100%] ' +
+                        cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
+                    }
+                >
                     <div className={cx('scroll-box')}>
                         <div className={cx('post-wrapper')}>
                             <div className={cx('header')}>
@@ -324,7 +329,7 @@ function Post() {
                                                 ? ADMIN_POST_OPTIONS
                                                 : POST_OPTIONS
                                         }
-                                        placement='right'
+                                        placement="right"
                                         onClick={handlePostOptions}
                                         small
                                     >
@@ -404,7 +409,12 @@ function Post() {
                     )}
                 </div>
             ) : (
-                <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+                <div
+                    className={
+                        cx('wrapper', { dark: context.theme === 'dark' }) +
+                        ' sml-max:!min-w-[100%] sml-max:!max-w-[100%]'
+                    }
+                >
                     {focusPost && (
                         <div className={cx('pop-up')}>
                             <div className={cx('focus', { dark: context.theme === 'dark' })}>
@@ -466,7 +476,7 @@ function Post() {
                                                     }
                                                     onClick={handlePostOptions}
                                                     small
-                                                    placement='right'
+                                                    placement="right"
                                                 >
                                                     <div className={cx('options')}>
                                                         <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
@@ -620,7 +630,7 @@ function Post() {
                                         {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
                                     </p>
                                     {post.data.updated && <p className={cx('updated')}>Updated</p>}
-                                </div>  
+                                </div>
                             </div>
                         </div>
 
@@ -634,7 +644,7 @@ function Post() {
                                         ? ADMIN_POST_OPTIONS
                                         : POST_OPTIONS
                                 }
-                                placement='right'
+                                placement="right"
                                 onClick={handlePostOptions}
                                 small
                             >

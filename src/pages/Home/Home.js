@@ -12,15 +12,13 @@ const cx = classNames.bind(styles);
 
 function Home() {
     const { user, posts } = UserAuth();
-    const [show,setShow] = useState(false)
+    const [show, setShow] = useState(false);
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:!min-w-[80vw] md-max:!w-[93vw]'}>
             {/* Phần story  */}
-            <Stories  />
+            <Stories />
             {/* Phần tạo bài viết  */}
-            {user && (
-                <CreatePost show={show} setShow={setShow}/>
-            )}
+            {user && <CreatePost show={show} setShow={setShow} />}
             {/* Hiển thị bài viết */}
             {posts &&
                 posts

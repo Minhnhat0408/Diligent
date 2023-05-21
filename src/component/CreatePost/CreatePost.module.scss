@@ -2,30 +2,27 @@ $color-text: var(--text-color);
 $color-blue: var(--primary-light);
 $color-video: #e50202;
 $color-photo: #10d876;
-$color-camera: #fe9431;body
-
-.wrapper {
+$color-camera: #fe9431;
+body .wrapper {
     background-color: var(--light-theme);
     padding: 20px;
-    margin-bottom:20px;
+    margin-bottom: 20px;
     min-width: 550px;
     border-radius: 20px;
     box-shadow: 1px 1px 5px #888;
     transition: all 0.8s;
-    &.dark{
+    &.dark {
         background-color: var(--dark-theme);
         box-shadow: none;
     }
     & .input-outside {
         transition: all 0.8s;
-        textarea{
+        textarea {
             background-color: #eeeeee;
-            color:var(--text-color);
-            
+            color: var(--text-color);
         }
-        
     }
-    &.dark .header{
+    &.dark .header {
         &-icon {
             color: var(--primary);
         }
@@ -36,7 +33,7 @@ $color-camera: #fe9431;body
             color: var(--primary);
         }
     }
-    
+
     &.dark .input-outside {
         textarea {
             background-color: var(--bg-dark-theme);
@@ -105,7 +102,7 @@ $color-camera: #fe9431;body
     &.dark .options {
         color: var(--text-color-dark);
     }
-    
+
     .options {
         display: flex;
         align-items: center;
@@ -141,13 +138,12 @@ $color-camera: #fe9431;body
             .camera {
                 color: $color-camera;
             }
-            .attach{
-                color: pink
+            .attach {
+                color: pink;
             }
-            .user-tag{
-                color: #1877f2;;
+            .user-tag {
+                color: #1877f2;
             }
         }
     }
-    
 }

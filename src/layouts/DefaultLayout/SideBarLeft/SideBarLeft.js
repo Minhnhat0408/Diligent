@@ -10,7 +10,7 @@ import {
     faNewspaper,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
-import { useContext} from 'react';
+import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import routes from '~/config/routes';
 import { useNavigate } from 'react-router-dom';
@@ -23,10 +23,15 @@ const cx = classNames.bind(styles);
 function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
-    const {user} = UserAuth();
+    const { user } = UserAuth();
 
     return (
-        <aside className={cx('wrapper',{ [context.theme]: context.theme === 'dark' })}>
+        <aside
+            className={
+                cx('wrapper', { [context.theme]: context.theme === 'dark' }) +
+                ' mdx-max:ml-[calc((33vw-240px)/2)] mdl-max:hidden'
+            }
+        >
             {/* New feed  */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>Applications</h4>
@@ -37,9 +42,8 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #0575e6, #021b79)"
                     color="#fff"
                     onClick={() => {
-                 
-                        navigate(routes.home)}
-                    }
+                        navigate(routes.home);
+                    }}
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faBook} />}
@@ -47,9 +51,8 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right,  #ffafbd,#ffc3a0)"
                     color="#fff"
                     onClick={() => {
-             
-                        navigate(routes.documents)}
-                    }
+                        navigate(routes.documents);
+                    }}
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faBoxArchive} />}
@@ -57,9 +60,8 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #e44d26, #f16529)"
                     color="#fff"
                     onClick={() => {
-                        navigate(routes.saves+user?.uid)}
-                    }
-           
+                        navigate(routes.saves + user?.uid);
+                    }}
                 />
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faBoltLightning} />}
@@ -67,25 +69,22 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #f2994a, #f2c94c)"
                     color="#fff"
                     onClick={() => {
-             
-                        navigate(routes.story + user.uid)}
-                    }
+                        navigate(routes.story + user.uid);
+                    }}
                 />
-       
+
                 <SidebarMenuItems
                     icon={<FontAwesomeIcon icon={faGamepad} />}
                     title="Game"
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
-              
                 />
             </div>
 
             {/* More pages */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>Daily Learning</h4>
-                <Calendar className={context.theme === 'dark' && 'dark'}/>
-                
+                <Calendar className={context.theme === 'dark' && 'dark'} />
             </div>
         </aside>
     );
