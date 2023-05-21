@@ -47,8 +47,7 @@ function ChatInput({ roomId, setLoading }) {
     };
     const handleSendMessage = async (icon = undefined) => {
         if (icon) {
-            console.log(icon);
-            setLoading(true);
+ 
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -57,8 +56,8 @@ function ChatInput({ roomId, setLoading }) {
             });
         }
         if (!!text.trim()) {
-            console.log(text);
-            setLoading(true);
+          
+
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -96,9 +95,11 @@ function ChatInput({ roomId, setLoading }) {
                     seen: false,
                 });
             }
+            setLoading(false);
         }
-
-        setLoading(false);
+        setFilePreview({ others: [], media: [] })
+        setText('');
+       
     };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
