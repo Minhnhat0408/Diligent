@@ -23,6 +23,7 @@ import {
     arrayUnion,
     deleteDoc,
     deleteField,
+    limit,
 } from 'firebase/firestore';
 import { auth } from '../firebase';
 import { provider } from '../firebase';
@@ -387,7 +388,7 @@ export const AuthContextProvider = ({ children }) => {
                     setStories(tmp);
                 });
                 // fetch posts change realtime
-                onSnapshot(collection(db, 'posts'), (docs) => {
+                onSnapshot(query(collection(db, 'posts'), limit(5)), (docs) => {
                     let data1 = [];
                     console.log('posts change');
                     docs.forEach((doc) => {
