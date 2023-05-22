@@ -92,7 +92,7 @@ function Header() {
 
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
-            <div className={cx('inner')}>
+            <div className={cx('inner') + ' smu-max:justify-between'}>
                 <Link to={routes.home} className={cx('start') + ' mdl-max:ml-3 sml-max:!hidden'}>
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
@@ -103,7 +103,7 @@ function Header() {
                 <Link to={routes.home} className={cx('start') + ' hidden sml-max:ml-3 sml-max:flex sml-max:w-32'}>
                     <img src={image.noText} className={cx('logo') + ' md-max:!w-full'} alt="tikTok"></img>
                 </Link>
-                <div className={cx('middle')}>
+                <div className={cx('middle') + ' smu-max:hidden'}>
                     <Search />
                     <Link
                         to={routes.home}
@@ -154,7 +154,7 @@ function Header() {
                     </Link>
                 </div>
 
-                <div className={cx('end')}>
+                <div className={cx('end') + ' smu-max:w-[210px]'}>
                     {user ? (
                         <>
                             <span className={cx('end-btn')}>

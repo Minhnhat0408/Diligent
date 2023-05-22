@@ -4,11 +4,13 @@ module.exports = {
     theme: {
         extend: {
             screens: {
+                'smu-max': { max: '576px' },
                 'sm-max': { max: '639px' },
                 'sml-max': { max: '681px' },
                 'md-max': { max: '767px' },
                 'mdl-max': { max: '850px' },
                 'mdx-max': { max: '939px' },
+                'lgs-max': { max: '1000px' },
                 'lg-max': { max: '1023px' },
                 'lgx-max': { max: '1050px' },
                 'sxl-max': { max: '1138px' },

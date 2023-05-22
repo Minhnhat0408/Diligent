@@ -18,7 +18,7 @@ function SideBarRight() {
         <aside
             className={
                 cx('wrapper', { [context.theme]: context.theme === 'dark' }) +
-                ' sxl-max:mr-1 lg-max:max-w-[125px] lg-max:!mr-4 mdx-max:hidden'
+                ' sxl-max:mr-1 lg-max:max-w-[125px] lg-max:!mr-4 lgs-max:hidden'
             }
         >
             {user && userData ? (
