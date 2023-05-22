@@ -51,13 +51,11 @@ function Home() {
     //     return () => unsubscribe();        
     // },[])
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:!min-w-[80vw] md-max:!w-[93vw]'}>
             {/* Phần story  */}
-            <Stories  />
+            <Stories />
             {/* Phần tạo bài viết  */}
-            {user && (
-                <CreatePost show={show} setShow={setShow}/>
-            )}
+            {user && <CreatePost show={show} setShow={setShow} />}
             {/* Hiển thị bài viết */}
             {/* <InfiniteScroll
           dataLength={this.state.items.length}

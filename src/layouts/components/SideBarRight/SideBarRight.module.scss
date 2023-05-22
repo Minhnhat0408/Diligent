@@ -1,39 +1,36 @@
-.wrapper{
+.wrapper {
     max-width: var(--defaultLayout-sidebar-right-width);
     width: 20%;
-    padding:  20px 8px 26px 8px;
-    margin-right: 30px;
+    padding: 20px 8px 26px 8px;
+    margin-right: calc((26.5vw - 20vw) / 2);
     position: fixed;
     top: var(--defaultLayout-header-height);
     right: 0;
     bottom: 0;
     overflow-y: scroll;
     overflow-x: hidden;
-    transition:all 0.8s;
+    transition: all 0.8s;
 
-    & .menu-wrapper{
-        color:var(--text-color) ; 
+    & .menu-wrapper {
+        color: var(--text-color);
     }
-    
-    &.dark .menu-wrapper{
-        
+
+    &.dark .menu-wrapper {
         background-color: var(--dark-theme);
-        color:var(--text-color-dark);   
+        color: var(--text-color-dark);
         box-shadow: none;
     }
 
- 
-    &.dark .menu-header{
-        color:var(--text-color-dark); 
-        
+    &.dark .menu-header {
+        color: var(--text-color-dark);
     }
-    &.dark .more{
-        color:var(--text-color-dark); 
+    &.dark .more {
+        color: var(--text-color-dark);
     }
 }
 
 .menu-wrapper {
-    transition:all 0.8s;
+    transition: all 0.8s;
     background-color: #fff;
     position: relative;
     border-radius: 15px;
@@ -42,30 +39,31 @@
     margin-bottom: 10px;
 }
 
-.options{
+.options {
     display: flex;
     color: var(--text-color);
-    margin-left: 25px;
-    
+    justify-content: center;
+    padding-left: 4px;
+    padding-right: 4px;
     padding-top: 10px;
     margin-bottom: 16px;
-    
 }
 .menu-header {
     font-weight: 600;
-     font-size: 1.4rem;
-     flex: 1;
+    font-size: 1.4rem;
+    flex: 1;
+    text-align: center;
 }
 
-.more{
+.more {
     font-size: 1.4rem;
     color: var(--text-color);
     padding: 0 20px;
 }
 
-.media{
+.media {
     border-radius: 15px;
-    padding:10px 0;
+    padding: 10px 0;
     width: 100%;
     height: 100%;
     object-fit: contain;

@@ -17,8 +17,8 @@
     min-height: calc(100vh - var(--defaultLayout-header-height));
     padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
-    padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px);
+    // padding-left: calc(var(--defaultLayout-sidebar-left-width) + 30px);
+    // padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px);
     &.dark {
         background-color: var(--bg-dark-theme);
     }

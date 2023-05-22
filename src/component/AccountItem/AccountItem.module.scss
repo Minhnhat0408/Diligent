@@ -1,78 +1,76 @@
 .wrapper {
-  display: flex;
-  align-items: center;
-  padding: 10px 16px;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.8s;
-  color: var(--text-color);
-  &.dark {
-    color: var(--text-color-dark);
-    background-color: var(--dark-theme);
-  }
-  &:hover{
-    background-color: rgba(22,24, 35, 0.03);
-  }
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.8s;
+    color: var(--text-color);
+    &.dark {
+        color: var(--text-color-dark);
+        background-color: var(--dark-theme);
+    }
+    &:hover {
+        background-color: rgba(22, 24, 35, 0.03);
+    }
 }
 
 .avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
 }
 
 .info {
-  display: flex;
-  flex: 1;
-  margin-left: 12px;
-  align-items: center;
-  overflow: hidden;
-  
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+    margin-left: 12px;
+    align-items: center;
+    overflow: hidden;
 }
 
 .name {
-  font-size: 1.4rem;
-  font-weight: 500;
-  flex:1;
-
-
-  span {
+    font-weight: 500;
+    flex: 1;
+    max-width: calc(100% - 10px);
     font-size: 1.6rem;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
     overflow: hidden;
-  
-  }
+    text-overflow: ellipsis;
 }
 
-.icon{
-  position: absolute;
-  font-size: 1rem;
-  right: 16px;
-  
-  &.online{
-    color: var(--online);
-  }
+.icon {
+    // position: absolute;
+    font-size: 1rem;
+    margin-left: 8px;
 
-  &.offline{
-    color: var(--offline);
-  }
-  &.ban{
-    color: var(--ban);
-  }
+    &.online {
+        color: var(--online);
+    }
+
+    &.offline {
+        color: var(--offline);
+    }
+    &.ban {
+        color: var(--ban);
+    }
 }
-.msg-noti{
-  background-color:var(--primary);
-  color: var(--primary-light);
-  width: 20px;
-  height: 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 5px;
-  font-weight: 600;
+.msg-noti {
+    background-color: var(--primary);
+    color: var(--primary-light);
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    font-weight: 600;
 }
 .username {
-  font-size: 1.4rem;
-  color: rgba(22, 24, 35, 0.5);
+    font-size: 1.4rem;
+    color: rgba(22, 24, 35, 0.5);
 }

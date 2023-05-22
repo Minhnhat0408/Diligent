@@ -15,8 +15,13 @@ function SideBarRight() {
     const context = useContext(ThemeContext);
     const { usersList, user, userData } = UserAuth();
     return (
-        <aside className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
-            {(user && userData) ? (
+        <aside
+            className={
+                cx('wrapper', { [context.theme]: context.theme === 'dark' }) +
+                ' sxl-max:mr-1 lg-max:max-w-[125px] lg-max:!mr-4 mdx-max:hidden'
+            }
+        >
+            {user && userData ? (
                 <>
                     {userData?.user_friendRequests.length !== 0 ? (
                         <div className={cx('menu-wrapper')}>
@@ -34,15 +39,15 @@ function SideBarRight() {
                     ) : (
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
-                                <h4 className={cx('menu-header')}>Suggested friends</h4>
-                                <Link to={routes.friend} className={cx('more')}>
+                                <h4 className={cx('menu-header') + ' lg-max:text-xl'}>Suggested friends</h4>
+                                <Link to={routes.friend} className={cx('more') + ' lg-max:hidden'}>
                                     See all
                                 </Link>
                             </div>
-                            {usersList?.map((u,ind) => {
-                                
+                            {usersList?.map((u, ind) => {
                                 return (
-                                    user.uid !== u.id && ind < 8 && 
+                                    user.uid !== u.id &&
+                                    ind < 8 &&
                                     !u.friend && (
                                         <AccountItem
                                             search
@@ -59,7 +64,7 @@ function SideBarRight() {
                     {userData?.user_friends.length !== 0 && (
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
-                                <h4 className={cx('menu-header')}>Contacts</h4>
+                                <h4 className={cx('menu-header') + ' lg-max:text-xl'}>Contacts</h4>
                             </div>
                             {usersList?.map((u) => {
                                 return (
