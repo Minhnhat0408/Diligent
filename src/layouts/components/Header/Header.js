@@ -154,10 +154,10 @@ function Header() {
                     </Link>
                 </div>
 
-                <div className={cx('end') + ' smu-max:w-[210px]'}>
+                <div className={cx('end') + ' smu-max:w-[210px] mdl-max:justify-end'}>
                     {user ? (
                         <>
-                            <span className={cx('end-btn')}>
+                            <span className={cx('end-btn') + ' mdl-max:hidden'}>
                                 <Tippy
                                     appendTo={document.body}
                                     interactive
@@ -173,7 +173,7 @@ function Header() {
                                     <div className={cx('noti-count')}>{notifications?.unread}</div>
                                 )}
                             </span>
-                            <Link to={routes.chat} className={cx('end-btn')}>
+                            <Link to={routes.chat} className={cx('end-btn') + ' mdl-max:hidden'}>
                                 <i className="fa-regular fa-message"></i>
                             </Link>
                         </>
@@ -190,7 +190,7 @@ function Header() {
                             </Button>
                         </>
                     )}
-                    <span onClick={context.toggleTheme} className={cx('end-btn')}>
+                    <span onClick={context.toggleTheme} className={cx('end-btn') + ' mdl-max:hidden'}>
                         {context.theme === 'dark' ? (
                             <i className={'fa-solid fa-sun'}></i>
                         ) : (
@@ -204,7 +204,7 @@ function Header() {
                     >
                         {user ? (
                             <Image
-                                className={cx('user-avatar') + ' sm-max:mr-5'}
+                                className={cx('user-avatar') + ' sm-max:mr-5 '}
                                 placement="bottom-end"
                                 offset={[16, 30]}
                                 src={userData?.user_avatar}
