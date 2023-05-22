@@ -39,7 +39,6 @@ function Search() {
                     setSearchResult(search);
                     setLoading(false);
                 }, 500);
-
             };
             fetchData(debounce);
         } else {
@@ -86,7 +85,10 @@ function Search() {
                             }
 
                             return (
-                                <Link className={cx('posts',{dark:context.theme === 'dark'})} to={routes.post + post.id}>
+                                <Link
+                                    className={cx('posts', { dark: context.theme === 'dark' })}
+                                    to={routes.post + post.id}
+                                >
                                     <span className={cx('title')}>{post.data.title}</span>
                                     <div className={cx('tags')}>
                                         {post.data.tags.length > 0 &&
@@ -102,7 +104,7 @@ function Search() {
             )}
             onClickOutside={handleHideResult}
         >
-            <div className={cx('search', { dark: context.theme === 'dark' })}>
+            <div className={cx('search', { dark: context.theme === 'dark' }) + ' sxl-max:w-[360px] mdl-max:hidden'}>
                 <input
                     ref={inputRef}
                     value={searchValue}

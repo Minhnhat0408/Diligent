@@ -18,13 +18,13 @@ function SideBarRight() {
         <aside
             className={
                 cx('wrapper', { [context.theme]: context.theme === 'dark' }) +
-                ' sxl-max:mr-1 lg-max:max-w-[125px] lg-max:!mr-4 mdx-max:hidden'
+                ' sxl-max:mr-1 lg-max:max-w-[125px] lgbw-max:max-w-[125px] lg-max:!mr-4 lgs-max:hidden'
             }
         >
             {user && userData ? (
                 <>
                     {userData?.user_friendRequests.length !== 0 ? (
-                        <div className={cx('menu-wrapper')}>
+                        <div className={cx('menu-wrapper') + ' xl-max:hidden'}>
                             <div className={cx('options')}>
                                 <h4 className={cx('menu-header')}>Friend request</h4>
                                 <Link to={routes.friend} className={cx('more')}>
@@ -40,7 +40,7 @@ function SideBarRight() {
                         <div className={cx('menu-wrapper')}>
                             <div className={cx('options')}>
                                 <h4 className={cx('menu-header') + ' lg-max:text-xl'}>Suggested friends</h4>
-                                <Link to={routes.friend} className={cx('more') + ' lg-max:hidden'}>
+                                <Link to={routes.friend} className={cx('more') + ' lg-max:hidden lgbw-max:hidden'}>
                                     See all
                                 </Link>
                             </div>
