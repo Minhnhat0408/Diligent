@@ -106,8 +106,8 @@ function PostForm({ onXmark, update }) {
     });
 
     const handleAddCategory = (value) => {
-        console.log('fsdafs');
-        if (!selectedCategories.includes(value.title)) {
+        
+        if (!selectedCategories.includes(value.title) && !value?.no) {
             setSelectedCategories([...selectedCategories, value.title]);
         } else {
             return;

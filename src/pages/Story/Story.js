@@ -1,11 +1,11 @@
 import classNames from 'classnames/bind';
 import { StoryItem } from '~/component/StoryComponents/StoryItem';
 import styles from './Story.module.scss';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Stories from '~/component/Stories/Stories';
 import { ThemeContext } from '~/contexts/Context';
 import { UserAuth } from '~/contexts/authContext';
-import { collection, deleteDoc, doc, getDocs, query, serverTimestamp } from 'firebase/firestore';
+import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useEffect } from 'react';
 import getTimeDiff from '~/utils/timeDiff';
@@ -15,11 +15,9 @@ const cx = classNames.bind(styles);
 
 function Story() {
     const context = useContext(ThemeContext);
-    const { user, stories } = UserAuth();
+    const {stories } = UserAuth();
     const { id } = useParams();
-    const [storiesData, setStoriesData] = useState([]);
     const [myStories, setMyStories] = useState(null);
-    const [hasFetchedStories, setHasFetchedStories] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -38,7 +36,7 @@ function Story() {
                     textColor: str.data.content.textColor,
                     text: str.data.content.text,
                     scale: str.data.scale,
-                    duration: str.data.type == 'video' ? 15000 : 3000,
+                    duration: str.data.type === 'video' ? 15000 : 3000,
                     userId: str.data.user.id,
                     storyId: str.id,
                     type: str.data.type,
@@ -52,7 +50,7 @@ function Story() {
 
     // Xóa story đã đăng quá 1 ngày
     async function autoDelete() {
-        Object.keys(stories).map((key, i) => {
+        Object.keys(stories).forEach((key, i) => {
             stories[key].forEach(async (str) => {
                 const time = getTimeDiff(Date.now(), str.data.time.seconds * 1000);
                 if (time.includes('days')) {

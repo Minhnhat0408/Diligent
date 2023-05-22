@@ -50,6 +50,7 @@ export const CATEGORY_OPTIONS = [
         title: 'Ngoại ngữ',
         children: {
             title: 'Ngoại ngữ',
+            no:true,
             data: [
                 {
                     title: 'Tiếng Nhật',
@@ -225,6 +226,7 @@ export const CATEGORY_OPTIONS = [
             data: [
                 {
                     title: 'Ngôn ngữ LT',
+                    no:true,
                     children: {
                         title: 'Ngôn ngữ LT',
                         data: [
@@ -247,7 +249,41 @@ export const CATEGORY_OPTIONS = [
                     },
                 },
                 {
+                    title: 'FrameW + Lib',
+                    no:true,
+                    children: {
+                        title: 'FrameW + Lib',
+                        data: [
+                            {
+                                title: 'ReactJS',
+                            },
+                            {
+                                title: 'NextJS',
+                            },
+                            {
+                                title: 'Django',
+                            },
+                            {
+                                title: 'JavaFX',
+                            },
+                            {
+                                title: 'SDL2',
+                            },
+                            {
+                                title: 'PyGame',
+                            },
+                            {
+                                title: 'TailWind Css',
+                            },
+                            {
+                                title: 'SASS',
+                            },
+                        ]
+                    }
+                },
+                {
                     title: 'Môn học LT',
+                    no:true,
                     children: {
                         title: 'Môn học LT',
                         data: [
