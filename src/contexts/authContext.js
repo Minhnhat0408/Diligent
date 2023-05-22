@@ -388,7 +388,7 @@ export const AuthContextProvider = ({ children }) => {
                     setStories(tmp);
                 });
                 // fetch posts change realtime
-                onSnapshot(query(collection(db, 'posts'), limit(5)), (docs) => {
+                onSnapshot(query(collection(db, 'posts')), (docs) => {
                     let data1 = [];
                     console.log('posts change');
                     docs.forEach((doc) => {
