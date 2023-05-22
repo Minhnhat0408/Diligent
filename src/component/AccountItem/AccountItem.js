@@ -61,8 +61,8 @@ function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
             className={cx('wrapper', { dark: dark })}
         >
             <Image src={acc.data.user_avatar} alt="user" className={cx('avatar')} />
-            <div className={cx('info') + ' lg-max:overflow-visible'}>
-                <h4 className={cx('name') + ' lg-max:hidden'}>{acc.data.user_name}</h4>
+            <div className={cx('info') + ' lg-max:overflow-visible lgbw-max:!overflow-visible'}>
+                <h4 className={cx('name') + ' lg-max:hidden lgbw-max:!hidden'}>{acc.data.user_name}</h4>
                 {chat && noti > 0 ? (
                     <div className={cx('msg-noti')}>{noti}</div>
                 ) : (
