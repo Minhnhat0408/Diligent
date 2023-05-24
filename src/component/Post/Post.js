@@ -51,6 +51,9 @@ function Post() {
     const post = useContext(PostContext);
     const [text, setText] = useState('');
     const [updatePost, setUpdatePost] = useState(false);
+    const [like, setLike] = useState(post.data.react === 1 ? 1 : 0);
+    const [dislike, setDisLike] = useState(post.data.react === -1 ? 1 : 0);
+
     const userLink = (id) => {
         navigate(routes.user + id);
     };
@@ -80,9 +83,13 @@ function Post() {
         try {
             let lik = 0;
             let dis = 0;
-            if (post.data.react === 1) {
-                lik = post.data.like.count - 1;
-                dis = post.data.dislike.count;
+
+            if (like === 1) {
+                lik = post.data.react === 1
+                    ? post.data.like.count - 1
+                    : post.data.like.count
+    
+
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
@@ -93,17 +100,21 @@ function Post() {
                         }),
                     },
                 });
-            } else if (post.data.react === -1) {
-                lik = post.data.like.count + 1;
-                dis = post.data.dislike.count - 1;
+            } else if (dislike === 1) {
+                lik = post.data.react === 1
+                ? post.data.like.count 
+                : post.data.like.count +1
+                dis = post.data.react === -1
+                ? post.data.dislike.count - 1
+                : post.data.dislike.count
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
-                        list: arrayUnion({
+                        list: [...post.data.like.list,{
                             id: user.uid,
                             name: userData.user_name,
                             ava: userData.user_avatar,
-                        }),
+                        }],
                     },
                     dislike: {
                         count: dis,
@@ -114,30 +125,38 @@ function Post() {
                         }),
                     },
                 });
-            } else {
+
+            
+            } else if (like === 0 && dislike === 0) {
                 lik = post.data.like.count + 1;
-                dis = post.data.dislike.count;
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
-                        list: arrayUnion({
+                        list: [...post.data.like.list,{
                             id: user.uid,
                             name: userData.user_name,
                             ava: userData.user_avatar,
-                        }),
+                        }],
                     },
                 });
             }
+            if (like === 1) {
+                setLike(0);
+            } else {
+                setLike(1);
+                setDisLike(0)
+            }
 
-            if (post.data.react === -1) {
+            if (dislike === 1 || like === 0) {
                 if (user.uid !== post.data.user.id) {
                     const q = query(
                         collection(db, 'users', post.data.user.id, 'notifications'),
                         where('sender.id', '==', user.uid),
                         where('url', '==', routes.post + post.id),
-                        where('type', '==', 'dislike'),
+                        where('type', '==', 'dislike'), 
                     );
                     getDocs(q).then(async (result) => {
+                
                         if (result.docs.length === 0) {
                             await addDoc(collection(db, 'users', post.data.user.id, 'notifications'), {
                                 title: type.like,
@@ -191,17 +210,21 @@ function Post() {
         try {
             let lik = 0;
             let dis = 0;
-            if (post.data.react === 1) {
-                lik = post.data.like.count - 1;
-                dis = post.data.dislike.count + 1;
+            if (like === 1) {
+                lik = post.data.react === 1
+                ? post.data.like.count -1
+                : post.data.like.count 
+                dis = post.data.react === -1
+                ? post.data.dislike.count 
+                : post.data.dislike.count +1
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
-                        list: arrayUnion({
+                        list: [...post.data.dislike.list,{
                             id: user.uid,
                             name: userData.user_name,
                             ava: userData.user_avatar,
-                        }),
+                        }],
                     },
                     like: {
                         count: lik,
@@ -212,9 +235,10 @@ function Post() {
                         }),
                     },
                 });
-            } else if (post.data.react === -1) {
-                lik = post.data.like.count;
-                dis = post.data.dislike.count - 1;
+            } else if (dislike === 1) {
+                dis = post.data.react === -1
+                ? post.data.dislike.count -1
+                : post.data.dislike.count 
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
@@ -226,20 +250,26 @@ function Post() {
                     },
                 });
             } else {
-                lik = post.data.like.count;
                 dis = post.data.dislike.count + 1;
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
-                        list: arrayUnion({
+                        list: [...post.data.dislike.list,{
                             id: user.uid,
                             name: userData.user_name,
                             ava: userData.user_avatar,
-                        }),
+                        }],
                     },
                 });
             }
-            if (post.data.react === 1) {
+
+            if (dislike === 1) {
+                setDisLike(0);
+            } else {
+                setDisLike(1);
+                setLike(0)
+            }
+            if (like === 1 || dislike === 0) {
                 if (user.uid !== post.data.user.id) {
                     const q = query(
                         collection(db, 'users', post.data.user.id, 'notifications'),
@@ -251,7 +281,7 @@ function Post() {
                         if (result.docs.length === 0) {
                             await addDoc(collection(db, 'users', post.data.user.id, 'notifications'), {
                                 title: type.dislike,
-                                url: routes.post + user.uid,
+                                url: routes.post + post.id,
                                 sender: {
                                     id: user.uid,
                                     name: userData.user_name,
@@ -367,23 +397,31 @@ function Post() {
                                     <div className={cx('like-action')}>
                                         <FontAwesomeIcon
                                             icon={faThumbsUp}
-                                            className={cx('icon', { active: post.data.react === 1 })}
+                                            className={cx('icon', { active: like === 1 })} //tricky logic
                                             onClick={() => {
                                                 handleClickLike();
                                             }}
                                         />
-                                        <p className={cx('nums')}>{post.data.like.count}</p>
+                                        <p className={cx('nums')}>
+                                            {post.data.react === 1
+                                                ? post.data.like.count + like - 1
+                                                : post.data.like.count + like}
+                                        </p>
                                     </div>
 
                                     <div className={cx('dislike-action')}>
                                         <FontAwesomeIcon
                                             icon={faThumbsDown}
-                                            className={cx('icon', { active: post.data.react === -1 })}
+                                            className={cx('icon', { active: dislike === 1 })}
                                             onClick={() => {
                                                 handleClickDislike();
                                             }}
                                         />
-                                        <p className={cx('nums')}>{post.data.dislike.count}</p>
+                                        <p className={cx('nums')}>
+                                            {post.data.react === -1
+                                                ? post.data.dislike.count + dislike-1
+                                                : post.data.dislike.count + dislike}
+                                        </p>
                                     </div>
 
                                     <div className={cx('comment-action')}>
@@ -569,23 +607,31 @@ function Post() {
                                                 <div className={cx('like-action')}>
                                                     <FontAwesomeIcon
                                                         icon={faThumbsUp}
-                                                        className={cx('icon', { active: post.data.react === 1 })}
+                                                        className={cx('icon', { active: like === 1 })} //tricky logic
                                                         onClick={() => {
                                                             handleClickLike();
                                                         }}
                                                     />
-                                                    <p className={cx('nums')}>{post.data.like.count}</p>
+                                                    <p className={cx('nums')}>
+                                                        {post.data.react === 1
+                                                            ? post.data.like.count + like - 1
+                                                            : post.data.like.count + like}
+                                                    </p>
                                                 </div>
 
                                                 <div className={cx('dislike-action')}>
                                                     <FontAwesomeIcon
                                                         icon={faThumbsDown}
-                                                        className={cx('icon', { active: post.data.react === -1 })}
+                                                        className={cx('icon', { active: dislike === 1 })}
                                                         onClick={() => {
                                                             handleClickDislike();
                                                         }}
                                                     />
-                                                    <p className={cx('nums')}>{post.data.dislike.count}</p>
+                                                    <p className={cx('nums')}>
+                                                        {post.data.react === -1
+                                                            ? post.data.dislike.count + dislike-1
+                                                            : post.data.dislike.count + dislike}
+                                                    </p>
                                                 </div>
 
                                                 <div className={cx('comment-action')}>
@@ -727,23 +773,31 @@ function Post() {
                             <div className={cx('like-action')}>
                                 <FontAwesomeIcon
                                     icon={faThumbsUp}
-                                    className={cx('icon', { active: post.data.react === 1 })}
+                                    className={cx('icon', { active: like === 1 })} //tricky logic
                                     onClick={() => {
                                         handleClickLike();
                                     }}
                                 />
-                                <p className={cx('nums')}>{post.data.like.count}</p>
+                                <p className={cx('nums')}>
+                                    {post.data.react === 1
+                                        ? post.data.like.count + like - 1
+                                        : post.data.like.count + like}
+                                </p>
                             </div>
 
                             <div className={cx('dislike-action')}>
                                 <FontAwesomeIcon
                                     icon={faThumbsDown}
-                                    className={cx('icon', { active: post.data.react === -1 })}
+                                    className={cx('icon', { active: dislike === 1 })}
                                     onClick={() => {
                                         handleClickDislike();
                                     }}
                                 />
-                                <p className={cx('nums')}>{post.data.dislike.count}</p>
+                                <p className={cx('nums')}>
+                                    {post.data.react === -1
+                                        ? post.data.dislike.count + dislike-1
+                                        : post.data.dislike.count + dislike}
+                                </p>
                             </div>
 
                             <div className={cx('comment-action')}>

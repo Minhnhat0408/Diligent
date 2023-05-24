@@ -23,6 +23,7 @@ const cx = classNames.bind(styles);
 function PostPage() {
     const navigate = useNavigate();
     const { id, num } = useParams();
+    const { user } = UserAuth();
     const [postData, setPostData] = useState();
     const context = useContext(ThemeContext);
     useEffect(() => {
@@ -30,12 +31,31 @@ function PostPage() {
             if (!post?.data()) {
                 navigate(routes.notFound);
             } else {
-                setPostData(post.data());
+                if (user) {
+                    console.log('hello')
+                    if (
+                        post.data().like.list.some((u) => {
+                            return u.id === user.uid;
+                        })
+                    ) {
+                        setPostData({ ...post.data(), react: 1 }); // 1 mean like
+                    } else if (
+                        post.data().dislike.list.some((u) => {
+                            return u.id === user.uid;
+                        })
+                    ) {
+                        setPostData({...post.data(), react: -1 }); // -1 mean dislike
+                    } else {
+                        setPostData({ ...post.data(), react: 0 }); // 0 mean neutral
+                    }
+                } else {
+                    setPostData(post.data());
+                }
+
             }
         });
-    
     }, [id]);
-
+    console.log(postData)
     return (
         <>
             {postData && (
@@ -84,7 +104,6 @@ function PostPage() {
                             </div>
                         )}
 
-                        {console.log(postData, 'fefefe')}
                         <div className={cx('post-info')}>
                             <Post />
                         </div>
