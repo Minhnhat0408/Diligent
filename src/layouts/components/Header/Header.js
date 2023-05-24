@@ -201,12 +201,12 @@ function Header() {
                         item={user ? USER_MENU : MENU_ITEM}
                         className={cx('menu', { [context.theme]: context.theme === 'dark' })}
                         onChange={handleMenuChange}
+                        placement="bottom"
+                        offset={[0,10]}
                     >
                         {user ? (
                             <Image
                                 className={cx('user-avatar') + ' sm-max:mr-5 '}
-                                placement="bottom-end"
-                                offset={[16, 30]}
                                 src={userData?.user_avatar}
                                 alt={userData?.user_name}
                             ></Image>

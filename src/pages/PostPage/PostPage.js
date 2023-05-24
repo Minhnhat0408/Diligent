@@ -16,34 +16,31 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
 function PostPage() {
     const navigate = useNavigate();
-    const { posts } = UserAuth();
     const { id, num } = useParams();
     const [postData, setPostData] = useState();
-    const context = useContext(ThemeContext)
+    const context = useContext(ThemeContext);
     useEffect(() => {
-        let count = 0;
-        const data = posts.filter((post) => {
-            
-            return post.id === id;
-        })
-        if(data.length === 0) {
-            navigate(routes.notFound)
-        }else{
-            setPostData(
-            data[0].data
-                );
-        }
-    }, [posts,id]);
+        getDoc(doc(db, 'posts', id)).then((post) => {
+            if (!post?.data()) {
+                navigate(routes.notFound);
+            } else {
+                setPostData(post.data());
+            }
+        });
+    
+    }, [id]);
 
     return (
         <>
             {postData && (
                 <PostProvider id={id} data={postData} page>
-                    <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
+                    <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                         {postData.files.media.length > 0 && (
                             <div className={cx('image-display')}>
                                 {postData.files.media.length <= 1 ? (
@@ -70,7 +67,7 @@ function PostPage() {
                                             } else if (isVideoUrl(url)) {
                                                 result = (
                                                     <div className={cx('each-slide-effect')}>
-                                                        <video controls  className={cx('image')}>
+                                                        <video controls className={cx('image')}>
                                                             <source src={url} />
                                                         </video>
                                                     </div>
@@ -87,7 +84,7 @@ function PostPage() {
                             </div>
                         )}
 
-                        {console.log(postData, 'fefefe')}           
+                        {console.log(postData, 'fefefe')}
                         <div className={cx('post-info')}>
                             <Post />
                         </div>

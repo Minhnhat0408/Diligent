@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { UserAuth } from './authContext';
 import { PostContext, ThemeContext } from './Context';
-import { addDoc, arrayUnion, collection, deleteDoc, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { addDoc, arrayUnion, collection, deleteDoc, doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 
 export function ThemeProvider({ children }) {
@@ -52,6 +52,7 @@ export function PostProvider({ id, data, children, page = false }) {
                 name: data.user.name,
                 avatar: data.user.avatar,
             },
+            time:serverTimestamp(),
         });
     };
     const value = {

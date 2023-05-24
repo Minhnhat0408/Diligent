@@ -30,10 +30,10 @@ function Search() {
                 const searchAccount = usersList.filter((duser) => {
                     return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user?.uid;
                 });
-                const searchPost = posts.filter((p) => {
-                    return p.data.title.toLowerCase().includes(value.toLowerCase());
-                });
-                const search = { accounts: searchAccount, posts: searchPost };
+                // const searchPost = posts.filter((p) => {
+                //     return p.data.title.toLowerCase().includes(value.toLowerCase());
+                // });
+                const search = { accounts: searchAccount};
 
                 setTimeout(() => {
                     setSearchResult(search);
@@ -43,7 +43,7 @@ function Search() {
             fetchData(debounce);
         } else {
             setLoading(false);
-            setSearchResult({ accounts: [], posts: [] });
+            setSearchResult({ accounts: []});
         }
     }, [debounce]);
     const handleSearch = (e) => {
@@ -55,7 +55,7 @@ function Search() {
     console.log(searchResult);
     const handleClear = () => {
         setSearchValue('');
-        setSearchResult({ accounts: [], posts: [] });
+        setSearchResult({ accounts: []});
         inputRef.current.focus();
     };
 
@@ -64,7 +64,7 @@ function Search() {
     };
     return (
         <HeadlessTippy
-            visible={showResult && (searchResult.accounts.length > 0 || searchResult.posts.length > 0)}
+            visible={showResult && (searchResult.accounts.length > 0)}
             interactive={true}
             appendTo={() => document.body}
             render={(attrs) => (
@@ -79,7 +79,7 @@ function Search() {
                             return <AccountItem key={user.id} search acc={user} dark={context.theme === 'dark'} />;
                         })}
                         <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Posts</h4>
-                        {searchResult.posts.map((post, id) => {
+                        {/* {searchResult.posts.map((post, id) => {
                             if (id > 4) {
                                 return null;
                             }
@@ -98,7 +98,7 @@ function Search() {
                                     </div>
                                 </Link>
                             );
-                        })}
+                        })} */}
                     </PopperWrapper>
                 </div>
             )}

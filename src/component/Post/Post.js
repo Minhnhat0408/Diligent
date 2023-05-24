@@ -44,7 +44,7 @@ const cx = classNames.bind(styles);
 function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
-    const { deletePost, savePost, posts, hidePost } = useContext(PostContext);
+    const { deletePost, savePost, hidePost } = useContext(PostContext);
     const { userData, user, sendReport } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();

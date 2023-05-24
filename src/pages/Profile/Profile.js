@@ -2,7 +2,21 @@ import classNames from 'classnames/bind';
 import Button from '~/component/Button';
 import styles from './Profile.module.scss';
 import { useNavigate, useParams } from 'react-router-dom';
-import { collection, doc, updateDoc, serverTimestamp, addDoc, arrayRemove, query, where, getDocs } from 'firebase/firestore';
+import {
+    collection,
+    doc,
+    updateDoc,
+    serverTimestamp,
+    addDoc,
+    arrayRemove,
+    query,
+    where,
+    getDocs,
+    orderBy,
+    limit,
+    or,
+    startAfter,
+} from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { arrayUnion } from 'firebase/firestore';
@@ -37,23 +51,24 @@ import { PostProvider } from '~/contexts/Provider';
 import Ban from '~/component/Ban/Ban';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, usersList, userData, handleAccept, handleDecline, unFriend, unbanUser, fileUpload, posts, banUser } =
+    const { user, usersList, userData, handleAccept, handleDecline, unFriend, unbanUser, fileUpload, banUser } =
         UserAuth();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
-    const [userPosts, setUserPosts] = useState();
+    const [userPosts, setUserPosts] = useState([]);
     const [ban, setBan] = useState(userData?.user_status === 'ban');
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState();
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
-
+    const [lastPost, setLastPost] = useState(null);
     useEffect(() => {
         if (user?.uid !== id) {
             let count = 0;
@@ -94,13 +109,54 @@ function Profile() {
         }
     }, [id, usersList]);
     useEffect(() => {
-        setUserPosts(
-            posts.filter((post) => {
-                return post.data.user.id === id || post.data.mentions.includes(id);
-            }),
-        );
-    }, [id, posts]);
+        const fetchUserPosts = async () => {
+            if (userData) {
+                const q = query(
+                    collection(db, 'posts'),
+                    or(where('user.id', '==', id), where('mentions', 'array-contains', id)),
+                    orderBy('time', 'desc'),
+                    limit(5),
+                );
+                const docs = await getDocs(q);
+                const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+                setUserPosts(newData);
 
+                // Update the last post for pagination
+              
+                if (docs.docs.length > 0) {
+                    setLastPost(docs.docs[docs.docs.length - 1]);
+                }
+                if(docs.docs.length < 5) {
+                    setLastPost(null)
+                }
+            }
+        };
+        fetchUserPosts();
+    }, [id]);
+     const fetchMorePosts = async () =>{
+   
+        if (lastPost) {
+
+            let q = query(
+                collection(db, 'posts'),
+                or(where('user.id', '==', id), where('mentions', 'array-contains', id)),
+                orderBy('time', 'desc'),
+                startAfter(lastPost),
+                limit(5),
+            );;
+            const docs = await getDocs(q);
+            const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+            setUserPosts((prevPosts) => [...prevPosts, ...newData]);
+            // Update the last post for pagination
+            if (docs.docs.length > 0) {
+                setLastPost(docs.docs[docs.docs.length - 1]);
+            } else {
+                // No more documents available
+                setLastPost(null);
+            }
+        }
+     }
+    console.log(lastPost,userPosts)
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
         setLoading(true);
@@ -170,7 +226,7 @@ function Profile() {
             alert(err);
         }
     };
-    const handleNavigateChat = async() => {
+    const handleNavigateChat = async () => {
         const q = query(
             collection(db, 'chats'),
             where('id1', 'in', [user.uid, id]),
@@ -178,8 +234,8 @@ function Profile() {
         );
         const a = await getDocs(q);
         let tmp = a.docs[0]?.id;
-        navigate(routes.chatroom + tmp)
-    }
+        navigate(routes.chatroom + tmp);
+    };
 
     // console.log(getTimeDiff(pageUser?.user_banUntil.toMillis(),new Date()))
     return (
@@ -263,7 +319,7 @@ function Profile() {
                                             xs
                                             disabled={ban}
                                             dark={context.theme === 'dark'}
-                                            onClick={() => navigate(routes.story+user.uid)}
+                                            onClick={() => navigate(routes.story + user.uid)}
                                             outline
                                         >
                                             <i className={`fa-regular fa-bolt`}></i>
@@ -336,7 +392,9 @@ function Profile() {
                                                 </Button>
                                                 <Button
                                                     xs
-                                                    disabled={ disabled !== 'Friend' ||pageUser.user_status === 'ban' || ban}
+                                                    disabled={
+                                                        disabled !== 'Friend' || pageUser.user_status === 'ban' || ban
+                                                    }
                                                     outline
                                                     dark={context.theme === 'dark'}
                                                     onClick={handleNavigateChat}
@@ -435,14 +493,22 @@ function Profile() {
                     ) : (
                         <div className={cx('content')}>
                             {user && <CreatePost show={createBoxVisible} setShow={setCreateBoxVisible} />}
-                            {userPosts &&
-                                userPosts.map((post) => {
-                                    return (
-                                        <PostProvider key={post.id} id={post.id} data={post.data}>
-                                            <Post />
-                                        </PostProvider>
-                                    );
-                                })}
+
+                            <InfiniteScroll
+                                dataLength={userPosts.length}
+                                next={fetchMorePosts}
+                                hasMore={lastPost !== null}
+                                loader={<h4>Loading...</h4>}
+                            >
+                                {userPosts &&
+                                    userPosts.map((post) => {
+                                        return (
+                                            <PostProvider key={post.id} id={post.id} data={post.data}>
+                                                <Post />
+                                            </PostProvider>
+                                        );
+                                    })}
+                            </InfiniteScroll>
                         </div>
                     )}
 

@@ -34,7 +34,7 @@ function CommentBox() {
                 docs.forEach((doc) => {
                     if (
                         doc.data().like.list.some((u) => {
-                            return u.id === user.uid;
+                            return u.id === user?.uid;
                         })
                     ) {
                         tmp.push({ id: doc.id, data: doc.data(), react: 1 });

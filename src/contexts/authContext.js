@@ -42,9 +42,6 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
-    const [savePostData, setSavePostData] = useState([]);
-    const [posts, setPosts] = useState();
-
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
@@ -90,18 +87,7 @@ export const AuthContextProvider = ({ children }) => {
             });
             setStories(tmp);
         }
-        async function fetchPosts() {
-            const data = [];
-            const q = query(collection(db, 'posts'), orderBy('time', 'desc'));
-            const docs = await getDocs(q);
-            docs.forEach((doc) => {
-                data.push({ id: doc.id, data: doc.data() });
-            });
-            setPosts(data);
-        }
-
         fetchUserData();
-        fetchPosts();
         fetchStories();
     }, []);
     const signIn = async (email, password) => {
@@ -387,30 +373,7 @@ export const AuthContextProvider = ({ children }) => {
                     });
                     setStories(tmp);
                 });
-                // fetch posts change realtime
-                onSnapshot(query(collection(db, 'posts')), (docs) => {
-                    let data1 = [];
-                    console.log('posts change');
-                    docs.forEach((doc) => {
-                        if (
-                            doc.data().like.list.some((u) => {
-                                return u.id === currentUser.uid;
-                            })
-                        ) {
-                            data1.push({ id: doc.id, data: { ...doc.data(), react: 1 } }); // 1 mean like
-                        } else if (
-                            doc.data().dislike.list.some((u) => {
-                                return u.id === currentUser.uid;
-                            })
-                        ) {
-                            data1.push({ id: doc.id, data: { ...doc.data(), react: -1 } }); // -1 mean dislike
-                        } else {
-                            data1.push({ id: doc.id, data: { ...doc.data(), react: 0 } }); // 0 mean neutral
-                        }
-                    });
-                    data1.sort((a, b) => b.data.time.seconds - a.data.time.seconds);
-                    setPosts(data1);
-                });
+
                 //fetch user data change realtime
                 onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
                     console.log('data of user change');
@@ -443,13 +406,13 @@ export const AuthContextProvider = ({ children }) => {
                     },
                 );
                 // fetch savepost realtime
-                onSnapshot(query(collection(db, 'users', currentUser.uid, 'saves'), orderBy('title')), (docs) => {
-                    console.log('save post change');
-                    const result = docs.docs.map((doc) => {
-                        return { id: doc.id, data: doc.data() };
-                    });
-                    setSavePostData(result);
-                });
+                // onSnapshot(query(collection(db, 'users', currentUser.uid, 'saves'), orderBy('title')), (docs) => {
+                //     console.log('save post change');
+                //     const result = docs.docs.map((doc) => {
+                //         return { id: doc.id, data: doc.data() };
+                //     });
+                //     setSavePostData(result);
+                // });
                 if (window.location.pathname !== routes.updateInfo)
                     await updateDoc(doc(db, 'users', currentUser.uid), {
                         user_status: 'online',
@@ -474,10 +437,8 @@ export const AuthContextProvider = ({ children }) => {
         usersList,
         user,
         userData,
-        posts,
         stories,
         notifications,
-        savePostData,
         handleReadNoti,
         fileUpload,
         sendReport,

@@ -119,7 +119,7 @@ function DocumentItem({ id, data }) {
                 </a>
                 <div className={cx('download-count')}>{data.downloads}</div>
             </div>
-            {(user.uid === data.user.id || user.uid === adminId) && (
+            {(user?.uid === data.user.id || user?.uid === adminId) && (
                 <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteDoc} />
             )}
         </div>

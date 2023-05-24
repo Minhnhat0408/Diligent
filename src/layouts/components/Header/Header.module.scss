@@ -73,12 +73,6 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        margin-left: 24px;
-        // & > img {
-        //     margin-left: 0;
-        //     min-width: 30px;
-        //     min-height: 30px;
-        // }
     }
 }
 
@@ -154,6 +148,7 @@
 
 .user-avatar {
     width: 3vw;
+    margin-left: 24px;
     min-width: 40px;
     aspect-ratio: 1/1;
     object-fit: cover;

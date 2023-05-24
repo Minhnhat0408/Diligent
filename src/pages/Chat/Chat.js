@@ -54,7 +54,6 @@ function Chat() {
                         seen:true
                     })
                 })
-                console.log(tmp)
                 setMessages(tmp);
             },
         );

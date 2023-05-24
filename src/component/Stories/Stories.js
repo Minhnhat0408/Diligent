@@ -126,7 +126,7 @@ function Stories({ stories }) {
                         </p>
                     </div>
                 </div>
-                {stories[activeStoryIndex].userId === user.uid && (
+                {stories[activeStoryIndex].userId === user?.uid && (
                     <div className={cx('delete')} onClick={() => deleteStory(stories[activeStoryIndex].storyId)}>
                         <i class="fa-light fa-trash"></i>
                     </div>
