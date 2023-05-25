@@ -9,9 +9,9 @@
 
 
 .wrapper {
-    min-width: 100%;
+    min-width: 550px;
     max-height: var(--story-height);
-    max-width: var(--stories-width);
+    width: 100%;
     margin-bottom: 20px;
     display: flex;
     overflow: hidden;
@@ -58,13 +58,14 @@
 }
 .no-content{
     display: flex;
-
+    width: calc(100% - 135px);
     justify-content: center;
     height: 100%;
 
 }
 .stories-wrapper {
     display: flex;
+    width: 100%;
     will-change: transform;
     transition: transform 0.3s ease-in-out;
 }

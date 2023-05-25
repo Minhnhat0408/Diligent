@@ -131,6 +131,7 @@ function Home() {
             <InfiniteScroll
                 dataLength={posts.length}
                 next={fetchMorePosts}
+                style={{minWidth:550}}
                 hasMore={lastPost !== null}
                 loader={<h4>Loading...</h4>}
             >
