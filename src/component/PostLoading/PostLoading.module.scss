@@ -1,0 +1,112 @@
+
+.wrapper {
+    margin-bottom: 20px;
+    padding: 20px;
+    min-width: 550px;
+    position: relative;
+    border-radius: 10px;
+    background-color: var(--light-theme);
+    box-shadow: 1px 1px 5px #888888;
+    color: var(--text-color);
+    transition: all 0.8s;
+    height:200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    &.dark {
+        background-color: var(--dark-theme);
+        box-shadow: none;
+        color: var(--text-color-dark);
+    }
+    &.dark .post-wrapper {
+        border-color: #eee;
+    }
+    &.dark .header .info .username {
+        color: var(--primary);
+    }
+    &.dark .header .info .badge {
+        color: var(--primary-light);
+        background-color: var(--primary);
+    }
+    &.dark .file-show .file-link {
+        border-color: var(--text-color-dark);
+        & a {
+            color: var(--text-color-dark);
+        }
+    }
+    &.dark .title {
+        color: var(--primary);
+    }
+    &.dark .selected-category li {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    &.dark .mention {
+        color: var(--primary);
+    }
+}
+
+.header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .info {
+        display: flex;
+        align-items: center;
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            background-color: var(--bg-dark-theme);
+        }
+
+        .user {
+            margin-left: 12px;
+        
+            .username {
+               background-color: var(--bg-dark-theme);
+                height: 16px;
+                width: 10vw;
+                border-radius: 6vw;
+                cursor: pointer;
+            }
+            
+            .badge{
+                padding: 0 6px;
+                background-color: var(--primary-light);
+                color:var(--primary);
+                border-radius: 20px;
+                font-size: 1.1rem;
+                margin-left: 10px;
+                user-select: none;
+                font-weight: 600;
+            }
+            .time {
+                margin-top: 10px;
+                height: 14px;
+                width: 6vw;
+                border-radius: 6vw;
+                background-color: var(--bg-dark-theme);
+            }
+            .updated{
+                margin-left: 1rem;
+                font-size: 1.4rem;
+                font-weight: 600;
+            }
+        }
+    }
+}
+
+.options{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+.slot{
+    background-color: var(--bg-dark-theme);
+    height: 30px;
+    width: 6vw;
+    border-radius: 10px;
+}

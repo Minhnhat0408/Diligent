@@ -195,6 +195,7 @@ function Post() {
                 break;
             case 'delete':
                 deletePost(post.id, post.data.user.id);
+                post.setUpdate(prev => prev.filter((data) => data.id !== post.id))
                 break;
             case 'update':
                 setUpdatePost(true);
@@ -309,7 +310,7 @@ function Post() {
 
     return (
         <>
-            {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} />}
+            {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} setReFresh={post.setReFresh}/>}
             {post.page ? (
                 <div
                     className={

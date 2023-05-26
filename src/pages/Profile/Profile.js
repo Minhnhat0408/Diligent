@@ -52,6 +52,7 @@ import Ban from '~/component/Ban/Ban';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import PostLoading from '~/component/PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
@@ -66,9 +67,10 @@ function Profile() {
     const [ban, setBan] = useState(userData?.user_status === 'ban');
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
-    const [loading, setLoading] = useState();
+    const [loading, setLoading] = useState(false);
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const [lastPost, setLastPost] = useState(null);
+    const [refresh,setReFresh] = useState(false)
     useEffect(() => {
         if (user?.uid !== id) {
             let count = 0;
@@ -132,7 +134,7 @@ function Profile() {
             }
         };
         fetchUserPosts();
-    }, [id]);
+    }, [id,refresh]);
      const fetchMorePosts = async () =>{
    
         if (lastPost) {
@@ -492,8 +494,8 @@ function Profile() {
                         )
                     ) : (
                         <div className={cx('content')}>
-                            {user && <CreatePost show={createBoxVisible} setShow={setCreateBoxVisible} />}
-
+                            {user && <CreatePost show={createBoxVisible}  setShow={setCreateBoxVisible} setReFresh={setReFresh}/>}
+                 
                             <InfiniteScroll
                                 dataLength={userPosts.length}
                                 next={fetchMorePosts}
@@ -503,7 +505,7 @@ function Profile() {
                                 {userPosts &&
                                     userPosts.map((post) => {
                                         return (
-                                            <PostProvider key={post.id} id={post.id} data={post.data}>
+                                            <PostProvider key={post.id} id={post.id} setUpdate={setUserPosts} data={post.data}>
                                                 <Post />
                                             </PostProvider>
                                         );

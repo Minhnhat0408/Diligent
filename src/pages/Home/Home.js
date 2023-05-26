@@ -11,6 +11,7 @@ import { memo } from 'react';
 import { collection, getDocs, limit, orderBy, query, startAfter, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import InfiniteScroll from 'react-infinite-scroll-component';
+import PostLoading from '~/component/PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
@@ -19,8 +20,10 @@ function Home() {
     const [show, setShow] = useState(false);
     const [posts, setPosts] = useState([]);
     const [lastPost, setLastPost] = useState(null);
-    useEffect(() => {
+    const [refresh,setReFresh] = useState(false)
+    useEffect(() => { 
         console.log('fetch');
+        console.log(refresh)
         if (user) {
             const fetchUserPosts = async () => {
                 if (userData) {
@@ -51,6 +54,7 @@ function Home() {
                             return { id: doc.id, data: { ...doc.data(), react: 0 } }; // 0 mean neutral
                         }
                     });
+                    console.log(newData)
                     setPosts(newData);
 
                     // Update the last post for pagination
@@ -73,7 +77,7 @@ function Home() {
             };
             fetchPosts();
         }
-    }, [user, userData]);
+    }, [user, refresh]);
     const fetchMorePosts = async () => {
         console.log('hello');
         if (lastPost) {
@@ -126,21 +130,22 @@ function Home() {
             {/* Phần story  */}
             <Stories />
             {/* Phần tạo bài viết  */}
-            {user && <CreatePost show={show} setShow={setShow} />}
+            {user && <CreatePost show={show} setShow={setShow} setReFresh={setReFresh} />}
             {/* Hiển thị bài viết */}
-            <InfiniteScroll
+           
+            {posts ? <InfiniteScroll
                 dataLength={posts.length}
                 next={fetchMorePosts}
                 style={{minWidth:550}}
                 hasMore={lastPost !== null}
-                loader={<h4>Loading...</h4>}
+                loader={<PostLoading/>}
             >
                 {posts.map((post, id) => (
-                    <PostProvider key={id} id={post.id} data={post.data}>
-                        <Post key={id} />
+                    <PostProvider key={post.id} id={post.id} data={post.data} setReFresh={setReFresh} setUpdate={setPosts}>
+                        <Post key={post.id} />
                     </PostProvider>
                 ))}
-            </InfiniteScroll>
+            </InfiniteScroll> : <PostLoading/>}
         </div>
     );
 }

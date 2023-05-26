@@ -157,17 +157,17 @@
     padding: 10px;
     background-color: #eee;
     border-radius: 10px;
-    width: 200px;
-    height: 50px;
+    width: 250px;
+    height: 100px;
     white-space: pre-wrap;
 
 }
-.animate-pulse {
-    animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
-}
-@keyframes pulse {
-    50%{
-        opacity: .7;
-    }
+// .animate-pulse {
+//     animation: pulse 2s cubic-bezier(.4,0,.6,1) infinite;
+// }
+// @keyframes pulse {
+//     50%{
+//         opacity: .7;
+//     }
     
-}
+// }

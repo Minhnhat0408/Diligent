@@ -31,7 +31,7 @@ import { isVideoUrl } from '~/utils/checkFile';
 import Ban from '../Ban/Ban';
 const cx = classNames.bind(styles);
 
-function PostForm({ onXmark, update }) {
+function PostForm({ onXmark, update, setReFresh }) {
     const context = useContext(ThemeContext);
     const { userData, user, fileUpload, createPost } = UserAuth();
     const [loading, setLoading] = useState(false);
@@ -202,11 +202,12 @@ function PostForm({ onXmark, update }) {
                     );
                 });
             }
-
+ 
             onXmark(false);
             setImagePreview([]);
             setOthersPreview([]);
             setLoading(false);
+            setReFresh(prev => !prev);
         } catch (error) {
             console.error('Upload failed!', error);
         }

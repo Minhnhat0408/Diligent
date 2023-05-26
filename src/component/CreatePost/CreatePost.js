@@ -14,7 +14,7 @@ import PostForm from '../PostForm/PostForm';
 
 const cx = classNames.bind(styles);
 
-function CreatePost({ show, setShow }) {
+function CreatePost({ show, setShow,setReFresh }) {
     const { userData } = UserAuth();
 
     const context = useContext(ThemeContext);
@@ -23,12 +23,11 @@ function CreatePost({ show, setShow }) {
     };
 
     //Xử lí khi đóng create box
-
     return (
         <>
             {userData ? (
                 <>
-                    {show && <PostForm onXmark={setShow} />}
+                    {show && <PostForm onXmark={setShow} setReFresh={setReFresh}/>}
                     <div
                         className={
                             cx('wrapper', { dark: context.theme === 'dark' }) +
