@@ -327,18 +327,34 @@ export const AuthContextProvider = ({ children }) => {
 
     //send report
     const sendReport = async (content, id, rtype) => {
-        await addDoc(collection(db, 'users', adminId, 'notifications'), {
-            title: type.report + content,
-            url: rtype === 'post' ? routes.post + id : routes.user + id,
-            sender: {
-                id: user.uid,
-                name: userData.user_name,
-                avatar: userData.user_avatar,
-            },
-            type: 'report',
-            time: serverTimestamp(),
-            read: false,
-        });
+       
+         
+                const q = query(
+                    collection(db, 'users', adminId, 'notifications'),
+                    where('sender.id', '==', user.uid),
+                    where('url', '==', routes.post + id),
+                    where('title', '==', type.report + content), 
+                );
+                getDocs(q).then(async (result) => {
+            
+                    if (result.docs.length === 0) {
+                        await addDoc(collection(db, 'users', adminId, 'notifications'), {
+                            title: type.report + content,
+                            url: rtype === 'post' ? routes.post + id : routes.user + id,
+                            sender: {
+                                id: user.uid,
+                                name: userData.user_name,
+                                avatar: userData.user_avatar,
+                            },
+                            type: 'report',
+                            time: serverTimestamp(),
+                            read: false,
+                        });
+                    }
+                });
+            
+        
+       
     };
     // update realtime database when changes happen
     const userStateChanged = async () => {
@@ -395,7 +411,6 @@ export const AuthContextProvider = ({ children }) => {
                     (docs) => {
                         let data1 = [];
                         let readNoti = 0;
-                        console.log('notification change');
                         docs.forEach((doc) => {
                             data1.push(doc.data());
                             if (!doc.data().read) {

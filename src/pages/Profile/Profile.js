@@ -70,7 +70,7 @@ function Profile() {
     const [loading, setLoading] = useState(false);
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const [lastPost, setLastPost] = useState(null);
-    const [refresh,setReFresh] = useState(false)
+    const [refresh, setReFresh] = useState(false);
     useEffect(() => {
         if (user?.uid !== id) {
             let count = 0;
@@ -124,28 +124,26 @@ function Profile() {
                 setUserPosts(newData);
 
                 // Update the last post for pagination
-              
+
                 if (docs.docs.length > 0) {
                     setLastPost(docs.docs[docs.docs.length - 1]);
                 }
-                if(docs.docs.length < 5) {
-                    setLastPost(null)
+                if (docs.docs.length < 5) {
+                    setLastPost(null);
                 }
             }
         };
         fetchUserPosts();
-    }, [id,refresh]);
-     const fetchMorePosts = async () =>{
-   
+    }, [id, refresh]);
+    const fetchMorePosts = async () => {
         if (lastPost) {
-
             let q = query(
                 collection(db, 'posts'),
                 or(where('user.id', '==', id), where('mentions', 'array-contains', id)),
                 orderBy('time', 'desc'),
                 startAfter(lastPost),
                 limit(5),
-            );;
+            );
             const docs = await getDocs(q);
             const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
             setUserPosts((prevPosts) => [...prevPosts, ...newData]);
@@ -157,8 +155,8 @@ function Profile() {
                 setLastPost(null);
             }
         }
-     }
-    console.log(lastPost,userPosts)
+    };
+    console.log(lastPost, userPosts);
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
         setLoading(true);
@@ -178,6 +176,34 @@ function Profile() {
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: [...pageUser.user_ratings, user.uid],
             });
+            if (id !== user.uid) {
+                const q = query(
+                    collection(db, 'users', id, 'notifications'),
+                    where('sender.id', '==', user.uid),
+                    where('type', '==', 'rating'),
+                );
+                getDocs(q).then(async (result) => {
+                    if (result.docs.length === 0) {
+                        await addDoc(collection(db, 'users', id, 'notifications'), {
+                            title: type.rating,
+                            url: routes.user + user.uid,
+                            sender: {
+                                id: user.uid,
+                                name: userData.user_name,
+                                avatar: userData.user_avatar,
+                            },
+                            type: 'rating',
+                            time: serverTimestamp(),
+                            read: false,
+                        });
+                    } else {
+                        await updateDoc(doc(db, 'users', id, 'notifications', result.docs[0].id), {
+                            time: serverTimestamp(),
+                            read: false,
+                        });
+                    }
+                });
+            }
         }
     };
     const handleMenuChange = (menuItem) => {
@@ -494,23 +520,39 @@ function Profile() {
                         )
                     ) : (
                         <div className={cx('content')}>
-                            {user && <CreatePost show={createBoxVisible}  setShow={setCreateBoxVisible} setReFresh={setReFresh}/>}
-                 
-                            <InfiniteScroll
-                                dataLength={userPosts.length}
-                                next={fetchMorePosts}
-                                hasMore={lastPost !== null}
-                                loader={<h4>Loading...</h4>}
-                            >
-                                {userPosts &&
-                                    userPosts.map((post) => {
-                                        return (
-                                            <PostProvider key={post.id} id={post.id} setUpdate={setUserPosts} data={post.data}>
-                                                <Post />
-                                            </PostProvider>
-                                        );
-                                    })}
-                            </InfiniteScroll>
+                            {user && (
+                                <CreatePost
+                                    show={createBoxVisible}
+                                    setShow={setCreateBoxVisible}
+                                    setReFresh={setReFresh}
+                                />
+                            )}
+
+                            {userPosts ? (
+                                <InfiniteScroll
+                                    dataLength={userPosts.length}
+                                    next={fetchMorePosts}
+                                    style={{ overflow: null }}
+                                    hasMore={lastPost !== null}
+                                    loader={<PostLoading/>}
+                                >
+                                    
+                                    {userPosts.map((post) => {
+                                            return (
+                                                <PostProvider
+                                                    key={post.id}
+                                                    id={post.id}
+                                                    setUpdate={setUserPosts}
+                                                    data={post.data}
+                                                >
+                                                    <Post />
+                                                </PostProvider>
+                                            );
+                                        })}
+                                </InfiniteScroll>
+                            ) : (
+                                <PostLoading />
+                            )}
                         </div>
                     )}
 
