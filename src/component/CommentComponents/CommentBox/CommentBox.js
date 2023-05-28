@@ -80,29 +80,38 @@ function CommentBox() {
                         <div
                             onClick={() => {
                                 setAnimation(!animation);
-                                setFilter('Latest posts');
+                                setFilter('Latest comments');
                                 setComments((prev) => prev.sort((a, b) => b.data.time.seconds - a.data.time.seconds));
                             }}
                         >
-                            Latest posts
+                            Latest comments
                         </div>
                         <div
                             onClick={() => {
                                 setAnimation(!animation);
-                                setFilter('Most like posts');
+                                setFilter('Most like comments');
                                 setComments((prev) => prev.sort((a, b) => b.data.like.count - a.data.like.count));
                             }}
                         >
-                            Most like posts
+                            Most like comments
                         </div>
                         <div
                             onClick={() => {
                                 setAnimation(!animation);
-                                setFilter('Oldest posts');
+                                setFilter('Oldest comments');
                                 setComments((prev) => prev.sort((a, b) => a.data.time.seconds - b.data.time.seconds));
                             }}
                         >
-                            Oldest posts
+                            Oldest comments
+                        </div>
+                        <div
+                            onClick={() => {
+                                setAnimation(!animation);
+                                setFilter('Correct answers');
+                                setComments((prev) => prev.sort((a, b) => !!b.data?.isCorrect - !!a.data?.isCorrect));
+                            }}
+                        >
+                            Correct answers
                         </div>
                     </div>
                 )}

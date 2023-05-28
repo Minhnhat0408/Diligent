@@ -9,6 +9,8 @@ const type = {
     reply:'replied to your comment.',
     likecmt:'like your comment.',
     report:'report about ',
+    correct:'choose your comment as correct.',
+    rating:'give you a rating star.'
 }
 
 export default type;

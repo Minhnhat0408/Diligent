@@ -16,7 +16,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import Menu from '~/component/Popper/Menu';
 import Image from '~/component/Image';
@@ -44,6 +44,10 @@ function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData, notifications, handleReadNoti } = UserAuth();
     const notif = useRef();
+    const [notis,setNotis] = useState(notifications)
+    useEffect(() =>{
+        setNotis(notifications)
+    },[notifications])
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,

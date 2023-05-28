@@ -6,9 +6,11 @@ import Image from '../Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faCircle,
+    faCircleCheck,
     faComment,
     faFlag,
     faQuoteRight,
+    faStar,
     faThumbsDown,
     faThumbsUp,
     faUserFriends,
@@ -29,8 +31,12 @@ function Notification({ data, time, ...props }) {
             icon.current = faThumbsDown;
         } else if (data.type === 'report') {
             icon.current = faFlag;
-        } else if(data.type === 'menCmt'  || data.type === 'mention' ){
+        } else if(data.type === 'menCmt' || data.type === 'mention' ){
             icon.current = faQuoteRight
+        } else if(data.type === 'correct'){
+            icon.current = faCircleCheck
+        } else if(data.type === 'rating'){
+            icon.current = faStar
         }
     }, [data.type]);
 

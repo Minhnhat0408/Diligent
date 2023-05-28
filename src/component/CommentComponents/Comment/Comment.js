@@ -14,7 +14,7 @@ import { PostContext, ThemeContext } from '~/contexts/Context';
 import { getIdInMentions, regex, report } from '~/utils/constantValue';
 import Menu from '~/component/Popper/Menu/Menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsis, faFilePen, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faCircleCheck, faEllipsis, faFilePen, faStar, faThumbsUp, faTrash } from '@fortawesome/free-solid-svg-icons';
 import {
     deleteDoc,
     doc,
@@ -27,6 +27,7 @@ import {
     arrayUnion,
     arrayRemove,
     onSnapshot,
+    serverTimestamp,
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import type from '~/config/typeNotification';
@@ -51,7 +52,6 @@ function Comment({ data, id, react }) {
     const post = useContext(PostContext);
     useEffect(() => {
         const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
-        console.log('fsafd');
         const unsubscribe = onSnapshot(q, (docs) => {
             const tmp = [];
             docs.forEach((doc) => {
@@ -159,16 +159,51 @@ function Comment({ data, id, react }) {
     };
 
     const handleCommentOptions = async (item) => {
-        let type = item.type;
-        if (type === 'update') {
+        if (item.type === 'update') {
             setUpdate(true);
-        } else if (type === 'delete') {
+        } else if (item.type === 'delete') {
             await deleteDoc(doc(db, 'posts', post.id, 'comments', id));
             subComments.forEach(async (cmt) => {
                 await deleteDoc(doc(db, 'posts', post.id, 'comments', cmt.id));
             });
             await updateDoc(doc(db, 'posts', post.id), {
                 commentNumber: post.data.commentNumber - 1 - subComments.length,
+            });
+        } else if (item.type === 'correct') {
+            await updateDoc(doc(db, 'posts', post.id, 'comments', id), {
+                isCorrect: true,
+            });
+            if (data.user.id !== user.uid) {
+                const q = query(
+                    collection(db, 'users', data.user.id, 'notifications'),
+                    where('sender.id', '==', user.uid),
+                    where('type', '==', 'correct'),
+                );
+                getDocs(q).then(async (result) => {
+                    if (result.docs.length === 0) {
+                        await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
+                            title: type.correct,
+                            url: routes.post + post.id,
+                            sender: {
+                                id: user.uid,
+                                name: userData.user_name,
+                                avatar: userData.user_avatar,
+                            },
+                            type: 'correct',
+                            time: serverTimestamp(),
+                            read: false,
+                        });
+                    } else {
+                        await updateDoc(doc(db, 'users', data.user.id, 'notifications', result.docs[0].id), {
+                            time: serverTimestamp(),
+                            read: false,
+                        });
+                    }
+                });
+            }
+        } else if (item.type === 'incorrect') {
+            await updateDoc(doc(db, 'posts', post.id, 'comments', id), {
+                isCorrect: false,
             });
         }
     };
@@ -205,28 +240,69 @@ function Comment({ data, id, react }) {
                         <div className={cx('row')}>
                             <div className={cx('m')}>
                                 {text && (
-                                    <div className={cx('message')}>
+                                    <div className={cx('message', { correct: data?.isCorrect })}>
                                         <div className={cx('content')}>{parse(text, { replace })}</div>
                                     </div>
                                 )}
-                                {data.image && <Image className={cx('image')} src={data.image} alt="pic" />}
+                                {data.image && (
+                                    <Image
+                                        className={cx('image', { correct: data?.isCorrect })}
+                                        src={data.image}
+                                        alt="pic"
+                                    />
+                                )}
+                                {data?.isCorrect && (
+                                    <div className={cx('correct-icon')}>
+                                        <FontAwesomeIcon icon={faCircleCheck} />{' '}
+                                    </div>
+                                )}
                             </div>
                             <Menu
                                 // chinh ben trai / chieu cao so vs ban dau
                                 item={
-                                    data.user.id === user?.uid
-                                        ? [
-                                              {
-                                                  icon: <FontAwesomeIcon icon={faFilePen} />,
-                                                  title: 'Update',
-                                                  type: 'update',
-                                              },
-                                              {
-                                                  icon: <FontAwesomeIcon icon={faTrash} />,
-                                                  title: 'Delete',
-                                                  type: 'delete',
-                                              },
-                                          ]
+                                    user?.uid === post.data.user.id
+                                        ? data?.user.id === user?.uid
+                                            ? [
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                      title: 'Update',
+                                                      type: 'update',
+                                                  },
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faTrash} />,
+                                                      title: 'Delete',
+                                                      type: 'delete',
+                                                  },
+                                                  data?.isCorrect
+                                                      ? {
+                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                            title: 'Incorrect',
+                                                            type: 'incorrect',
+                                                        }
+                                                      : {
+                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                            title: 'Correct',
+                                                            type: 'correct',
+                                                        },
+                                              ]
+                                            : [
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faTrash} />,
+                                                      title: 'Delete',
+                                                      type: 'delete',
+                                                  },
+                                                  data?.isCorrect
+                                                      ? {
+                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                            title: 'Incorrect',
+                                                            type: 'incorrect',
+                                                        }
+                                                      : {
+                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                            title: 'Correct',
+                                                            type: 'correct',
+                                                        },
+                                              ]
                                         : user?.isAdmin
                                         ? [
                                               {
@@ -239,6 +315,7 @@ function Comment({ data, id, react }) {
                                 }
                                 onClick={handleCommentOptions}
                                 small
+                                placement="right"
                             >
                                 <div className={cx('options')}>
                                     <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
