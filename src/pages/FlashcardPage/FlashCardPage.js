@@ -91,9 +91,12 @@ function FlashCardPage() {
             // });
             full.forEach(async (doc) => {
                 tmpfull.push({ id: doc.id, data: doc.data() });
-                if (doc.data().learners.includes(user.uid)) {
-                    tmpUser.push({ id: doc.id, data: doc.data() });
+                if(user) {
+                    if ( doc.data().learners.includes(user?.uid)) {
+                        tmpUser.push({ id: doc.id, data: doc.data() });
+                    }   
                 }
+             
             });
             setFullDecks({ origin: tmpfull, display: tmpfull });
             setUserDecks(tmpUser);
@@ -197,38 +200,40 @@ function FlashCardPage() {
     };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
-            <div className={cx('user-decks')}>
-                {userDecks?.length > 4 ? (
-                    <Slide transitionDuration={500} indicators={false} autoplay={false} canSwipe={true}>
-                        {renderUserDeck()}
-                    </Slide>
-                ) : (
-                    <div className={cx('row')}>
-                        {userDecks?.map((deck, ind) => {
-                            return (
-                                <div key={ind} className={cx('deck')} >
-                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
-                                    <div className={cx('info')}>
-                                        <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                        <span className={cx('num')}>{deck.data.ratings.length}</span>
-                                        <div className={cx('time')}>
-                                            {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
+            {user &&
+                <div className={cx('user-decks')}>
+                    {userDecks?.length > 4 ? (
+                        <Slide transitionDuration={500} indicators={false} autoplay={false} canSwipe={true}>
+                            {renderUserDeck()}
+                        </Slide>
+                    ) : (
+                        <div className={cx('row')}>
+                            {userDecks?.map((deck, ind) => {
+                                return (
+                                    <div key={ind} className={cx('deck')} >
+                                        <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
+                                        <div className={cx('info')}>
+                                            <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                            <span className={cx('num')}>{deck.data.ratings.length}</span>
+                                            <div className={cx('time')}>
+                                                {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
+                                            </div>
+                                            
                                         </div>
-                                        
+                                        {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
+                                                <FontAwesomeIcon
+                                                    icon={faXmark}
+                                                    className={cx('delete')}
+                                                    onClick={() => handleDeleteDeck(deck.id)}
+                                                />
+                                            )}
                                     </div>
-                                    {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
-                                            <FontAwesomeIcon
-                                                icon={faXmark}
-                                                className={cx('delete')}
-                                                onClick={() => handleDeleteDeck(deck.id)}
-                                            />
-                                        )}
-                                </div>
-                            );
-                        })}
-                    </div>
-                )}
-            </div>
+                                );
+                            })}
+                        </div>
+                    )}
+                </div>
+            }
             <div className={cx('all')}>
                 <div className={cx('options')}>
                     <div className={cx('search', { dark: context.theme === 'dark' })}>
@@ -338,7 +343,7 @@ function FlashCardPage() {
                                             {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                    {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
+                                    {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
                                         <FontAwesomeIcon
                                             icon={faXmark}
                                             className={cx('delete')}
