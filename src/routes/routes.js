@@ -37,7 +37,6 @@ const publicRoutes = [
 // Router dang nhap moi xem duoc //TO DO
 const privateRoutes = [
     { path: routes.saveposts, component: SavePosts },
-  
     { path: routes.flashcardDeck, component: FlashCard, layout: HeaderOnly },
     { path: routes.createStory, component: CreateStory, layout: HeaderOnly},
     { path: routes.friend, component: Friend }, 

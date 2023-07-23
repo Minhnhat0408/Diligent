@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './Documents.module.scss';
 import { useRef, useState } from 'react';
 import { UserAuth } from '~/contexts/authContext';
-import DocumentItem from '~/component/DocumentItem/DocumentItem';
+import DocumentItem from '~/component/DocumentComponents/DocumentItem/DocumentItem';
 import Button from '~/component/Button/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-import DocumentForm from '~/component/DocumentForm/DocumentForm';
+import DocumentForm from '~/component/DocumentComponents/DocumentForm/DocumentForm';
 import { useEffect } from 'react';
 import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '~/firebase';
@@ -30,7 +30,7 @@ const cx = classNames.bind(styles);
 
 function Documents() {
     const [uploadFileBox, setUploadFileBox] = useState(false);
-    const [documents, setDocuments] = useState({origin:[],display:[]});
+    const [documents, setDocuments] = useState({ origin: [], display: [] });
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(false);
     const [showSearchBar, setShowSearchBar] = useState(false);
@@ -74,7 +74,6 @@ function Documents() {
         } else {
             setDocuments({ origin: documents.origin, display: documents.origin });
             setLoading(false);
-        
         }
     }, [debounce]);
     useEffect(() => {
@@ -158,8 +157,8 @@ function Documents() {
     };
     const handleClear = () => {
         setSearchValue('');
-        setSelectedCategories([])
-        setDocuments({origin:documents.origin,display:documents.origin})
+        setSelectedCategories([]);
+        setDocuments({ origin: documents.origin, display: documents.origin });
         inputRef.current.focus();
     };
     return (

@@ -14,12 +14,12 @@ import {
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { UserAuth } from '~/contexts/authContext';
-import Image from '../Image/Image';
-import Menu from '../Popper/Menu/Menu';
+import Image from '../../Image/Image';
+import Menu from '../../Popper/Menu/Menu';
 import { CATEGORY_OPTIONS } from '~/utils/constantValue';
 import { useState } from 'react';
 import { useRef } from 'react';
-import Button from '../Button/Button';
+import Button from '../../Button/Button';
 import { useDropzone } from 'react-dropzone';
 import { useEffect } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
@@ -98,9 +98,9 @@ function DocumentForm({ onXmark }) {
             tag: selectedCategories,
         });
         setFile();
-        setSelectedCategories([])
-        title.current.value = ''
-        onXmark(false)
+        setSelectedCategories([]);
+        title.current.value = '';
+        onXmark(false);
         setLoading(false);
     };
     return (
@@ -154,7 +154,7 @@ function DocumentForm({ onXmark }) {
                             ))}
                         </ul>
                     )}
-                    <div className={cx('file-container',{dark:context.theme === 'dark'})}>
+                    <div className={cx('file-container', { dark: context.theme === 'dark' })}>
                         <div
                             {...getRootProps({
                                 className: invalid ? `${styles.dropzone} ${styles.invalid}` : styles.dropzone,

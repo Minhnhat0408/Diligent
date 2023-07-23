@@ -32,11 +32,14 @@ import {
 import { db } from '~/firebase';
 import type from '~/config/typeNotification';
 import { memo } from 'react';
+import { extractFilePathFromURL } from '~/utils/extractPath';
 
 const cx = classNames.bind(styles);
 function Comment({ data, id, react }) {
     const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
+    const [preview, setPreview] = useState(false);
+    const {fileDelete} = UserAuth()
     const [text, setText] = useState(
         data.text.replace(regex, (spc) => {
             const id = spc.match(getIdInMentions)[0].substring(1);
@@ -166,6 +169,9 @@ function Comment({ data, id, react }) {
             subComments.forEach(async (cmt) => {
                 await deleteDoc(doc(db, 'posts', post.id, 'comments', cmt.id));
             });
+            if(data.image) {
+                fileDelete(extractFilePathFromURL(data.image))
+            }
             await updateDoc(doc(db, 'posts', post.id), {
                 commentNumber: post.data.commentNumber - 1 - subComments.length,
             });
@@ -249,6 +255,9 @@ function Comment({ data, id, react }) {
                                         className={cx('image', { correct: data?.isCorrect })}
                                         src={data.image}
                                         alt="pic"
+                                        onClick={() => {
+                                            setPreview(true);
+                                        }}
                                     />
                                 )}
                                 {data?.isCorrect && (
@@ -257,6 +266,9 @@ function Comment({ data, id, react }) {
                                     </div>
                                 )}
                             </div>
+                            {preview && <div className={cx('pop-up')} onClick={() => setPreview(false)}>
+                                <Image src={data.image} className={cx('preview')} alt="preview" />
+                            </div>}
                             <Menu
                                 // chinh ben trai / chieu cao so vs ban dau
                                 item={

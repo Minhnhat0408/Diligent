@@ -12,11 +12,11 @@ import {
     faUserTag,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import Image from '../Image/Image';
-import Button from '../Button';
-import Menu from '../Popper/Menu/Menu';
+import Image from '../../Image/Image';
+import Button from '../../Button';
+import Menu from '../../Popper/Menu/Menu';
 import Tippy from '@tippyjs/react';
-import Mentions from '../Mentions/Mentions';
+import Mentions from '../../Mentions/Mentions';
 import type from '~/config/typeNotification';
 import routes from '~/config/routes';
 import { useState, useRef, useEffect } from 'react';
@@ -28,13 +28,13 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/fi
 import { db } from '~/firebase';
 import { isImageUrl } from '~/utils/checkFile';
 import { isVideoUrl } from '~/utils/checkFile';
-import Ban from '../Ban/Ban';
+import Ban from '../../Ban/Ban';
 const cx = classNames.bind(styles);
 
-function PostForm({ onXmark, update, setReFresh }) {
+function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const context = useContext(ThemeContext);
     const { userData, user, fileUpload, createPost } = UserAuth();
-    const [loading, setLoading] = useState(false);
+
     const handleClickCloseBox = () => {
         onXmark(false);
         setSelectedCategories([]);
@@ -106,7 +106,6 @@ function PostForm({ onXmark, update, setReFresh }) {
     });
 
     const handleAddCategory = (value) => {
-        
         if (!selectedCategories.includes(value.title) && !value?.no) {
             setSelectedCategories([...selectedCategories, value.title]);
         } else {
@@ -144,6 +143,7 @@ function PostForm({ onXmark, update, setReFresh }) {
             return;
         }
         setLoading(true);
+        onXmark(false);
         try {
             let files = { media: [], others: [] };
             if (imagePreview.length !== 0) {
@@ -202,12 +202,11 @@ function PostForm({ onXmark, update, setReFresh }) {
                     );
                 });
             }
- 
-            onXmark(false);
+
             setImagePreview([]);
             setOthersPreview([]);
             setLoading(false);
-            setReFresh(prev => !prev);
+            setReFresh((prev) => !prev);
         } catch (error) {
             console.error('Upload failed!', error);
         }
@@ -218,12 +217,6 @@ function PostForm({ onXmark, update, setReFresh }) {
                 <Ban onXmark={onXmark}>You have been banned from posting because of your inappropriate behaviors</Ban>
             ) : (
                 <div className={cx('pop-up')}>
-                    {loading && (
-                        <div className="pop-up loader">
-                            <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                        </div>
-                    )}
-
                     <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                         <div className={cx('header')}>
                             <div></div>

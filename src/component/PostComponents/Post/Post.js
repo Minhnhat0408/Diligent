@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import CommentBox from '~/component/CommentComponents/CommentBox';
 import { useContext } from 'react';
 import { PostContext, ThemeContext } from '~/contexts/Context';
-import Image from '../Image';
+import Image from '../../Image';
 import getTimeDiff from '~/utils/timeDiff';
 import {
     arrayRemove,
@@ -26,7 +26,7 @@ import routes from '~/config/routes';
 import type from '~/config/typeNotification';
 import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 import { useNavigate } from 'react-router-dom';
-import Menu from '../Popper/Menu/Menu';
+import Menu from '../../Popper/Menu/Menu';
 import {
     ADMIN_POST_OPTIONS,
     POST_OPTIONS,
@@ -36,8 +36,9 @@ import {
     regex,
 } from '~/utils/constantValue';
 import parse from 'html-react-parser';
-import { MyComment } from '../CommentComponents/MyComment';
+import { MyComment } from '../../CommentComponents/MyComment';
 import PostForm from '../PostForm/PostForm';
+import { extractFilePathFromURL } from '~/utils/extractPath';
 
 const cx = classNames.bind(styles);
 
@@ -45,7 +46,7 @@ function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, hidePost } = useContext(PostContext);
-    const { userData, user, sendReport } = UserAuth();
+    const { userData, user, sendReport, fileDelete } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
     const post = useContext(PostContext);
@@ -85,10 +86,7 @@ function Post() {
             let dis = 0;
 
             if (like === 1) {
-                lik = post.data.react === 1
-                    ? post.data.like.count - 1
-                    : post.data.like.count
-    
+                lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
 
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
@@ -101,20 +99,19 @@ function Post() {
                     },
                 });
             } else if (dislike === 1) {
-                lik = post.data.react === 1
-                ? post.data.like.count 
-                : post.data.like.count +1
-                dis = post.data.react === -1
-                ? post.data.dislike.count - 1
-                : post.data.dislike.count
+                lik = post.data.react === 1 ? post.data.like.count : post.data.like.count + 1;
+                dis = post.data.react === -1 ? post.data.dislike.count - 1 : post.data.dislike.count;
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
-                        list: [...post.data.like.list,{
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }],
+                        list: [
+                            ...post.data.like.list,
+                            {
+                                id: user.uid,
+                                name: userData.user_name,
+                                ava: userData.user_avatar,
+                            },
+                        ],
                     },
                     dislike: {
                         count: dis,
@@ -125,18 +122,19 @@ function Post() {
                         }),
                     },
                 });
-
-            
             } else if (like === 0 && dislike === 0) {
                 lik = post.data.like.count + 1;
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
-                        list: [...post.data.like.list,{
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }],
+                        list: [
+                            ...post.data.like.list,
+                            {
+                                id: user.uid,
+                                name: userData.user_name,
+                                ava: userData.user_avatar,
+                            },
+                        ],
                     },
                 });
             }
@@ -144,7 +142,7 @@ function Post() {
                 setLike(0);
             } else {
                 setLike(1);
-                setDisLike(0)
+                setDisLike(0);
             }
 
             if (dislike === 1 || like === 0) {
@@ -153,10 +151,9 @@ function Post() {
                         collection(db, 'users', post.data.user.id, 'notifications'),
                         where('sender.id', '==', user.uid),
                         where('url', '==', routes.post + post.id),
-                        where('type', '==', 'dislike'), 
+                        where('type', '==', 'dislike'),
                     );
                     getDocs(q).then(async (result) => {
-                
                         if (result.docs.length === 0) {
                             await addDoc(collection(db, 'users', post.data.user.id, 'notifications'), {
                                 title: type.like,
@@ -195,7 +192,13 @@ function Post() {
                 break;
             case 'delete':
                 deletePost(post.id, post.data.user.id);
-                post.setUpdate(prev => prev.filter((data) => data.id !== post.id))
+                post.data.files.media.forEach((url) => {
+                    fileDelete(extractFilePathFromURL(url));
+                });
+                post.data.files.others.forEach((obj) => {
+                    fileDelete(extractFilePathFromURL(obj.url));
+                });
+                post.setUpdate((prev) => prev.filter((data) => data.id !== post.id));
                 break;
             case 'update':
                 setUpdatePost(true);
@@ -212,20 +215,19 @@ function Post() {
             let lik = 0;
             let dis = 0;
             if (like === 1) {
-                lik = post.data.react === 1
-                ? post.data.like.count -1
-                : post.data.like.count 
-                dis = post.data.react === -1
-                ? post.data.dislike.count 
-                : post.data.dislike.count +1
+                lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
+                dis = post.data.react === -1 ? post.data.dislike.count : post.data.dislike.count + 1;
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
-                        list: [...post.data.dislike.list,{
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }],
+                        list: [
+                            ...post.data.dislike.list,
+                            {
+                                id: user.uid,
+                                name: userData.user_name,
+                                ava: userData.user_avatar,
+                            },
+                        ],
                     },
                     like: {
                         count: lik,
@@ -237,9 +239,7 @@ function Post() {
                     },
                 });
             } else if (dislike === 1) {
-                dis = post.data.react === -1
-                ? post.data.dislike.count -1
-                : post.data.dislike.count 
+                dis = post.data.react === -1 ? post.data.dislike.count - 1 : post.data.dislike.count;
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
@@ -255,11 +255,14 @@ function Post() {
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
-                        list: [...post.data.dislike.list,{
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }],
+                        list: [
+                            ...post.data.dislike.list,
+                            {
+                                id: user.uid,
+                                name: userData.user_name,
+                                ava: userData.user_avatar,
+                            },
+                        ],
                     },
                 });
             }
@@ -268,7 +271,7 @@ function Post() {
                 setDisLike(0);
             } else {
                 setDisLike(1);
-                setLike(0)
+                setLike(0);
             }
             if (like === 1 || dislike === 0) {
                 if (user.uid !== post.data.user.id) {
@@ -310,7 +313,13 @@ function Post() {
 
     return (
         <>
-            {updatePost && <PostForm update={{ data: post.data, id: post.id }} onXmark={setUpdatePost} setReFresh={post.setReFresh}/>}
+            {updatePost && (
+                <PostForm
+                    update={{ data: post.data, id: post.id }}
+                    onXmark={setUpdatePost}
+                    setReFresh={post.setReFresh}
+                />
+            )}
             {post.page ? (
                 <div
                     className={
@@ -420,7 +429,7 @@ function Post() {
                                         />
                                         <p className={cx('nums')}>
                                             {post.data.react === -1
-                                                ? post.data.dislike.count + dislike-1
+                                                ? post.data.dislike.count + dislike - 1
                                                 : post.data.dislike.count + dislike}
                                         </p>
                                     </div>
@@ -630,7 +639,7 @@ function Post() {
                                                     />
                                                     <p className={cx('nums')}>
                                                         {post.data.react === -1
-                                                            ? post.data.dislike.count + dislike-1
+                                                            ? post.data.dislike.count + dislike - 1
                                                             : post.data.dislike.count + dislike}
                                                     </p>
                                                 </div>
@@ -796,7 +805,7 @@ function Post() {
                                 />
                                 <p className={cx('nums')}>
                                     {post.data.react === -1
-                                        ? post.data.dislike.count + dislike-1
+                                        ? post.data.dislike.count + dislike - 1
                                         : post.data.dislike.count + dislike}
                                 </p>
                             </div>

@@ -9,6 +9,13 @@
     transition: all 0.8s;
     
   }
+  .react-calendar__tile.highlight {
+
+    background-image: url('./assets/images/fire.png') ;
+    background-size: contain;
+    color: white !important;
+    font-weight: 600;
+  }
 
   .react-calendar.dark{
     background-color: var(--dark-theme);

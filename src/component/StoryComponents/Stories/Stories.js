@@ -53,6 +53,7 @@ function Stories() {
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
                 <Story icon="faPlus" username="Add Shorts" to={routes.createStory}/>
                 {Object.keys(stories).length > 0 ? Object.keys(stories).map((key, i) => {
+                    console.log(stories[key])
                     return <Story img={stories[key][0].data.user.avatar} username={stories[key][0].data.user.name} bg={stories[key][0].data.media[0]} bgColor={stories[key][0].data.content.bgColor} to={routes.story + key} />;
                 }) : <div className={cx('no-content')}>
                      <Image src={image.noContent}/>

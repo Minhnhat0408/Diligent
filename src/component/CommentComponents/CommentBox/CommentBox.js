@@ -16,6 +16,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { RingLoader } from 'react-spinners';
 import { useContext } from 'react';
 import { PostContext, ThemeContext } from '~/contexts/Context';
+import CommentLoading from '../CommentLoading/CommentLoading';
 
 const cx = classNames.bind(styles);
 
@@ -64,10 +65,10 @@ function CommentBox() {
                     })
                 ) : (
                     <div className={cx('nothing')}>
-                        {' '}
                         <Image src={image.noContent} alt="nothing here" className={cx('no-content')} />
                     </div>
                 )}
+
 
                 <div className={cx('filter')} onClick={() => setAnimation(!animation)}>
                     {filter ? <span>{filter}</span> : <span>Filter</span>}
@@ -118,9 +119,7 @@ function CommentBox() {
             </div>
 
             {post.loading && (
-                <div className="pop-up loader">
-                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                </div>
+                <CommentLoading/>
             )}
         </>
     );

@@ -11,11 +11,12 @@ import { useEffect } from 'react';
 import getTimeDiff from '~/utils/timeDiff';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
+import { extractFilePathFromURL } from '~/utils/extractPath';
 const cx = classNames.bind(styles);
 
 function Story() {
     const context = useContext(ThemeContext);
-    const {stories } = UserAuth();
+    const {stories,fileDelete } = UserAuth();
     const { id } = useParams();
     const [myStories, setMyStories] = useState(null);
     const navigate = useNavigate();
@@ -54,7 +55,10 @@ function Story() {
             stories[key].forEach(async (str) => {
                 const time = getTimeDiff(Date.now(), str.data.time.seconds * 1000);
                 if (time.includes('days')) {
+                    
                     await deleteDoc(doc(db, 'stories', str.id));
+                    await fileDelete(extractFilePathFromURL(str.data.media[0]))
+        
                 }
             });
         });

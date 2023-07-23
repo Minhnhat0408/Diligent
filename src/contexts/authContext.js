@@ -30,7 +30,7 @@ import { provider } from '../firebase';
 import { db } from '../firebase';
 import image from '~/assets/images';
 import type from '~/config/typeNotification';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
 import { adminId } from '~/utils/constantValue';
@@ -248,7 +248,11 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
-
+    const fileDelete = async (path) =>{
+        const storageRef = ref(storage, path);
+        console.log(storageRef)
+        await deleteObject(storageRef)
+    }
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `${location}/${name}`);
@@ -456,6 +460,7 @@ export const AuthContextProvider = ({ children }) => {
         notifications,
         handleReadNoti,
         fileUpload,
+        fileDelete,
         sendReport,
         createPost,
         deleteSavePost,

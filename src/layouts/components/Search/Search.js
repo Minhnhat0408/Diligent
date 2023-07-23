@@ -12,6 +12,10 @@ import { UserAuth } from '~/contexts/authContext';
 import { ThemeContext } from '~/contexts/Context';
 import { Link } from 'react-router-dom';
 import routes from '~/config/routes';
+import { collection, getDocs, or, query, where } from 'firebase/firestore';
+import { db } from '~/firebase';
+
+import { extractFilePathFromURL } from '~/utils/extractPath';
 const cx = classNames.bind(styles);
 function Search() {
     const [searchValue, setSearchValue] = useState('');
@@ -19,21 +23,21 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
     const debounce = useDebounce(searchValue, 1000);
-    const { usersList, user, posts } = UserAuth();
+    const { usersList, user } = UserAuth();
     const inputRef = useRef();
     const context = useContext(ThemeContext);
     // khi call API tim kiem co ket qua
     useEffect(() => {
         if (searchValue.trim()) {
             setLoading(true);
-            const fetchData = (value) => {
+            const fetchData = async (value) => {
                 const searchAccount = usersList.filter((duser) => {
                     return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user?.uid;
                 });
-                // const searchPost = posts.filter((p) => {
-                //     return p.data.title.toLowerCase().includes(value.toLowerCase());
-                // });
-                const search = { accounts: searchAccount};
+                const searchPost = await getDocs(query(collection(db,'posts'),or(where('title','>=',value),where('tags','array-contains',value))))
+                const search = { accounts: searchAccount,posts:searchPost.docs.map((doc) => {
+                    return {data:doc.data(),id:doc.id}
+                })};
 
                 setTimeout(() => {
                     setSearchResult(search);
@@ -43,8 +47,9 @@ function Search() {
             fetchData(debounce);
         } else {
             setLoading(false);
-            setSearchResult({ accounts: []});
+            setSearchResult({ accounts: [],posts: []});
         }
+        console.log(extractFilePathFromURL('https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2Favatar.jpg?alt=media&token=dc9a4986-58ae-4fd0-b47b-fe9984ffe526'))
     }, [debounce]);
     const handleSearch = (e) => {
         const value = e.target.value;
@@ -52,10 +57,9 @@ function Search() {
             setSearchValue(value);
         }
     };
-    console.log(searchResult);
     const handleClear = () => {
         setSearchValue('');
-        setSearchResult({ accounts: []});
+        setSearchResult({ accounts: [],posts: []});
         inputRef.current.focus();
     };
 
@@ -71,15 +75,15 @@ function Search() {
                 <div tabIndex="-1" {...attrs} className={cx('search-result')}>
                     <PopperWrapper className={context.theme === 'dark' ? [context.theme] : ''}>
                         <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Account</h4>
-                        {searchResult.accounts.map((user, id) => {
+                        {searchResult.accounts.length > 0 ? searchResult.accounts.map((user, id) => {
                             if (id > 4) {
                                 return null;
                             }
 
                             return <AccountItem key={user.id} search acc={user} dark={context.theme === 'dark'} />;
-                        })}
+                        }) :<p className='text-center py-2 underline '>No results found</p> }
                         <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Posts</h4>
-                        {/* {searchResult.posts.map((post, id) => {
+                        {searchResult.posts.length > 0 ? searchResult.posts?.map((post, id) => {
                             if (id > 4) {
                                 return null;
                             }
@@ -98,7 +102,7 @@ function Search() {
                                     </div>
                                 </Link>
                             );
-                        })} */}
+                        }) : <p className='text-center py-2 underline '>No results found</p>}
                     </PopperWrapper>
                 </div>
             )}

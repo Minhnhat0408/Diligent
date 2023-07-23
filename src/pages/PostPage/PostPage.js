@@ -8,7 +8,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { PostProvider } from '~/contexts/Provider';
-import Post from '~/component/Post/Post';
+import Post from '~/component/PostComponents/Post/Post';
 import { Slide } from 'react-slideshow-image';
 import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
 import 'react-slideshow-image/dist/styles.css';
@@ -32,7 +32,7 @@ function PostPage() {
                 navigate(routes.notFound);
             } else {
                 if (user) {
-                    console.log('hello')
+                    console.log('hello');
                     if (
                         post.data().like.list.some((u) => {
                             return u.id === user.uid;
@@ -44,18 +44,17 @@ function PostPage() {
                             return u.id === user.uid;
                         })
                     ) {
-                        setPostData({...post.data(), react: -1 }); // -1 mean dislike
+                        setPostData({ ...post.data(), react: -1 }); // -1 mean dislike
                     } else {
                         setPostData({ ...post.data(), react: 0 }); // 0 mean neutral
                     }
                 } else {
                     setPostData(post.data());
                 }
-
             }
         });
     }, [id]);
-    console.log(postData)
+    console.log(postData);
     return (
         <>
             {postData && (

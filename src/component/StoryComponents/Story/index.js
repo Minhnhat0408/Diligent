@@ -10,22 +10,21 @@ const icons = {
     faPlus: faPlus,
 };
 
-function Story({ img, username, icon, to, bg, bgColor }) {
+function Story({ img, username, icon, to, bg = '', bgColor }) {
     const iconObj = icon ? icons[icon] : null;
+
     return (
         <Link
             className={cx('wrapper')}
-            to={{
-                pathname: to,
-            }}
-            style={{ backgroundImage: bg ? `url(${bg})` : bgColor }}
+            to={to}
+            style={{backgroundImage: bg ? `url('${bg}')` :bgColor}}
         >
             {iconObj ? (
                 <div className={cx('icon-wrap')}>
                     <FontAwesomeIcon icon={iconObj} className={cx('icon')} />
                 </div>
             ) : (
-                <img className={cx('avatar')} src={img} />
+                <img className={cx('avatar')} alt='ava' src={img} />
             )}
             <h4 className={cx('username')}>{username}</h4>
         </Link>

@@ -1,0 +1,36 @@
+.wrapper {
+    display: flex;
+    padding: 8px 0;
+    margin-top: 20px;
+}
+.ava{
+    height: 40px;
+    width: 40px;
+    border-radius: 40px;
+    margin-right: 8px;
+    background-color: var(--bg-dark-theme);
+}
+.name{
+    height: 16px;
+    background-color: var(--bg-dark-theme);
+    border-radius: 12px;
+    width: 100px;
+    margin-bottom: 8px;
+}
+.content{
+    height: 20px;
+    background-color: var(--bg-dark-theme);
+    border-radius: 12px;
+    width: 250px;
+    margin-bottom: 8px;
+}
+
+.btn{
+    height: 16px;
+    background-color: var(--bg-dark-theme);
+    border-radius: 12px;
+    width: 50px;
+}
+.btn + .btn{
+    margin-left: 8px;
+}

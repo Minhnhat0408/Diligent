@@ -10,10 +10,10 @@ import {
     faThumbsUp,
     faXmark,
 } from '@fortawesome/free-solid-svg-icons';
-import Button from '../Button/Button';
+import Button from '../../Button/Button';
 import { useState } from 'react';
 import { isImage, isVideo } from '~/utils/validator';
-import Image from '../Image/Image';
+import Image from '../../Image/Image';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useRef } from 'react';
@@ -47,7 +47,6 @@ function ChatInput({ roomId, setLoading }) {
     };
     const handleSendMessage = async (icon = undefined) => {
         if (icon) {
- 
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -56,8 +55,6 @@ function ChatInput({ roomId, setLoading }) {
             });
         }
         if (!!text.trim()) {
-          
-
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
                 time: serverTimestamp(),
@@ -97,9 +94,8 @@ function ChatInput({ roomId, setLoading }) {
             }
             setLoading(false);
         }
-        setFilePreview({ others: [], media: [] })
+        setFilePreview({ others: [], media: [] });
         setText('');
-       
     };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>

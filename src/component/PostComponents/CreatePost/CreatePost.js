@@ -7,19 +7,21 @@ import 'tippy.js/dist/tippy.css';
 import { ThemeContext } from '~/contexts/Context';
 import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
-import Image from '../Image';
+import Image from '../../Image';
 
 import { RingLoader } from 'react-spinners';
 import PostForm from '../PostForm/PostForm';
+import PostLoading from '../PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
-function CreatePost({ show, setShow,setReFresh }) {
+function CreatePost({ setReFresh, setLoading }) {
     const { userData } = UserAuth();
-
+    const [showForm, setShowForm] = useState(false);
     const context = useContext(ThemeContext);
     const handleClickCreateBox = () => {
-        setShow(true);
+        console.log('hlelele');
+        setShowForm(true);
     };
 
     //Xử lí khi đóng create box
@@ -27,7 +29,7 @@ function CreatePost({ show, setShow,setReFresh }) {
         <>
             {userData ? (
                 <>
-                    {show && <PostForm onXmark={setShow} setReFresh={setReFresh}/>}
+                    {showForm && <PostForm onXmark={setShowForm} setReFresh={setReFresh} setLoading={setLoading} />}
                     <div
                         className={
                             cx('wrapper', { dark: context.theme === 'dark' }) +
@@ -63,9 +65,7 @@ function CreatePost({ show, setShow,setReFresh }) {
                     </div>
                 </>
             ) : (
-                <div className="pop-up loader">
-                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                </div>
+                <PostLoading />
             )}
         </>
     );

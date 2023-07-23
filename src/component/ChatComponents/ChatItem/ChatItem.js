@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './ChatItem.module.scss';
-import Image from '../Image/Image';
+import Image from '../../Image/Image';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckDouble, faFile, faThumbsUp } from '@fortawesome/free-solid-svg-icons';
 import { isImageUrl, isVideoUrl } from '~/utils/checkFile';
@@ -8,7 +8,6 @@ import Tippy from '@tippyjs/react';
 import { useState } from 'react';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
-
 
 const cx = classNames.bind(styles);
 

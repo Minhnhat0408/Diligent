@@ -42,8 +42,8 @@ import {
 import Menu from '~/component/Popper/Menu';
 import { PROFILE_ADMIN_OPTIONS, PROFILE_FRIEND_OPTIONS, PROFILE_OPTIONS } from '~/utils/constantValue';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import CreatePost from '~/component/CreatePost';
-import Post from '~/component/Post';
+import CreatePost from '~/component/PostComponents/CreatePost';
+import Post from '~/component/PostComponents/Post';
 import Image from '~/component/Image';
 import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
@@ -52,7 +52,7 @@ import Ban from '~/component/Ban/Ban';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import PostLoading from '~/component/PostLoading/PostLoading';
+import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
@@ -534,21 +534,20 @@ function Profile() {
                                     next={fetchMorePosts}
                                     style={{ overflow: null }}
                                     hasMore={lastPost !== null}
-                                    loader={<PostLoading/>}
+                                    loader={<PostLoading />}
                                 >
-                                    
                                     {userPosts.map((post) => {
-                                            return (
-                                                <PostProvider
-                                                    key={post.id}
-                                                    id={post.id}
-                                                    setUpdate={setUserPosts}
-                                                    data={post.data}
-                                                >
-                                                    <Post />
-                                                </PostProvider>
-                                            );
-                                        })}
+                                        return (
+                                            <PostProvider
+                                                key={post.id}
+                                                id={post.id}
+                                                setUpdate={setUserPosts}
+                                                data={post.data}
+                                            >
+                                                <Post />
+                                            </PostProvider>
+                                        );
+                                    })}
                                 </InfiniteScroll>
                             ) : (
                                 <PostLoading />
