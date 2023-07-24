@@ -6,7 +6,7 @@ import { db } from '~/firebase';
 
 export function ThemeProvider({ children }) {
     const { userData, user,usersList} = UserAuth();
-    const [theme, setTheme] = useState('light');
+    const [theme, setTheme] = useState('dark');
 
     const toggleTheme = async () => {
         if (user) {

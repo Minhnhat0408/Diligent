@@ -47,7 +47,7 @@
 }
 
 .icon {
-    font-size: 2.4rem;
+    font-size: 24px;
 }
 .description {
     margin-top: 16px;
@@ -62,7 +62,7 @@
     justify-content: center;
     & p {
         margin-left: 10px;
-        font-size: 1.4rem;
+        font-size: 14px;
     }
 }
 
@@ -86,7 +86,7 @@
         flex: 1;
     }
     & .stats_num .stars{
-        font-size: 1.8rem;
+        font-size: 18px;
         height: 20px;
         cursor: pointer;
         &.active{
@@ -98,14 +98,14 @@
 
     }
     & .stats_num .number{
-        font-size: 1.4rem;
+        font-size: 14px;
     }
     & .stats_num h4 {
-        font-size: 1.8rem;
+        font-size: 18px;
         font-weight: 700;
     }
     & .stats_num p {
-        font-size: 1rem;
+        font-size: 10px;
     
     }
 }
@@ -116,11 +116,11 @@
     justify-content: space-between;
     & .btn {
         padding: 0;
-        font-size: 1.6rem;
+        font-size: 16px;
         flex: 1;
     }
     & i {
-        font-size: 2rem;
+        font-size: 2px;
     }
 }
 

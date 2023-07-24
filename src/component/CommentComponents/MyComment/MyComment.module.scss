@@ -59,7 +59,7 @@
     .upload-icon {
         color: var(--primary-light);
         margin-right: 30px;
-        font-size: 2.5rem;
+        font-size: 25px;
         &:hover {
             cursor: pointer;
             opacity: 0.8;
@@ -76,7 +76,7 @@
         }
      
         .upload-icon{
-          font-size: 2rem;
+          font-size: 20px;
         }
       }
       &.dark .box-input{
@@ -100,7 +100,7 @@
     .delete {
         margin-top: 2px;
         margin-left: 2px;
-        font-size: 1.8rem;
+        font-size: 18px;
         cursor: pointer;
     }
 }

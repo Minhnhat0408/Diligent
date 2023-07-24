@@ -36,7 +36,7 @@ export const report = {
     },
 };
 export const FILTER_OPTIONS = [
-    { icon: <FontAwesomeIcon icon={faArrowUp} />, title: 'Latest', type: 'latest', tick: false },
+    { icon: <FontAwesomeIcon icon={faArrowUp} />, title: 'Latest', type: 'latest', tick: true },
     { icon: <FontAwesomeIcon icon={faArrowDown} />, title: 'Oldest', type: 'oldest', tick: false },
     {
         icon: <FontAwesomeIcon icon={faDownload} />,

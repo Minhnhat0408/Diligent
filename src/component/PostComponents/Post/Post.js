@@ -39,6 +39,7 @@ import parse from 'html-react-parser';
 import { MyComment } from '../../CommentComponents/MyComment';
 import PostForm from '../PostForm/PostForm';
 import { extractFilePathFromURL } from '~/utils/extractPath';
+import PostLoading from '../PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
@@ -313,22 +314,375 @@ function Post() {
 
     return (
         <>
-            {updatePost && (
-                <PostForm
-                    update={{ data: post.data, id: post.id }}
-                    onXmark={setUpdatePost}
-                    setReFresh={post.setReFresh}
-                />
-            )}
-            {post.page ? (
-                <div
-                    className={
-                        'sml-max:!min-w-[100%] sml-max:!max-w-[100%] ' +
-                        cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
-                    }
-                >
-                    <div className={cx('scroll-box')}>
-                        <div className={cx('post-wrapper')}>
+            {post.loading ? (
+                <PostLoading />
+            ) : (
+                <>
+                    {updatePost && (
+                        <PostForm
+                            update={{ data: post.data, id: post.id }}
+                            onXmark={setUpdatePost}
+                            setLoading={post.setLoading}
+                            setReFresh={post.setReFresh}
+                        />
+                    )}
+                    {post.page ? (
+                        <div
+                            className={
+                                'sml-max:!min-w-[100%] sml-max:!max-w-[100%] ' +
+                                cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
+                            }
+                        >
+                            <div className={cx('scroll-box')}>
+                                <div className={cx('post-wrapper')}>
+                                    <div className={cx('header')}>
+                                        <div className={cx('info')}>
+                                            <Image
+                                                src={post.data.user.avatar}
+                                                className={cx('avatar')}
+                                                onClick={() => navigate(routes.user + post.data.user.id)}
+                                                alt="avatar"
+                                            />
+                                            <div className={cx('user')}>
+                                                <div className={cx('row')}>
+                                                    <h5
+                                                        className={cx('username')}
+                                                        onClick={() => navigate(routes.user + post.data.user.id)}
+                                                    >
+                                                        {post.data.user.name}
+                                                    </h5>
+                                                    {post.data.user.id === adminId && (
+                                                        <span className={cx('badge')}>Admin</span>
+                                                    )}
+                                                </div>
+
+                                                <div className={cx('row')}>
+                                                    <p className={cx('time')}>
+                                                        {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
+                                                    </p>
+                                                    {post.data.updated && <p className={cx('updated')}>Updated</p>}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {user && (
+                                            <Menu
+                                                // chinh ben trai / chieu cao so vs ban dau
+                                                item={
+                                                    post.data.user.id === user.uid
+                                                        ? USER_POST_OPTIONS
+                                                        : user?.isAdmin
+                                                        ? ADMIN_POST_OPTIONS
+                                                        : POST_OPTIONS
+                                                }
+                                                placement="right"
+                                                onClick={handlePostOptions}
+                                                small
+                                            >
+                                                <div className={cx('options')}>
+                                                    <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                                                </div>
+                                            </Menu>
+                                        )}
+                                    </div>
+
+                                    <div className={cx('title-wrapper')}>
+                                        <h4 className={cx('title')}>{post.data.title}</h4>
+                                        <ul className={cx('selected-category')}>
+                                            {post.data.tags.map((tag, index) => {
+                                                return <li key={index}>{tag}</li>;
+                                            })}
+                                        </ul>
+                                    </div>
+                                    <div className={cx('content')}>{parse(text, { replace })}</div>
+                                    {post.data.files.others.length !== 0 && (
+                                        <div className={cx('file-show')}>
+                                            {post.data.files.others.map((f, id) => {
+                                                return (
+                                                    <div className={cx('file-link')}>
+                                                        <a href={f.url} target="_blank" download={f.name}>
+                                                            {f.name}
+                                                        </a>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    )}
+                                    <div className={cx('actions')}>
+                                        <div className={cx('default-action')}>
+                                            <div className={cx('like-action')}>
+                                                <FontAwesomeIcon
+                                                    icon={faThumbsUp}
+                                                    className={cx('icon', { active: like === 1 })} //tricky logic
+                                                    onClick={() => {
+                                                        handleClickLike();
+                                                    }}
+                                                />
+                                                <p className={cx('nums')}>
+                                                    {post.data.react === 1
+                                                        ? post.data.like.count + like - 1
+                                                        : post.data.like.count + like}
+                                                </p>
+                                            </div>
+
+                                            <div className={cx('dislike-action')}>
+                                                <FontAwesomeIcon
+                                                    icon={faThumbsDown}
+                                                    className={cx('icon', { active: dislike === 1 })}
+                                                    onClick={() => {
+                                                        handleClickDislike();
+                                                    }}
+                                                />
+                                                <p className={cx('nums')}>
+                                                    {post.data.react === -1
+                                                        ? post.data.dislike.count + dislike - 1
+                                                        : post.data.dislike.count + dislike}
+                                                </p>
+                                            </div>
+
+                                            <div className={cx('comment-action')}>
+                                                <FontAwesomeIcon
+                                                    icon={faComment}
+                                                    className={cx('icon')}
+                                                    onClick={() => {
+                                                        setIsCommentVisible(true);
+                                                        setFocusPost(true);
+                                                    }}
+                                                />
+                                                <p className={cx('nums')}>{post.data.commentNumber}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <CommentBox />
+                            </div>
+                            {user && (
+                                <div className={cx('input-section')}>
+                                    <MyComment />
+                                </div>
+                            )}
+                        </div>
+                    ) : (
+                        <div
+                            className={
+                                cx('wrapper', { dark: context.theme === 'dark' }) +
+                                ' sml-max:!min-w-[100%] sml-max:!max-w-[100%]'
+                            }
+                        >
+                            {focusPost && (
+                                <div className={cx('pop-up')}>
+                                    <div className={cx('focus', { dark: context.theme === 'dark' })}>
+                                        <div className={cx('post')}>
+                                            <h3>
+                                                {
+                                                    post.data.user.name.split(' ')[
+                                                        post.data.user.name.split(' ').length - 1
+                                                    ]
+                                                }
+                                                's Post
+                                            </h3>
+                                            <FontAwesomeIcon
+                                                icon={faXmark}
+                                                className={cx('esc')}
+                                                onClick={() => {
+                                                    setIsCommentVisible(false);
+                                                    setFocusPost(false);
+                                                }}
+                                            />
+                                        </div>
+
+                                        <div className={cx('scroll-box')}>
+                                            <div className={cx('post-wrapper')}>
+                                                <div className={cx('header')}>
+                                                    <div className={cx('info')}>
+                                                        <Image
+                                                            src={post.data.user.avatar}
+                                                            className={cx('avatar')}
+                                                            onClick={() => navigate(routes.user + post.data.user.id)}
+                                                            alt="avatar"
+                                                        />
+                                                        <div className={cx('user')}>
+                                                            <div className={cx('row')}>
+                                                                <h5
+                                                                    className={cx('username')}
+                                                                    onClick={() =>
+                                                                        navigate(routes.user + post.data.user.id)
+                                                                    }
+                                                                >
+                                                                    {post.data.user.name}
+                                                                </h5>
+                                                                {post.data.user.id === adminId && (
+                                                                    <span className={cx('badge')}>Admin</span>
+                                                                )}
+                                                            </div>
+                                                            <div className={cx('row')}>
+                                                                <p className={cx('time')}>
+                                                                    {getTimeDiff(Date.now(), post.data.time.toMillis())}{' '}
+                                                                    ago
+                                                                </p>
+                                                                {post.data.updated && (
+                                                                    <p className={cx('updated')}>Updated</p>
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {user && (
+                                                        <Menu
+                                                            // chinh ben trai / chieu cao so vs ban dau
+                                                            item={
+                                                                post.data.user.id === user.uid
+                                                                    ? USER_POST_OPTIONS
+                                                                    : user?.isAdmin
+                                                                    ? ADMIN_POST_OPTIONS
+                                                                    : POST_OPTIONS
+                                                            }
+                                                            onClick={handlePostOptions}
+                                                            small
+                                                            placement="right"
+                                                        >
+                                                            <div className={cx('options')}>
+                                                                <FontAwesomeIcon
+                                                                    icon={faEllipsis}
+                                                                    className={cx('icon')}
+                                                                />
+                                                            </div>
+                                                        </Menu>
+                                                    )}
+                                                </div>
+                                                <div className={cx('title-wrapper')}>
+                                                    <h4 className={cx('title')}>{post.data.title}</h4>
+                                                    <ul className={cx('selected-category')}>
+                                                        {post.data.tags.map((tag, index) => {
+                                                            return <li key={index}>{tag}</li>;
+                                                        })}
+                                                    </ul>
+                                                </div>
+                                                <div className={cx('content')}>{parse(text, { replace })}</div>
+                                                {post.data.files.others.length !== 0 && (
+                                                    <div className={cx('file-show')}>
+                                                        {post.data.files.others.map((f, id) => {
+                                                            return (
+                                                                <div className={cx('file-link')}>
+                                                                    <a href={f.url} target="_blank" download={f.name}>
+                                                                        {f.name}
+                                                                    </a>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                )}
+                                                <div className={cx('image-holders')}>
+                                                    {post.data.files.media.map((url, id) => {
+                                                        if (id < 3) {
+                                                            let result = undefined;
+
+                                                            if (isImageUrl(url)) {
+                                                                result = (
+                                                                    // trao doi vi tri anh
+                                                                    <div
+                                                                        key={id}
+                                                                        onClick={() =>
+                                                                            navigate(routes.post + post.id + '/' + id)
+                                                                        }
+                                                                        className={cx('image-box', {
+                                                                            plenty: post.data.files.media.length > 2,
+                                                                        })}
+                                                                    >
+                                                                        <Image
+                                                                            src={url}
+                                                                            alt="preview"
+                                                                            className={cx('image', {
+                                                                                plenty:
+                                                                                    post.data.files.media.length > 2,
+                                                                            })}
+                                                                        />
+                                                                        {post.data.files.media.length > 3 &&
+                                                                            id === 2 && (
+                                                                                <div className={cx('more')}>
+                                                                                    +{post.data.files.media.length - 2}
+                                                                                </div>
+                                                                            )}
+                                                                    </div>
+                                                                );
+                                                            } else if (isVideoUrl(url)) {
+                                                                result = (
+                                                                    <div
+                                                                        key={id}
+                                                                        onClick={() =>
+                                                                            navigate(routes.post + post.id + '/' + id)
+                                                                        }
+                                                                        className={cx('image-box', {
+                                                                            plenty: post.data.files.media.length > 2,
+                                                                        })}
+                                                                    >
+                                                                        <video
+                                                                            controls
+                                                                            className={cx('image', {
+                                                                                plenty:
+                                                                                    post.data.files.media.length > 2,
+                                                                            })}
+                                                                        >
+                                                                            <source src={url} />
+                                                                        </video>
+                                                                    </div>
+                                                                );
+                                                            }
+                                                            return result;
+                                                        }
+                                                        return <></>;
+                                                    })}
+                                                </div>
+                                                <div className={cx('actions')}>
+                                                    <div className={cx('default-action')}>
+                                                        <div className={cx('like-action')}>
+                                                            <FontAwesomeIcon
+                                                                icon={faThumbsUp}
+                                                                className={cx('icon', { active: like === 1 })} //tricky logic
+                                                                onClick={() => {
+                                                                    handleClickLike();
+                                                                }}
+                                                            />
+                                                            <p className={cx('nums')}>
+                                                                {post.data.react === 1
+                                                                    ? post.data.like.count + like - 1
+                                                                    : post.data.like.count + like}
+                                                            </p>
+                                                        </div>
+
+                                                        <div className={cx('dislike-action')}>
+                                                            <FontAwesomeIcon
+                                                                icon={faThumbsDown}
+                                                                className={cx('icon', { active: dislike === 1 })}
+                                                                onClick={() => {
+                                                                    handleClickDislike();
+                                                                }}
+                                                            />
+                                                            <p className={cx('nums')}>
+                                                                {post.data.react === -1
+                                                                    ? post.data.dislike.count + dislike - 1
+                                                                    : post.data.dislike.count + dislike}
+                                                            </p>
+                                                        </div>
+
+                                                        <div className={cx('comment-action')}>
+                                                            <FontAwesomeIcon icon={faComment} className={cx('icon')} />
+                                                            <p className={cx('nums')}>{post.data.commentNumber}</p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {isCommentVisible && <CommentBox />}
+                                        </div>
+                                        {user && (
+                                            <div className={cx('input-section')}>
+                                                <MyComment />
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
                             <div className={cx('header')}>
                                 <div className={cx('info')}>
                                     <Image
@@ -402,6 +756,61 @@ function Post() {
                                     })}
                                 </div>
                             )}
+                            <div className={cx('image-holders')}>
+                                {post.data.files.media.map((url, id) => {
+                                    if (id < 3) {
+                                        let result = undefined;
+
+                                        if (isImageUrl(url)) {
+                                            result = (
+                                                // trao doi vi tri anh
+                                                <div
+                                                    key={id}
+                                                    onClick={() => navigate(routes.post + post.id + '/' + id)}
+                                                    className={cx('image-box', {
+                                                        plenty: post.data.files.media.length > 2,
+                                                    })}
+                                                >
+                                                    <Image
+                                                        src={url}
+                                                        alt="preview"
+                                                        className={cx('image', {
+                                                            plenty: post.data.files.media.length > 2,
+                                                        })}
+                                                    />
+                                                    {post.data.files.media.length > 3 && id === 2 && (
+                                                        <div className={cx('more')}>
+                                                            +{post.data.files.media.length - 2}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                            );
+                                        } else if (isVideoUrl(url)) {
+                                            result = (
+                                                <div
+                                                    key={id}
+                                                    onClick={() => navigate(routes.post + post.id + '/' + id)}
+                                                    className={cx('image-box', {
+                                                        plenty: post.data.files.media.length > 2,
+                                                    })}
+                                                >
+                                                    <video
+                                                        controls
+                                                        className={cx('image', {
+                                                            plenty: post.data.files.media.length > 2,
+                                                        })}
+                                                    >
+                                                        <source src={url} />
+                                                    </video>
+                                                </div>
+                                            );
+                                        }
+                                        return result;
+                                    }
+                                    return <></>;
+                                })}
+                            </div>
+
                             <div className={cx('actions')}>
                                 <div className={cx('default-action')}>
                                     <div className={cx('like-action')}>
@@ -448,382 +857,8 @@ function Post() {
                                 </div>
                             </div>
                         </div>
-                        <CommentBox />
-                    </div>
-                    {user && (
-                        <div className={cx('input-section')}>
-                            <MyComment />
-                        </div>
                     )}
-                </div>
-            ) : (
-                <div
-                    className={
-                        cx('wrapper', { dark: context.theme === 'dark' }) +
-                        ' sml-max:!min-w-[100%] sml-max:!max-w-[100%]'
-                    }
-                >
-                    {focusPost && (
-                        <div className={cx('pop-up')}>
-                            <div className={cx('focus', { dark: context.theme === 'dark' })}>
-                                <div className={cx('post')}>
-                                    <h3>
-                                        {post.data.user.name.split(' ')[post.data.user.name.split(' ').length - 1]}
-                                        's Post
-                                    </h3>
-                                    <FontAwesomeIcon
-                                        icon={faXmark}
-                                        className={cx('esc')}
-                                        onClick={() => {
-                                            setIsCommentVisible(false);
-                                            setFocusPost(false);
-                                        }}
-                                    />
-                                </div>
-
-                                <div className={cx('scroll-box')}>
-                                    <div className={cx('post-wrapper')}>
-                                        <div className={cx('header')}>
-                                            <div className={cx('info')}>
-                                                <Image
-                                                    src={post.data.user.avatar}
-                                                    className={cx('avatar')}
-                                                    onClick={() => navigate(routes.user + post.data.user.id)}
-                                                    alt="avatar"
-                                                />
-                                                <div className={cx('user')}>
-                                                    <div className={cx('row')}>
-                                                        <h5
-                                                            className={cx('username')}
-                                                            onClick={() => navigate(routes.user + post.data.user.id)}
-                                                        >
-                                                            {post.data.user.name}
-                                                        </h5>
-                                                        {post.data.user.id === adminId && (
-                                                            <span className={cx('badge')}>Admin</span>
-                                                        )}
-                                                    </div>
-                                                    <div className={cx('row')}>
-                                                        <p className={cx('time')}>
-                                                            {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
-                                                        </p>
-                                                        {post.data.updated && <p className={cx('updated')}>Updated</p>}
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            {user && (
-                                                <Menu
-                                                    // chinh ben trai / chieu cao so vs ban dau
-                                                    item={
-                                                        post.data.user.id === user.uid
-                                                            ? USER_POST_OPTIONS
-                                                            : user?.isAdmin
-                                                            ? ADMIN_POST_OPTIONS
-                                                            : POST_OPTIONS
-                                                    }
-                                                    onClick={handlePostOptions}
-                                                    small
-                                                    placement="right"
-                                                >
-                                                    <div className={cx('options')}>
-                                                        <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
-                                                    </div>
-                                                </Menu>
-                                            )}
-                                        </div>
-                                        <div className={cx('title-wrapper')}>
-                                            <h4 className={cx('title')}>{post.data.title}</h4>
-                                            <ul className={cx('selected-category')}>
-                                                {post.data.tags.map((tag, index) => {
-                                                    return <li key={index}>{tag}</li>;
-                                                })}
-                                            </ul>
-                                        </div>
-                                        <div className={cx('content')}>{parse(text, { replace })}</div>
-                                        {post.data.files.others.length !== 0 && (
-                                            <div className={cx('file-show')}>
-                                                {post.data.files.others.map((f, id) => {
-                                                    return (
-                                                        <div className={cx('file-link')}>
-                                                            <a href={f.url} target="_blank" download={f.name}>
-                                                                {f.name}
-                                                            </a>
-                                                        </div>
-                                                    );
-                                                })}
-                                            </div>
-                                        )}
-                                        <div className={cx('image-holders')}>
-                                            {post.data.files.media.map((url, id) => {
-                                                if (id < 3) {
-                                                    let result = undefined;
-
-                                                    if (isImageUrl(url)) {
-                                                        result = (
-                                                            // trao doi vi tri anh
-                                                            <div
-                                                                key={id}
-                                                                onClick={() =>
-                                                                    navigate(routes.post + post.id + '/' + id)
-                                                                }
-                                                                className={cx('image-box', {
-                                                                    plenty: post.data.files.media.length > 2,
-                                                                })}
-                                                            >
-                                                                <Image
-                                                                    src={url}
-                                                                    alt="preview"
-                                                                    className={cx('image', {
-                                                                        plenty: post.data.files.media.length > 2,
-                                                                    })}
-                                                                />
-                                                                {post.data.files.media.length > 3 && id === 2 && (
-                                                                    <div className={cx('more')}>
-                                                                        +{post.data.files.media.length - 2}
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        );
-                                                    } else if (isVideoUrl(url)) {
-                                                        result = (
-                                                            <div
-                                                                key={id}
-                                                                onClick={() =>
-                                                                    navigate(routes.post + post.id + '/' + id)
-                                                                }
-                                                                className={cx('image-box', {
-                                                                    plenty: post.data.files.media.length > 2,
-                                                                })}
-                                                            >
-                                                                <video
-                                                                    controls
-                                                                    className={cx('image', {
-                                                                        plenty: post.data.files.media.length > 2,
-                                                                    })}
-                                                                >
-                                                                    <source src={url} />
-                                                                </video>
-                                                            </div>
-                                                        );
-                                                    }
-                                                    return result;
-                                                }
-                                                return <></>;
-                                            })}
-                                        </div>
-                                        <div className={cx('actions')}>
-                                            <div className={cx('default-action')}>
-                                                <div className={cx('like-action')}>
-                                                    <FontAwesomeIcon
-                                                        icon={faThumbsUp}
-                                                        className={cx('icon', { active: like === 1 })} //tricky logic
-                                                        onClick={() => {
-                                                            handleClickLike();
-                                                        }}
-                                                    />
-                                                    <p className={cx('nums')}>
-                                                        {post.data.react === 1
-                                                            ? post.data.like.count + like - 1
-                                                            : post.data.like.count + like}
-                                                    </p>
-                                                </div>
-
-                                                <div className={cx('dislike-action')}>
-                                                    <FontAwesomeIcon
-                                                        icon={faThumbsDown}
-                                                        className={cx('icon', { active: dislike === 1 })}
-                                                        onClick={() => {
-                                                            handleClickDislike();
-                                                        }}
-                                                    />
-                                                    <p className={cx('nums')}>
-                                                        {post.data.react === -1
-                                                            ? post.data.dislike.count + dislike - 1
-                                                            : post.data.dislike.count + dislike}
-                                                    </p>
-                                                </div>
-
-                                                <div className={cx('comment-action')}>
-                                                    <FontAwesomeIcon icon={faComment} className={cx('icon')} />
-                                                    <p className={cx('nums')}>{post.data.commentNumber}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    {isCommentVisible && <CommentBox />}
-                                </div>
-                                {user && (
-                                    <div className={cx('input-section')}>
-                                        <MyComment />
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                    <div className={cx('header')}>
-                        <div className={cx('info')}>
-                            <Image
-                                src={post.data.user.avatar}
-                                className={cx('avatar')}
-                                onClick={() => navigate(routes.user + post.data.user.id)}
-                                alt="avatar"
-                            />
-                            <div className={cx('user')}>
-                                <div className={cx('row')}>
-                                    <h5
-                                        className={cx('username')}
-                                        onClick={() => navigate(routes.user + post.data.user.id)}
-                                    >
-                                        {post.data.user.name}
-                                    </h5>
-                                    {post.data.user.id === adminId && <span className={cx('badge')}>Admin</span>}
-                                </div>
-
-                                <div className={cx('row')}>
-                                    <p className={cx('time')}>
-                                        {getTimeDiff(Date.now(), post.data.time.toMillis())} ago
-                                    </p>
-                                    {post.data.updated && <p className={cx('updated')}>Updated</p>}
-                                </div>
-                            </div>
-                        </div>
-
-                        {user && (
-                            <Menu
-                                // chinh ben trai / chieu cao so vs ban dau
-                                item={
-                                    post.data.user.id === user.uid
-                                        ? USER_POST_OPTIONS
-                                        : user?.isAdmin
-                                        ? ADMIN_POST_OPTIONS
-                                        : POST_OPTIONS
-                                }
-                                placement="right"
-                                onClick={handlePostOptions}
-                                small
-                            >
-                                <div className={cx('options')}>
-                                    <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
-                                </div>
-                            </Menu>
-                        )}
-                    </div>
-
-                    <div className={cx('title-wrapper')}>
-                        <h4 className={cx('title')}>{post.data.title}</h4>
-                        <ul className={cx('selected-category')}>
-                            {post.data.tags.map((tag, index) => {
-                                return <li key={index}>{tag}</li>;
-                            })}
-                        </ul>
-                    </div>
-                    <div className={cx('content')}>{parse(text, { replace })}</div>
-                    {post.data.files.others.length !== 0 && (
-                        <div className={cx('file-show')}>
-                            {post.data.files.others.map((f, id) => {
-                                return (
-                                    <div className={cx('file-link')}>
-                                        <a href={f.url} target="_blank" download={f.name}>
-                                            {f.name}
-                                        </a>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    )}
-                    <div className={cx('image-holders')}>
-                        {post.data.files.media.map((url, id) => {
-                            if (id < 3) {
-                                let result = undefined;
-
-                                if (isImageUrl(url)) {
-                                    result = (
-                                        // trao doi vi tri anh
-                                        <div
-                                            key={id}
-                                            onClick={() => navigate(routes.post + post.id + '/' + id)}
-                                            className={cx('image-box', { plenty: post.data.files.media.length > 2 })}
-                                        >
-                                            <Image
-                                                src={url}
-                                                alt="preview"
-                                                className={cx('image', { plenty: post.data.files.media.length > 2 })}
-                                            />
-                                            {post.data.files.media.length > 3 && id === 2 && (
-                                                <div className={cx('more')}>+{post.data.files.media.length - 2}</div>
-                                            )}
-                                        </div>
-                                    );
-                                } else if (isVideoUrl(url)) {
-                                    result = (
-                                        <div
-                                            key={id}
-                                            onClick={() => navigate(routes.post + post.id + '/' + id)}
-                                            className={cx('image-box', { plenty: post.data.files.media.length > 2 })}
-                                        >
-                                            <video
-                                                controls
-                                                className={cx('image', { plenty: post.data.files.media.length > 2 })}
-                                            >
-                                                <source src={url} />
-                                            </video>
-                                        </div>
-                                    );
-                                }
-                                return result;
-                            }
-                            return <></>;
-                        })}
-                    </div>
-
-                    <div className={cx('actions')}>
-                        <div className={cx('default-action')}>
-                            <div className={cx('like-action')}>
-                                <FontAwesomeIcon
-                                    icon={faThumbsUp}
-                                    className={cx('icon', { active: like === 1 })} //tricky logic
-                                    onClick={() => {
-                                        handleClickLike();
-                                    }}
-                                />
-                                <p className={cx('nums')}>
-                                    {post.data.react === 1
-                                        ? post.data.like.count + like - 1
-                                        : post.data.like.count + like}
-                                </p>
-                            </div>
-
-                            <div className={cx('dislike-action')}>
-                                <FontAwesomeIcon
-                                    icon={faThumbsDown}
-                                    className={cx('icon', { active: dislike === 1 })}
-                                    onClick={() => {
-                                        handleClickDislike();
-                                    }}
-                                />
-                                <p className={cx('nums')}>
-                                    {post.data.react === -1
-                                        ? post.data.dislike.count + dislike - 1
-                                        : post.data.dislike.count + dislike}
-                                </p>
-                            </div>
-
-                            <div className={cx('comment-action')}>
-                                <FontAwesomeIcon
-                                    icon={faComment}
-                                    className={cx('icon')}
-                                    onClick={() => {
-                                        setIsCommentVisible(true);
-                                        setFocusPost(true);
-                                    }}
-                                />
-                                <p className={cx('nums')}>{post.data.commentNumber}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                </>
             )}
         </>
     );

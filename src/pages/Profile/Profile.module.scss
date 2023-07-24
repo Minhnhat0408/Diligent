@@ -42,10 +42,10 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 600;
     & .ban-icon {
-        font-size: 6rem;
+        font-size: 60px;
         margin-bottom: 20px;
     }
 }
@@ -115,14 +115,14 @@
 
 .name {
     padding-top: 30px;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 700;
     & path {
         color: var(--primary-light);
     }
 }
 .bio {
-    font-size: 1.4rem;
+    font-size: 14px;
 }
 .stats {
     padding: 0 36px 20px 36px;
@@ -132,7 +132,7 @@
         flex: 1;
     }
     & .stats_num .stars{
-        font-size: 1.8rem;
+        font-size: 18px;
         height: 20px;
         cursor: pointer;
         &.active{
@@ -144,14 +144,14 @@
 
     }
     & .stats_num .number{
-        font-size: 1.4rem;
+        font-size: 14px;
     }
     & .stats_num h4 {
-        font-size: 1.8rem;
+        font-size: 18px;
         font-weight: 700;
     }
     & .stats_num p {
-        font-size: 1rem;
+        font-size: 10px;
     
     }
 }
@@ -163,11 +163,11 @@
     justify-content: space-between;
     & .btn {
         padding: 0;
-        font-size: 1.6rem;
+        font-size: 16px;
         flex: 1;
     }
     & i {
-        font-size: 2rem;
+        font-size: 20px;
     }
 }
 .menu-popper {
@@ -186,16 +186,16 @@
     align-items: center;
 }
 .about_title {
-    font-size: 1.6rem;
+    font-size: 16px;
     font-weight: 600;
     color: var(--primary-light);
 }
 
 .about_info {
-    font-size: 1.4rem;
+    font-size: 14px;
 }
 .icon {
-    font-size: 2.5rem;
+    font-size: 25px;
     color: var(--primary-light);
     margin-right: 16px;
 }

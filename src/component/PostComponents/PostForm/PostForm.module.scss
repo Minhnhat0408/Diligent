@@ -24,7 +24,7 @@
         margin-bottom: 4px;
 
         .title {
-            font-size: 3.2  rem;
+            font-size: 32px ;
             margin: 0;
         }
 
@@ -59,7 +59,7 @@
             .username {
                 margin-left: 4px;
 
-                font-size: 1.2rem;
+                font-size: 12px;
             }
 
             .category {
@@ -67,7 +67,7 @@
                 align-items: center;
                 justify-content: space-between;
                 margin-left: 4px;
-                font-size: 1.4rem;
+                font-size: 14px;
                 border: 1px solid #ccc;
                 border-radius: 10px;
                 padding: 0 15px;
@@ -78,7 +78,7 @@
                 }
 
                 i {
-                    font-size: 1.4rem;
+                    font-size: 14px;
                     margin-left: 2px;
                     margin-top: 2px;
                 }
@@ -88,7 +88,7 @@
         .input {
             margin-top: 8px;
             width: 100%;
-            font-size: 2rem;
+            font-size: 20px;
             border: none;
             outline: none;
             color: var(--text-color);
@@ -142,7 +142,7 @@
                 border: 1px solid #ccc;
                 border-radius: 16px;
                 list-style-type: none;
-                font-size: 1.4rem;
+                font-size: 14px;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -171,7 +171,7 @@
             }
 
             .title {
-                font-size: 1.6rem;
+                font-size: 16px;
                 flex: 1;
             }
 
@@ -182,7 +182,7 @@
                 flex: 1;
                 justify-content: space-between;
                 align-items: center;
-                font-size: 2.4rem;
+                font-size: 24px;
 
                 .img {
                     color: #45bd62;
@@ -204,7 +204,7 @@
         height: 40px;
         margin-top: 16px;
         border-radius: 10px;
-        font-size: 1.8rem;
+        font-size: 18px;
         &:hover {
             cursor: pointer;
    
@@ -303,14 +303,14 @@ flex-wrap: wrap;
     position:absolute;
   top: calc(50% - 60px/2);
   right:calc(50% - 60px/2);
-   font-size: 6rem;
+   font-size: 60px;
   border-radius:100%;
 
 }
 .delete {
     position: absolute;
     margin-left: 4px;
-    font-size: 2rem;
+    font-size: 20px;
     padding: 10px 13.5px;
     top:5px;    
     border-radius: 50%;
@@ -324,7 +324,7 @@ flex-wrap: wrap;
 .right{
     position:absolute;
     top: calc(50% - 20px/2);
-    font-size: 2rem;
+    font-size: 20px;
     right: 10px;
     border-radius: 50% ;
     padding: 5px;
@@ -337,7 +337,7 @@ flex-wrap: wrap;
 .left{
     position:absolute;
     top: calc(50% - 20px/2);
-    font-size: 2rem;
+    font-size: 20px;
     left: 10px;
     border-radius: 50% ;
     padding: 5px;

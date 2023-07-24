@@ -3,7 +3,7 @@
 .form__input{
     display: flex;
     position: relative;
-    margin-bottom: 1.8rem;
+    margin-bottom: 18px;
     flex-direction: column;
 
     &.invalid .form-control {
@@ -30,23 +30,23 @@
     height: 48px;
     line-height: 48px;
  
-    font-size: 2rem;
+    font-size: 20px;
     }
     &.small .form-control{
         padding-left: 55px;
         height: 48px;
-         font-size: 1.4rem;
+         font-size: 14px;
     }
 
     &.small .form-message{
-        font-size: 1.2rem;
-        line-height: 1.6rem;
+        font-size: 12px;
+        line-height: 16px;
         padding: 4px 0 0;
     }
     &.small .eye{
         height: 48px;
         line-height: 48px;
-        font-size: 2rem;
+        font-size: 20px;
      
     }
 }
@@ -62,7 +62,7 @@
     height: 80px;
     line-height: 80px;
     text-align: left;
-    font-size: 2.6rem;
+    font-size: 26px;
     
 }
 .form-message{
@@ -75,7 +75,7 @@
     width: 100%;
     font-weight: 500;
     border-radius: 4px;
-    font-size: 2rem;
+    font-size: 20px;
     line-height: 22px;
     letter-spacing: 0.5px;
     outline: none;
@@ -114,8 +114,8 @@
   }
 
 .form-message {
-    font-size: 1.6rem;
-    line-height: 1.6rem;
+    font-size: 16px;
+    line-height: 16px;
     margin-top:8px;
 }
 
@@ -129,6 +129,6 @@
     height: 80px;
     line-height: 80px;
     text-align: left;
-    font-size: 2.6rem;
+    font-size: 26px;
     cursor:pointer
 }

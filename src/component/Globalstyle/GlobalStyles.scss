@@ -46,7 +46,7 @@
 // Global CSS
 body {
     font-family: var(--default-font-family);
-    font-size: 1.6rem;
+    font-size: 16px;
     line-height: 1.5;
     color: var(--text-color);
     text-rendering: optimizeSpeed;
@@ -54,9 +54,6 @@ body {
     overflow-y: overlay;
 }
     
-html {
-    font-size: 62.5%;
-}
 
 button,
 input,
@@ -92,7 +89,7 @@ body {
         display: flex;
         align-items: center;
         font-weight: 600;
-        font-size: 1.6rem;
+        font-size: 16px;
         line-height: 22px;
     }
     .tippy-box[data-theme~=light] {

@@ -57,12 +57,12 @@
     margin-left: 10px;
     flex: 1;
     & .name {
-        font-size: 1.6rem;
+        font-size: 16px;
         font-weight: 600;
     }
 }
 .time {
-    font-size: 1.2rem;
+    font-size: 12px;
     font-style: italic;
 }
 
@@ -72,7 +72,7 @@
     color: var(--primary-light);
 }
 .time-tippy {
-    font-size: 1.2rem;
+    font-size: 12px;
     font-style: italic;
     &.dark .icon {
         color: var(--primary);
@@ -89,7 +89,7 @@
 
 }
 .emoji {
-    font-size: 4rem;
+    font-size: 40px;
     color: var(--primary-light);
 }
 .ava {
@@ -133,13 +133,13 @@
     align-items: center;
 }
 .file-icon {
-    font-size: 2rem;
+    font-size: 20px;
     margin: 0 10px;
 }
 
 .file-name {
     color: var(--primary) !important;
-    font-size: 1.6rem;
+    font-size: 16px;
     font-weight: 600;
     height: 80%;
     overflow: hidden;

@@ -39,8 +39,9 @@ function Home() {
                     let docs = await getDocs(q);
                     if (docs.docs.length === 0) {
                         q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
+                        docs = await getDocs(q);
                     }
-                    docs = await getDocs(q);
+                    
                     const newData = docs.docs.map((doc) => {
                         if (
                             doc.data().like.list.some((u) => {

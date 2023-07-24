@@ -50,7 +50,7 @@
     margin-left: 16px;
     flex: 1;
     & .name{
-        font-size: 1.6rem;
+        font-size: 16px;
         font-weight: 600;
         color: var(--primary-light);
     }
@@ -60,11 +60,11 @@
 }
 .status{
     font-style: italic;
-    font-size:1.4rem;
+    font-size:14px;
 }
 .icon{
     margin-left: 10px;
-    font-size: 1rem;
+    font-size: 10px;
     &.online{
       color: var(--online);
     }
@@ -79,7 +79,7 @@
 
   .user-options{
 
-    font-size: 2.6rem;
+    font-size: 26px;
     color: var(--primary);
     background-color: var(--primary-light);
     width: 40px;
@@ -100,7 +100,7 @@
 }
 .first-text{
   margin: 30px 0 ;
-  font-size: 2rem;
+  font-size: 20px;
   font-style: italic;
 }
 

@@ -23,10 +23,8 @@ import {
     arrayUnion,
     deleteDoc,
     deleteField,
-    limit,
 } from 'firebase/firestore';
-import { auth } from '../firebase';
-import { provider } from '../firebase';
+import { Fprovider, Gprovider, auth } from '../firebase';
 import { db } from '../firebase';
 import image from '~/assets/images';
 import type from '~/config/typeNotification';
@@ -38,13 +36,14 @@ const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState();
-    const [stories, setStories] = useState();
+    const [stories, setStories] = useState({});
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
+    
     const metadata = {
         contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };
@@ -113,7 +112,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_bio: data.bio.trimEnd(),
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
                 user_status: 'online',
-                user_theme: 'light',
+                user_theme: 'dark',
                 user_friendRequests: [],
                 user_friends: [],
                 user_postNumber: 0,
@@ -132,9 +131,29 @@ export const AuthContextProvider = ({ children }) => {
             });
         }
     };
+    const facebookSignIn = async () => {
+        const response = await signInWithPopup(auth, Fprovider);
+        const repuser = response.user;
+        const docs = await getDoc(doc(db, 'users', repuser.uid));
+        console.log(repuser)
+        if (!docs.data()) {
+            await setDoc(doc(db, 'users', repuser.uid), {
+                user_email: repuser?.email,
+                user_authProvider: response?.providerId,
+                user_createdAt: serverTimestamp(),
+            });
 
+            // navigate(routes.updateInfo)
+            return false; // false means fresh account
+        } else {
+            await updateDoc(doc(userRef, repuser.uid), {
+                user_status: 'online',
+            });
+        }
+        return true;
+    }
     const googleSignIn = async () => {
-        const response = await signInWithPopup(auth, provider);
+        const response = await signInWithPopup(auth, Gprovider);
         const repuser = response.user;
         const docs = await getDoc(doc(db, 'users', repuser.uid));
 
@@ -473,6 +492,7 @@ export const AuthContextProvider = ({ children }) => {
         logOut,
         createUser,
         googleSignIn,
+        facebookSignIn,
         updateProfile,
     };
 

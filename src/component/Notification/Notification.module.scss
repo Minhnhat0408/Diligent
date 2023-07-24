@@ -23,8 +23,8 @@
 }
 .info{
     margin: 0 16px;
-    font-size: 1.6rem;
-    line-height: 1.8rem;
+    font-size: 16px;
+    line-height: 18px;
     font-weight: 100;
     flex: 1;
     text-align: start;
@@ -36,7 +36,7 @@
 }
 
 .time{
-    font-size: 1.4rem;
+    font-size: 14px;
 }
 .avatar{
     width: 46px;
@@ -58,7 +58,7 @@
 
 }
 .status{
-    font-size: 1rem;
+    font-size: 10px;
     color:var(--primary-light);
     &.read{
         display: none;

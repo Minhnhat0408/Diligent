@@ -19,13 +19,17 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import DocumentForm from '~/component/DocumentComponents/DocumentForm/DocumentForm';
 import { useEffect } from 'react';
-import { collection, onSnapshot, query } from 'firebase/firestore';
+import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import Menu from '~/component/Popper/Menu/Menu';
 import { CATEGORY_OPTIONS, FILTER_OPTIONS } from '~/utils/constantValue';
 import { useDebounce } from '~/hooks';
+import DocumentLoading from '~/component/DocumentComponents/DocumentLoading/DocumentLoading';
+import InfiniteScroll from 'react-infinite-scroll-component';
+import image from '~/assets/images';
+import Image from '~/component/Image/Image';
 const cx = classNames.bind(styles);
 
 function Documents() {
@@ -36,21 +40,56 @@ function Documents() {
     const [showSearchBar, setShowSearchBar] = useState(false);
     const debounce = useDebounce(searchValue, 1000);
     const [animation, setAnimation] = useState(false);
+    const [lastDoc, setLastDoc] = useState();
     const inputRef = useRef();
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [filter, setFilter] = useState(FILTER_OPTIONS);
     const { user } = UserAuth();
     const navigate = useNavigate();
     useEffect(() => {
-        const unsubscribe = onSnapshot(query(collection(db, 'documents')), async (docs) => {
-            let tmp = [];
-            docs.forEach((doc) => {
-                tmp.push({ id: doc.id, data: doc.data() });
-            });
-            setDocuments({ origin: tmp, display: tmp });
-        });
-        return () => unsubscribe();
+        // const unsubscribe = onSnapshot(query(collection(db, 'documents')), async (docs) => {
+        //     let tmp = [];
+        //     docs.forEach((doc) => {
+        //         tmp.push({ id: doc.id, data: doc.data() });
+        //     });
+        //     setDocuments({ origin: tmp,     display: tmp });
+        // });
+        // return () => unsubscribe();
+        const fetchDocuments = async () => {
+            let q = query(collection(db, 'documents'), orderBy('createdAt', 'desc'), limit(5));
+            let docs = await getDocs(q);
+            if (docs.docs.length > 0) {
+                const listDocuments = docs.docs.map((d) => {
+                    return { id: d.id, data: d.data() };
+                });
+                setLastDoc(docs.docs[docs.docs.length - 1]);
+                setDocuments({ origin: listDocuments, display: listDocuments });
+            }
+        };
+        fetchDocuments();
     }, []);
+    const fetchMoreDocs = async () => {
+        if (lastDoc) {
+            let q = query(collection(db, 'documents'), orderBy('createdAt', 'desc'), startAfter(lastDoc), limit(5));
+            let docs = await getDocs(q);
+            if (docs.docs.length > 0) {
+                const listDocuments = docs.docs.map((d) => {
+                    return { id: d.id, data: d.data() };
+                });
+                setLastDoc(docs.docs[docs.docs.length - 1]);
+
+                setDocuments((prev) => {
+                    return { origin: [...prev.origin, ...listDocuments], display: [...prev.display, ...listDocuments] };
+                });
+            }
+            if (docs.docs.length > 0) {
+                setLastDoc(docs.docs[docs.docs.length - 1]);
+            } else {
+                // No more documents available
+                setLastDoc(null);
+            }
+        }
+    };
     const context = useContext(ThemeContext);
     const onAnimationEnd = () => {
         if (!animation) {
@@ -92,7 +131,6 @@ function Documents() {
         }
     }, [selectedCategories]);
     const handleAddCategory = (value) => {
-        console.log('fsdafs');
         if (!selectedCategories.includes(value.title)) {
             setSelectedCategories([...selectedCategories, value.title]);
         } else {
@@ -205,7 +243,7 @@ function Documents() {
                     </Menu>
                 </div>
 
-                {uploadFileBox && <DocumentForm onXmark={setUploadFileBox} />}
+                {uploadFileBox && <DocumentForm onXmark={setUploadFileBox} setLoading={setLoading} />}
             </div>
 
             <div className={cx('content')}>
@@ -245,9 +283,23 @@ function Documents() {
                         ))}
                     </ul>
                 )}
-                {documents?.display.map((doc) => {
-                    return <DocumentItem key={doc.id} id={doc.id} data={doc.data} />;
-                })}
+                {loading && <DocumentLoading />}
+                <InfiniteScroll
+                    dataLength={documents.display.length}
+                    next={fetchMoreDocs}
+                    style={{ minWidth: 550, overflow: null }}
+                    endMessage={
+                        <div className="w-full text-4xl font-bold text-center mt-6">
+                            No result found
+                    </div>
+                    }
+                    hasMore={lastDoc !== null && documents.display.length > 0}
+                    loader={<DocumentLoading />}
+                >
+                    {documents?.display.map((doc) => {
+                        return <DocumentItem key={doc.id} id={doc.id} data={doc.data} />;
+                    })}
+                </InfiniteScroll>
             </div>
         </div>
     );

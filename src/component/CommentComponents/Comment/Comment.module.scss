@@ -86,7 +86,7 @@
     justify-content: center;
     width: 100%;
     .username {
-        font-size: 1.4rem;
+        font-size: 14px;
         color: var(--primary-light);
         width: fit-content;
         &:hover {
@@ -109,7 +109,7 @@
     align-items: center;
     justify-content: center;
     .icon {
-        font-size: 1.8rem;
+        font-size: 18px;
     }
 
     &:hover {
@@ -130,7 +130,7 @@
     max-width: 637px;
     width: fit-content;
     p {
-        font-size: 1.4rem;
+        font-size: 14px;
     }
     &.correct {
         box-shadow: 0 0 10px 0 var(--primary-light);
@@ -139,7 +139,7 @@
     }
 }
 .correct-icon {
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 600;
     position: absolute;
     top: -10px;
@@ -165,7 +165,7 @@
     .like,
     .reply {
         margin-left: 4px;
-        font-size: 1.2rem;
+        font-size: 12px;
         font-weight: 700;
         &:hover {
             cursor: pointer;
@@ -174,11 +174,11 @@
     }
     .edit {
         margin-left: 4px;
-        font-size: 1.2rem;
+        font-size: 12px;
         font-weight: 700;
     }
     .time {
-        font-size: 1rem;
+        font-size: 10px;
         color: var(--time-color);
 
         &:hover {

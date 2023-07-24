@@ -27,14 +27,13 @@ import { db } from '~/firebase';
 import { RingLoader } from 'react-spinners';
 const cx = classNames.bind(styles);
 
-function DocumentForm({ onXmark }) {
+function DocumentForm({ onXmark,setLoading }) {
     const context = useContext(ThemeContext);
     const { user, userData, fileUpload } = UserAuth();
     const [selectedCategories, setSelectedCategories] = useState([]);
     const title = useRef();
     const [file, setFile] = useState();
     const [invalid, setInvalid] = useState(false);
-    const [loading, setLoading] = useState(false);
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         maxFiles: 1,
     });
@@ -72,44 +71,42 @@ function DocumentForm({ onXmark }) {
         setSelectedCategories(selectedCategories.filter((category) => category !== value));
     };
     const handleUpload = async () => {
-        let tmpfile = null;
+        let tmpfile = null; 
+      
         if (!file) {
             setInvalid(true);
             return;
         } else {
             setLoading(true);
+            const name = title.current.value;
+            onXmark(false);
             tmpfile = await fileUpload({
                 file: file.ref,
-                name: title.current.value + '.' + file.type || file.name,
+                name: name + '.' + file.type || file.name,
                 location: 'others',
             });
+            await addDoc(collection(db, 'documents'), {
+                title: name || file.name,
+                type: file.type,
+                createdAt: serverTimestamp(),
+                url: tmpfile.url,
+                downloads: 0,
+                user: {
+                    name: userData.user_name,
+                    id: user.uid,
+                    ava: userData.user_avatar,
+                },
+                tag: selectedCategories,
+            });
+            setFile();
+            setSelectedCategories([]);
+            setLoading(false);
         }
-        await addDoc(collection(db, 'documents'), {
-            title: title.current.value || file.name,
-            type: file.type,
-            createdAt: serverTimestamp(),
-            url: tmpfile.url,
-            downloads: 0,
-            user: {
-                name: userData.user_name,
-                id: user.uid,
-                ava: userData.user_avatar,
-            },
-            tag: selectedCategories,
-        });
-        setFile();
-        setSelectedCategories([]);
-        title.current.value = '';
-        onXmark(false);
-        setLoading(false);
+        
+       
     };
     return (
         <div className={cx('pop-up')}>
-            {loading && (
-                <div className="pop-up loader">
-                    <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
-                </div>
-            )}
             <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                 <div className={cx('header')}>
                     <div></div>

@@ -53,13 +53,13 @@
     }
     
     & .heading {
-        font-size: 3rem;
+        font-size: 30px;
         }
     & .desc {
     text-align: center;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: lighter;
-    line-height: 2.4rem;
+    line-height: 24px;
     margin: 16px 0;
     margin-bottom: 24px;
     font-weight: 300;   
@@ -79,7 +79,7 @@
   .gender{
     
     flex: 1;
-    font-size: 2rem;
+    font-size: 20px;
     padding: 24px;
     & input + label {
         margin-right: 20px;
@@ -125,8 +125,8 @@
     margin-left: 16px ;
     padding-top: 10px ;
     &.invalid .msg {
-      font-size: 1.6rem;
-      line-height: 1.6rem;
+      font-size: 16px;
+      line-height: 16px;
       padding: 18px 0 0;
       color: #f33a58;
     }
@@ -144,7 +144,7 @@
     height: 60px;
     width: 100px;
     border-radius: 5px;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: 600;
     padding: 16px 20px;
     color: var(--primary-light);

@@ -8,6 +8,7 @@ const image = {
     social: require('~/assets/images/socialmedia.jpg'),
     noContent: require('~/assets/images/no_content.png'),
     noText: require('~/assets/images/favicon.ico.png'),
+    facebook: require('~/assets/images/Facebook_Logo_(2019).png')
 };
 
 export default image;

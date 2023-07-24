@@ -6,14 +6,12 @@ import { UserAuth } from '~/contexts/authContext';
 import { useRef } from 'react';
 import validator from 'src/utils/validator';
 import FormInput from '../FormInput';
-import { faAt, faUnlock, faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
+import { faAt, faUnlockKeyhole } from '@fortawesome/free-solid-svg-icons';
 import image from '~/assets/images';
 import Image from '~/component/Image';
 import Button from '~/component/Button';
 import routes from '~/config/routes';
 import RingLoader from 'react-spinners/RingLoader';
-import { doc,updateDoc } from 'firebase/firestore';
-import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 function FormSignIn() {
     const defaultValidate = {
@@ -28,7 +26,7 @@ function FormSignIn() {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [validated, setValidated] = useState(defaultValidate);
-    const { signIn, googleSignIn } = UserAuth();
+    const { signIn, googleSignIn,facebookSignIn } = UserAuth();
     const navigate = useNavigate();
 
     const inputs = [
@@ -78,6 +76,25 @@ function FormSignIn() {
             setLoading(false);
         }
     };
+    const handleFacebookSignIn = async (e) =>{
+        e.preventDefault();
+
+        try {
+            setError('');
+            setLoading(true);
+            const acc = await facebookSignIn();
+            if (acc) {
+                console.log('successfull');
+                navigate(routes.home);
+            } else {
+                navigate(routes.updateInfo);
+            }
+        } catch (err) {
+            console.log(err);
+            setError(err.message.slice(10, -1));
+        }
+        setLoading(false);
+    }
     const handleGoogleSignIn = async (e) => {
         e.preventDefault();
 
@@ -117,11 +134,17 @@ function FormSignIn() {
                         return <FormInput invalid={validated[input.name]} key={id} {...input} />;
                     })}
                     <div className={cx('gg-btn')}>
-                        <span className={cx('gg-signup')}>Or sign in with google account ?</span>
+                        <span className={cx('gg-signup')}>Or sign in with </span>
                         <Image
                             onClick={handleGoogleSignIn}
                             src={image.google}
                             alt="Google sign in"
+                            className={cx('gg-icon')}
+                        />
+                        <Image
+                            onClick={handleFacebookSignIn}
+                            src={image.facebook}
+                            alt="Facebook sign in"
                             className={cx('gg-icon')}
                         />
                     </div>

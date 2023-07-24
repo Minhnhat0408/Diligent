@@ -73,7 +73,7 @@ $time-color: #adb5bd;
 
             .username {
                 color: $username-color;
-                font-size: 1.4rem;
+                font-size: 14px;
                 font-weight: 700;
                 cursor: pointer;
             }
@@ -83,18 +83,18 @@ $time-color: #adb5bd;
                 background-color: var(--primary-light);
                 color:var(--primary);
                 border-radius: 20px;
-                font-size: 1.1rem;
+                font-size: 11px;
                 margin-left: 10px;
                 user-select: none;
                 font-weight: 600;
             }
             .time {
-                font-size: 1.2rem;
+                font-size: 12px;
                 font-weight: 500;
             }
             .updated{
-                margin-left: 1rem;
-                font-size: 1.4rem;
+                margin-left: 10px;
+                font-size: 14px;
                 font-weight: 600;
             }
         }
@@ -109,7 +109,7 @@ $time-color: #adb5bd;
         justify-content: center;
 
         .icon {
-            font-size: 2rem;
+            font-size: 20px;
         }
 
         &:hover {
@@ -127,7 +127,7 @@ $time-color: #adb5bd;
     margin-bottom: 5px;
 }
 .title {
-    font-size: 1.8rem;
+    font-size: 18px;
     color: var(--primary-light);
     margin-right: 10px;
 }
@@ -142,13 +142,13 @@ $time-color: #adb5bd;
         color: var(--primary-light);
         border-radius: 16px;
         list-style-type: none;
-        font-size: 1.4rem;
+        font-size: 14px;
     }
 }
 
 .content {
     margin-bottom: 15px;
-    font-size: 1.7rem;
+    font-size: 17px;
     font-weight: 400;
     white-space: wrap;
     word-wrap: normal;
@@ -211,7 +211,7 @@ $time-color: #adb5bd;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 5rem;
+    font-size: 50px;
     border-radius: 10px;
 }
 
@@ -252,12 +252,12 @@ $time-color: #adb5bd;
 
             .icon {
                 margin-right: 8px;
-                font-size: 2rem;
+                font-size: 20px;
             }
 
             .icon:hover {
                 opacity: 0.8;
-                font-size: 2.5rem;
+                font-size: 25px;
                 cursor: pointer;
             }
         }
@@ -280,7 +280,7 @@ $time-color: #adb5bd;
         }
 
         .nums {
-            font-size: 1.6rem;
+            font-size: 16px;
         }
     }
 }
@@ -345,7 +345,7 @@ $time-color: #adb5bd;
     border-bottom: 1px solid #ccc;
 }
 .esc {
-    font-size: 2.6rem;
+    font-size: 26px;
     font-weight: 600;
     cursor: pointer;
 }

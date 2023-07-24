@@ -18,13 +18,13 @@
         padding: 26px 24px;
     }
     & .heading {
-        font-size: 3rem;
+        font-size: 30px;
         }
     & .desc {
     text-align: center;
-    font-size: 2rem;
+    font-size: 20px;
     font-weight: lighter;
-    line-height: 2.4rem;
+    line-height: 24px;
     margin: 16px 0;
     margin-bottom: 24px;
     font-weight: 300;   
@@ -35,21 +35,21 @@
     border-radius: 4px;
     border: 2px solid #f33a58  ;
     padding: 8px;
-    font-size: 2rem;
+    font-size: 20px;
     color:#f33a58 ;
     margin-bottom: 16px;
 }
 
 .gg-btn{
     display: flex;
-    font-size: 3rem;
+    font-size: 30px;
     color: #f33a58;
     background-color:transparent;
     align-items: center;
     margin-bottom: 24px;
     & .gg-signup{
-        font-size: 1.9rem;
-        margin-right: 1.6rem;
+        font-size: 19px;
+        margin-right: 16px;
         text-align: center;
         color:#c4c3ca;
         font-weight: bold;

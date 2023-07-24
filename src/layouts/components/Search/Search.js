@@ -15,7 +15,6 @@ import routes from '~/config/routes';
 import { collection, getDocs, or, query, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 
-import { extractFilePathFromURL } from '~/utils/extractPath';
 const cx = classNames.bind(styles);
 function Search() {
     const [searchValue, setSearchValue] = useState('');
@@ -49,7 +48,7 @@ function Search() {
             setLoading(false);
             setSearchResult({ accounts: [],posts: []});
         }
-        console.log(extractFilePathFromURL('https://firebasestorage.googleapis.com/v0/b/diligent-69ff7.appspot.com/o/images%2Favatar.jpg?alt=media&token=dc9a4986-58ae-4fd0-b47b-fe9984ffe526'))
+       
     }, [debounce]);
     const handleSearch = (e) => {
         const value = e.target.value;
