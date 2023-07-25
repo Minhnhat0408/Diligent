@@ -93,7 +93,7 @@ function Home() {
         }
     }, [user, refresh]);
     const fetchMorePosts = async () => {
-        console.log('hello');
+  
         if (lastPost) {
             let q = query(collection(db, 'posts'), orderBy('time', 'desc'), startAfter(lastPost), limit(5));
             if (user) {
@@ -114,11 +114,12 @@ function Home() {
                 setLastPost(docs.docs[docs.docs.length - 1]);
             } else {
                 // No more documents available
-
+                console.log(relevantPosts.current)
                 if (relevantPosts.current.length <= 0) {
-                    relevantPosts.current = posts.map((doc) => doc.id);
-                    relevantPosts.current.slice(0, 10);
+                    relevantPosts.current = posts.map((doc) => doc.id).slice(-10);
+                   
                 }
+         
                 if (lastFinalPost) {
                     q = query(
                         collection(db, 'posts'),
