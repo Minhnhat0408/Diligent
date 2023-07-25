@@ -21,6 +21,7 @@ import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { adminId } from '~/utils/constantValue';
+import { extractFilePathFromURL } from '~/utils/extractPath';
 const cx = classNames.bind(styles);
 /*
     title: De thi cuoi ky TIN hieu he thong
@@ -44,9 +45,9 @@ const savePostData = [
     'Tieng Nhat',
 ];
 
-function DocumentItem({ id, data }) {
+function DocumentItem({ id, data,updateDocuments }) {
     const context = useContext(ThemeContext);
-    const { user } = UserAuth();
+    const { user,fileDelete } = UserAuth();
     const [icon, setIcon] = useState(() => {
         if (data.type === 'csv') {
             return faFileCsv;
@@ -73,7 +74,10 @@ function DocumentItem({ id, data }) {
     };
     const handleDeleteDoc = async () => {
         try {
+            
             await deleteDoc(doc(db, 'documents', id));
+            fileDelete(extractFilePathFromURL(data.url))
+            updateDocuments((prev) => { return {origin:prev.origin.filter((d) => d.id !== id),display: prev.display.filter((d) => d.id !== id)}})
         } catch (err) {
             alert(err);
         }
@@ -107,7 +111,7 @@ function DocumentItem({ id, data }) {
                 <div className={cx('time-wrapper')}>
                     <FontAwesomeIcon icon={faClock} />
                     <p>
-                        Created:{' '}
+                        Created:
                         <span className={cx('time')}>{getTimeDiff(new Date(), data.createdAt?.toMillis())} ago</span>
                     </p>
                 </div>

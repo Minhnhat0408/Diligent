@@ -8,6 +8,7 @@
     // margin: 10px 77px 0 50px; // top right bot left
     margin: 10px auto;
     background-color: var(--light-theme);
+    box-shadow: 1px 1px 5px #888888;
     color:var(--text-color);
     &.dark {
       background-color: var(--dark-theme);

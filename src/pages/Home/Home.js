@@ -176,6 +176,7 @@ function Home() {
             {/* Phần tạo bài viết  */}
             {user && <CreatePost setLoading={setLoading} setReFresh={setReFresh} />}
             {/* Hiển thị bài viết */}
+          
             {loading && <PostLoading />}
             {posts ? (
                 <InfiniteScroll

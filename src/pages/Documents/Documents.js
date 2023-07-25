@@ -19,7 +19,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import DocumentForm from '~/component/DocumentComponents/DocumentForm/DocumentForm';
 import { useEffect } from 'react';
-import { collection, getDocs, limit, onSnapshot, orderBy, query, startAfter } from 'firebase/firestore';
+import { collection, getDocs, limit, onSnapshot, orderBy, query, setDoc, startAfter } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -153,6 +153,7 @@ function Documents() {
                     origin: documents.origin,
                     display: documents.display.sort((a, b) => a.data.createdAt.seconds - b.data.createdAt.seconds),
                 });
+
                 break;
             case 'downloads':
                 setDocuments({
@@ -284,6 +285,7 @@ function Documents() {
                     </ul>
                 )}
                 {loading && <DocumentLoading />}
+          
                 <InfiniteScroll
                     dataLength={documents.display.length}
                     next={fetchMoreDocs}
@@ -297,7 +299,7 @@ function Documents() {
                     loader={<DocumentLoading />}
                 >
                     {documents?.display.map((doc) => {
-                        return <DocumentItem key={doc.id} id={doc.id} data={doc.data} />;
+                        return <DocumentItem key={doc.id} id={doc.id} updateDocuments={setDocuments} data={doc.data} />;
                     })}
                 </InfiniteScroll>
             </div>
