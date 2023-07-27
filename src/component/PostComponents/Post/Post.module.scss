@@ -191,6 +191,7 @@ $time-color: #adb5bd;
 .image {
     width: 100%;
     height: 400px;
+    object-position: center;
     border-radius: 10px;
     box-shadow: 0 0 5px #999;
     object-fit: cover;
@@ -229,8 +230,7 @@ $time-color: #adb5bd;
         }
     }
 }
-.image-box,
-.image-box {
+.image-box + .image-box {
     margin-right: 10px;
 }
 

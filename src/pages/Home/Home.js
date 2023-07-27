@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import { PostProvider } from '~/contexts/Provider';
 import { useState } from 'react';
 import { memo } from 'react';
-import { collection, documentId, getDocs, limit, orderBy, query, startAfter, where } from 'firebase/firestore';
+import { collection, documentId, getDocs, limit, or, orderBy, query, startAfter, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
@@ -17,7 +17,7 @@ import { useRef } from 'react';
 const cx = classNames.bind(styles);
 
 function Home() {
-    const { user, userData } = UserAuth();
+    const { user, userData,getUserPrefers } = UserAuth();
     const [posts, setPosts] = useState([]);
     const [lastPost, setLastPost] = useState(null);
     const [lastFinalPost, setLastFinalPost] = useState(null);
@@ -29,10 +29,15 @@ function Home() {
             const fetchUserPosts = async () => {
                 if (userData) {
                     let listFr = userData.user_friends.map((d) => d.id);
+                    const userPreferences = await getUserPrefers()
+                    if(userPreferences.length === 0) {
+                        userPreferences.push('nothing')
+                    }
+                    console.log(userPreferences)
                     listFr.push(user.uid);
                     let q = query(
                         collection(db, 'posts'),
-                        where('user.id', 'in', listFr),
+                        or(where('user.id', 'in', listFr),where('tags','array-contains-any',userPreferences)),
                         orderBy('time', 'desc'),
                         limit(5),
                     );
@@ -41,7 +46,6 @@ function Home() {
                         q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
                         docs = await getDocs(q);
                     }
-                    
                     const newData = docs.docs.map((doc) => {
                         if (
                             doc.data().like.list.some((u) => {
@@ -68,7 +72,7 @@ function Home() {
                         );
                         const docs = await getDocs(q);
                     }
-                    console.log(newData);
+            
                     setPosts(newData);
 
                     // Update the last post for pagination
@@ -99,9 +103,13 @@ function Home() {
             if (user) {
                 let listFr = userData.user_friends.map((d) => d.id);
                 listFr.push(user.uid);
+                const userPreferences = await getUserPrefers()
+                if(userPreferences.length === 0) {
+                    userPreferences.push('nothing')
+                }
                 q = query(
                     collection(db, 'posts'),
-                    where('user.id', 'in', listFr),
+                    or(where('user.id', 'in', listFr),where('tags','array-contains-any',userPreferences)),
                     orderBy('time', 'desc'),
                     startAfter(lastPost),
                     limit(5),
@@ -114,7 +122,6 @@ function Home() {
                 setLastPost(docs.docs[docs.docs.length - 1]);
             } else {
                 // No more documents available
-                console.log(relevantPosts.current)
                 if (relevantPosts.current.length <= 0) {
                     relevantPosts.current = posts.map((doc) => doc.id).slice(-10);
                    
@@ -170,19 +177,20 @@ function Home() {
     };
 
     return (
-        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:!min-w-[80vw] md-max:!w-[93vw]'}>
+        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:min-w-[80vw] md-max:!w-[93vw] '}>
             {/* Phần story  */}
             <Stories />
             {/* Phần tạo bài viết  */}
             {user && <CreatePost setLoading={setLoading} setReFresh={setReFresh} />}
             {/* Hiển thị bài viết */}
-          
+    
             {loading && <PostLoading />}
             {posts ? (
                 <InfiniteScroll
                     dataLength={posts.length}
                     next={fetchMorePosts}
-                    style={{ minWidth: 550, overflow: null }}
+                   
+                    className='min-w-[550px] overflow-hidden smu-max:min-w-full'
                     hasMore={lastPost !== null}
                     loader={<PostLoading />}
                 >

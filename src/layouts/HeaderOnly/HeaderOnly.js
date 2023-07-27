@@ -9,10 +9,10 @@ const cx = classNames.bind(styles)
 function HeaderOnly({ children }) {
   const context = useContext(ThemeContext)
   return (
-    <div className={cx('wrapper')}>
+    <div className={cx('wrapper',{dark:context.theme === 'dark'})}>
       <Header />
       <div className={cx('container')}>
-        <div className={cx('content',{'dark':context.theme === 'dark'})}>
+        <div className={cx('content')}>
           {children}
         </div>
       </div>

@@ -15,7 +15,11 @@
     transform: translateZ(70px)      scale(0.90);
     color: #c4c3ca;
     &.form-back{
-        padding: 26px 24px;
+        padding: 26px 16px;
+        overflow-y: scroll;
+        &::-webkit-scrollbar{
+            display: none;
+        }
     }
     & .heading {
         font-size: 30px;

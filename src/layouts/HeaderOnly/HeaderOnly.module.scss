@@ -1,6 +1,10 @@
 .wrapper {
     display: flex;
     flex-direction: column;
+    background-color: var(--bg-light-theme);
+    &.dark {
+      background-color: var(--bg-dark-theme);
+    }
   }
   
 .container {
@@ -10,7 +14,6 @@
   }
   
 .content {
-    transition: all 0.8s;
-    background-color: white;
+    transition: all 0.8s;   
     min-height:calc(100vh - var(--defaultLayout-header-height));
   } 

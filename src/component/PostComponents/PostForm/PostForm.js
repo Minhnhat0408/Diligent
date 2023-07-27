@@ -33,7 +33,7 @@ const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload, createPost } = UserAuth();
+    const { userData, user, fileUpload, createPost,updateUserPrefers } = UserAuth();
 
     const handleClickCloseBox = () => {
         onXmark(false);
@@ -142,6 +142,10 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
             setInvalid(true);
             return;
         }
+        if (selectedCategories.length <= 0) {
+            setInvalid(true)
+            return;
+        }
         setLoading(true);
         onXmark(false);
         try {
@@ -170,6 +174,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                 await updateDoc(doc(db, 'users', user.uid), {
                     user_postNumber: userData.user_postNumber + 1,
                 });
+                await updateUserPrefers('upload',selectedCategories)
             }
 
             const tagUser = [];
@@ -181,6 +186,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                     }
                 });
             }
+            
             const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser, update);
             if (tagUser.length !== 0) {
                 refPost.then(async (res) => {
@@ -231,22 +237,30 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                         <div className={cx('body', { dark: context.theme === 'dark' })}>
                             <div className={cx('info')}>
                                 <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
-                                <Menu
-                                    offset={[0, 30]}
-                                    // chinh ben trai / chieu cao so vs ban dau
-                                    placement="right"
-                                    item={CATEGORY_OPTIONS}
-                                    small
-                                    onClick={handleAddCategory}
-                                >
-                                    <div>
-                                        <h5 className={cx('username')}>{userData.user_name}</h5>
-                                        <div className={cx('category')}>
-                                            <p>Choose category</p>
-                                            <i className="fa-solid fa-chevron-right"></i>
-                                        </div>
+
+                                <div>
+                                    <h5 className={cx('username')}>{userData.user_name}</h5>
+                                    <div className="flex">
+                                        <Menu
+                                            offset={[0, 30]}
+                                            // chinh ben trai / chieu cao so vs ban dau
+                                            placement="right"
+                                            item={CATEGORY_OPTIONS}
+                                            small
+                                            onClick={handleAddCategory}
+                                        >
+                                            <div
+                                                className={cx('category', { invalid: invalid })}
+                                            >
+                                                <p>Choose category</p>
+                                                <i className="fa-solid fa-chevron-right"></i>
+                                            </div>
+                                        </Menu>
+                                        {invalid&& (
+                                            <p className="ml-1 text-[#f33a58]">Choose at least one category</p>
+                                        )}
                                     </div>
-                                </Menu>
+                                </div>
                             </div>
                             <textarea
                                 placeholder="What have been questioning you ?"
@@ -260,7 +274,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                                         return { ...prev, title: titleContent.current.value };
                                     });
                                 }}
-                                className={cx('input', 'inp-title', { invalid: invalid })}
+                                className={cx('input', 'inp-title')}
                             />
                             <Mentions
                                 data={mentionData}

@@ -2,13 +2,17 @@
     display: flex;
   //   align-items: center;
     flex-direction: column;
+    background-color: var(--bg-light-theme);
+    &.dark {
+        background-color: var(--bg-dark-theme);
+    }
   }
   
   .container {
       margin-top: var(--defaultLayout-header-height);
       width: 100%;
       max-width: 100%;
-      background-color: var(--light-theme);
+      
       overflow: hidden;
   }
   

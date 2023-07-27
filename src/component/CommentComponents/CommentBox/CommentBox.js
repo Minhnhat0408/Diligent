@@ -13,7 +13,6 @@ import Image from '~/component/Image/Image';
 import image from '~/assets/images';
 import { UserAuth } from '~/contexts/authContext';
 
-import { RingLoader } from 'react-spinners';
 import { useContext } from 'react';
 import { PostContext, ThemeContext } from '~/contexts/Context';
 import CommentLoading from '../CommentLoading/CommentLoading';
@@ -26,6 +25,7 @@ function CommentBox() {
     const [filter, setFilter] = useState('');
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
+    
     const post = useContext(PostContext);
     const context = useContext(ThemeContext);
     useEffect(() => {
@@ -118,7 +118,7 @@ function CommentBox() {
                 )}
             </div>
 
-            {post.loading && (
+            {post.cmtLoading && (
                 <CommentLoading/>
             )}
         </>

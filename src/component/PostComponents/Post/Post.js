@@ -19,6 +19,7 @@ import {
     where,
     getDocs,
     serverTimestamp,
+    getDoc,
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
@@ -47,7 +48,7 @@ function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, hidePost } = useContext(PostContext);
-    const { userData, user, sendReport, fileDelete } = UserAuth();
+    const { userData, user, sendReport, fileDelete,updateUserPrefers } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
     const post = useContext(PostContext);
@@ -55,7 +56,7 @@ function Post() {
     const [updatePost, setUpdatePost] = useState(false);
     const [like, setLike] = useState(post.data.react === 1 ? 1 : 0);
     const [dislike, setDisLike] = useState(post.data.react === -1 ? 1 : 0);
-
+    const timer = useRef();
     const userLink = (id) => {
         navigate(routes.user + id);
     };
@@ -81,11 +82,24 @@ function Post() {
             );
         }
     };
+    const updatePrefTimer = (newPref) => {
+        // If the timer is already running, clear the existing setTimeout
+        if (timer.current) {
+            clearTimeout(timer.current);
+        }
+        if (Object.keys(newPref).length !== 0) {
+            timer.current = setTimeout(() => {
+                // This code will execute after 5 seconds
+                updateDoc(doc(db, 'preferences', user.uid), newPref);
+            }, 5000);
+        }
+    };
     const handleClickLike = async () => {
         try {
             let lik = 0;
             let dis = 0;
-
+            const curPref = await getDoc(doc(db, 'preferences', user.uid));
+            let newPref = {};
             if (like === 1) {
                 lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
 
@@ -102,6 +116,13 @@ function Post() {
             } else if (dislike === 1) {
                 lik = post.data.react === 1 ? post.data.like.count : post.data.like.count + 1;
                 dis = post.data.react === -1 ? post.data.dislike.count - 1 : post.data.dislike.count;
+                post.data.tags.forEach((tag) => {
+                    if (curPref.data()[tag]) {
+                        newPref[tag] = curPref.data()[tag] + 100;
+                    } else {
+                        newPref[tag] = 100;
+                    }
+                });
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
@@ -125,6 +146,13 @@ function Post() {
                 });
             } else if (like === 0 && dislike === 0) {
                 lik = post.data.like.count + 1;
+                post.data.tags.forEach((tag) => {
+                    if (curPref.data()[tag]) {
+                        newPref[tag] = curPref.data()[tag] + 100;
+                    } else {
+                        newPref[tag] = 100;
+                    }
+                });
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
@@ -179,6 +207,9 @@ function Post() {
                     });
                 }
             }
+
+            //user preference for post rcmd
+            updatePrefTimer(newPref);
         } catch (err) {
             console.log(err);
         }
@@ -187,9 +218,11 @@ function Post() {
         switch (item.type) {
             case 'hide':
                 hidePost(post.id);
+                updateUserPrefers('hide',post.data.tags)
                 break;
             case 'save':
                 savePost(post.id, post.data);
+                updateUserPrefers('save',post.data.tags)
                 break;
             case 'delete':
                 deletePost(post.id, post.data.user.id);
@@ -215,6 +248,8 @@ function Post() {
         try {
             let lik = 0;
             let dis = 0;
+            const curPref = await getDoc(doc(db, 'preferences', user.uid));
+            let newPref = {};
             if (like === 1) {
                 lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
                 dis = post.data.react === -1 ? post.data.dislike.count : post.data.dislike.count + 1;
@@ -239,6 +274,13 @@ function Post() {
                         }),
                     },
                 });
+                post.data.tags.forEach((tag) => {
+                    if (curPref.data()[tag]) {
+                        newPref[tag] = curPref.data()[tag] - 100;
+                    } else {
+                        newPref[tag] = -100;
+                    }
+                });
             } else if (dislike === 1) {
                 dis = post.data.react === -1 ? post.data.dislike.count - 1 : post.data.dislike.count;
                 await updateDoc(doc(db, 'posts', post.id), {
@@ -253,6 +295,13 @@ function Post() {
                 });
             } else {
                 dis = post.data.dislike.count + 1;
+                post.data.tags.forEach((tag) => {
+                    if (curPref.data()[tag]) {
+                        newPref[tag] = curPref.data()[tag] - 100;
+                    } else {
+                        newPref[tag] = -100;
+                    }
+                });
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
@@ -307,6 +356,8 @@ function Post() {
                     });
                 }
             }
+
+            updatePrefTimer(newPref);
         } catch (err) {
             console.log(err);
         }
@@ -333,6 +384,7 @@ function Post() {
                                 cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
                             }
                         >
+                            {/* Page display */}
                             <div className={cx('scroll-box')}>
                                 <div className={cx('post-wrapper')}>
                                     <div className={cx('header')}>
@@ -463,13 +515,15 @@ function Post() {
                             )}
                         </div>
                     ) : (
+                        // Normal display
                         <div
                             className={
                                 cx('wrapper', { dark: context.theme === 'dark' }) +
-                                ' sml-max:!min-w-[100%] sml-max:!max-w-[100%]'
+                                ' sml-max:!min-w-[100%] sml-max:!max-w-[100%] smu-max:!p-3'
                             }
                         >
                             {focusPost && (
+                                // Focus display
                                 <div className={cx('pop-up')}>
                                     <div className={cx('focus', { dark: context.theme === 'dark' })}>
                                         <div className={cx('post')}>
@@ -677,12 +731,13 @@ function Post() {
                                         </div>
                                         {user && (
                                             <div className={cx('input-section')}>
-                                                <MyComment />
+                                                <MyComment  />
                                             </div>
                                         )}
                                     </div>
                                 </div>
                             )}
+                            {/* Normal display */}
                             <div className={cx('header')}>
                                 <div className={cx('info')}>
                                     <Image
@@ -774,9 +829,11 @@ function Post() {
                                                     <Image
                                                         src={url}
                                                         alt="preview"
-                                                        className={cx('image', {
-                                                            plenty: post.data.files.media.length > 2,
-                                                        })}
+                                                        className={
+                                                            cx('image', {
+                                                                plenty: post.data.files.media.length > 2,
+                                                            }) + ' smu-max:!h-52'
+                                                        }
                                                     />
                                                     {post.data.files.media.length > 3 && id === 2 && (
                                                         <div className={cx('more')}>

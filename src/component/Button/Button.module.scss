@@ -136,6 +136,7 @@
   font-size: 14px;
 }
 
+
 .xs{
   min-width: 50px;
   min-height: 50px;
@@ -147,4 +148,11 @@
 
 .ml{
   margin-left: 8px;
+}
+
+@media (max-width: 1138px) {
+  .large.responsive{
+    min-width: 100px;
+    padding: 8px 10px;
+  }
 }

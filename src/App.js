@@ -21,7 +21,7 @@ function App() {
     return (
         <Router>
             <div className="app">
-                <ScrollToTop />
+         
                 <Routes>
                     {publicRoutes.map((route, index) => {
                         const Page = route.component;

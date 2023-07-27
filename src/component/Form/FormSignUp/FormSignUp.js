@@ -115,7 +115,7 @@ function FormSignUp({ classes = [] }) {
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>
             ) : (
-                <form className={cx('form', ...classes)}>
+                <form className={cx('form', ...classes) + ' lgs-max:!py-3'}>
                     <h3 className={cx('heading')}>Sign up</h3>
                     <p className={cx('desc')}>Sign up to improve your learning journey</p>
                     {error && (

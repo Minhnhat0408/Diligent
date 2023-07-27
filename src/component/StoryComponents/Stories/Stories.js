@@ -5,7 +5,6 @@ import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Story from '../Story';
 import { ThemeContext } from '~/contexts/Context';
-import { collection, getDocs, query, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
@@ -41,7 +40,7 @@ function Stories() {
     const { stories } = UserAuth();
 
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' }) + ' smu-max:!min-w-full'}>
             {/* Nếu vị trí stories hiện tại không phải là vị trí đầu tiên, hiển thị nút điều hướng sang trái */}
             {transX !== 0 && (
                 <div className={cx('arrow-left', 'arrow')} onClick={handleClickLeft}>
@@ -53,9 +52,8 @@ function Stories() {
             <div className={cx('stories-wrapper')} style={{ transform: `translateX(${transX}px)` }}>
                 <Story icon="faPlus" username="Add Shorts" to={routes.createStory}/>
                 {Object.keys(stories).length > 0 ? Object.keys(stories).map((key, i) => {
-                    console.log(stories[key])
                     return <Story img={stories[key][0].data.user.avatar} username={stories[key][0].data.user.name} bg={stories[key][0].data.media[0]} bgColor={stories[key][0].data.content.bgColor} to={routes.story + key} />;
-                }) : <div className={cx('no-content')}>
+                }) : <div className={cx('no-content') + ' smu-max:'}>
                      <Image src={image.noContent}/>
                      </div>}
         </div>

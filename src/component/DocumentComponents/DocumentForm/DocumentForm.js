@@ -60,7 +60,7 @@ function DocumentForm({ onXmark,setLoading }) {
     }, [acceptedFiles]);
 
     const handleAddCategory = (value) => {
-        console.log('fsdafs');
+
         if (!selectedCategories.includes(value.title)) {
             setSelectedCategories([...selectedCategories, value.title]);
         } else {

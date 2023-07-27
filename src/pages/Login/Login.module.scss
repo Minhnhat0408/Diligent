@@ -1,24 +1,23 @@
 .wrapper{
    display: flex;
-   width: 100%;
+   width: 100vw;
    height: 100vh;
 background-color: var(--bg-dark-theme
     );
 }
 
 .image{
-    flex: 3;
     height: 100vh;
-    object-fit: cover;
+    width: 60vw;
     object-position: center;
     opacity:0.8;
 }
 
 .login{
-    
-    flex:2;
     display: flex;
+    width: 40vw;
     flex-direction: column;
     justify-content:flex-start;
     text-align: center;
+    padding: 0 80px;
 }

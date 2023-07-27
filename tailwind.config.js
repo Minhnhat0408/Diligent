@@ -20,6 +20,7 @@ module.exports = {
                 'lg-between': { max: '1050px', min: '940px' },
                 'xl-between': { max: '1279px', min: '1024px' },
             },
+            
         },
     },
     plugins: [],

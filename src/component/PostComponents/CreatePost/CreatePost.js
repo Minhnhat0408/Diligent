@@ -33,7 +33,7 @@ function CreatePost({ setReFresh, setLoading }) {
                     <div
                         className={
                             cx('wrapper', { dark: context.theme === 'dark' }) +
-                            ' sml-max:!min-w-[100%] sml-max:!max-w-[100%] mdx-max:max-w-full'
+                            ' sml-max:!w-full mdx-max:max-w-full smu-max:!min-w-full'
                         }
                     >
                         {/* Create Post Box  */}

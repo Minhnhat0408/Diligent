@@ -12,7 +12,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { ThemeContext } from '~/contexts/Context';
 import { Link } from 'react-router-dom';
 import routes from '~/config/routes';
-import { collection, getDocs, or, query, where } from 'firebase/firestore';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 
 const cx = classNames.bind(styles);
@@ -21,8 +21,8 @@ function Search() {
     const [searchResult, setSearchResult] = useState({ accounts: [], posts: [] });
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
-    const debounce = useDebounce(searchValue, 1000);
-    const { usersList, user } = UserAuth();
+    const debounce = useDebounce(searchValue.trim(), 1000);
+    const { usersList, user,updateUserPrefers } = UserAuth();
     const inputRef = useRef();
     const context = useContext(ThemeContext);
     // khi call API tim kiem co ket qua
@@ -33,7 +33,8 @@ function Search() {
                 const searchAccount = usersList.filter((duser) => {
                     return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user?.uid;
                 });
-                const searchPost = await getDocs(query(collection(db,'posts'),or(where('title','>=',value),where('tags','array-contains',value))))
+                const searchPost = await getDocs(query(collection(db,'posts'),where('tags','array-contains',value)))
+     
                 const search = { accounts: searchAccount,posts:searchPost.docs.map((doc) => {
                     return {data:doc.data(),id:doc.id}
                 })};
@@ -41,6 +42,9 @@ function Search() {
                 setTimeout(() => {
                     setSearchResult(search);
                     setLoading(false);
+                    if(search.posts.length > 0 ){
+                        updateUserPrefers('search',[value])
+                    }
                 }, 500);
             };
             fetchData(debounce);
@@ -65,9 +69,10 @@ function Search() {
     const handleHideResult = () => {
         setShowResult(false);
     };
+ 
     return (
         <HeadlessTippy
-            visible={showResult && (searchResult.accounts.length > 0)}
+            visible={showResult && (searchResult.accounts.length > 0 || searchResult.posts.length > 0)}
             interactive={true}
             appendTo={() => document.body}
             render={(attrs) => (
@@ -82,11 +87,9 @@ function Search() {
                             return <AccountItem key={user.id} search acc={user} dark={context.theme === 'dark'} />;
                         }) :<p className='text-center py-2 underline '>No results found</p> }
                         <h4 className={cx('search-title', { dark: context.theme === 'dark' })}>Posts</h4>
-                        {searchResult.posts.length > 0 ? searchResult.posts?.map((post, id) => {
-                            if (id > 4) {
-                                return null;
-                            }
-
+                        {searchResult.posts.length > 0 ? searchResult.posts.map((post, id) => {
+                            
+                            
                             return (
                                 <Link
                                     className={cx('posts', { dark: context.theme === 'dark' })}

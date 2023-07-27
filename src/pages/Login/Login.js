@@ -15,8 +15,8 @@ function Login() {
 
     return (
         <div className={cx('wrapper')}>
-            <Image src={image.loginImg} className={cx('image')} alt="Education for life" />
-            <div className={cx('login')}>
+            <Image src={image.loginImg} className={cx('image') + ' mdx-max:hidden'} alt="Education for life" />
+            <div className={cx('login') + ' xl-max:px-10 mdx-max:w-full smu-max:!px-4 '}>
                 <ToggleButton flip={flip} onClick={() => setFlip(!flip)}>
                     <span>SIGN IN </span>
                     <span>SIGN UP</span>

@@ -117,11 +117,11 @@ function FormSignIn() {
     return (
         <>
             {loading ? (
-                <div>
+                <div className='h-[70vh] flex justify-center items-center ' >
                     <RingLoader color="#367fd6" size={150} speedMultiplier={0.5} />
                 </div>
             ) : (
-                <form ref={form} className={cx('form')}>
+                <form ref={form} className={cx('form') + ' xl-max:w-90% lgs-max:py-3'}>
                     <h2 className={cx('heading')}>Sign in</h2>
                     <p className={cx('desc')}>Your next generation of education</p>
                     {/* css this error */}

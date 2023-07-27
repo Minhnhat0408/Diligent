@@ -13,14 +13,14 @@ import type from '~/config/typeNotification';
 import routes from '~/config/routes';
 import { getIdInMentions, regex } from '~/utils/constantValue';
 import { db } from '~/firebase';
-import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import Ban from '~/component/Ban/Ban';
 const cx = classNames.bind(styles);
 
 function MyComment({ tag = null, update = null }) {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
-    const { userData, user, fileUpload } = UserAuth();
+    const { userData, user, fileUpload,updateUserPrefers } = UserAuth();
     const [imagePreview, setImagePreview] = useState(update ? update.data.image : '');
     const [mentionData, setMentionData] = useState([]);
     const post = useContext(PostContext);
@@ -104,14 +104,16 @@ function MyComment({ tag = null, update = null }) {
         post.setUpdate((prev) => prev + 1);
         post.setLoading(false);
     };
+    
     const handleSubmit = async (inpData) => {
         let image = null;
      
         if(!inpData.text.trim() && !inpData.image) return;
-        post.setLoading(true);
+        post.setCmtLoading(true);
         if (inpData.image) {
             image = await fileUpload({ file: inpData.image, name: inpData.image.name });
         }
+        await updateUserPrefers('cmt',post.data.tags)
         await addDoc(collection(db, 'posts', post.id, 'comments'), {
             fatherCmt: inpData?.father || '',
             text: inpData.text,
@@ -173,7 +175,7 @@ function MyComment({ tag = null, update = null }) {
                 }),
             );
         }
-        post.setLoading(false);
+        post.setCmtLoading(false);
     };
     return (
         <div className={cx('wrapper')}>

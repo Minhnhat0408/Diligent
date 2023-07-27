@@ -104,6 +104,7 @@ function Documents() {
                 const search = documents.display.filter((file) => {
                     return file.data.title.toLowerCase().includes(value.toLowerCase());
                 });
+
                 setTimeout(() => {
                     setDocuments({ origin: documents.origin, display: search });
                     setLoading(false);
@@ -285,22 +286,23 @@ function Documents() {
                     </ul>
                 )}
                 {loading && <DocumentLoading />}
-          
+
                 <InfiniteScroll
                     dataLength={documents.display.length}
                     next={fetchMoreDocs}
                     style={{ minWidth: 550, overflow: null }}
-                    endMessage={
-                        <div className="w-full text-4xl font-bold text-center mt-6">
-                            No result found
-                    </div>
-                    }
                     hasMore={lastDoc !== null && documents.display.length > 0}
                     loader={<DocumentLoading />}
                 >
-                    {documents?.display.map((doc) => {
-                        return <DocumentItem key={doc.id} id={doc.id} updateDocuments={setDocuments} data={doc.data} />;
-                    })}
+                    {documents.display.length > 0 ? (
+                        documents?.display.map((doc) => {
+                            return (
+                                <DocumentItem key={doc.id} id={doc.id} updateDocuments={setDocuments} data={doc.data} />
+                            );
+                        })
+                    ) : (
+                        <div className="w-full text-4xl font-bold text-center mt-6">No result found</div>
+                    )}
                 </InfiniteScroll>
             </div>
         </div>

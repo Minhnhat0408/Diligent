@@ -4,3 +4,12 @@
     width: 41vw;
     margin: 0 auto;
 }
+@media (max-width: 576px) {
+    .wrapper::-webkit-scrollbar {
+        display: none;
+    }
+    .wrapper{
+        margin: 0;
+        min-width: 100% !important;
+    }
+}

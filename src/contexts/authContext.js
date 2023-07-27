@@ -31,7 +31,7 @@ import type from '~/config/typeNotification';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
-import { adminId } from '~/utils/constantValue';
+import { actionPrefersValue, adminId } from '~/utils/constantValue';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
@@ -43,7 +43,7 @@ export const AuthContextProvider = ({ children }) => {
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
     const storage = getStorage();
-    
+
     const metadata = {
         contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };
@@ -86,6 +86,7 @@ export const AuthContextProvider = ({ children }) => {
             });
             setStories(tmp);
         }
+
         fetchUserData();
         fetchStories();
     }, []);
@@ -135,7 +136,7 @@ export const AuthContextProvider = ({ children }) => {
         const response = await signInWithPopup(auth, Fprovider);
         const repuser = response.user;
         const docs = await getDoc(doc(db, 'users', repuser.uid));
-        console.log(repuser)
+        console.log(repuser);
         if (!docs.data()) {
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
@@ -151,7 +152,7 @@ export const AuthContextProvider = ({ children }) => {
             });
         }
         return true;
-    }
+    };
     const googleSignIn = async () => {
         const response = await signInWithPopup(auth, Gprovider);
         const repuser = response.user;
@@ -267,11 +268,11 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
-    const fileDelete = async (path) =>{
+    const fileDelete = async (path) => {
         const storageRef = ref(storage, path);
-        console.log(storageRef)
-        await deleteObject(storageRef)
-    }
+        console.log(storageRef);
+        await deleteObject(storageRef);
+    };
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
         return new Promise((resolve, reject) => {
             const storageRef = ref(storage, `${location}/${name}`);
@@ -347,37 +348,52 @@ export const AuthContextProvider = ({ children }) => {
     const deleteSavePost = async (id) => {
         await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
     };
+    const getUserPrefers = async () => {
+        const pref = await getDoc(doc(db, 'preferences', user.uid));
 
+        const tagPref = Object.entries(pref.data())
+            .filter((entry) => entry[1] > 0)
+            .sort((a, b) => b[1] - a[1]);
+
+        return tagPref.map((tag) => tag[0]).slice(0, 5);
+    };
+    const updateUserPrefers = async (action,tags) =>{
+        
+        const curPref = await getDoc(doc(db, 'preferences', user.uid));
+        let newPref ={}
+        tags.forEach((tag) => {
+            if (curPref.data()[tag]) {
+                newPref[tag] = curPref.data()[tag] + actionPrefersValue[action];
+            } else {
+                newPref[tag] = actionPrefersValue[action];
+            }
+        });
+        await updateDoc(doc(db, 'preferences', user.uid), newPref);
+    }
     //send report
     const sendReport = async (content, id, rtype) => {
-       
-         
-                const q = query(
-                    collection(db, 'users', adminId, 'notifications'),
-                    where('sender.id', '==', user.uid),
-                    where('url', '==', routes.post + id),
-                    where('title', '==', type.report + content), 
-                );
-                getDocs(q).then(async (result) => {
-            
-                    if (result.docs.length === 0) {
-                        await addDoc(collection(db, 'users', adminId, 'notifications'), {
-                            title: type.report + content,
-                            url: rtype === 'post' ? routes.post + id : routes.user + id,
-                            sender: {
-                                id: user.uid,
-                                name: userData.user_name,
-                                avatar: userData.user_avatar,
-                            },
-                            type: 'report',
-                            time: serverTimestamp(),
-                            read: false,
-                        });
-                    }
+        const q = query(
+            collection(db, 'users', adminId, 'notifications'),
+            where('sender.id', '==', user.uid),
+            where('url', '==', routes.post + id),
+            where('title', '==', type.report + content),
+        );
+        getDocs(q).then(async (result) => {
+            if (result.docs.length === 0) {
+                await addDoc(collection(db, 'users', adminId, 'notifications'), {
+                    title: type.report + content,
+                    url: rtype === 'post' ? routes.post + id : routes.user + id,
+                    sender: {
+                        id: user.uid,
+                        name: userData.user_name,
+                        avatar: userData.user_avatar,
+                    },
+                    type: 'report',
+                    time: serverTimestamp(),
+                    read: false,
                 });
-            
-        
-       
+            }
+        });
     };
     // update realtime database when changes happen
     const userStateChanged = async () => {
@@ -490,6 +506,8 @@ export const AuthContextProvider = ({ children }) => {
         unbanUser,
         signIn,
         logOut,
+        getUserPrefers,
+        updateUserPrefers,
         createUser,
         googleSignIn,
         facebookSignIn,

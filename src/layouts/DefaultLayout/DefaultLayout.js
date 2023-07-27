@@ -11,9 +11,9 @@ const cx = classNames.bind(styles);
 function DefaultLayout({ children }) {
     const context = useContext(ThemeContext);
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <Header />
-            <div className={cx('container')}>
+            <div className={cx('container') + ' sml-max:mt-16'}>
                 <SideBarLeft />
                 <div className={cx('content', { dark: context.theme === 'dark' })}>{children}</div>
                 <SideBarRight />

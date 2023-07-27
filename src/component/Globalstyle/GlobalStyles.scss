@@ -16,20 +16,20 @@
     --primary: #ffeba7;
     --primary-light: #102770;
     --black: #000;
-    --dark-theme: #293145;  
-    --bg-dark-theme:#20222b;
-    --bg-light-theme:#fbfcfe;
-    --light-theme:white;
+    --dark-theme: #293145;
+    --bg-dark-theme: #20222b;
+    --bg-light-theme: #fbfcfe;
+    --light-theme: white;
     --input-text-color: rgba(22, 24, 35, 1);
     --text-color-dark: #ddd;
-    --text-color:#282829;
+    --text-color: #282829;
     --icon-color: #adb5bd;
-    --online:#10d876;
-    --offline:#FE9431;
-    --ban: #E50202;
+    --online: #10d876;
+    --offline: #fe9431;
+    --ban: #e50202;
     --time-color: #adb5bd;
     --title-color: #050505;
-    // --background-color: #f7f8fa; 
+    // --background-color: #f7f8fa;
 
     //Font
     --default-font-family: 'ProximaNova', sans-serif;
@@ -42,7 +42,6 @@
     padding: 0;
 }
 
-
 // Global CSS
 body {
     font-family: var(--default-font-family);
@@ -53,7 +52,6 @@ body {
     height: 100%;
     overflow-y: overlay;
 }
-    
 
 button,
 input,
@@ -63,27 +61,26 @@ input,
 }
 
 a[href] {
-
     text-decoration: none;
 }
 // scrolbar css
 html *::-webkit-scrollbar {
     border-radius: 0;
-    width: 8px;
+    width: 4px;
 }
 html *::-webkit-scrollbar-thumb {
     border-radius: 4px;
-    background-color: rgba(22, 24, 35, 0.06);
+    background-color: var(--dark-theme);
 }
 html *::-webkit-scrollbar-track {
     border-radius: 0;
-    background-color: rgba(0, 0, 0, 0);
+    background-color: var(--bg-dark-theme);
 }
 
 // Custom Tippy Tooltip
 body {
     .tippy-box {
-        background-color:var(--dark-theme) ;
+        background-color: var(--dark-theme);
         min-height: 38px;
         border-radius: 8px;
         display: flex;
@@ -92,7 +89,7 @@ body {
         font-size: 16px;
         line-height: 22px;
     }
-    .tippy-box[data-theme~=light] {
+    .tippy-box[data-theme~='light'] {
         color: #26323d;
         background-color: var(--light-theme);
     }
@@ -107,12 +104,10 @@ body {
 }
 
 
-
-
-.pop-up{
+.pop-up {
     position: fixed;
-    left:0;
-    top:0;
+    left: 0;
+    top: 0;
     right: 0;
     bottom: 0;
     display: flex;
@@ -120,49 +115,49 @@ body {
     align-items: center;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 10;
-    &.loader{
+    &.loader {
         background-color: rgba(255, 255, 255, 0.6);
     }
 }
 .d-none {
     display: none;
 }
-.row{
+.row {
     display: flex;
     align-items: center;
 }
-.indicators{
+.indicators {
     position: absolute;
     bottom: 30px;
     left: 0;
     right: 0;
 }
 
-.react-slideshow-container+ul.indicators {
+.react-slideshow-container + ul.indicators {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     margin-top: 20px;
 }
-.react-slideshow-container+ul.indicators .each-slideshow-indicator::before {
-    color:var(--text-color-dark);
+.react-slideshow-container + ul.indicators .each-slideshow-indicator::before {
+    color: var(--text-color-dark);
     background-color: white;
 }
 
 .react-slideshow-container .nav:last-of-type {
     right: 20px;
-
 }
 .react-slideshow-container .nav:first-of-type {
     left: 20px;
 }
 .react-slideshow-container .default-nav {
     background-color: transparent;
-    & svg{
+    & svg {
         fill: var(--text-color-dark);
     }
 }
-.react-slideshow-container .default-nav:hover, .react-slideshow-container .default-nav:focus {
+.react-slideshow-container .default-nav:hover,
+.react-slideshow-container .default-nav:focus {
     background-color: transparent;
     outline: 0;
 }

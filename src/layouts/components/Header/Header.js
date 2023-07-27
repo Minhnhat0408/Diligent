@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './Header.module.scss';
 import routes from '~/config/routes';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import image from '~/assets/images';
 import Search from '../Search';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -44,10 +44,11 @@ function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData, notifications, handleReadNoti } = UserAuth();
     const notif = useRef();
-    const [notis,setNotis] = useState(notifications)
-    useEffect(() =>{
-        setNotis(notifications)
-    },[notifications])
+    const navigate = useNavigate()
+    const [notis, setNotis] = useState(notifications);
+    useEffect(() => {
+        setNotis(notifications);
+    }, [notifications]);
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -95,118 +96,139 @@ function Header() {
     };
 
     return (
-        <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' })}>
+        <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' rounded-3xl sml-max:h-16'}>
             <div className={cx('inner') + ' smu-max:justify-between'}>
-                <Link to={routes.home} className={cx('start') + ' mdl-max:ml-3 sml-max:!hidden'}>
+                <div onClick={() => {
+                  if(window.location.pathname === routes.home){
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }else{
+                    navigate(routes.home)
+                  }
+                }} className={cx('start') + ' mdl-max:ml-3 smu-max:!ml-6'}>
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
-                        className={cx('logo') + ' md-max:!w-full'}
+                        className={cx('logo') + ' md-max:!w-full '}
                         alt="tikTok"
                     ></img>
-                </Link>
-                <Link to={routes.home} className={cx('start') + ' hidden sml-max:ml-3 sml-max:flex sml-max:w-32'}>
-                    <img src={image.noText} className={cx('logo') + ' md-max:!w-full'} alt="tikTok"></img>
-                </Link>
+                </div>
                 <div className={cx('middle') + ' smu-max:hidden'}>
                     <Search />
-                    <Link
-                        to={routes.home}
-                        className={
-                            cx('middle-btn', { active: window.location.pathname === routes.home }) +
-                            ' sxl-max:hidden mdl-max:!flex mdl-max:!text-4xl mdl-max:!items-center mdl-max:!justify-center'
-                        }
-                    >
-                        <i className={`${styles.icon} fa-regular fa-house`}></i>
-                    </Link>
-                    <Link
-                        to={routes.documents}
-                        className={
-                            cx('middle-btn', { active: window.location.pathname === routes.documents }) +
-                            ' sxl-max:hidden mdl-max:!flex mdl-max:!text-4xl mdl-max:!items-center mdl-max:!justify-center'
-                        }
-                    >
-                        <i className={`${styles.icon} fa-regular fa-file`}></i>
-                    </Link>
-                    <Link
-                        to={routes.flashcard}
-                        className={
-                            cx('middle-btn', { active: window.location.pathname === routes.flashcard }) +
-                            ' sxl-max:hidden mdl-max:!flex mdl-max:!text-4xl mdl-max:!items-center mdl-max:!justify-center'
-                        }
-                    >
-                        <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
-                    </Link>
-                    <Link
-                        to={routes.story + user?.uid}
-                        className={
-                            cx('middle-btn', {
-                                active: `/${window.location.pathname.split('/')[1]}/` === routes.story,
-                            }) +
-                            ' sxl-max:hidden mdl-max:!flex mdl-max:!text-4xl mdl-max:!items-center mdl-max:!justify-center'
-                        }
-                    >
-                        <i className={`${styles.icon} fa-regular fa-bolt`}></i>
-                    </Link>
-                    <Link
-                        to={routes.friend}
-                        className={
-                            cx('middle-btn', { active: window.location.pathname === routes.friend }) +
-                            ' sxl-max:hidden mdl-max:!flex mdl-max:!text-4xl mdl-max:!items-center mdl-max:!justify-center'
-                        }
-                    >
-                        <i className={`${styles.icon} fa-regular fa-user-group`}></i>
-                    </Link>
+                    <Tippy content="Home" theme={context.theme} animation={'scale'}>
+                        <Link
+                            to={routes.home}
+                            className={
+                                cx('middle-btn', { active: window.location.pathname === routes.home }) +
+                                ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
+                            }
+                        >
+                            <i className={`${styles.icon} fa-regular fa-house`}></i>
+                        </Link>
+                    </Tippy>
+                    <Tippy content="Documents" theme={context.theme} animation={'scale'}>
+                        <Link
+                            to={routes.documents}
+                            className={
+                                cx('middle-btn', { active: window.location.pathname === routes.documents }) +
+                                ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
+                            }
+                        >
+                            <i className={`${styles.icon} fa-regular fa-file`}></i>
+                        </Link>
+                    </Tippy>
+                    <Tippy content="Flashcard" theme={context.theme} animation={'scale'}>
+                        <Link
+                            to={routes.flashcard}
+                            className={
+                                cx('middle-btn', { active: window.location.pathname === routes.flashcard }) +
+                                ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
+                            }
+                        >
+                            <i className={`${styles.icon} fa-regular fa-cards-blank`}></i>
+                        </Link>
+                    </Tippy>
+                    <Tippy content="Story" theme={context.theme} animation={'scale'}>
+                        <Link
+                            to={routes.story + user?.uid}
+                            className={
+                                cx('middle-btn', {
+                                    active: `/${window.location.pathname.split('/')[1]}/` === routes.story,
+                                }) +
+                                ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
+                            }
+                        >
+                            <i className={`${styles.icon} fa-regular fa-bolt`}></i>
+                        </Link>
+                    </Tippy>
+                    <Tippy content="Friends" theme={context.theme} animation={'scale'}>
+                        <Link
+                            to={routes.friend}
+                            className={
+                                cx('middle-btn', { active: window.location.pathname === routes.friend }) +
+                                ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
+                            }
+                        >
+                            <i className={`${styles.icon} fa-regular fa-user-group`}></i>
+                        </Link>
+                    </Tippy>
                 </div>
 
                 <div className={cx('end') + ' smu-max:w-[210px] mdl-max:justify-end'}>
                     {user ? (
                         <>
-                            <span className={cx('end-btn') + ' mdl-max:hidden'}>
-                                <Tippy
-                                    appendTo={document.body}
-                                    interactive
-                                    offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
-                                    placement="bottom"
-                                    trigger="click"
-                                    render={renderNotifications}
-                                    animation={false}
-                                >
-                                    <i className="fa-solid fa-bell"></i>
-                                </Tippy>
-                                {notifications?.unread !== 0 && (
-                                    <div className={cx('noti-count')}>{notifications?.unread}</div>
-                                )}
-                            </span>
-                            <Link to={routes.chat} className={cx('end-btn') + ' mdl-max:hidden'}>
-                                <i className="fa-regular fa-message"></i>
-                            </Link>
+                            <Tippy content="Notifications" theme={context.theme} animation="scale">
+                                <span className={cx('end-btn') + ' mdl-max:hidden'}>
+                                    <Tippy
+                                        appendTo={document.body}
+                                        interactive
+                                        offset={[16, 30]} // chinh ben trai / chieu cao so vs ban dau
+                                        placement="bottom"
+                                        trigger="click"
+                                        render={renderNotifications}
+                                        animation={false}
+                                    >
+                                        <i className="fa-solid fa-bell"></i>
+                                    </Tippy>
+                                    {notifications?.unread !== 0 && (
+                                        <div className={cx('noti-count')}>{notifications?.unread}</div>
+                                    )}
+                                </span>
+                            </Tippy>
+                            <Tippy content="Chat" theme={context.theme} animation="scale">
+                                <Link to={routes.chat} className={cx('end-btn') + ' mdl-max:hidden'}>
+                                    <i className="fa-regular fa-message"></i>
+                                </Link>
+                            </Tippy>
                         </>
                     ) : (
                         <>
                             <Button
-                                className={cx('login-btn')}
+                                className={cx('login-btn') + ' smu-max:mr-0'}
                                 dark={context.theme === 'dark'}
                                 primary
                                 large
+                                responsive
                                 to={routes.login}
                             >
                                 Log in
                             </Button>
                         </>
                     )}
-                    <span onClick={context.toggleTheme} className={cx('end-btn') + ' mdl-max:hidden'}>
-                        {context.theme === 'dark' ? (
-                            <i className={'fa-solid fa-sun'}></i>
-                        ) : (
-                            <i className="fa-duotone fa-moon"></i>
-                        )}
-                    </span>
+                    <Tippy content="Theme" theme={context.theme} animation="scale">
+                        <span onClick={context.toggleTheme} className={cx('end-btn') + ' mdl-max:hidden'}>
+                            {context.theme === 'dark' ? (
+                                <i className={'fa-solid fa-sun'}></i>
+                            ) : (
+                                <i className="fa-duotone fa-moon"></i>
+                            )}
+                        </span>
+                    </Tippy>
+
                     <Menu
                         item={user ? USER_MENU : MENU_ITEM}
                         className={cx('menu', { [context.theme]: context.theme === 'dark' })}
                         onChange={handleMenuChange}
                         placement="bottom"
-                        offset={[0,10]}
+                        offset={[0, 10]}
                     >
                         {user ? (
                             <Image

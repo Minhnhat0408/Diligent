@@ -28,6 +28,7 @@ export function ThemeProvider({ children }) {
 
 export function PostProvider({ id, data, children,setUpdate,setReFresh, page = false }) {
     const [loading, setLoading] = useState(false);
+    const [cmtLoading,setCmtLoading]  = useState(false)
     const { user, usersList } = UserAuth();
   
 
@@ -56,6 +57,8 @@ export function PostProvider({ id, data, children,setUpdate,setReFresh, page = f
     };
     const value = {
         loading,
+        cmtLoading,
+        setCmtLoading,
         setLoading,
         setUpdate,
         setReFresh,

@@ -2,7 +2,6 @@
 .container {
     display: flex;
     justify-content: center;
-    margin: 0 80px;
   }
   
   .card {
@@ -23,7 +22,7 @@
   .card-tp {
     width: 100%;
     backface-visibility: hidden;
-    height: 600px;
+    height: 100%;
     border-radius: 6px;
     transform-style: preserve-3d;
     transition: transform 1s cubic-bezier(0.8, 0.3, 0.3, 1);

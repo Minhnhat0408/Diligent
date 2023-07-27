@@ -1,65 +1,65 @@
 .form {
-
-    width: 550px ; 
-    min-height: 100px;
-    padding: 32px 24px;
+    width: 100%;
+    min-height: 400px;
+    padding: 32px 16px;
     height: 100%;
     background-color: #2a2b38;
-      background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
-      background-position: bottom center;
-      background-repeat: no-repeat;
-      background-size: 300%;
-      border-radius: 6px;
-    margin:0 auto;
+    background-image: url(https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg);
+    background-position: bottom center;
+    background-repeat: no-repeat;
+    background-size: 300%;
+    border-radius: 6px;
+    margin: 0 auto;
     border-radius: 10px;
     backface-visibility: hidden;
-    transform: translateZ(70px)      scale(0.90);
+    transform: translateZ(70px) scale(0.9);
     color: #c4c3ca;
+   
     & .heading {
         font-size: 30px;
-        }
-    & .desc {
-    text-align: center;
-    font-size: 20px;
-    font-weight: lighter;
-    line-height: 24px;
-    margin: 16px 0;
-    margin-bottom: 24px;
-    font-weight: 300;   
     }
-  }
-  
-.error{
+    & .desc {
+        text-align: center;
+        font-size: 20px;
+        font-weight: lighter;
+        line-height: 24px;
+        margin: 16px 0;
+        margin-bottom: 24px;
+        font-weight: 300;
+    }
+}
+
+.error {
     border-radius: 4px;
-    border: 2px solid #f33a58  ;
+    border: 2px solid #f33a58;
     padding: 8px;
     font-size: 20px;
-    color:#f33a58 ;
+    color: #f33a58;
     margin-bottom: 16px;
 }
-.gg-btn{
+.gg-btn {
     display: flex;
     font-size: 30px;
     color: #f33a58;
-    background-color:transparent;
+    background-color: transparent;
     align-items: center;
-    
+
     margin-bottom: 24px;
-    & .gg-signup{
+    & .gg-signup {
         font-size: 19px;
         margin-right: 16px;
         text-align: center;
-        color:#c4c3ca;
+        color: #c4c3ca;
         font-weight: bold;
     }
 
-    & .gg-icon{
+    & .gg-icon {
         width: 40px;
-        height:40px;
+        height: 40px;
         cursor: pointer;
     }
 }
 
-.gg-icon + .gg-icon{
+.gg-icon + .gg-icon {
     margin-left: 16px;
 }

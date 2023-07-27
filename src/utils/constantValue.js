@@ -417,3 +417,13 @@ export const PROFILE_OPTIONS = [
 
 export const regex = /@[^)]+\)/g; //extract the tag part
 export const getIdInMentions = /\([^(]+\w+/g; //extract id part of the tag part EX @Doan Ngoc Anh(kfjalksdlf243)
+
+export const actionPrefersValue = {
+    'like':100,
+    'dis':-100,
+    'cmt':120,
+    'save':150,
+    'search':200,
+    'upload':200,
+    'hide':-200
+}
