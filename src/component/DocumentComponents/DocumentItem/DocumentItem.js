@@ -24,17 +24,7 @@ import { adminId } from '~/utils/constantValue';
 import { extractFilePathFromURL } from '~/utils/extractPath';
 import { memo } from 'react';
 const cx = classNames.bind(styles);
-/*
-    title: De thi cuoi ky TIN hieu he thong
-    type pdf
-    tag Math
-    contributor: {
-        name:Minh dep trai
-        id:
-        ava:fdasfdsa
-    }
-    time: 1/5/2023
-*/
+
 const savePostData = [
     'Tieng Anh',
     'Tieng Nhat',
@@ -49,6 +39,7 @@ const savePostData = [
 function DocumentItem({ id, data,updateDocuments }) {
     const context = useContext(ThemeContext);
     const { user,fileDelete } = UserAuth();
+    const [downloads,setDownloads] = useState(data.downloads)
     const [icon, setIcon] = useState(() => {
         if (data.type === 'csv') {
             return faFileCsv;
@@ -69,6 +60,7 @@ function DocumentItem({ id, data,updateDocuments }) {
             await updateDoc(doc(db, 'documents', id), {
                 downloads: data.downloads + 1,
             });
+            setDownloads(downloads+1)
         } catch (err) {
             alert(err);
         }
@@ -88,9 +80,6 @@ function DocumentItem({ id, data,updateDocuments }) {
             <div className={cx('content')}>
                 <h4
                     className={cx('title')}
-                    onClick={() => {
-                        //handle dowload file
-                    }}
                 >
                     {data.title}
                 </h4>
@@ -122,7 +111,7 @@ function DocumentItem({ id, data,updateDocuments }) {
                 <a href={data.url} target="_blank" download={data.title + '.' + data.type}>
                     <FontAwesomeIcon icon={faDownload} className={cx('download-btn')} onClick={handleDownloadFile} />
                 </a>
-                <div className={cx('download-count')}>{data.downloads}</div>
+                <div className={cx('download-count')}>{downloads}</div>
             </div>
             {(user?.uid === data.user.id || user?.uid === adminId) && (
                 <FontAwesomeIcon icon={faXmark} className={cx('delete')} onClick={handleDeleteDoc} />

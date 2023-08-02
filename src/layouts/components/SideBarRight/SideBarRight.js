@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import image from '~/assets/images';
 import AccountItem from '~/component/AccountItem';
 import { UserAuth } from '~/contexts/authContext';
@@ -14,10 +14,10 @@ const cx = classNames.bind(styles);
 
 function SideBarRight() {
     const context = useContext(ThemeContext);
-    const { usersList, user, userData } = UserAuth();
-    const { contacts } = GlobalProps();
+    const {  user, userData } = UserAuth();
+    const { contacts,suggestedFr } = GlobalProps();
     const location = useLocation();
-    console.log(contacts?.length > 0);
+
     return (
         <aside
             className={
@@ -49,19 +49,16 @@ function SideBarRight() {
                                         See all
                                     </Link>
                                 </div>
-                                {usersList?.map((u, ind) => {
+                                {suggestedFr.current?.map((u, ind) => {
                                     return (
-                                        user.uid !== u.id &&
-                                        ind < 8 &&
-                                        !u.friend && (
                                             <AccountItem
                                                 search
                                                 key={u.id}
                                                 dark={context.theme === 'dark'}
-                                                acc={user.isAdmin ? { ...u, isAdmin: true } : { ...u, isAdmin: false }}
+                                                acc={u}
                                             />
                                         )
-                                    );
+                                    
                                 })}
                             </div>
                         ))}

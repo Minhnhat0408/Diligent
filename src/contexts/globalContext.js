@@ -1,5 +1,22 @@
 import { createContext, useEffect, useRef, useState } from 'react';
-import { collection, getDocs, query, where, orderBy, or, limit, startAfter, documentId, updateDoc, arrayRemove, doc, arrayUnion, addDoc, serverTimestamp, onSnapshot } from 'firebase/firestore';
+import {
+    collection,
+    getDocs,
+    query,
+    where,
+    orderBy,
+    or,
+    limit,
+    startAfter,
+    documentId,
+    updateDoc,
+    arrayRemove,
+    doc,
+    arrayUnion,
+    addDoc,
+    serverTimestamp,
+    onSnapshot,
+} from 'firebase/firestore';
 
 import { db } from '../firebase';
 import { UserAuth } from './authContext';
@@ -13,11 +30,11 @@ export const GlobalContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]);
     const [lastPost, setLastPost] = useState(null);
     const { user, userData, getUserPrefers } = UserAuth();
-    const [contacts,setContacts] = useState([]);
-    const SuggestedFr = useRef([])
+    const [contacts, setContacts] = useState([]);
+    const suggestedFr = useRef([]);
     const [lastFinalPost, setLastFinalPost] = useState(null);
     const relevantPosts = useRef([]);
-    const [scrollPositions,setScrollPositions] = useState({})
+    const [scrollPositions, setScrollPositions] = useState({});
     const [refreshPosts, setReFreshPosts] = useState(false);
     useEffect(() => {
         if (user) {
@@ -37,6 +54,7 @@ export const GlobalContextProvider = ({ children }) => {
                         limit(5),
                     );
                     let docs = await getDocs(q);
+                    
                     if (docs.docs.length === 0) {
                         q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
                         docs = await getDocs(q);
@@ -84,8 +102,25 @@ export const GlobalContextProvider = ({ children }) => {
     }, [user, refreshPosts]);
 
     useEffect(() => {
-        
-        if(user) {
+        async function fetchSuggestedFr() {
+         
+            const fr = userData.user_friends.map((u) => {
+                return u.id;
+            }).slice(0,10);
+
+            const a = await getDocs(query(collection(db, 'users'), where(documentId(), 'not-in', fr), limit(5)));
+            const b = a.docs.map((d) => {
+                return {
+                    id: d.id,
+                    data: {user_name:d.data().user_name, user_avatar:d.data().user_avatar  }
+                };
+            });
+
+            suggestedFr.current = b;
+        }
+
+        fetchSuggestedFr();
+        if (user) {
             const unsubscribe = onSnapshot(
                 query(
                     collection(db, 'chats'),
@@ -93,23 +128,18 @@ export const GlobalContextProvider = ({ children }) => {
                     or(where('user1.id', '==', user.uid), where('user2.id', '==', user.uid)),
                 ),
                 async (docs) => {
-                    let tmp =[]
-                   docs.forEach((d) => {
-                        tmp.push({ id: d.id, data: d.data() });
+                    let tmp = [];
+                    docs.forEach((d) => {
+                        tmp.push({ id: d.id, data:d.data()});
                     });
-                
-                console.log(tmp)
-                   setContacts(tmp)
-                
+
+                    console.log(tmp);
+                    setContacts(tmp);
                 },
             );
-          
+
             return () => unsubscribe();
         }
-        async function fetchSuggestedFr () {
-            const a = await getDocs(query(collection(db,'users'),where('user_friends','')))
-        }
-        
     }, []);
     const fetchMorePosts = async () => {
         if (lastPost) {
@@ -187,7 +217,6 @@ export const GlobalContextProvider = ({ children }) => {
             });
             setPosts((prevPosts) => [...prevPosts, ...newData]);
         }
-
     };
     const handleReadNoti = async (data) => {
         if (data.read === false) {
@@ -275,8 +304,9 @@ export const GlobalContextProvider = ({ children }) => {
     const value = {
         lastPost,
         posts,
-        refreshPosts,   
+        refreshPosts,
         scrollPositions,
+        suggestedFr,
         contacts,
         setPosts,
         setScrollPositions,
@@ -285,7 +315,7 @@ export const GlobalContextProvider = ({ children }) => {
         unFriend,
         handleAccept,
         handleDecline,
-        handleReadNoti
+        handleReadNoti,
     };
 
     return (
@@ -295,6 +325,6 @@ export const GlobalContextProvider = ({ children }) => {
     );
 };
 
-export const GlobalProps =  ()  =>{
-    return useContext(GlobalContext)
-}
+export const GlobalProps = () => {
+    return useContext(GlobalContext);
+};

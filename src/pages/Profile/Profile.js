@@ -76,8 +76,8 @@ function Profile() {
     useEffect(() => {
         if (user?.uid !== id) {
             async function fetchPageUser() {
-                const u = await getDoc(doc(db,'users',id))
-                if(!u?.id) {
+                const u = await getDoc(doc(db, 'users', id));
+                if (!u?.id) {
                     navigate(routes.notFound);
                 }
                 const friendRq = u.data().user_friendRequests;
@@ -103,12 +103,11 @@ function Profile() {
                     }
                 }
             }
-            fetchPageUser()
-            
+            fetchPageUser();
         } else {
             setPageUser(userData);
         }
-    }, [id]);
+    }, [id,userData]);
     useEffect(() => {
         const fetchUserPosts = async () => {
             if (userData) {
@@ -133,7 +132,7 @@ function Profile() {
             }
         };
         fetchUserPosts();
-    }, [id, refresh]);
+    }, [id]);
     const fetchMorePosts = async () => {
         if (lastPost) {
             let q = query(
@@ -163,6 +162,7 @@ function Profile() {
 
         fileUpload({ file: ava, name: newNameFile, bg_upload: true }).then((res) => {
             setLoading(false);
+            
         });
     };
     const handleUpRatings = async () => {
@@ -267,14 +267,12 @@ function Profile() {
                     ava: userData.user_avatar,
                     name: userData.user_name,
                     email: userData.user_email,
-                    status: userData.user_status,
                 },
                 user2: {
                     id: id,
                     ava: pageUser.user_avatar,
                     name: pageUser.user_name,
                     email: pageUser.user_email,
-                    status: pageUser.user_status,
                 },
                 lastView: serverTimestamp(),
             });

@@ -45,7 +45,7 @@ export const AuthContextProvider = ({ children }) => {
     const [userData, setUserData] = useState();
     const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
-    const [usersList, setUsersList] = useState();
+
     const [usersStatus,setUsersStatus] = useState();
     const storage = getStorage();
     const metadata = {
@@ -66,21 +66,7 @@ export const AuthContextProvider = ({ children }) => {
     };
     
     useEffect(() => {
-        async function fetchUserData() {
-            const data = [];
-            const q = query(userRef, orderBy('user_name'));
-            const docs = await getDocs(q);
-            docs.forEach(async (d) => {
-                data.push({ id: d.id, data: d.data() });
-            });
-            setUsersList(data);
-            // data.forEach(async (d) => {
-            //     await updateDoc(doc(db,'status',d.id), {
-            //         user_status:'offline',
-            //         lastOnline:new Date(2023,6,31,12,30,0),
-            //     })
-            // })
-        }
+
         async function fetchStories() {
             const q = query(collection(db, 'stories'), orderBy('time'));
             const querySnapshot = await getDocs(q);
@@ -100,7 +86,7 @@ export const AuthContextProvider = ({ children }) => {
         }
 
 
-        fetchUserData();
+       
         fetchStories();
     }, []);
     const signIn = async (email, password) => {
@@ -334,22 +320,7 @@ export const AuthContextProvider = ({ children }) => {
             if (currentUser) {
                 setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
                 //fetch user list realtime
-                onSnapshot(query(collection(db, 'users'), orderBy('user_name')), async (docs) => {
-                    const data = [];
-                    console.log('fetch user list or someone online/offline');
-                    docs.forEach((doc) => {
-                        if (
-                            doc.data().user_friends.some((doc) => {
-                                return doc?.id === currentUser.uid;
-                            })
-                        ) {
-                            data.push({ id: doc.id, data: doc.data(), friend: true });
-                        } else {
-                            data.push({ id: doc.id, data: doc.data(), friend: false });
-                        }
-                    });
-                    setUsersList(data);
-                });
+
                 onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
                     let tmp = {};
                     docs.forEach((doc) => {
@@ -424,7 +395,6 @@ export const AuthContextProvider = ({ children }) => {
     }, []);
 
     const value = {
-        usersList,
         user,
         userData,
         stories,

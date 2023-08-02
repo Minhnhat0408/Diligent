@@ -12,9 +12,32 @@
   .react-calendar__tile.highlight {
 
     background-image: url('./assets/images/fire.png') ;
-    background-size: contain;
+    background-size: cover;
+    background-position: center;
     color: white !important;
+    background-repeat:no-repeat;
+
     font-weight: 600;
+  }
+  button.react-calendar__tile--active.react-calendar__tile.highlight{
+    background-image: url('./assets/images/fire2.png') ;
+    background-size: cover;
+    background-position: center;
+    color: white !important;
+    background-repeat:no-repeat;
+    background-color:transparent !important;
+    opacity: 0.8;
+    
+  }
+  button.react-calendar__tile.highlight:enabled:hover,
+  button.react-calendar__tile.highlight:enabled:focus{
+    background-image: url('./assets/images/fire2.png') ;
+    background-size: cover;
+    background-position: center;
+    color: white !important;
+    background-repeat:no-repeat;
+    opacity: 1;
+    background-color:transparent !important;
   }
 
   .react-calendar.dark{
@@ -112,14 +135,22 @@
     background-color: rgba(0, 0, 0, 0.2);
     border-radius:50%;
   }
-  button.react-calendar__tile--now {
-    background: var(--primary-light);
-    color: var(--primary) !important;
+  .react-calendar.dark  .react-calendar__tile--now {
+     border: 1px solid var(--primary);    
+     color: var(--primary) ;
     border-radius:50%;
   }
-  .react-calendar__tile--now:enabled:hover,
-  .react-calendar__tile--now:enabled:focus {
-    background: rgba(0, 0, 0, 0.2);
+
+  button.react-calendar__tile--now{
+    border: 1px solid var(--primary-light);    
+     color: var(--primary-light) ;
+    border-radius:50%;
+  }
+  button.react-calendar__tile--now:enabled:hover,
+  button.react-calendar__tile--now:enabled:focus {
+    background: var(--primary);
+    color: var(--primary-light);
+     border-radius:50%;
   }
   button.react-calendar__tile--hasActive {
     background: var(--primary-light);
@@ -128,16 +159,22 @@
   }
   button.react-calendar__tile--hasActive:enabled:hover,
   button.react-calendar__tile--hasActive:enabled:focus {
-    background: var(--primary) ;
+    background: var(--primary);
     color: var(--primary-light);
      border-radius:50%;
   }
-
-  button.react-calendar__tile--active:enabled:hover,
-  button.react-calendar__tile--active:enabled:focus {
-    background:  var(--primary)   ;
+  button.react-calendar__tile.react-calendar__tile--active{
+    background: var(--primary) ;
     border-radius:50%;
     color: var(--primary-light);
+    opacity: 0.8;
+  }
+  button.react-calendar__tile--active:enabled:hover,
+  button.react-calendar__tile--active:enabled:focus {
+    background: var(--primary) ;
+    border-radius:50%;
+    color: var(--primary-light);
+    opacity: 1;
   }
   .react-calendar--selectRange .react-calendar__tile--hover {
     background-color: rgba(0, 0, 0, 0.2);

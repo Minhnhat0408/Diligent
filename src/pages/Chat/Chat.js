@@ -14,6 +14,7 @@ import ChatItem from '~/component/ChatComponents/ChatItem/ChatItem';
 import ChatInput from '~/component/ChatComponents/ChatInput/ChatInput';
 import { useRef } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
@@ -21,7 +22,7 @@ function Chat() {
     const { roomId } = useParams();
     const chat = useRef();
     const [loading, setLoading] = useState(false);
-    const { user, userData } = UserAuth();
+    const { user, userData,usersStatus } = UserAuth();
     const [correspondent, setCorrespondent] = useState();
     const [roomData, setRoomData] = useState();
     const lastView = useRef(0);
@@ -33,9 +34,9 @@ function Chat() {
             if (a.data()) {
                 setRoomData(a.data());
                 if (a.data().user1.id === user.uid) {
-                    setCorrespondent(a.data().user2);
+                    setCorrespondent({...a.data().user2,status:usersStatus[a.data().user2.id]?.user_status});
                 } else {
-                    setCorrespondent(a.data().user1);
+                    setCorrespondent({...a.data().user1,status:usersStatus[a.data().user1.id]?.user_status});
                 }
             } else {
                 setCorrespondent(null);
