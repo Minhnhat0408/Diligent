@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { UserAuth } from './authContext';
 import { PostContext, ThemeContext } from './Context';
-import { addDoc, arrayUnion, collection, deleteDoc, doc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { FieldValue, addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 
 export function ThemeProvider({ children }) {
-    const { userData, user,usersList} = UserAuth();
+    const { userData, user} = UserAuth();
     const [theme, setTheme] = useState('dark');
 
     const toggleTheme = async () => {
@@ -29,14 +29,16 @@ export function ThemeProvider({ children }) {
 export function PostProvider({ id, data, children,setUpdate,setReFresh, page = false }) {
     const [loading, setLoading] = useState(false);
     const [cmtLoading,setCmtLoading]  = useState(false)
-    const { user, usersList } = UserAuth();
+    const { user } = UserAuth();
   
 
     const deletePost = async (id,uid) => {
 
         await deleteDoc(doc(db, 'posts', id));
+        const pnum = await getDoc(doc(db,'users',uid))
+     
         await updateDoc(doc(db, 'users', uid), {
-            user_postNumber: usersList.filter((obj) => obj.id === uid)[0].data.user_postNumber - 1,
+            user_postNumber: pnum.data().user_postNumber -1,
         });
     };
     const hidePost = async (id) => {

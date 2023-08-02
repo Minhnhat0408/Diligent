@@ -22,7 +22,7 @@ function Search() {
     const [showResult, setShowResult] = useState(true);
     const [loading, setLoading] = useState(false);
     const debounce = useDebounce(searchValue.trim(), 1000);
-    const { usersList, user,updateUserPrefers } = UserAuth();
+    const { updateUserPrefers } = UserAuth();
     const inputRef = useRef();
     const context = useContext(ThemeContext);
     // khi call API tim kiem co ket qua
@@ -30,9 +30,12 @@ function Search() {
         if (searchValue.trim()) {
             setLoading(true);
             const fetchData = async (value) => {
-                const searchAccount = usersList.filter((duser) => {
-                    return duser.data.user_name.toLowerCase().includes(value.toLowerCase()) && duser.id !== user?.uid;
-                });
+               
+                const acc = await getDocs(query(collection(db,'users'),where('user_name','>=',value),where('user_name' ,'<=',value + "\uf8ff")))
+
+                const searchAccount = acc.docs.map((d) => {
+                    return {id:d.id,data:d.data()}
+                })
                 const searchPost = await getDocs(query(collection(db,'posts'),where('tags','array-contains',value)))
      
                 const search = { accounts: searchAccount,posts:searchPost.docs.map((doc) => {

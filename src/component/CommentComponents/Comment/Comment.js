@@ -39,7 +39,7 @@ function Comment({ data, id, react }) {
     const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
     const [preview, setPreview] = useState(false);
-    const {fileDelete} = UserAuth()
+    const { fileDelete } = UserAuth();
     const [text, setText] = useState(
         data.text.replace(regex, (spc) => {
             const id = spc.match(getIdInMentions)[0].substring(1);
@@ -169,8 +169,8 @@ function Comment({ data, id, react }) {
             subComments.forEach(async (cmt) => {
                 await deleteDoc(doc(db, 'posts', post.id, 'comments', cmt.id));
             });
-            if(data.image) {
-                fileDelete(extractFilePathFromURL(data.image))
+            if (data.image) {
+                fileDelete(extractFilePathFromURL(data.image));
             }
             await updateDoc(doc(db, 'posts', post.id), {
                 commentNumber: post.data.commentNumber - 1 - subComments.length,
@@ -266,9 +266,11 @@ function Comment({ data, id, react }) {
                                     </div>
                                 )}
                             </div>
-                            {preview && <div className={cx('pop-up')} onClick={() => setPreview(false)}>
-                                <Image src={data.image} className={cx('preview')} alt="preview" />
-                            </div>}
+                            {preview && (
+                                <div className={cx('pop-up')} onClick={() => setPreview(false)}>
+                                    <Image src={data.image} className={cx('preview')} alt="preview" />
+                                </div>
+                            )}
                             <Menu
                                 // chinh ben trai / chieu cao so vs ban dau
                                 item={
@@ -316,12 +318,34 @@ function Comment({ data, id, react }) {
                                                         },
                                               ]
                                         : user?.isAdmin
+                                        ? data?.user.id === user?.uid
+                                            ? [
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                      title: 'Update',
+                                                      type: 'update',
+                                                  },
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faTrash} />,
+                                                      title: 'Delete',
+                                                      type: 'delete',
+                                                  },
+                                              ]
+                                            : [
+                                                  {
+                                                      icon: <FontAwesomeIcon icon={faTrash} />,
+                                                      title: 'Delete',
+                                                      type: 'delete',
+                                                  },
+                                              ]
+                                        : data?.user.id === user?.uid
                                         ? [
                                               {
-                                                  icon: <FontAwesomeIcon icon={faTrash} />,
-                                                  title: 'Delete',
-                                                  type: 'delete',
+                                                  icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                  title: 'Update',
+                                                  type: 'update',
                                               },
+                                              report,
                                           ]
                                         : [report]
                                 }

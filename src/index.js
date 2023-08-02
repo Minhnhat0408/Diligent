@@ -5,17 +5,20 @@ import Globalstyle from './component/Globalstyle';
 import { ThemeProvider } from './contexts/Provider';
 import { AuthContextProvider } from './contexts/authContext';
 import reportWebVitals from './reportWebVitals';
+import { GlobalContextProvider } from './contexts/globalContext';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     // <React.StrictMode>
-        <Globalstyle>
-            <AuthContextProvider>
+    <Globalstyle>
+        <AuthContextProvider>
+            <GlobalContextProvider>
                 <ThemeProvider>
                     <App />
                 </ThemeProvider>
-            </AuthContextProvider>
-        </Globalstyle>
+            </GlobalContextProvider>
+        </AuthContextProvider>
+    </Globalstyle>,
     // {/* </React.StrictMode> */}
 );
 

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -23,6 +23,10 @@ import {
     arrayUnion,
     deleteDoc,
     deleteField,
+    or,
+    limit,
+    startAfter,
+    documentId,
 } from 'firebase/firestore';
 import { Fprovider, Gprovider, auth } from '../firebase';
 import { db } from '../firebase';
@@ -42,8 +46,8 @@ export const AuthContextProvider = ({ children }) => {
     const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
     const [usersList, setUsersList] = useState();
+    const [usersStatus,setUsersStatus] = useState();
     const storage = getStorage();
-
     const metadata = {
         contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
     };
@@ -54,11 +58,13 @@ export const AuthContextProvider = ({ children }) => {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
             user_createdAt: serverTimestamp(),
-            user_status: 'online',
         });
+        await setDoc(doc(db,'users',user.uid) , {
+            user_status:'online'
+        })
         return response;
     };
-
+    
     useEffect(() => {
         async function fetchUserData() {
             const data = [];
@@ -68,6 +74,12 @@ export const AuthContextProvider = ({ children }) => {
                 data.push({ id: d.id, data: d.data() });
             });
             setUsersList(data);
+            // data.forEach(async (d) => {
+            //     await updateDoc(doc(db,'status',d.id), {
+            //         user_status:'offline',
+            //         lastOnline:new Date(2023,6,31,12,30,0),
+            //     })
+            // })
         }
         async function fetchStories() {
             const q = query(collection(db, 'stories'), orderBy('time'));
@@ -87,6 +99,7 @@ export const AuthContextProvider = ({ children }) => {
             setStories(tmp);
         }
 
+
         fetchUserData();
         fetchStories();
     }, []);
@@ -94,9 +107,10 @@ export const AuthContextProvider = ({ children }) => {
         await signInWithEmailAndPassword(auth, email, password);
         // // Signed in
     };
+    
     const logOut = async () => {
-        if (userData.user_status !== 'ban') {
-            await updateDoc(doc(userRef, user.uid), {
+        if (usersStatus[user.uid].user_status !== 'ban') {
+            await updateDoc(doc(db,'status',user.uid), {
                 user_status: 'offline',
             });
         }
@@ -112,7 +126,6 @@ export const AuthContextProvider = ({ children }) => {
                 user_address: data.address.trimEnd(),
                 user_bio: data.bio.trimEnd(),
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-                user_status: 'online',
                 user_theme: 'dark',
                 user_friendRequests: [],
                 user_friends: [],
@@ -120,6 +133,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_ratings: [],
                 user_decks: 0,
             });
+            await setDoc(doc(db,'preferences',user.uid),{})
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
@@ -147,7 +161,7 @@ export const AuthContextProvider = ({ children }) => {
             // navigate(routes.updateInfo)
             return false; // false means fresh account
         } else {
-            await updateDoc(doc(userRef, repuser.uid), {
+            await updateDoc(doc(db,'status',repuser.uid), {
                 user_status: 'online',
             });
         }
@@ -168,102 +182,21 @@ export const AuthContextProvider = ({ children }) => {
             // navigate(routes.updateInfo)
             return false; // false means fresh account
         } else {
-            await updateDoc(doc(userRef, repuser.uid), {
+            await updateDoc(doc(db,'status',repuser.uid), {
                 user_status: 'online',
             });
         }
         return true;
     };
-    const handleReadNoti = async (data) => {
-        if (data.read === false) {
-            const q = query(
-                collection(db, 'users', user?.uid, 'notifications'),
-                where('sender.id', '==', data.sender.id),
-                where('read', '==', false),
-            );
-            const docs = await getDocs(q);
-            await updateDoc(doc(db, 'users', user?.uid, 'notifications', docs.docs[0].id), {
-                read: true,
-            });
-        }
-    };
-
-    const handleDecline = async (data) => {
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_friendRequests: arrayRemove({
-                id: data.id,
-                ava: data.ava,
-                name: data.name,
-            }),
-        });
-    };
-
-    const handleAccept = async (data) => {
-        await updateDoc(doc(db, 'users', data.id), {
-            user_friends: arrayUnion({
-                id: user.uid,
-                ava: userData.user_avatar,
-                name: userData.user_name,
-                time: new Date(),
-            }),
-        });
-        await addDoc(collection(db, 'users', data.id, 'notifications'), {
-            title: type.accfr,
-            url: routes.user + user.uid,
-            sender: {
-                id: user.uid,
-                name: userData.user_name,
-                avatar: userData.user_avatar,
-            },
-            type: 'accfr',
-            time: serverTimestamp(),
-            read: false,
-        });
-
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_friends: arrayUnion({
-                id: data.id,
-                ava: data.ava,
-                name: data.name,
-                time: new Date(),
-            }),
-            user_friendRequests: arrayRemove({
-                id: data.id,
-                ava: data.ava,
-                name: data.name,
-            }),
-        });
-    };
-    const unFriend = async (friendData) => {
-        const deleteFr = userData.user_friends.filter((friend) => {
-            return friend.id === friendData.id;
-        });
-
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_friends: arrayRemove({
-                id: deleteFr[0].id,
-                ava: deleteFr[0].ava,
-                name: deleteFr[0].name,
-                time: deleteFr[0].time,
-            }),
-        });
-        await updateDoc(doc(db, 'users', friendData.id), {
-            user_friends: arrayRemove({
-                id: friendData.data.id,
-                ava: friendData.data.ava,
-                name: friendData.data.name,
-                time: friendData.data.time,
-            }),
-        });
-    };
+    
     const banUser = async ({ id, duration }) => {
-        await updateDoc(doc(db, 'users', id), {
+        await updateDoc(doc(db, 'status', id), {
             user_status: 'ban',
             user_banUntil: duration,
         });
     };
     const unbanUser = async ({ id }) => {
-        await updateDoc(doc(db, 'users', id), {
+        await updateDoc(doc(db, 'status', id), {
             user_status: 'offline',
             user_banUntil: deleteField(),
         });
@@ -435,15 +368,25 @@ export const AuthContextProvider = ({ children }) => {
 
                     setUserData(result.data());
 
-                    if (result.data().user_status !== 'online') {
-                        if (result.data()?.user_banUntil && result.data().user_banUntil.toMillis() < new Date()) {
+                    
+                });
+                onSnapshot(collection(db,'status'), async (stats) => {
+                    const a = {}
+                    stats.forEach((s) => {
+                        a[s.id] = s.data()
+                    })
+           
+                    
+                    setUsersStatus(a)
+                    if (a[currentUser.uid].user_status !== 'online') {
+                        if (a[currentUser.uid]?.user_banUntil && a[currentUser.uid].user_banUntil.toMillis() < new Date()) {
                             await updateDoc(doc(db, 'users', currentUser.uid), {
                                 user_status: 'online',
                                 user_banUntil: deleteField(),
                             });
                         }
                     }
-                });
+                })
                 //fetch user notifications realtime
                 onSnapshot(
                     query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
@@ -459,16 +402,9 @@ export const AuthContextProvider = ({ children }) => {
                         setNotifications({ id: doc.id, data: data1, unread: readNoti });
                     },
                 );
-                // fetch savepost realtime
-                // onSnapshot(query(collection(db, 'users', currentUser.uid, 'saves'), orderBy('title')), (docs) => {
-                //     console.log('save post change');
-                //     const result = docs.docs.map((doc) => {
-                //         return { id: doc.id, data: doc.data() };
-                //     });
-                //     setSavePostData(result);
-                // });
+      
                 if (window.location.pathname !== routes.updateInfo)
-                    await updateDoc(doc(db, 'users', currentUser.uid), {
+                    await updateDoc(doc(db, 'status', currentUser.uid), {
                         user_status: 'online',
                     });
             } else {
@@ -493,15 +429,12 @@ export const AuthContextProvider = ({ children }) => {
         userData,
         stories,
         notifications,
-        handleReadNoti,
+        usersStatus,
         fileUpload,
         fileDelete,
         sendReport,
         createPost,
         deleteSavePost,
-        handleDecline,
-        handleAccept,
-        unFriend,
         banUser,
         unbanUser,
         signIn,

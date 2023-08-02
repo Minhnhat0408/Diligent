@@ -25,6 +25,8 @@ import { Wrapper as PopperWrapper } from '~/component/Popper';
 import Notification from '~/component/Notification';
 import getTimeDiff from '~/utils/timeDiff';
 import listLanguage from '~/config/languages';
+import { GlobalProps } from '~/contexts/globalContext';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 const MENU_ITEM = [
@@ -42,7 +44,8 @@ const MENU_ITEM = [
 let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
-    const { user, logOut, userData, notifications, handleReadNoti } = UserAuth();
+    const { user, logOut, userData, notifications } = UserAuth();
+    const { handleReadNoti} = GlobalProps();
     const notif = useRef();
     const navigate = useNavigate()
     const [notis, setNotis] = useState(notifications);
@@ -94,6 +97,8 @@ function Header() {
                 break;
         }
     };
+    
+
 
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' rounded-3xl sml-max:h-16'}>
@@ -116,6 +121,7 @@ function Header() {
                     <Tippy content="Home" theme={context.theme} animation={'scale'}>
                         <Link
                             to={routes.home}
+                            preventScrollReset={true}
                             className={
                                 cx('middle-btn', { active: window.location.pathname === routes.home }) +
                                 ' sxl-max:hidden mdl-max:!flex mdl-max:!text-xl mdl-max:!items-center mdl-max:!justify-center'
@@ -194,7 +200,7 @@ function Header() {
                                 </span>
                             </Tippy>
                             <Tippy content="Chat" theme={context.theme} animation="scale">
-                                <Link to={routes.chat} className={cx('end-btn') + ' mdl-max:hidden'}>
+                                <Link to={routes.chatroom + 'none'} className={cx('end-btn') + ' mdl-max:hidden'}>
                                     <i className="fa-regular fa-message"></i>
                                 </Link>
                             </Tippy>
@@ -248,4 +254,4 @@ function Header() {
     );
 }
 
-export default Header;
+export default memo(Header);

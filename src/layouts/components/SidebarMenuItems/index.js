@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import classNames from "classnames/bind";
 import { Link } from "react-router-dom";
 import styles from './SidebarMenuItems.module.scss'
+import { memo } from "react";
 
 const cx = classNames.bind(styles)
 
@@ -21,4 +22,4 @@ function SidebarMenuItems({onClick,icon, title, backGroundColor, color, numsNoti
      );
 }
 
-export default SidebarMenuItems;
+export default memo(SidebarMenuItems);

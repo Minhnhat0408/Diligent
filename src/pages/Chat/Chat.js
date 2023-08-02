@@ -3,7 +3,7 @@ import styles from './Chat.module.scss';
 import Image from '~/component/Image/Image';
 import { Link, useParams } from 'react-router-dom';
 import { useContext, useEffect } from 'react';
-import { collection, doc, getDoc, onSnapshot, orderBy, query, updateDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState } from 'react';
 import { UserAuth } from '~/contexts/authContext';
@@ -14,31 +14,39 @@ import ChatItem from '~/component/ChatComponents/ChatItem/ChatItem';
 import ChatInput from '~/component/ChatComponents/ChatInput/ChatInput';
 import { useRef } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+
 const cx = classNames.bind(styles);
 
 function Chat() {
     const { roomId } = useParams();
     const chat = useRef();
     const [loading, setLoading] = useState(false);
-    const { user, usersList, userData } = UserAuth();
+    const { user, userData } = UserAuth();
     const [correspondent, setCorrespondent] = useState();
     const [roomData, setRoomData] = useState();
-    const [text, setText] = useState();
+    const lastView = useRef(0);
     const [messages, setMessages] = useState();
     const context = useContext(ThemeContext);
     useEffect(() => {
         const fetchRoom = async () => {
             const a = await getDoc(doc(db, 'chats', roomId));
-            setRoomData(a.data());
-            if (a.data().id1 === user.uid) {
-                setCorrespondent(usersList.filter((obj) => obj.id === a.data().id2)[0]);
+            if (a.data()) {
+                setRoomData(a.data());
+                if (a.data().user1.id === user.uid) {
+                    setCorrespondent(a.data().user2);
+                } else {
+                    setCorrespondent(a.data().user1);
+                }
             } else {
-                setCorrespondent(usersList.filter((obj) => obj.id === a.data().id1)[0]);
+                setCorrespondent(null);
+                setRoomData(null);
             }
+
+            //update view Time
         };
 
         fetchRoom();
-    }, [roomId, usersList]);
+    }, [roomId]);
     useEffect(() => {
         const unsubscribe = onSnapshot(
             query(collection(db, 'chats', roomId, 'messages'), orderBy('time')),
@@ -56,34 +64,44 @@ function Chat() {
                     });
                 });
                 setMessages(tmp);
+                if (tmp.at(-1).data.sender === user.uid) {
+                    lastView.current++;
+                }
+
+                if (lastView.current === 2) {
+                    console.log(lastView.current);
+                    await updateDoc(doc(db, 'chats', roomId), {
+                        lastView: serverTimestamp(),
+                    });
+                }
             },
         );
-
+        lastView.current = 0;
         return () => unsubscribe();
     }, [roomId]);
     useEffect(() => {
         if (correspondent) {
             chat.current.scrollTop = chat.current.scrollHeight;
         }
-    }, [correspondent, messages, loading]);
+    }, [correspondent, messages]);
     return (
         <>
-            {correspondent && (
+            {correspondent ? (
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
                     <div className={cx('user-info')}>
-                        <Image src={correspondent.data.user_avatar} className={cx('avatar')} alt="avatar" />
+                        <Image src={correspondent.ava} className={cx('avatar')} alt="avatar" />
                         <div className={cx('column')}>
-                            <span className={cx('name')}>{correspondent.data.user_name}</span>
+                            <span className={cx('name')}>{correspondent.name}</span>
                             <div className={cx('row')}>
-                                <span className={cx('status')}>{correspondent.data.user_status}</span>
+                                <span className={cx('status')}>{correspondent.status}</span>
                                 <FontAwesomeIcon
                                     icon={faCircle}
-                                    className={cx('icon', { [correspondent.data.user_status]: true })}
+                                    className={cx('icon', { [correspondent.status]: true })}
                                 />
                             </div>
                         </div>
 
-                        <a href={`mailto:${correspondent.data.user_email}`} className={cx('user-options')}>
+                        <a href={`mailto:${correspondent.email}`} className={cx('user-options')}>
                             <FontAwesomeIcon icon={faAt} />
                         </a>
                         <Link to={routes.user + correspondent.id} className={cx('user-options')}>
@@ -91,7 +109,7 @@ function Chat() {
                         </Link>
                     </div>
                     <div className={cx('chat-box')} ref={chat}>
-                        <span className={cx('first-text')}>Chat with {correspondent.data.user_name} now</span>
+                        <span className={cx('first-text')}>Chat with {correspondent.name} now</span>
                         {messages?.map((msg, id) => {
                             const me = msg.data.sender === user.uid;
                             let data = null;
@@ -100,8 +118,8 @@ function Chat() {
                             } else {
                                 data = {
                                     ...msg.data,
-                                    name: correspondent.data.user_name,
-                                    ava: correspondent.data.user_avatar,
+                                    name: correspondent.name,
+                                    ava: correspondent.ava,
                                 };
                             }
                             return <ChatItem key={id} data={data} me={me} />;
@@ -118,6 +136,8 @@ function Chat() {
                         <ChatInput roomId={roomId} setLoading={setLoading} />
                     </div>
                 </div>
+            ) : (
+                <h1 className="text-center text-white italic mt-[20%]">Select a friend to chat</h1>
             )}
         </>
     );

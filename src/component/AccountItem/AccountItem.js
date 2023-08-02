@@ -8,56 +8,48 @@ import { useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircle } from '@fortawesome/free-solid-svg-icons';
 import routes from '~/config/routes';
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs, onSnapshot, query, serverTimestamp, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState } from 'react';
 import { UserAuth } from '~/contexts/authContext';
 const cx = classNames.bind(styles);
 
-function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
-    const { user, userData } = UserAuth();
-    const [roomId, setRoomId] = useState();
+function AccountItem({ room, acc, search = false, chat = false, dark, ...props }) {
+    const { user, userData, usersStatus } = UserAuth();
     const [noti, setNoti] = useState(0);
     useEffect(() => {
-        const fetchRoom = async () => {
+        const fetchUnseen = async () => {
             try {
-                const q = query(
-                    collection(db, 'chats'),
-                    where('id1', 'in', [user.uid, acc.id]),
-                    where('id2', 'in', [user.uid, acc.id]),
+
+                const unsubscribe = onSnapshot(
+                    query(
+                        collection(db, 'chats', room.id, 'messages'),
+                        where('seen', '==', false),
+                        where('sender', '!=', user.uid),
+                    ),
+                    async (docs) => {
+                        console.log(docs.size);
+                        setNoti(docs.size);
+                    },
                 );
-                const a = await getDocs(q);
-                let tmp = a.docs[0]?.id;
 
-                if (!tmp) {
-                    const a = await addDoc(collection(db, 'chats'), {
-                        id1: user.uid,
-                        id2: acc.id,
-                    });
-                    tmp = a.id;
-                } else {
-                    const unseen = await getDocs(
-                        query(
-                            collection(db, 'chats', tmp, 'messages'),
-                            where('seen', '==', false),
-                            where('sender', '!=', user.uid),
-                        ),
-                    );
-                    setNoti(unseen.docs.length);
-                }
+                return () => unsubscribe();
 
-                setRoomId(tmp);
+                // }
+
+                // setRoomId(tmp);
             } catch (err) {
                 console.log(err);
-            }
+            }   
         };
         if (chat) {
-            fetchRoom();
+            fetchUnseen();
         }
     }, []);
+
     return (
         <Link
-            to={(search && `/user/${acc.id}`) || (chat && routes.chatroom + roomId)}
+            to={(search && `/user/${acc.id}`) || (chat && routes.chatroom + room.id)}
             className={cx('wrapper', { dark: dark })}
         >
             <Image src={acc.data.user_avatar} alt="user" className={cx('avatar')} />
@@ -66,7 +58,7 @@ function AccountItem({ acc, search = false, chat = false, dark, ...props }) {
                 {chat && noti > 0 ? (
                     <div className={cx('msg-noti')}>{noti}</div>
                 ) : (
-                    <span className={cx('icon', { [acc.data.user_status]: true })}>
+                    <span className={cx('icon', { [usersStatus[acc.id]?.user_status]: true })}>
                         <FontAwesomeIcon icon={faCircle} />
                     </span>
                 )}

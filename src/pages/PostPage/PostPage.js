@@ -32,7 +32,6 @@ function PostPage() {
                 navigate(routes.notFound);
             } else {
                 if (user) {
-                    console.log('hello');
                     if (
                         post.data().like.list.some((u) => {
                             return u.id === user.uid;

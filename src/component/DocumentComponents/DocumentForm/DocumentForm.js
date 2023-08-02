@@ -24,7 +24,6 @@ import { useDropzone } from 'react-dropzone';
 import { useEffect } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
-import { RingLoader } from 'react-spinners';
 const cx = classNames.bind(styles);
 
 function DocumentForm({ onXmark,setLoading }) {
@@ -37,6 +36,7 @@ function DocumentForm({ onXmark,setLoading }) {
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         maxFiles: 1,
     });
+    
     useEffect(() => {
         acceptedFiles.forEach((file) => {
             let type = file.path.split('.').pop();

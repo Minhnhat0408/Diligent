@@ -16,6 +16,7 @@ import {
     limit,
     or,
     startAfter,
+    getDoc,
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
@@ -53,13 +54,14 @@ import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
 import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, usersList, userData, handleAccept, handleDecline, unFriend, unbanUser, fileUpload, banUser } =
-        UserAuth();
+    const { user, userData, unbanUser, fileUpload, banUser } = UserAuth();
+    const { handleAccept, handleDecline, unFriend } = GlobalProps();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
@@ -73,43 +75,40 @@ function Profile() {
     const [refresh, setReFresh] = useState(false);
     useEffect(() => {
         if (user?.uid !== id) {
-            let count = 0;
-            usersList.forEach((doc) => {
-                if (doc.id === id) {
-                    const friendRq = doc.data.user_friendRequests;
-                    setPageUser(doc.data);
-                    if (user) {
-                        const sent = friendRq.some((friendRequest) => {
-                            return friendRequest.id === user.uid;
-                        });
-                        const friend = doc.data.user_friends.some((friend) => {
-                            return friend.id === user.uid;
-                        });
-                        const request = userData.user_friendRequests.some((friend) => {
-                            return friend.id === id;
-                        });
-                        if (sent) {
-                            setDisabled('Requesting');
-                        } else if (friend) {
-                            setDisabled('Friend');
-                        } else if (request) {
-                            setDisabled('Accept');
-                        } else {
-                            setDisabled('Add Friend');
-                        }
-                    }
-                    return;
-                } else {
-                    count++;
+            async function fetchPageUser() {
+                const u = await getDoc(doc(db,'users',id))
+                if(!u?.id) {
+                    navigate(routes.notFound);
                 }
-            });
-            if (count === usersList.length) {
-                navigate(routes.notFound);
+                const friendRq = u.data().user_friendRequests;
+                setPageUser(u.data());
+                if (user) {
+                    const sent = friendRq.some((friendRequest) => {
+                        return friendRequest.id === user.uid;
+                    });
+                    const friend = u.data().user_friends.some((friend) => {
+                        return friend.id === user.uid;
+                    });
+                    const request = userData.user_friendRequests.some((friend) => {
+                        return friend.id === id;
+                    });
+                    if (sent) {
+                        setDisabled('Requesting');
+                    } else if (friend) {
+                        setDisabled('Friend');
+                    } else if (request) {
+                        setDisabled('Accept');
+                    } else {
+                        setDisabled('Add Friend');
+                    }
+                }
             }
+            fetchPageUser()
+            
         } else {
             setPageUser(userData);
         }
-    }, [id, usersList]);
+    }, [id]);
     useEffect(() => {
         const fetchUserPosts = async () => {
             if (userData) {
@@ -156,14 +155,13 @@ function Profile() {
             }
         }
     };
-    console.log(lastPost, userPosts);
+
     const handleBgAvatar = async (e) => {
         const ava = e.target.files[0];
         setLoading(true);
         const newNameFile = `${user.uid}_bg` + ava.name.substring(ava.name.indexOf('.'));
-        console.log(newNameFile);
+
         fileUpload({ file: ava, name: newNameFile, bg_upload: true }).then((res) => {
-            console.log(res);
             setLoading(false);
         });
     };
@@ -257,11 +255,31 @@ function Profile() {
     const handleNavigateChat = async () => {
         const q = query(
             collection(db, 'chats'),
-            where('id1', 'in', [user.uid, id]),
-            where('id2', 'in', [user.uid, id]),
+            where('user1.id', 'in', [user.uid, id]),
+            where('user2.id', 'in', [user.uid, id]),
         );
         const a = await getDocs(q);
         let tmp = a.docs[0]?.id;
+        if (!tmp) {
+            const a = await addDoc(collection(db, 'chats'), {
+                user1: {
+                    id: user.uid,
+                    ava: userData.user_avatar,
+                    name: userData.user_name,
+                    email: userData.user_email,
+                    status: userData.user_status,
+                },
+                user2: {
+                    id: id,
+                    ava: pageUser.user_avatar,
+                    name: pageUser.user_name,
+                    email: pageUser.user_email,
+                    status: pageUser.user_status,
+                },
+                lastView: serverTimestamp(),
+            });
+            tmp = a.id;
+        }
         navigate(routes.chatroom + tmp);
     };
 

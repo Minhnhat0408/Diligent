@@ -1,6 +1,6 @@
 .wrapper {
-    --search-border-radius: 5vh;
-    --search-height: 5vh;
+    --search-border-radius:50px;
+    --search-height: 40px;
     --search-button-width: 52px;
     padding: 0 16px;
     position: fixed;
@@ -49,7 +49,7 @@
 .logo {
     width: 260px;
     min-width: 150px !important;
-    height: 8vh;
+    height: 64px;
     object-fit: contain;
 }
 .start {

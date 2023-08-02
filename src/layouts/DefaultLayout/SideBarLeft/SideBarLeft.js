@@ -30,6 +30,7 @@ function SideBarLeft() {
         new Date('2023-07-18'),
         new Date('2023-07-19'),
       ];
+    console.log('rerender sifdebar')
     const dateHasHighlight = (date) => {
         return highlightedDates.some((highlightedDate) => {
           return (

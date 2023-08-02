@@ -8,13 +8,14 @@ import { UserAuth } from '~/contexts/authContext';
 import { memo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
+import { GlobalProps } from '~/contexts/globalContext';
 
 
 const cx = classNames.bind(styles);
 
 function FriendItem({ data }) {
     const context = useContext(ThemeContext);
-    const {handleAccept,handleDecline } = UserAuth();
+    const {handleAccept,handleDecline } = GlobalProps();
     const navigate = useNavigate()  
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>

@@ -16,18 +16,16 @@ import { isImage, isVideo } from '~/utils/validator';
 import Image from '../../Image/Image';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
-import { useRef } from 'react';
 import { UserAuth } from '~/contexts/authContext';
-import { RingLoader } from 'react-spinners';
 import { ThemeContext } from '~/contexts/Context';
 import { useContext } from 'react';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 
 function ChatInput({ roomId, setLoading }) {
     const [filePreview, setFilePreview] = useState({ others: [], media: [] });
     const [text, setText] = useState('');
     const { user, fileUpload } = UserAuth();
-
     const context = useContext(ThemeContext);
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
@@ -176,4 +174,4 @@ function ChatInput({ roomId, setLoading }) {
     );
 }
 
-export default ChatInput;
+export default memo(ChatInput);

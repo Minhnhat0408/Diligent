@@ -22,6 +22,7 @@ import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { adminId } from '~/utils/constantValue';
 import { extractFilePathFromURL } from '~/utils/extractPath';
+import { memo } from 'react';
 const cx = classNames.bind(styles);
 /*
     title: De thi cuoi ky TIN hieu he thong
@@ -130,4 +131,4 @@ function DocumentItem({ id, data,updateDocuments }) {
     );
 }
 
-export default DocumentItem;
+export default memo(DocumentItem);

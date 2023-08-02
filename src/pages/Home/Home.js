@@ -12,185 +12,32 @@ import { collection, documentId, getDocs, limit, or, orderBy, query, startAfter,
 import { db } from '~/firebase';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
-import { useRef } from 'react';
+import { useContext } from 'react';
+import { GlobalProps } from '~/contexts/globalContext';
+import { ScrollRestoration } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
 
 function Home() {
-    const { user, userData,getUserPrefers } = UserAuth();
-    const [posts, setPosts] = useState([]);
-    const [lastPost, setLastPost] = useState(null);
-    const [lastFinalPost, setLastFinalPost] = useState(null);
-    const [refresh, setReFresh] = useState(false);
-    const relevantPosts = useRef([]);
+    const { user } = UserAuth();
     const [loading, setLoading] = useState(false);
-    useEffect(() => {
-        if (user) {
-            const fetchUserPosts = async () => {
-                if (userData) {
-                    let listFr = userData.user_friends.map((d) => d.id);
-                    const userPreferences = await getUserPrefers()
-                    if(userPreferences.length === 0) {
-                        userPreferences.push('nothing')
-                    }
-                    console.log(userPreferences)
-                    listFr.push(user.uid);
-                    let q = query(
-                        collection(db, 'posts'),
-                        or(where('user.id', 'in', listFr),where('tags','array-contains-any',userPreferences)),
-                        orderBy('time', 'desc'),
-                        limit(5),
-                    );
-                    let docs = await getDocs(q);
-                    if (docs.docs.length === 0) {
-                        q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
-                        docs = await getDocs(q);
-                    }
-                    const newData = docs.docs.map((doc) => {
-                        if (
-                            doc.data().like.list.some((u) => {
-                                return u.id === user.uid;
-                            })
-                        ) {
-                            return { id: doc.id, data: { ...doc.data(), react: 1 } }; // 1 mean like
-                        } else if (
-                            doc.data().dislike.list.some((u) => {
-                                return u.id === user.uid;
-                            })
-                        ) {
-                            return { id: doc.id, data: { ...doc.data(), react: -1 } }; // -1 mean dislike
-                        } else {
-                            return { id: doc.id, data: { ...doc.data(), react: 0 } }; // 0 mean neutral
-                        }
-                    });
-                    if (newData.length === 0) {
-                        const q = query(
-                            collection(db, 'posts'),
-                            where('user.id', 'in', listFr),
-                            orderBy('time', 'desc'),
-                            limit(5),
-                        );
-                        const docs = await getDocs(q);
-                    }
-            
-                    setPosts(newData);
-
-                    // Update the last post for pagination
-                    if (docs.docs.length > 0) {
-                        setLastPost(docs.docs[docs.docs.length - 1]);
-                    }
-                }
-            };
-            fetchUserPosts();
-        } else {
-            const fetchPosts = async () => {
-                const q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
-                const docs = await getDocs(q);
-                const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
-                setPosts(newData);
-                // Update the last post for pagination
-                if (docs.docs.length > 0) {
-                    setLastPost(docs.docs[docs.docs.length - 1]);
-                }
-            };
-            fetchPosts();
-        }
-    }, [user, refresh]);
-    const fetchMorePosts = async () => {
-  
-        if (lastPost) {
-            let q = query(collection(db, 'posts'), orderBy('time', 'desc'), startAfter(lastPost), limit(5));
-            if (user) {
-                let listFr = userData.user_friends.map((d) => d.id);
-                listFr.push(user.uid);
-                const userPreferences = await getUserPrefers()
-                if(userPreferences.length === 0) {
-                    userPreferences.push('nothing')
-                }
-                q = query(
-                    collection(db, 'posts'),
-                    or(where('user.id', 'in', listFr),where('tags','array-contains-any',userPreferences)),
-                    orderBy('time', 'desc'),
-                    startAfter(lastPost),
-                    limit(5),
-                );
-            }
-            let docs = await getDocs(q);
-
-            if (docs.docs.length > 0) {
-                // Update the last post for pagination
-                setLastPost(docs.docs[docs.docs.length - 1]);
-            } else {
-                // No more documents available
-                if (relevantPosts.current.length <= 0) {
-                    relevantPosts.current = posts.map((doc) => doc.id).slice(-10);
-                   
-                }
-         
-                if (lastFinalPost) {
-                    q = query(
-                        collection(db, 'posts'),
-                        where(documentId(), 'not-in', relevantPosts.current),
-                        orderBy(documentId()),
-                        startAfter(lastFinalPost),
-                        limit(5),
-                    );
-                } else {
-                    q = query(
-                        collection(db, 'posts'),
-                        where(documentId(), 'not-in', relevantPosts.current),
-                        orderBy(documentId()),
-                        limit(5),
-                    );
-                }
-                docs = await getDocs(q);
-                if (docs.docs.length > 0) {
-                    setLastFinalPost(docs.docs[docs.docs.length - 1]);
-                } else {
-                    setLastFinalPost(null);
-                    setLastPost(null);
-                }
-            }
-            const newData = docs.docs.map((doc) => {
-                if (user) {
-                    if (
-                        doc.data().like.list.some((u) => {
-                            return u.id === user.uid;
-                        })
-                    ) {
-                        return { id: doc.id, data: { ...doc.data(), react: 1 } }; // 1 mean like
-                    } else if (
-                        doc.data().dislike.list.some((u) => {
-                            return u.id === user.uid;
-                        })
-                    ) {
-                        return { id: doc.id, data: { ...doc.data(), react: -1 } }; // -1 mean dislike
-                    } else {
-                        return { id: doc.id, data: { ...doc.data(), react: 0 } }; // 0 mean neutral
-                    }
-                } else {
-                    return { id: doc.id, data: doc.data() };
-                }
-            });
-            setPosts((prevPosts) => [...prevPosts, ...newData]);
-        }
-    };
+    const { fetchMorePosts, lastPost, setPosts, posts, setReFreshPosts } = GlobalProps();
 
     return (
         <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:min-w-[80vw] md-max:!w-[93vw] '}>
             {/* Phần story  */}
             <Stories />
+         
             {/* Phần tạo bài viết  */}
-            {user && <CreatePost setLoading={setLoading} setReFresh={setReFresh} />}
+            {user && <CreatePost setLoading={setLoading} setReFresh={setReFreshPosts} />}
             {/* Hiển thị bài viết */}
-    
+
             {loading && <PostLoading />}
             {posts ? (
                 <InfiniteScroll
                     dataLength={posts.length}
                     next={fetchMorePosts}
-                   
-                    className='min-w-[550px] overflow-hidden smu-max:min-w-full'
+                    className="min-w-[550px] overflow-hidden smu-max:min-w-full"
                     hasMore={lastPost !== null}
                     loader={<PostLoading />}
                 >
@@ -199,7 +46,7 @@ function Home() {
                             key={post.id}
                             id={post.id}
                             data={post.data}
-                            setReFresh={setReFresh}
+                            setReFresh={setReFreshPosts}
                             setUpdate={setPosts}
                         >
                             <Post key={post.id} />
