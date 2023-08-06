@@ -27,7 +27,7 @@ function FormSignUp({ classes = [] }) {
     const [validatorMsg, setValidatorMsg] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { createUser, googleSignIn, user } = UserAuth();
+    const { createUser, googleSignIn, user,facebookSignIn } = UserAuth();
     const navigate = useNavigate();
     const inputs = [
         {
@@ -108,6 +108,24 @@ function FormSignUp({ classes = [] }) {
         }
         setLoading(false);
     };
+    const handleFacebookSignUp = async (e) =>{
+        e.preventDefault();
+
+        try {
+            setError('');
+            setLoading(true);
+            const acc = await facebookSignIn();
+            if (acc) {
+                navigate(routes.home);
+            } else {
+                navigate(routes.updateInfo);
+            }
+        } catch (err) {
+            console.log(err);
+            setError(err.message.slice(10, -1));
+        }
+        setLoading(false);
+    }
     return (
         <>
             {loading ? (
@@ -133,7 +151,13 @@ function FormSignUp({ classes = [] }) {
                             onClick={handleGoogleSignUp}
                             src={image.google}
                             alt="Google sign in"
-                            className={cx('gg-icon')}
+                            className={cx('gg-icon') + ' hover:animate-bounce'}
+                        />
+                        <Image
+                            onClick={handleFacebookSignUp}
+                            src={image.facebook}
+                            alt="Facebook sign in"
+                            className={cx('gg-icon') + ' hover:animate-bounce'}
                         />
                     </div>
                     <Button

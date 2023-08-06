@@ -65,7 +65,6 @@ function PopUp({ setPopup, update, deck }) {
                     <div className={cx('body', { dark: context.theme === 'dark' })}>
                         <div className={cx('user-info')}>
                             <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
-
                             <h5 className={cx('username')}>{userData.user_name}</h5>
                         </div>
                         <textarea

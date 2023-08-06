@@ -46,7 +46,7 @@ export const AuthContextProvider = ({ children }) => {
     const [notifications, setNotifications] = useState();
     const userRef = collection(db, 'users');
 
-    const [usersStatus,setUsersStatus] = useState();
+    const [usersStatus, setUsersStatus] = useState();
     const storage = getStorage();
     const metadata = {
         contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
@@ -59,14 +59,13 @@ export const AuthContextProvider = ({ children }) => {
             user_authProvider: response?.providerId || 'email/pasword',
             user_createdAt: serverTimestamp(),
         });
-        await setDoc(doc(db,'users',user.uid) , {
-            user_status:'online'
-        })
+        await setDoc(doc(db, 'users', user.uid), {
+            user_status: 'online',
+        });
         return response;
     };
-    
-    useEffect(() => {
 
+    useEffect(() => {
         async function fetchStories() {
             const q = query(collection(db, 'stories'), orderBy('time'));
             const querySnapshot = await getDocs(q);
@@ -85,18 +84,16 @@ export const AuthContextProvider = ({ children }) => {
             setStories(tmp);
         }
 
-
-       
         fetchStories();
     }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);
         // // Signed in
     };
-    
+
     const logOut = async () => {
         if (usersStatus[user.uid].user_status !== 'ban') {
-            await updateDoc(doc(db,'status',user.uid), {
+            await updateDoc(doc(db, 'status', user.uid), {
                 user_status: 'offline',
             });
         }
@@ -119,7 +116,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_ratings: [],
                 user_decks: 0,
             });
-            await setDoc(doc(db,'preferences',user.uid),{})
+            await setDoc(doc(db, 'preferences', user.uid), {});
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
@@ -147,7 +144,7 @@ export const AuthContextProvider = ({ children }) => {
             // navigate(routes.updateInfo)
             return false; // false means fresh account
         } else {
-            await updateDoc(doc(db,'status',repuser.uid), {
+            await updateDoc(doc(db, 'status', repuser.uid), {
                 user_status: 'online',
             });
         }
@@ -168,13 +165,13 @@ export const AuthContextProvider = ({ children }) => {
             // navigate(routes.updateInfo)
             return false; // false means fresh account
         } else {
-            await updateDoc(doc(db,'status',repuser.uid), {
+            await updateDoc(doc(db, 'status', repuser.uid), {
                 user_status: 'online',
             });
         }
         return true;
     };
-    
+
     const banUser = async ({ id, duration }) => {
         await updateDoc(doc(db, 'status', id), {
             user_status: 'ban',
@@ -276,10 +273,9 @@ export const AuthContextProvider = ({ children }) => {
 
         return tagPref.map((tag) => tag[0]).slice(0, 5);
     };
-    const updateUserPrefers = async (action,tags) =>{
-        
+    const updateUserPrefers = async (action, tags) => {
         const curPref = await getDoc(doc(db, 'preferences', user.uid));
-        let newPref ={}
+        let newPref = {};
         tags.forEach((tag) => {
             if (curPref.data()[tag]) {
                 newPref[tag] = curPref.data()[tag] + actionPrefersValue[action];
@@ -288,7 +284,7 @@ export const AuthContextProvider = ({ children }) => {
             }
         });
         await updateDoc(doc(db, 'preferences', user.uid), newPref);
-    }
+    };
     //send report
     const sendReport = async (content, id, rtype) => {
         const q = query(
@@ -315,84 +311,155 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
     // update realtime database when changes happen
-    const userStateChanged = async () => {
-        onAuthStateChanged(auth, async (currentUser) => {
+    // const userStateChanged = async () => {
+    //     onAuthStateChanged(auth, async (currentUser) => {
+    //         if (currentUser) {
+    //             setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
+    //             //fetch user list realtime
+
+    //             onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
+    //                 let tmp = {};
+    //                 docs.forEach((doc) => {
+    //                     if (tmp[doc.data().user.id]) {
+    //                         tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
+    //                     } else {
+    //                         tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
+    //                     }
+    //                 });
+    //                 setStories(tmp);
+    //             });
+
+    //             //fetch user data change realtime
+    //             onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
+    //                 setUserData(result.data());
+
+    //             });
+    //             onSnapshot(collection(db,'status'), async (stats) => {
+    //                 const a = {}
+    //                 stats.forEach((s) => {
+    //                     a[s.id] = s.data()
+    //                 })
+
+    //                 setUsersStatus(a)
+    //                 if (a[currentUser.uid].user_status !== 'online') {
+    //                     if (a[currentUser.uid]?.user_banUntil && a[currentUser.uid].user_banUntil.toMillis() < new Date()) {
+    //                         await updateDoc(doc(db, 'users', currentUser.uid), {
+    //                             user_status: 'online',
+    //                             user_banUntil: deleteField(),
+    //                         });
+    //                     }
+    //                 }
+    //             })
+    //             //fetch user notifications realtime
+    //             onSnapshot(
+    //                 query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
+    //                 (docs) => {
+    //                     let data1 = [];
+    //                     let readNoti = 0;
+    //                     docs.forEach((doc) => {
+    //                         data1.push(doc.data());
+    //                         if (!doc.data().read) {
+    //                             readNoti++;
+    //                         }
+    //                     });
+    //                     setNotifications({ id: doc.id, data: data1, unread: readNoti });
+    //                 },
+    //             );
+
+    //             if (window.location.pathname !== routes.updateInfo)
+    //                 await updateDoc(doc(db, 'status', currentUser.uid), {
+    //                     user_status: 'online',
+    //                 });
+    //         } else {
+    //             setUser(null);
+    //         }
+
+    //         // proximate the loading time
+    //         setTimeout(() => {
+    //             setLoading(false);
+    //         }, 1000);
+    //     });
+    // };
+    console.log(loading);
+    useEffect(() => {
+        // Subscribe to auth state changes to get the current user
+        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
-                //fetch user list realtime
-
-                onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
-                    let tmp = {};
-                    docs.forEach((doc) => {
-                        if (tmp[doc.data().user.id]) {
-                            tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
-                        } else {
-                            tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
-                        }
-                    });
-                    setStories(tmp);
-                });
-
-                //fetch user data change realtime
-                onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
-                    console.log('data of user change');
-
-                    setUserData(result.data());
-
-                    
-                });
-                onSnapshot(collection(db,'status'), async (stats) => {
-                    const a = {}
-                    stats.forEach((s) => {
-                        a[s.id] = s.data()
-                    })
-           
-                    
-                    setUsersStatus(a)
-                    if (a[currentUser.uid].user_status !== 'online') {
-                        if (a[currentUser.uid]?.user_banUntil && a[currentUser.uid].user_banUntil.toMillis() < new Date()) {
-                            await updateDoc(doc(db, 'users', currentUser.uid), {
-                                user_status: 'online',
-                                user_banUntil: deleteField(),
-                            });
-                        }
-                    }
-                })
-                //fetch user notifications realtime
-                onSnapshot(
-                    query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
-                    (docs) => {
-                        let data1 = [];
-                        let readNoti = 0;
-                        docs.forEach((doc) => {
-                            data1.push(doc.data());
-                            if (!doc.data().read) {
-                                readNoti++;
-                            }
-                        });
-                        setNotifications({ id: doc.id, data: data1, unread: readNoti });
-                    },
-                );
-      
-                if (window.location.pathname !== routes.updateInfo)
-                    await updateDoc(doc(db, 'status', currentUser.uid), {
-                        user_status: 'online',
-                    });
             } else {
                 setUser(null);
             }
-
-            // proximate the loading time
-            setTimeout(() => {
-                setLoading(false);
-            }, 1000);
+            
         });
-    };
+        setLoading(false);
+        return () => {
+            unsubscribeAuth();
+        };
+    }, []);
 
     useEffect(() => {
-        userStateChanged();
-        return () => userStateChanged();
-    }, []);
+        // Check if the user is logged in before setting up other real-time listeners
+        if (user) {
+            // Subscribe to userData changes
+            const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
+                setUserData(result.data());
+            });
+
+            // Subscribe to stories changes
+            const unsubscribeStories = onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
+                let tmp = {};
+                docs.forEach((doc) => {
+                    if (tmp[doc.data().user.id]) {
+                        tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
+                    } else {
+                        tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
+                    }
+                });
+                setStories(tmp);
+            });
+
+            // Subscribe to usersStatus changes
+            const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
+                const a = {};
+                stats.forEach((s) => {
+                    a[s.id] = s.data();
+                });
+                setUsersStatus(a);
+                if (a[user.uid].user_status !== 'online') {
+                    if (a[user.uid]?.user_banUntil && a[user.uid].user_banUntil.toMillis() < new Date()) {
+                        await updateDoc(doc(db, 'users', user.uid), {
+                            user_status: 'online',
+                            user_banUntil: deleteField(),
+                        });
+                    }
+                }
+            });
+
+            // Subscribe to notifications changes
+            const unsubscribeNotifications = onSnapshot(
+                query(collection(db, 'users', user.uid, 'notifications'), orderBy('time', 'desc')),
+                (docs) => {
+                    let data1 = [];
+                    let readNoti = 0;
+                    docs.forEach((doc) => {
+                        data1.push(doc.data());
+                        if (!doc.data().read) {
+                            readNoti++;
+                        }
+                    });
+                    setNotifications({ id: doc.id, data: data1, unread: readNoti });
+                },
+            );
+            setLoading(false);
+            return () => {
+                // Clean up all the real-time listeners when the component unmounts or when the user changes
+                unsubscribeUserData();
+                unsubscribeStories();
+                unsubscribeStatus();
+                unsubscribeNotifications();
+            };
+        }
+    }, [user]);
 
     const value = {
         user,

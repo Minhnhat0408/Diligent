@@ -37,7 +37,8 @@ function Home() {
                 <InfiniteScroll
                     dataLength={posts.length}
                     next={fetchMorePosts}
-                    className="min-w-[550px] overflow-hidden smu-max:min-w-full"
+                    className="min-w-[550px] smu-max:min-w-full"
+                    style={{overflow:'visible'}}
                     hasMore={lastPost !== null}
                     loader={<PostLoading />}
                 >

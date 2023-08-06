@@ -31,6 +31,7 @@ export const GlobalContextProvider = ({ children }) => {
     const [lastPost, setLastPost] = useState(null);
     const { user, userData, getUserPrefers } = UserAuth();
     const [contacts, setContacts] = useState([]);
+    
     const suggestedFr = useRef([]);
     const [lastFinalPost, setLastFinalPost] = useState(null);
     const relevantPosts = useRef([]);
@@ -54,7 +55,7 @@ export const GlobalContextProvider = ({ children }) => {
                         limit(5),
                     );
                     let docs = await getDocs(q);
-                    
+
                     if (docs.docs.length === 0) {
                         q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
                         docs = await getDocs(q);
@@ -99,28 +100,31 @@ export const GlobalContextProvider = ({ children }) => {
             };
             fetchPosts();
         }
-    }, [user, refreshPosts]);
-
+    }, [user, refreshPosts, userData]);
+    console.log(userData)
     useEffect(() => {
-        async function fetchSuggestedFr() {
-         
-            const fr = userData.user_friends.map((u) => {
-                return u.id;
-            }).slice(0,10);
+        if (user && userData) {
+            async function fetchSuggestedFr() {
+                const fr = userData.user_friends
+                    .map((u) => {
+                        return u.id;
+                    })
+                    .slice(0, 10);
+                
+                    console.log(fr)
+                const a = await getDocs(query(collection(db, 'users'), where(documentId(), 'not-in', fr), limit(5)));
+                const b = a.docs.map((d) => {
+                    return {
+                        id: d.id,
+                        data: { user_name: d.data().user_name, user_avatar: d.data().user_avatar },
+                    };
+                });
 
-            const a = await getDocs(query(collection(db, 'users'), where(documentId(), 'not-in', fr), limit(5)));
-            const b = a.docs.map((d) => {
-                return {
-                    id: d.id,
-                    data: {user_name:d.data().user_name, user_avatar:d.data().user_avatar  }
-                };
-            });
+                suggestedFr.current = b;
+            }
 
-            suggestedFr.current = b;
-        }
+            fetchSuggestedFr();
 
-        fetchSuggestedFr();
-        if (user) {
             const unsubscribe = onSnapshot(
                 query(
                     collection(db, 'chats'),
@@ -130,17 +134,15 @@ export const GlobalContextProvider = ({ children }) => {
                 async (docs) => {
                     let tmp = [];
                     docs.forEach((d) => {
-                        tmp.push({ id: d.id, data:d.data()});
-                    });
-
-                    console.log(tmp);
+                        tmp.push({ id: d.id, data: d.data() });
+                    });     
                     setContacts(tmp);
                 },
             );
 
             return () => unsubscribe();
         }
-    }, []);
+    }, [user,userData]);
     const fetchMorePosts = async () => {
         if (lastPost) {
             let q = query(collection(db, 'posts'), orderBy('time', 'desc'), startAfter(lastPost), limit(5));

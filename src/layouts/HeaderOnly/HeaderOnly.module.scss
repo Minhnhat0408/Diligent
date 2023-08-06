@@ -14,6 +14,7 @@
   }
   
 .content {
-    transition: all 0.8s;   
-    min-height:calc(100vh - var(--defaultLayout-header-height));
+    transition: all 0.8s;
+    padding-top:   var(--defaultLayout-header-height);
+    min-height:100vh;
   } 

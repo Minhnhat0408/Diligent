@@ -54,7 +54,7 @@ function FlashCardPage() {
     const [invalid, setInvalid] = useState(false);
     const title = useRef();
     const description = useRef();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const onAnimationEnd = () => {
         if (!animation) setShowFilter(false);
     };
@@ -91,12 +91,11 @@ function FlashCardPage() {
             // });
             full.forEach(async (doc) => {
                 tmpfull.push({ id: doc.id, data: doc.data() });
-                if(user) {
-                    if ( doc.data().learners.includes(user?.uid)) {
+                if (user) {
+                    if (doc.data().learners.includes(user?.uid)) {
                         tmpUser.push({ id: doc.id, data: doc.data() });
-                    }   
+                    }
                 }
-             
             });
             setFullDecks({ origin: tmpfull, display: tmpfull });
             setUserDecks(tmpUser);
@@ -141,8 +140,10 @@ function FlashCardPage() {
                     <div className={cx('row')}>
                         {grDeck.map((d, ind) => {
                             return (
-                                <div key={ind} className={cx('deck')}>
-                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + d.id)}>{d.data.name}</div>
+                                <div key={ind} className={cx('deck')} onClick={() => navigate(routes.flashcard + d.id)}>
+                                    <div className={cx('name')} >
+                                        {d.data.name}
+                                    </div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{d.data.ratings.length}</span>
@@ -150,13 +151,13 @@ function FlashCardPage() {
                                             {new Date(d.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                    {(d.data.contributor.id === user.uid || user?.isAdmin) && (
+                                    {/* {(d.data.contributor.id === user.uid || user?.isAdmin) && (
                                         <FontAwesomeIcon
                                             icon={faXmark}
                                             className={cx('delete')}
                                             onClick={() => handleDeleteDeck(d.id)}
                                         />
-                                    )}
+                                    )} */}
                                 </div>
                             );
                         })}
@@ -200,7 +201,7 @@ function FlashCardPage() {
     };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
-            {user &&
+            {user && userDecks?.length > 0 && (
                 <div className={cx('user-decks')}>
                     {userDecks?.length > 4 ? (
                         <Slide transitionDuration={500} indicators={false} autoplay={false} canSwipe={true}>
@@ -210,30 +211,32 @@ function FlashCardPage() {
                         <div className={cx('row')}>
                             {userDecks?.map((deck, ind) => {
                                 return (
-                                    <div key={ind} className={cx('deck')} >
-                                        <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
+                                    <div key={ind} className={cx('deck')}    onClick={() => navigate(routes.flashcard + deck.id)}>
+                                        <div
+                                            className={cx('name')}>
+                                            {deck.data.name}
+                                        </div>
                                         <div className={cx('info')}>
                                             <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                             <span className={cx('num')}>{deck.data.ratings.length}</span>
                                             <div className={cx('time')}>
                                                 {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                             </div>
-                                            
                                         </div>
-                                        {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
-                                                <FontAwesomeIcon
-                                                    icon={faXmark}
-                                                    className={cx('delete')}
-                                                    onClick={() => handleDeleteDeck(deck.id)}
-                                                />
-                                            )}
+                                        {/* {(deck.data.contributor.id === user.uid || user?.isAdmin) && (
+                                            <FontAwesomeIcon
+                                                icon={faXmark}
+                                                className={cx('delete')}
+                                                onClick={() => handleDeleteDeck(deck.id)}
+                                            />
+                                        )} */}
                                     </div>
                                 );
                             })}
                         </div>
                     )}
                 </div>
-            }
+            )}
             <div className={cx('all')}>
                 <div className={cx('options')}>
                     <div className={cx('search', { dark: context.theme === 'dark' })}>
@@ -329,13 +332,11 @@ function FlashCardPage() {
                 <div className={cx('all-decks')}>
                     {fullDecks?.display.map((deck, ind) => {
                         return (
-                            <div key={ind} className={cx('deck-full')}>
-                                <div
-                                    className={cx('deck')}
-                                   
-                                    onClick={() => addDeckLearner(deck.id)}
-                                >
-                                    <div className={cx('name')} onClick={() => navigate(routes.flashcard + deck.id)}>{deck.data.name}</div>
+                            <div key={ind} className={cx('deck-full')} onClick={() => navigate(routes.flashcard + deck.id)}>
+                                <div className={cx('deck')} onClick={() => addDeckLearner(deck.id)}>
+                                    <div className={cx('name')} >
+                                        {deck.data.name}
+                                    </div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{deck.data.ratings.length}</span>
@@ -343,17 +344,102 @@ function FlashCardPage() {
                                             {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                    {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                    {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
                                         <FontAwesomeIcon
                                             icon={faXmark}
                                             className={cx('delete')}
                                             onClick={() => handleDeleteDeck(deck.id)}
                                         />
-                                    )}
+                                    )} */}
                                 </div>
                             </div>
                         );
                     })}
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>
+                              
+                            </div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>
             {showAddDeck && (

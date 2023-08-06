@@ -28,16 +28,13 @@ function AccountItem({ room, acc, search = false, chat = false, dark, ...props }
                         where('sender', '!=', user.uid),
                     ),
                     async (docs) => {
-                        console.log(docs.size);
+                   
                         setNoti(docs.size);
                     },
                 );
 
                 return () => unsubscribe();
 
-                // }
-
-                // setRoomId(tmp);
             } catch (err) {
                 console.log(err);
             }   

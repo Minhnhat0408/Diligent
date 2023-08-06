@@ -70,7 +70,7 @@ function Chat() {
                 }
 
                 if (lastView.current === 2) {
-                    console.log(lastView.current);
+            
                     await updateDoc(doc(db, 'chats', roomId), {
                         lastView: serverTimestamp(),
                     });
@@ -138,7 +138,7 @@ function Chat() {
                     </div>
                 </div>
             ) : (
-                <h1 className="text-center text-white italic mt-[20%]">Select a friend to chat</h1>
+                <h1 className="text-center text-[var(--text-color-dark)] italic mt-[20%]">Select a friend to chat</h1>
             )}
         </>
     );

@@ -21,10 +21,18 @@ function Login() {
                     <span>SIGN IN </span>
                     <span>SIGN UP</span>
                 </ToggleButton>
-                <FlipCard flip={flip}>
-                    <FormSignIn />
-                    <FormSignUp classes={['form-back']} />
-                </FlipCard>
+                <div className='w-full h-fit pb-10'>
+                    <FlipCard
+                        flip={flip}
+                        backColor="#2a2b38"
+                        frontColor="#2a2b38"
+                        backImg="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg"
+                        frontImg="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1462889/pat.svg"
+                    >
+                        <FormSignIn />
+                        <FormSignUp classes={['form-back']} />
+                    </FlipCard>
+                </div>
             </div>
         </div>
     );

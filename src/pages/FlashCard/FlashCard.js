@@ -20,7 +20,7 @@ function FlashCard() {
     useEffect(() => {
         const unsubscribe = onSnapshot(query(collection(db, 'flashcards', id, 'cards')), async (docs) => {
             let tmp = [];
-            console.log(docs.docs)
+
             tmp = docs.docs
             const results =[]
              tmp.forEach((doc,ind) => {
@@ -30,7 +30,7 @@ function FlashCard() {
         });
         return () => unsubscribe();
     }, [id]);
-    console.log(cards)
+
     useEffect(() => {
         // const fetchDeckInfo = async () => {
         //     const d = await getDoc(doc(db, 'flashcards', id));

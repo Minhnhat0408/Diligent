@@ -76,7 +76,7 @@ function Documents() {
                 const listDocuments = docs.docs.map((d) => {
                     return { id: d.id, data: d.data() };
                 });
-                setLastDoc(docs.docs[docs.docs.length - 1]);
+        
 
                 setDocuments((prev) => {
                     return { origin: [...prev.origin, ...listDocuments], display: [...prev.display, ...listDocuments] };

@@ -222,7 +222,7 @@ function Header() {
                     <Tippy content="Theme" theme={context.theme} animation="scale">
                         <span onClick={context.toggleTheme} className={cx('end-btn') + ' mdl-max:hidden'}>
                             {context.theme === 'dark' ? (
-                                <i className={'fa-solid fa-sun'}></i>
+                                <i className="fa-solid fa-brightness"></i>
                             ) : (
                                 <i className="fa-duotone fa-moon"></i>
                             )}

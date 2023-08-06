@@ -1,6 +1,7 @@
 .wrapper{
  
     background-color: var(--bg-light-theme);
+    display: flex;
     &.dark{
         background-color: var(--bg-dark-theme);
     }

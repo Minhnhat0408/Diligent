@@ -12,6 +12,7 @@ import { Fragment } from 'react';
 import PrivateRoute from './routes/PrivateRoute';
 import { UserAuth } from './contexts/authContext';
 import useUnload from './hooks/useUnload';
+import NotFounded from './pages/NotFounded';
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/">
@@ -65,6 +66,7 @@ const router = createBrowserRouter(
                     );
                 })}
             </Route>
+
         </Route>,
     ),
 );

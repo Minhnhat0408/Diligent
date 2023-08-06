@@ -10,7 +10,6 @@ const NewCard = ({creatCard, handleAdd}) => {
 
 
     const submitCard = (e) => {
-        // console.log(nameCard)
         creatCard({age:19, name: nameCard})
         handleAdd();
         setNameCard('')

@@ -44,12 +44,12 @@ function UpdateProfile() {
     const handleAvatar = (e) => {
         const ava = e.target.files[0];
         ava.preview = URL.createObjectURL(ava);
-        console.log(ava);
+   
         setFile(ava);
     };
 
     const validateAll = () => {
-        console.log(fullname, dob, phone, address);
+
         const dataNeedValid = {
             fullname: fullname.current.value,
             dob: dob.current.value,

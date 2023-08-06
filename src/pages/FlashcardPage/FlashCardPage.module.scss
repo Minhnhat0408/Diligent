@@ -1,10 +1,9 @@
 .wrapper {
     width: 100%;
-    height: 100vh;
+    height: calc(100vh - var(--defaultLayout-header-height));
     display: flex;
     flex-direction: column;
     padding: 20px 10%;
-    padding-top: calc(var(--defaultLayout-header-height) + 20px);
     align-items: center;
     overflow: hidden;
     background-color: var(--bg-light-theme);
@@ -16,7 +15,13 @@
     }
     &.dark .all{
         background-color: var(--dark-theme);
+        box-shadow: none;
     }
+    &.dark .user-decks{
+        background-color: var(--dark-theme);
+        box-shadow: none;
+    }
+
 }
 
 .user-decks {
@@ -37,7 +42,8 @@
 .all {
 
     width: 60vw;
-    flex: 1;
+    flex:1;
+    overflow-y: hidden;
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
@@ -46,7 +52,6 @@
     border-radius: 15px;
     margin-bottom: 0;
     padding:2vh 1vw;
-    overflow-y: scroll;
 
 }
 .all-decks{
@@ -66,6 +71,7 @@
     width: 16vh;
     height: 21vh;  
     flex-wrap: wrap;
+    cursor:pointer;
     color:var(--text-color);
     display:flex;
     flex-direction: column;

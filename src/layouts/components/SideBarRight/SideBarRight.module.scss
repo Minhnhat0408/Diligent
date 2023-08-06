@@ -29,6 +29,9 @@
     }
 }
 
+.wrapper::-webkit-scrollbar{
+    display: none;
+}
 .menu-wrapper {
     transition: all 0.8s;
     background-color: #fff;

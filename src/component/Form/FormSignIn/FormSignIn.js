@@ -60,7 +60,7 @@ function FormSignIn() {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(email.current.value);
+
         setValidated(defaultValidate);
         if (!validateAll()) {
             try {
@@ -84,7 +84,6 @@ function FormSignIn() {
             setLoading(true);
             const acc = await facebookSignIn();
             if (acc) {
-                console.log('successfull');
                 navigate(routes.home);
             } else {
                 navigate(routes.updateInfo);
@@ -103,7 +102,6 @@ function FormSignIn() {
             setLoading(true);
             const acc = await googleSignIn();
             if (acc) {
-                console.log('successfull');
                 navigate(routes.home);
             } else {
                 navigate(routes.updateInfo);
@@ -139,13 +137,13 @@ function FormSignIn() {
                             onClick={handleGoogleSignIn}
                             src={image.google}
                             alt="Google sign in"
-                            className={cx('gg-icon')}
+                            className={cx('gg-icon') + ' hover:animate-bounce'}
                         />
                         <Image
                             onClick={handleFacebookSignIn}
                             src={image.facebook}
                             alt="Facebook sign in"
-                            className={cx('gg-icon')}
+                            className={cx('gg-icon') + ' hover:animate-bounce'}
                         />
                     </div>
                     <Button
@@ -154,7 +152,7 @@ function FormSignIn() {
                         large
                         submit='submit'
                         onClick={(e) => {
-                            console.log(loading);
+                        
                             return !loading && handleSubmit(e);
                         }}
                     >

@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './PostPage.module.scss';
 import Image from '~/component/Image/Image';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
 import { POST_OPTIONS, USER_POST_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
 import { UserAuth } from '~/contexts/authContext';
@@ -26,10 +26,11 @@ function PostPage() {
     const { user } = UserAuth();
     const [postData, setPostData] = useState();
     const context = useContext(ThemeContext);
+
     useEffect(() => {
         getDoc(doc(db, 'posts', id)).then((post) => {
             if (!post?.data()) {
-                navigate(routes.notFound);
+                    navigate(routes.notFound);
             } else {
                 if (user) {
                     if (
