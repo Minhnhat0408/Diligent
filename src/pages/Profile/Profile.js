@@ -107,28 +107,26 @@ function Profile() {
         } else {
             setPageUser(userData);
         }
-    }, [id,userData]);
+    }, [id, userData]);
     useEffect(() => {
         const fetchUserPosts = async () => {
-            if (userData) {
-                const q = query(
-                    collection(db, 'posts'),
-                    or(where('user.id', '==', id), where('mentions', 'array-contains', id)),
-                    orderBy('time', 'desc'),
-                    limit(5),
-                );
-                const docs = await getDocs(q);
-                const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
-                setUserPosts(newData);
+            const q = query(
+                collection(db, 'posts'),
+                or(where('user.id', '==', id), where('mentions', 'array-contains', id)),
+                orderBy('time', 'desc'),
+                limit(5),
+            );
+            const docs = await getDocs(q);
+            const newData = docs.docs.map((doc) => ({ id: doc.id, data: doc.data() }));
+            setUserPosts(newData);
 
-                // Update the last post for pagination
+            // Update the last post for pagination
 
-                if (docs.docs.length > 0) {
-                    setLastPost(docs.docs[docs.docs.length - 1]);
-                }
-                if (docs.docs.length < 5) {
-                    setLastPost(null);
-                }
+            if (docs.docs.length > 0) {
+                setLastPost(docs.docs[docs.docs.length - 1]);
+            }
+            if (docs.docs.length < 5) {
+                setLastPost(null);
             }
         };
         fetchUserPosts();
@@ -162,7 +160,6 @@ function Profile() {
 
         fileUpload({ file: ava, name: newNameFile, bg_upload: true }).then((res) => {
             setLoading(false);
-            
         });
     };
     const handleUpRatings = async () => {

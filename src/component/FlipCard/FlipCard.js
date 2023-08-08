@@ -3,11 +3,11 @@ import styles from './FlipCard.module.scss'
 
 const cx = classNames.bind(styles)
 
-function FlipCard({flip = false,backColor = 'transparent',frontColor = 'transparent',backImg = '',frontImg ='',children,...props}) {
+function FlipCard({flip = false,backColor = 'transparent',frontColor = 'transparent',backImg = '',frontImg ='',children,className = [],...props}) {
 
   return (
 
-      <div  className={cx("container")} {...props}>
+      <div  className={cx("container",...className)} {...props}>
         <div className={cx("card")}>
           <div
             className={cx("card-tp", "card-front", { cardfrontflip: flip })}

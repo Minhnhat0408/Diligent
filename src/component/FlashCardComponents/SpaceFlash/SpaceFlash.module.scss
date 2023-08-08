@@ -19,6 +19,46 @@
         box-shadow: none;
     }
 }
+.show{
+    animation:appear 0.3s ease-in-out forwards;
+}
+.left{
+    animation:slideL 0.3s ease-in-out forwards;
+}
+.right{
+    animation:slideR 0.3s ease-in-out forwards;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideL {
+    from {
+        opacity: 1;
+        left: 0;
+    }
+    to {
+        opacity: 0;
+        left:-200px;
+    }
+}
+
+@keyframes slideR {
+    from {
+        opacity: 1;
+        right: 0;
+    }
+    to {
+        opacity: 0;
+        right:-200px;
+    }
+}
 
 .flash{
     position: absolute;

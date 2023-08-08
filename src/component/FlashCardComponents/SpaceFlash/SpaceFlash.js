@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -24,117 +24,104 @@ const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
     const [flip, setFlip] = useState(false);
-    const [c, setCards] = useState(cards);
-    // const [def, setDef] = useState(cards);
-    // const [fp0, setFp0] = useState([]);
-    // const [fp1, setFp1] = useState([]);
-    // const [fp2, setFp2] = useState([]);
-    // var [virPos, setVirPos] = useState(3);
-    // const [showProgress, setShowProgress] = useState(false);
-    // const [animation, setAnimation] = useState(false);
+    const [twoCards, setTwoCards] = useState(() => {
+        if (cards.length > 2) {
+            return [cards.at(-2), cards.at(-1)];
+        } else {
+            return cards;
+        }
+    });
+    const [currentInd, setCurrentInd] = useState(cards.length - 1);
+    const [queueCards, setQueueCards] = useState();
+    const [animation, setAnimation] = useState('');
     const context = useContext(ThemeContext);
-    // const onAnimationEnd = () => {
-    //     if (!animation) setShowProgress(false);
-    // };
+    const [timers, setTimers] = useState([]);
+    const good = useRef([]);
 
-    // useEffect(() => {
-    //     if (animation) setShowProgress(true);
-    // }, [animation]);
-    // const handleRemember = (a) => {
-    //     if (fp0.length === 1 && virPos === 0) {
-    //         return;
-    //     }
+    //handle add or remove card when animation end
+    const onAnimationEnd = () => {
+        if (twoCards.length <= 2) {
+            if (currentInd > 1) {
+                console.log('hello');
+                setCurrentInd(currentInd - 1);
+                const a = twoCards.slice(0, -1);
+                setTwoCards([cards[currentInd - 2], ...a]);
+            } else {
+                if (queueCards) {
+                    console.log('scenario');
+                    let a = [];
+                    const b = twoCards.slice(0, -1);
+                    timers.forEach((t) => {
+                        clearTimeout(t.timerId);
+                        a.push(t.card);
+                    });
+                    setTwoCards([...a, ...b]);
+                    setTimers([]);
+                    setQueueCards(null);
+                } else {
+                    const a = twoCards.slice(0, -1);
+                    setTwoCards(a);
+                }
+            }
+        } else {
+            const a = twoCards.slice(0, -1);
+            setTwoCards(a);
+        }
+        setAnimation('');
+    };
 
-    //     if (fp0.length <= 2) {
-    //         console.log(fp0);
-    //         setAnimation(true);
-    //     }
-    //     getSetEffect();
+    //set the time for the cảrd to be back to learn
+    useEffect(() => {
+        if (queueCards) {
+            if (animation === 'left') {
+                if (good.current.includes(queueCards)) {
+                    good.current = good.current.filter((q) => q !== queueCards);
+                }
+                const a = setTimeout(() => {
+                    console.log(queueCards, 'queue');
+                    setTwoCards((prev) => [queueCards, ...prev]);
+                    setTimers((prev) => prev.filter((p) => p.timerId !== a));
+                }, 60000);
+                setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
+            } else if (animation === 'right') {
+                if (good.current.includes(queueCards)) {
+                    //graduatede
+                } else {
+                    good.current.push(queueCards);
+                    const a = setTimeout(() => {
+                        console.log(queueCards, 'queue');
+                        setTwoCards((prev) => [queueCards, ...prev]);
+                        setTimers((prev) => prev.filter((p) => p.timerId !== a));
+                    }, 600000);
+                    setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
+                }
+            }
+        }
+    }, [queueCards]);
 
-    //     fp0[fp0.length - 1].pos = a;
-    //     setFp0([...fp0]);
-    //     var current = fp0.pop();
-    //     virPos = 0;
-    //     if (a === 1) {
-    //         fp1.push(current);
-    //         setFp1([...fp1]);
-    //     } else {
-    //         fp2.push(current);
-    //         setFp2([...fp2]);
-    //     }
-    //     setVirPos(virPos);
-    // };
+    //handle keyboard
+    useEffect(() => {
+        function handleKeyDown(e) {
+            if (e.keyCode === 37) {
+                if (animation !== 'left') {
+                    setAnimation('left');
+                    setQueueCards(twoCards.at(-1));
+                }
+            } else if (e.keyCode === 39) {
+                if (animation !== 'right') {
+                    setAnimation('right');
+                    setQueueCards(twoCards.at(-1));
+                }
+            }
+        }
 
-    // const getOldPos0 = (title) => {
-    //     console.log(title);
-    //     getSetEffect();
-    //     getTurnBack(title);
-    // };
-
-    // const getTurnBack = (titile) => {
-    //     if (titile === fp1[fp1.length - 1] || titile === fp0[fp0.length - 1]) {
-    //         fp1[fp1.length - 1].pos = 0;
-    //         setFp1([...fp1]);
-    //         virPos = 1;
-    //         setVirPos(virPos);
-    //     } else {
-    //         fp2[fp2.length - 1].pos = 0;
-    //         setFp2([...fp2]);
-    //         virPos = 2;
-    //         setVirPos(virPos);
-    //     }
-    //     setAnimation(false);
-    //     setShowPer(false);
-    // };
-
-    // const getBack = () => {
-    //     if (fp2.length + fp1.length === 1) {
-    //         if (virPos !== 0) {
-    //             return;
-    //         }
-    //     }
-    //     getSetEffect();
-    //     if (fp2.length === 0) {
-    //         getTurnBack(fp1[fp1.length - 1]);
-    //     } else if (fp1.length === 0) {
-    //         getTurnBack(fp2[fp2.length - 1]);
-    //     } else {
-    //         if (fp1[fp1.length - 1].order < fp2[fp2.length - 1].order) {
-    //             getTurnBack(fp1[fp1.length - 1]);
-    //         } else {
-    //             getTurnBack(fp2[fp2.length - 1]);
-    //         }
-    //     }
-    // };
-
-    // const getSetEffect = () => {
-    //     if (virPos === 0) {
-    //         fp0.pop();
-    //     } else if (virPos === 1) {
-    //         var current = fp1.pop();
-    //         fp0.push(current);
-    //         setFp0([...fp0]);
-    //     } else if (virPos == 2) {
-    //         var current = fp2.pop();
-    //         fp0.push(current);
-    //         setFp0([...fp0]);
-    //     } else {
-    //         console.log('roong');
-    //     }
-    // };
-    // useEffect(() => {
-    //     setFp0(cards);
-    // }, [cards]);
-    // useEffect(() => {
-    //     setFp1([]);
-    //     setFp2([]);
-    //     setShowPer(false);
-    // }, []);
-    // const [showPer, setShowPer] = useState(false);
-    // const handlePull = () => {
-    //     setShowPer(!showPer);
-    // };
-
+        document.addEventListener('keydown', handleKeyDown);
+        // Don't forget to clean up
+        return function cleanup() {
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, []);
+    console.log(twoCards, queueCards, animation);
     return (
         <div
             className={
@@ -142,52 +129,82 @@ const SpaceFlash = ({ cards }) => {
                 (context.theme === 'dark')
             }
         >
-            <div className="w-[70%] h-[70%] rounded-2xl flex relative">
-                {}
+            {twoCards.length > 0 ? (
+                <div className="w-[70%] h-[70%] rounded-2xl flex relative">
+                    {twoCards.map((a, ind) => {
+                        return (
+                            <div
+                                onAnimationEnd={onAnimationEnd}
+                                key={ind}
+                                className={
+                                    'absolute top-0 left-0 right-0 bottom-0 cursor-pointer ' +
+                                    cx({
+                                        dark: context.theme === 'dark',
+                                        left: animation === 'left' && twoCards.length - 1 === ind,
+                                        right: animation === 'right' && twoCards.length - 1 === ind,
+                                    })
+                                }
+                            >
+                                <FlipCard
+                                    flip={flip}
+                                    onClick={() => {
+                                        setFlip(!flip);
+                                    }}
+                                    backColor="bisque"
+                                    frontColor="bisque"
+                                >
+                                    <h1 className="text-5xl">{a.front}</h1>
+                                    <h1 className="text-5xl">{a.back.content}</h1>
+                                </FlipCard>
+                            </div>
+                        );
+                    })}
 
-                <FlipCard
-                    flip={flip}
-                    onClick={() => {
-                        setFlip(!flip);
-                    }}
-                    backColor="bisque"
-                    frontColor="bisque"
-                >
-                    <h1 className="text-5xl">{c.at(-1).front}</h1>
-                    <h1 className="text-5xl">{c.at(-1).back.content}</h1>
-                </FlipCard>
-                <button
-                    className={
-                        cx('gradient-l') +
-                        ' absolute top-0 bottom-0 w-32  rounded-2xl  opacity-0 hover:opacity-100 transition-opacity duration-500 '
-                    }
-                    onClick={() => {
-                        const newArray = [...c];
-                        newArray.pop();
-                        setCards(newArray);
-                    }}
-                >
-                    <FontAwesomeIcon icon={faChevronLeft} className="text-3xl" />
-                </button>
-                <button
-                    className={
-                        cx('gradient-r') +
-                        ' absolute top-0 bottom-0 w-32 right-0  rounded-2xl  opacity-0 hover:opacity-100 transition-opacity duration-500 '
-                    }
-                >
-                    <FontAwesomeIcon icon={faChevronRight} className="text-3xl" />
-                </button>
-            </div>
+                    <button
+                        className={
+                            cx('gradient-l') +
+                            ' absolute top-0 bottom-0 w-32  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
+                        }
+                        onClick={() => {
+                            if (animation !== 'left') {
+                                setAnimation('left');
+                                setQueueCards(twoCards.at(-1));
+                            }
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faChevronLeft} className="text-3xl" />
+                    </button>
+                    <button
+                        className={
+                            cx('gradient-r') +
+                            ' absolute top-0 bottom-0 w-32 right-0  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
+                        }
+                        onClick={() => {
+                            if (animation !== 'right') {
+                                setAnimation('right');
+                                setQueueCards(twoCards.at(-1));
+                            }
+                        }}
+                    >
+                        <FontAwesomeIcon icon={faChevronRight} className="text-3xl" />
+                    </button>
+                </div>
+            ) : (
+                <h1 className="w-[70%] h-[70%] rounded-2xl flex  justify-center items-center relative text-[var(--text-color])">You have finished today deadline</h1>
+            )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
-                <button className="w-10 h-10 bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faFloppyDisk} />
                 </button>
-                <button className="w-10 h-10 bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6">
+                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faGear} />
                 </button>
-                <button className="w-10 h-10 bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faInfoCircle} />
                 </button>
+                <p className="text-lime-500 text-center">{good.current.length}</p>
+                <p className="text-blue-500 text-center">{currentInd + 1}</p>
+                <p className="text-red-500 text-center">{timers.length}</p>
             </div>
             {/* options
             {def.length > 0 && <div className={cx('options')}>

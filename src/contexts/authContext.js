@@ -386,19 +386,22 @@ export const AuthContextProvider = ({ children }) => {
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
+                
             } else {
                 setUser(null);
             }
+            setLoading(false)
             
         });
-        setLoading(false);
+        
         return () => {
             unsubscribeAuth();
         };
     }, []);
-
+  
     useEffect(() => {
         // Check if the user is logged in before setting up other real-time listeners
+        
         if (user) {
             // Subscribe to userData changes
             const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
@@ -450,7 +453,7 @@ export const AuthContextProvider = ({ children }) => {
                     setNotifications({ id: doc.id, data: data1, unread: readNoti });
                 },
             );
-            setLoading(false);
+            
             return () => {
                 // Clean up all the real-time listeners when the component unmounts or when the user changes
                 unsubscribeUserData();
@@ -458,6 +461,7 @@ export const AuthContextProvider = ({ children }) => {
                 unsubscribeStatus();
                 unsubscribeNotifications();
             };
+          
         }
     }, [user]);
 

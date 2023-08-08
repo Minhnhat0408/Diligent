@@ -101,7 +101,7 @@ export const GlobalContextProvider = ({ children }) => {
             fetchPosts();
         }
     }, [user, refreshPosts, userData]);
-    console.log(userData)
+
     useEffect(() => {
         if (user && userData) {
             async function fetchSuggestedFr() {

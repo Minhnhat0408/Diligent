@@ -1,7 +1,6 @@
 .wrapper {
-    padding-top: var(--defaultLayout-header-height);
     display: flex;
-    height: 100vh;
+    height: calc(100vh - var(--defaultLayout-header-height));
 
     &.dark {
         color: var(--text-color-dark);

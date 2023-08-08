@@ -149,15 +149,20 @@
 
 }
 .card-content{
-   flex: 1;
+    width:100%;
+    display: flex;
 //    overflow-x: hidden;
    overflow: hidden;
 }
 .front{
-    padding-right: 20px;
-    margin-left: 16px;
+    flex: 1;
+    
     border-right: 1px solid var(--text-color);
-    margin-right: 20px;
+    text-align: center;
+}
+.back{
+    flex:1;
+    text-align: center;
 }
 .delete{
     display: none;
