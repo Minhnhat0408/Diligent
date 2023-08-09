@@ -2,36 +2,14 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faArrowRotateBack,
-    faArrowRotateLeft,
-    faCheck,
-    faCheckCircle,
-    faChevronLeft,
-    faChevronRight,
-    faFaceSadTear,
-    faFaceSmile,
-    faFaceSmileBeam,
-    faFloppyDisk,
-    faGear,
-    faInfoCircle,
-    faXmark,
-} from '@fortawesome/free-solid-svg-icons';
+import { faChevronLeft, faChevronRight, faFloppyDisk, faGear, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { ThemeContext } from '~/contexts/Context';
 import FlipCard from '~/component/FlipCard';
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
-    const [flip, setFlip] = useState(false);
-    const [twoCards, setTwoCards] = useState(() => {
-        if (cards.length > 2) {
-            return [cards.at(-2), cards.at(-1)];
-        } else {
-            return cards;
-        }
-    });
-    const [currentInd, setCurrentInd] = useState(cards.length - 1);
+    const [displayCards, setDisplayCards] = useState(cards);
     const [queueCards, setQueueCards] = useState();
     const [animation, setAnimation] = useState('');
     const context = useContext(ThemeContext);
@@ -40,37 +18,43 @@ const SpaceFlash = ({ cards }) => {
 
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
-        if (twoCards.length <= 2) {
-            if (currentInd > 1) {
-                console.log('hello');
-                setCurrentInd(currentInd - 1);
-                const a = twoCards.slice(0, -1);
-                setTwoCards([cards[currentInd - 2], ...a]);
+        if (animation !== '') {
+            if (displayCards.length > 1) {
+        
+                const a = displayCards.slice(0, -1);
+
+                setDisplayCards(a);
             } else {
                 if (queueCards) {
-                    console.log('scenario');
+                    // console.log('scenario');
                     let a = [];
-                    const b = twoCards.slice(0, -1);
+                    const b = displayCards.slice(0, -1);
                     timers.forEach((t) => {
                         clearTimeout(t.timerId);
                         a.push(t.card);
                     });
-                    setTwoCards([...a, ...b]);
+                    setDisplayCards([...a, ...b]);
                     setTimers([]);
                     setQueueCards(null);
                 } else {
-                    const a = twoCards.slice(0, -1);
-                    setTwoCards(a);
+                    const a = displayCards.slice(0, -1);
+                    setDisplayCards(a);
                 }
             }
-        } else {
-            const a = twoCards.slice(0, -1);
-            setTwoCards(a);
-        }
-        setAnimation('');
-    };
 
-    //set the time for the cảrd to be back to learn
+            setAnimation('');
+        }
+    };
+    // useEffect(() =>{
+    //     const array = [1, 2, 3, 5, 6];
+
+    //     // Insert 4 behind element 5 (at index 3)
+    //     const index = -2;
+    //     const newItem = 4;
+    //     array.splice(index, 0, newItem);
+    //     console.log(array,'fhefhehfhefehse')
+    // },[])
+    //set the time for the card to be back to learn
     useEffect(() => {
         if (queueCards) {
             if (animation === 'left') {
@@ -78,8 +62,13 @@ const SpaceFlash = ({ cards }) => {
                     good.current = good.current.filter((q) => q !== queueCards);
                 }
                 const a = setTimeout(() => {
-                    console.log(queueCards, 'queue');
-                    setTwoCards((prev) => [queueCards, ...prev]);
+                    // console.log(queueCards, 'queue');
+                  
+                    setDisplayCards(prev => {
+                        const newDCards = [...prev];
+                        newDCards.splice(-2, 0, queueCards);
+                        return newDCards;
+                    });
                     setTimers((prev) => prev.filter((p) => p.timerId !== a));
                 }, 60000);
                 setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
@@ -89,8 +78,12 @@ const SpaceFlash = ({ cards }) => {
                 } else {
                     good.current.push(queueCards);
                     const a = setTimeout(() => {
-                        console.log(queueCards, 'queue');
-                        setTwoCards((prev) => [queueCards, ...prev]);
+
+                        setDisplayCards(prev => {
+                            const newDCards = [...prev];
+                            newDCards.splice(-2, 0, queueCards);
+                            return newDCards;
+                        });
                         setTimers((prev) => prev.filter((p) => p.timerId !== a));
                     }, 600000);
                     setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
@@ -105,12 +98,12 @@ const SpaceFlash = ({ cards }) => {
             if (e.keyCode === 37) {
                 if (animation !== 'left') {
                     setAnimation('left');
-                    setQueueCards(twoCards.at(-1));
+                    setQueueCards(displayCards.at(-1));
                 }
             } else if (e.keyCode === 39) {
                 if (animation !== 'right') {
                     setAnimation('right');
-                    setQueueCards(twoCards.at(-1));
+                    setQueueCards(displayCards.at(-1));
                 }
             }
         }
@@ -121,7 +114,7 @@ const SpaceFlash = ({ cards }) => {
             document.removeEventListener('keydown', handleKeyDown);
         };
     }, []);
-    console.log(twoCards, queueCards, animation);
+
     return (
         <div
             className={
@@ -129,30 +122,26 @@ const SpaceFlash = ({ cards }) => {
                 (context.theme === 'dark')
             }
         >
-            {twoCards.length > 0 ? (
+            {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
-                    {twoCards.map((a, ind) => {
+                    {displayCards.map((a, ind) => {
+                        console.log(a);
                         return (
                             <div
                                 onAnimationEnd={onAnimationEnd}
                                 key={ind}
                                 className={
                                     'absolute top-0 left-0 right-0 bottom-0 cursor-pointer ' +
+                                    (displayCards.length - 1 !== ind ? ' hidden ' : '') +
                                     cx({
                                         dark: context.theme === 'dark',
-                                        left: animation === 'left' && twoCards.length - 1 === ind,
-                                        right: animation === 'right' && twoCards.length - 1 === ind,
+                                        // show: twoCards.length - 1 === ind,
+                                        left: animation === 'left' && displayCards.length - 1 === ind,
+                                        right: animation === 'right' && displayCards.length - 1 === ind,
                                     })
                                 }
                             >
-                                <FlipCard
-                                    flip={flip}
-                                    onClick={() => {
-                                        setFlip(!flip);
-                                    }}
-                                    backColor="bisque"
-                                    frontColor="bisque"
-                                >
+                                <FlipCard id={a.front} backColor="bisque" frontColor="bisque">
                                     <h1 className="text-5xl">{a.front}</h1>
                                     <h1 className="text-5xl">{a.back.content}</h1>
                                 </FlipCard>
@@ -160,7 +149,7 @@ const SpaceFlash = ({ cards }) => {
                         );
                     })}
 
-                    <button
+                    <button //;eft button
                         className={
                             cx('gradient-l') +
                             ' absolute top-0 bottom-0 w-32  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
@@ -168,21 +157,22 @@ const SpaceFlash = ({ cards }) => {
                         onClick={() => {
                             if (animation !== 'left') {
                                 setAnimation('left');
-                                setQueueCards(twoCards.at(-1));
+                                setQueueCards(displayCards.at(-1));
                             }
                         }}
                     >
                         <FontAwesomeIcon icon={faChevronLeft} className="text-3xl" />
                     </button>
-                    <button
+                    <button //right button
                         className={
                             cx('gradient-r') +
                             ' absolute top-0 bottom-0 w-32 right-0  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
                         }
                         onClick={() => {
+                            console.log('to right');
                             if (animation !== 'right') {
                                 setAnimation('right');
-                                setQueueCards(twoCards.at(-1));
+                                setQueueCards(displayCards.at(-1));
                             }
                         }}
                     >
@@ -190,7 +180,9 @@ const SpaceFlash = ({ cards }) => {
                     </button>
                 </div>
             ) : (
-                <h1 className="w-[70%] h-[70%] rounded-2xl flex  justify-center items-center relative text-[var(--text-color])">You have finished today deadline</h1>
+                <h1 className="w-[70%] h-[70%] rounded-2xl flex  justify-center items-center relative text-[var(--text-color-dark)]">
+                    You have finished today deadline
+                </h1>
             )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
                 <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
@@ -203,7 +195,7 @@ const SpaceFlash = ({ cards }) => {
                     <FontAwesomeIcon icon={faInfoCircle} />
                 </button>
                 <p className="text-lime-500 text-center">{good.current.length}</p>
-                <p className="text-blue-500 text-center">{currentInd + 1}</p>
+                <p className="text-blue-500 text-center">{1}</p>
                 <p className="text-red-500 text-center">{timers.length}</p>
             </div>
             {/* options

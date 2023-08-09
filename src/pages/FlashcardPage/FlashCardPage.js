@@ -79,16 +79,6 @@ function FlashCardPage() {
             const full = await getDocs(q);
             const tmpfull = [];
             const tmpUser = [];
-            // let ind = 0
-            // const a = await getDocs(collection(db, 'flashcards', '4WMgd0ofcCa8Tgv1nGCG', 'cards'));
-            // a.forEach(async (d) => {
-
-            //     await updateDoc(doc(db, 'flashcards', '4WMgd0ofcCa8Tgv1nGCG', 'cards', d.id), {
-            //         order:ind+1,
-            //     });
-
-            //     ind = ind +1;
-            // });
             full.forEach(async (doc) => {
                 tmpfull.push({ id: doc.id, data: doc.data() });
                 if (user) {
@@ -355,90 +345,7 @@ function FlashCardPage() {
                             </div>
                         );
                     })}
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>
-                              
-                            </div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                        </div>
-                    </div>
+             
                     
                 </div>
             </div>

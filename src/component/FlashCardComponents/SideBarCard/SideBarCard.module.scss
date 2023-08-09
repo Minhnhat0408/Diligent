@@ -156,13 +156,20 @@
 }
 .front{
     flex: 1;
-    
+      padding:0 6px;
     border-right: 1px solid var(--text-color);
+     text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
     text-align: center;
 }
 .back{
     flex:1;
     text-align: center;
+    padding:0 6px;
+    text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 .delete{
     display: none;

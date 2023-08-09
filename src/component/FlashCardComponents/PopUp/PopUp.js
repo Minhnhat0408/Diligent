@@ -74,11 +74,6 @@ function PopUp({ setPopup, update, deck }) {
                             onFocus={() => {
                                 setInvalid(false);
                             }}
-                            // onBlur={() => {
-                            //     setTextFinal((prev) => {
-                            //         return { ...prev, title: titleContent.current.value };
-                            //     });
-                            // }}
                             className={cx('input', 'inp-title', { invalid: invalid })}
                         />
                         <textarea
@@ -88,11 +83,6 @@ function PopUp({ setPopup, update, deck }) {
                             onFocus={() => {
                                 setInvalid(false);
                             }}
-                            // onBlur={() => {
-                            //     setTextFinal((prev) => {
-                            //         return { ...prev, title: titleContent.current.value };
-                            //     });
-                            // }}
                             className={cx('input', 'inp-title', { invalid: invalid })}
                         />
                         <textarea
@@ -102,11 +92,6 @@ function PopUp({ setPopup, update, deck }) {
                             onFocus={() => {
                                 setInvalid(false);
                             }}
-                            // onBlur={() => {
-                            //     setTextFinal((prev) => {
-                            //         return { ...prev, title: titleContent.current.value };
-                            //     });
-                            // }}
                             className={cx('input')}
                         />
                     </div>

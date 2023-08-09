@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SideBarCard.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useSpring, useSpringRef, animated } from '@react-spring/web';
 import { faSquarePlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import Image from '~/component/Image/Image';
 import { faStar as solidStar } from '@fortawesome/free-solid-svg-icons';
@@ -22,7 +21,7 @@ function SideBarCard({ deck, cards }) {
     const context = useContext(ThemeContext);
     const [updateCard, setUpdateCard] = useState(false);
     const [addCard, setAddCard] = useState(false);
-
+    const [showWarning,setShowWarning] = useState(false)
     const handleUpRatings = async () => {
         if (deck.data.ratings.includes(user.uid)) {
             await updateDoc(doc(db, 'flashcards', deck.id), {
@@ -41,7 +40,7 @@ function SideBarCard({ deck, cards }) {
         });
     };
     return (
-        <div className={cx('wrapper',{dark: context.theme === 'dark'})}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('info')}>
                 <h4 className={cx('title')}>{deck.data.name}</h4>
                 <p className={cx('description')}>"{deck.data.description}"</p>
@@ -85,22 +84,33 @@ function SideBarCard({ deck, cards }) {
                     >
                         List
                     </Button>
+                    <Button
+                        disabled={user.uid !== deck.data.contributor.id}
+                        className={cx('btn')}
+                        onClick={() => setShowWarning(!showWarning)}
+                        dark={context.theme === 'dark'}
+                        outline
+                    >
+                        Delete
+                    </Button>
                 </div>
             </div>
             {showList && (
                 <div className={cx('list')}>
-                    {cards.map((card) => {
+                    {cards.map((card, id) => {
                         return (
-                            <div className={cx('card')}>
-                                <div className={cx('card-content')} onClick={() => setUpdateCard(true)} >
-                                <span className={cx('front')}>{card.front}</span>
-                                <span className={cx('back')} >{card.back.content}</span>
+                            <div className={cx('card')} key={id}>
+                                <div className={cx('card-content')} onClick={() => setUpdateCard(true)}>
+                                    <span className={cx('front')}>{card.front}</span>
+                                    <span className={cx('back')}>{card.back.content}</span>
                                 </div>
-                                <FontAwesomeIcon
-                                    icon={faXmark}
-                                    onClick={() => handleDeleteCards(card.id)}
-                                    className={cx('delete')}
-                                />
+                                {user.uid === deck.data.contributor.id && (
+                                    <FontAwesomeIcon
+                                        icon={faXmark}
+                                        onClick={() => handleDeleteCards(card.id)}
+                                        className={cx('delete')}
+                                    />
+                                )}
                             </div>
                         );
                     })}
