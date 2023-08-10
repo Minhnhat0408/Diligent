@@ -46,6 +46,9 @@ export const GlobalContextProvider = ({ children }) => {
                     if (userPreferences.length === 0) {
                         userPreferences.push('nothing');
                     }
+                    if (listFr.length === 0) {
+                        listFr.push('nothing');
+                    }
                     console.log(userPreferences);
                     listFr.push(user.uid);
                     let q = query(
@@ -105,13 +108,11 @@ export const GlobalContextProvider = ({ children }) => {
     useEffect(() => {
         if (user && userData) {
             async function fetchSuggestedFr() {
-                const fr = userData.user_friends
-                    .map((u) => {
-                        return u.id;
+                let fr = [user.uid]
+                userData.user_friends.forEach((u) => {
+                        fr.push(u.id)
                     })
-                    .slice(0, 10);
-                
-                    console.log(fr)
+                fr.slice(0, 10);            
                 const a = await getDocs(query(collection(db, 'users'), where(documentId(), 'not-in', fr), limit(5)));
                 const b = a.docs.map((d) => {
                     return {
@@ -125,6 +126,7 @@ export const GlobalContextProvider = ({ children }) => {
 
             fetchSuggestedFr();
 
+            // chat realtime data
             const unsubscribe = onSnapshot(
                 query(
                     collection(db, 'chats'),

@@ -44,7 +44,7 @@ import PostLoading from '../PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
-function Post() {
+function Post({keyId}) {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, hidePost } = useContext(PostContext);
@@ -378,7 +378,8 @@ function Post() {
                         />
                     )}
                     {post.page ? (
-                        <div
+                        <div    
+                            
                             className={
                                 'sml-max:!min-w-[100%] sml-max:!max-w-[100%] ' +
                                 cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
@@ -517,6 +518,7 @@ function Post() {
                     ) : (
                         // Normal display
                         <div
+                            key={keyId}
                             className={
                                 cx('wrapper', { dark: context.theme === 'dark' }) +
                                 ' sml-max:!min-w-[100%] sml-max:!max-w-[100%] smu-max:!p-3'

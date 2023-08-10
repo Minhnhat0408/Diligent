@@ -19,7 +19,7 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import DocumentForm from '~/component/DocumentComponents/DocumentForm/DocumentForm';
 import { useEffect } from 'react';
-import { collection, getDocs, limit, onSnapshot, orderBy, query, setDoc, startAfter } from 'firebase/firestore';
+import { collection, getDocs, limit, orderBy, query, setDoc, startAfter } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
@@ -28,8 +28,7 @@ import { CATEGORY_OPTIONS, FILTER_OPTIONS } from '~/utils/constantValue';
 import { useDebounce } from '~/hooks';
 import DocumentLoading from '~/component/DocumentComponents/DocumentLoading/DocumentLoading';
 import InfiniteScroll from 'react-infinite-scroll-component';
-import image from '~/assets/images';
-import Image from '~/component/Image/Image';
+
 const cx = classNames.bind(styles);
 
 function Documents() {
@@ -47,14 +46,7 @@ function Documents() {
     const { user } = UserAuth();
     const navigate = useNavigate();
     useEffect(() => {
-        // const unsubscribe = onSnapshot(query(collection(db, 'documents')), async (docs) => {
-        //     let tmp = [];
-        //     docs.forEach((doc) => {
-        //         tmp.push({ id: doc.id, data: doc.data() });
-        //     });
-        //     setDocuments({ origin: tmp,     display: tmp });
-        // });
-        // return () => unsubscribe();
+
         const fetchDocuments = async () => {
             let q = query(collection(db, 'documents'), orderBy('createdAt', 'desc'), limit(5));
             let docs = await getDocs(q);

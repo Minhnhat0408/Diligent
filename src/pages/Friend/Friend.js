@@ -19,7 +19,7 @@ function Friend() {
             const q = query(collection(db, 'users'), where(documentId(), '!=', user.uid), limit(8));
             const docs = await getDocs(q);
             const newData = docs.docs.map((doc) => {
-                const ids1Set = new Set(userData.user_friends.map((obj) => obj.id));
+                const ids1Set = new Set(userData?.user_friends.map((obj) => obj.id));
                 const commonIds = doc.data().user_friends.filter((obj) => ids1Set.has(obj.id));
                 if (userData.user_friends.some((obj) => obj.id === doc.id)) {
                     return { id: doc.id, data: { ...doc.data(), friend: 1,mutual:commonIds.length } };
@@ -35,8 +35,9 @@ function Friend() {
                 setLastFr(docs.docs[docs.docs.length - 1]);
             }
         };
+        if(userData)
         fetchAllFr();
-    }, []);
+    }, [userData]);
 
     const fetchMoreFr = async () => {
         if (lastFr) {

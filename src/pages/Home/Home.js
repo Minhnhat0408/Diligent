@@ -44,13 +44,13 @@ function Home() {
                 >
                     {posts.map((post, id) => (
                         <PostProvider
-                            key={post.id}
+                            key={id}
                             id={post.id}
                             data={post.data}
                             setReFresh={setReFreshPosts}
                             setUpdate={setPosts}
                         >
-                            <Post key={post.id} />
+                            <Post keyId={id} />
                         </PostProvider>
                     ))}
                 </InfiniteScroll>

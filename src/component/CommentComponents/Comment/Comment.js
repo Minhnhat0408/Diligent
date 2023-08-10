@@ -117,14 +117,14 @@ function Comment({ data, id, react }) {
                 const q = query(
                     collection(db, 'users', data.user.id, 'notifications'),
                     where('sender.id', '==', user.uid),
-                    where('url', '==', routes.post + id),
+                    where('url', '==', routes.post + post.id),
                     where('type', '==', 'likecmt'),
                 );
                 getDocs(q).then(async (result) => {
                     if (result.docs.length === 0) {
                         await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
                             title: type.likecmt,
-                            url: routes.post + id,
+                            url: routes.post + post.id,
                             sender: {
                                 id: user.uid,
                                 name: userData.user_name,

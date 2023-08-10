@@ -54,14 +54,22 @@ export const AuthContextProvider = ({ children }) => {
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
+        await setDoc(doc(db, 'status', user.uid), {
+            user_status: 'online',
+        });
+        await setDoc(doc(db, 'preferences', user.uid), {});
         await setDoc(doc(db, 'users', user.uid), {
             user_email: user?.email,
             user_authProvider: response?.providerId || 'email/pasword',
             user_createdAt: serverTimestamp(),
+            user_friendRequests: [],
+            user_friends: [],
+            user_postNumber: 0,
+            user_ratings: [],
+            user_decks: 0,
+            user_theme: 'dark',
         });
-        await setDoc(doc(db, 'users', user.uid), {
-            user_status: 'online',
-        });
+     
         return response;
     };
 
@@ -109,14 +117,9 @@ export const AuthContextProvider = ({ children }) => {
                 user_address: data.address.trimEnd(),
                 user_bio: data.bio.trimEnd(),
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-                user_theme: 'dark',
-                user_friendRequests: [],
-                user_friends: [],
-                user_postNumber: 0,
-                user_ratings: [],
-                user_decks: 0,
+                
             });
-            await setDoc(doc(db, 'preferences', user.uid), {});
+            
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
@@ -135,10 +138,20 @@ export const AuthContextProvider = ({ children }) => {
         const docs = await getDoc(doc(db, 'users', repuser.uid));
         console.log(repuser);
         if (!docs.data()) {
+            await setDoc(doc(db, 'status', repuser.uid), {
+                user_status: 'online',
+            });
+            await setDoc(doc(db, 'preferences', repuser.uid), {});
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
                 user_authProvider: response?.providerId,
                 user_createdAt: serverTimestamp(),
+                user_friendRequests: [],
+                user_friends: [],
+                user_postNumber: 0,
+                user_ratings: [],
+                user_decks: 0,
+                user_theme: 'dark',
             });
 
             // navigate(routes.updateInfo)
@@ -156,10 +169,20 @@ export const AuthContextProvider = ({ children }) => {
         const docs = await getDoc(doc(db, 'users', repuser.uid));
 
         if (!docs.data()) {
+            await setDoc(doc(db, 'status', repuser.uid), {
+                user_status: 'online',
+            });
+            await setDoc(doc(db, 'preferences', repuser.uid), {});
             await setDoc(doc(db, 'users', repuser.uid), {
                 user_email: repuser?.email,
                 user_authProvider: response?.providerId,
                 user_createdAt: serverTimestamp(),
+                user_friendRequests: [],
+                user_friends: [],
+                user_postNumber: 0,
+                user_ratings: [],
+                user_decks: 0,
+                user_theme: 'dark',
             });
 
             // navigate(routes.updateInfo)
@@ -310,75 +333,7 @@ export const AuthContextProvider = ({ children }) => {
             }
         });
     };
-    // update realtime database when changes happen
-    // const userStateChanged = async () => {
-    //     onAuthStateChanged(auth, async (currentUser) => {
-    //         if (currentUser) {
-    //             setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
-    //             //fetch user list realtime
 
-    //             onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
-    //                 let tmp = {};
-    //                 docs.forEach((doc) => {
-    //                     if (tmp[doc.data().user.id]) {
-    //                         tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
-    //                     } else {
-    //                         tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
-    //                     }
-    //                 });
-    //                 setStories(tmp);
-    //             });
-
-    //             //fetch user data change realtime
-    //             onSnapshot(doc(db, 'users', currentUser.uid), async (result) => {
-    //                 setUserData(result.data());
-
-    //             });
-    //             onSnapshot(collection(db,'status'), async (stats) => {
-    //                 const a = {}
-    //                 stats.forEach((s) => {
-    //                     a[s.id] = s.data()
-    //                 })
-
-    //                 setUsersStatus(a)
-    //                 if (a[currentUser.uid].user_status !== 'online') {
-    //                     if (a[currentUser.uid]?.user_banUntil && a[currentUser.uid].user_banUntil.toMillis() < new Date()) {
-    //                         await updateDoc(doc(db, 'users', currentUser.uid), {
-    //                             user_status: 'online',
-    //                             user_banUntil: deleteField(),
-    //                         });
-    //                     }
-    //                 }
-    //             })
-    //             //fetch user notifications realtime
-    //             onSnapshot(
-    //                 query(collection(db, 'users', currentUser.uid, 'notifications'), orderBy('time', 'desc')),
-    //                 (docs) => {
-    //                     let data1 = [];
-    //                     let readNoti = 0;
-    //                     docs.forEach((doc) => {
-    //                         data1.push(doc.data());
-    //                         if (!doc.data().read) {
-    //                             readNoti++;
-    //                         }
-    //                     });
-    //                     setNotifications({ id: doc.id, data: data1, unread: readNoti });
-    //                 },
-    //             );
-
-    //             if (window.location.pathname !== routes.updateInfo)
-    //                 await updateDoc(doc(db, 'status', currentUser.uid), {
-    //                     user_status: 'online',
-    //                 });
-    //         } else {
-    //             setUser(null);
-    //         }
-
-    //         // proximate the loading time
-    //         setTimeout(() => {
-    //             setLoading(false);
-    //         }, 1000);
-    //     });
     // };
     console.log(loading);
     useEffect(() => {
@@ -386,22 +341,20 @@ export const AuthContextProvider = ({ children }) => {
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
             if (currentUser) {
                 setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
-                
             } else {
                 setUser(null);
             }
-            setLoading(false)
-            
+            setLoading(false);
         });
-        
+
         return () => {
             unsubscribeAuth();
         };
     }, []);
-  
+
     useEffect(() => {
         // Check if the user is logged in before setting up other real-time listeners
-        
+
         if (user) {
             // Subscribe to userData changes
             const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
@@ -453,7 +406,7 @@ export const AuthContextProvider = ({ children }) => {
                     setNotifications({ id: doc.id, data: data1, unread: readNoti });
                 },
             );
-            
+
             return () => {
                 // Clean up all the real-time listeners when the component unmounts or when the user changes
                 unsubscribeUserData();
@@ -461,7 +414,6 @@ export const AuthContextProvider = ({ children }) => {
                 unsubscribeStatus();
                 unsubscribeNotifications();
             };
-          
         }
     }, [user]);
 

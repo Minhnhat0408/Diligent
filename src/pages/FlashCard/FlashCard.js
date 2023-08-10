@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './FlashCard.module.scss';
 import SideBarCard from '~/component/FlashCardComponents/SideBarCard';
 import SpaceFlash from '~/component/FlashCardComponents/SpaceFlash';
-import { collection, doc, getDoc, getDocs, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';

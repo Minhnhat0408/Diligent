@@ -38,7 +38,6 @@ const MENU_ITEM = [
             data: listLanguage,
         },
     },
-    { icon: <FontAwesomeIcon icon={faCircleQuestion} />, title: 'Feedback and help', to: '/feedback' },
 ];
 
 let USER_MENU = [];

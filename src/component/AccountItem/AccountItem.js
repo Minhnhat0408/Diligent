@@ -15,7 +15,7 @@ import { UserAuth } from '~/contexts/authContext';
 const cx = classNames.bind(styles);
 
 function AccountItem({ room, acc, search = false, chat = false, dark, ...props }) {
-    const { user, userData, usersStatus } = UserAuth();
+    const { user, usersStatus } = UserAuth();
     const [noti, setNoti] = useState(0);
     useEffect(() => {
         const fetchUnseen = async () => {
