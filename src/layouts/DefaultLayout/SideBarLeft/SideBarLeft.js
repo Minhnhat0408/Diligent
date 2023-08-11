@@ -83,7 +83,7 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #f2994a, #f2c94c)"
                     color="#fff"
                     onClick={() => {
-                        navigate(routes.story + user.uid);
+                        navigate(routes.story + user?.uid);
                     }}
                 />
 

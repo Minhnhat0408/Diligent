@@ -1,7 +1,6 @@
 .wrapper {
-    padding-top: var(--defaultLayout-header-height);
     display: flex;
-    height: 100vh;
+    height: calc(100vh - var(--defaultLayout-header-height));
     overflow: hidden;
 
     &.dark {
@@ -40,12 +39,14 @@
 .sidebar {
     width: 360px;
     background-color: #fff;
-    position: relative;
-    height: 100vh;
+    border-radius: 15px;
+    margin: 20px 0;
+    margin-left: 20px;
+    padding: 10px 20px;
     .header {
-        margin-left: 8px;
         margin-top: 4px;
-        margin-bottom: 4px;
+
+        font-size: 40px;
     }
 
     .info {

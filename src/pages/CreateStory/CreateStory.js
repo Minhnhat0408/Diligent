@@ -236,8 +236,8 @@ function CreateStory() {
                 <h1 className={cx('header')}>Your Shorts</h1>
                 <hr />
                 <div className={cx('info')}>
-                    <Image src={userData.user_avatar} className={cx('avatar')} alt="avatar" />
-                    <h3 className={cx('username')}>{userData.user_name}</h3>
+                    <Image src={userData?.user_avatar} className={cx('avatar')} alt="avatar" />
+                    <h3 className={cx('username')}>{userData?.user_name}</h3>
                 </div>
                 <hr />
 

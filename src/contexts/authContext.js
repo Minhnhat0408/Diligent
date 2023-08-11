@@ -93,6 +93,8 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         fetchStories();
+        
+        
     }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);

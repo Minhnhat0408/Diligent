@@ -21,8 +21,8 @@
       background-color: var(--bg-light-theme);
       min-height:100vh;
       padding-top: 10px;
-      padding-left: calc(200px) ;
-      padding-right: calc(var(--defaultLayout-sidebar-right-width) + 30px) ;
+      padding-left: 14vw ;
+      padding-right: 25vw ;
       &.dark{
           background-color: var(--bg-dark-theme);
       } 

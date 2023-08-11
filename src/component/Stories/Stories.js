@@ -1,12 +1,13 @@
 import classNames from 'classnames/bind';
 import styles from './Stories.module.scss';
 import Image from '../Image/Image';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useContext } from 'react';
 import Progressbar from '../Progressbar/Progressbar';
 import getTimeDiff from '~/utils/timeDiff';
 import { UserAuth } from '~/contexts/authContext';
 import { deleteDoc, doc } from 'firebase/firestore';
 import { db } from '~/firebase';
+import { ThemeContext } from '~/contexts/Context';
 const cx = classNames.bind(styles);
 
 function Stories({ stories }) {
@@ -14,7 +15,7 @@ function Stories({ stories }) {
     const [activeStoryIndex, setActiveStoryIndex] = useState(0);
     const [currentTime, setCurrentTime] = useState(0);
     const [isPaused, setIsPaused] = useState(false);
-
+    const context = useContext(ThemeContext)
     useEffect(() => {
         const activeStory = stories[activeStoryIndex];
         let timeout;
@@ -133,7 +134,7 @@ function Stories({ stories }) {
                 )}
             </div>
 
-            <div className={cx('content')} onClick={() => handlePauseClick()}>
+            <div className={cx('content',{dark:context.theme === 'dark'})} onClick={() => handlePauseClick()}>
                 {stories[activeStoryIndex].url !== '' && stories[activeStoryIndex].type === 'image' && (
                     <Image
                         src={stories[activeStoryIndex].url}

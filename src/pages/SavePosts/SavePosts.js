@@ -21,7 +21,7 @@ function SavePosts() {
     },[])   
 
     return (
-        <div className={cx('wrapper')}>
+        <div className={cx('wrapper') + ' sxl-max:ml-[30vw]'}>
             {savePosts.length !== 0 ? (
                 savePosts.map((dat, id) => {
                     return <SavePostItem key={id} savePostId={dat.id} savePostData={dat.data} />;
