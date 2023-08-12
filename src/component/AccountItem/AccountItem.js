@@ -18,31 +18,21 @@ function AccountItem({ room, acc, search = false, chat = false, dark, ...props }
     const { user, usersStatus } = UserAuth();
     const [noti, setNoti] = useState(0);
     useEffect(() => {
-        const fetchUnseen = async () => {
-            try {
-
-                const unsubscribe = onSnapshot(
-                    query(
-                        collection(db, 'chats', room.id, 'messages'),
-                        where('seen', '==', false),
-                        where('sender', '!=', user.uid),
-                    ),
-                    async (docs) => {
-                   
-                        setNoti(docs.size);
-                    },
-                );
-
-                return () => unsubscribe();
-
-            } catch (err) {
-                console.log(err);
-            }   
-        };
         if (chat) {
-            fetchUnseen();
+            const unsubscribe = onSnapshot(
+                query(
+                    collection(db, 'chats', room.id, 'messages'),
+                    where('seen', '==', false),
+                    where('sender', '!=', user.uid),
+                ),
+                async (docs) => {
+                    setNoti(docs.size);
+                },
+            );
+
+            return () => unsubscribe();
         }
-    }, []);
+    }, [user]);
 
     return (
         <Link

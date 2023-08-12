@@ -27,7 +27,7 @@ function FormSignUp({ classes = [] }) {
     const [validatorMsg, setValidatorMsg] = useState({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
-    const { createUser, googleSignIn, user,facebookSignIn } = UserAuth();
+    const { createUser, googleSignIn, user, facebookSignIn } = UserAuth();
     const navigate = useNavigate();
     const inputs = [
         {
@@ -78,10 +78,11 @@ function FormSignUp({ classes = [] }) {
             try {
                 setError('');
                 setLoading(true);
-                await createUser(email.current.value.trimEnd(), password.current.value.trimEnd(), confirmPass.current.value.trimEnd());
-
-                console.log('successfull');
-
+                await createUser(
+                    email.current.value.trimEnd(),
+                    password.current.value.trimEnd(),
+                    confirmPass.current.value.trimEnd(),
+                );
                 navigate(routes.updateInfo);
             } catch (err) {
                 console.log(err);
@@ -97,7 +98,6 @@ function FormSignUp({ classes = [] }) {
             setLoading(true);
             const acc = await googleSignIn();
             if (acc) {
-                console.log('successfull');
                 navigate(routes.home);
             } else {
                 navigate(routes.updateInfo);
@@ -108,7 +108,7 @@ function FormSignUp({ classes = [] }) {
         }
         setLoading(false);
     };
-    const handleFacebookSignUp = async (e) =>{
+    const handleFacebookSignUp = async (e) => {
         e.preventDefault();
 
         try {
@@ -125,7 +125,7 @@ function FormSignUp({ classes = [] }) {
             setError(err.message.slice(10, -1));
         }
         setLoading(false);
-    }
+    };
     return (
         <>
             {loading ? (
@@ -164,9 +164,8 @@ function FormSignUp({ classes = [] }) {
                         primary
                         dark
                         large
-                        submit='submit'
+                        submit="submit"
                         onClick={(e) => {
-                            console.log(loading);
                             return !loading && handleSubmit(e);
                         }}
                     >

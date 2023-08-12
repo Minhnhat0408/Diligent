@@ -6,10 +6,11 @@
     box-shadow: 2px 2px 5px #888;
     border-radius: 20px;
     max-height: 600px;
-    overflow-y: scroll;
+
     &.dark {
         color: var(--text-color-dark);
         background-color: var(--dark-theme);
+        box-shadow: none;
     }
     &.dark .body .input {
         background-color: var(--bg-dark-theme);
@@ -213,7 +214,7 @@
     left: 0;
     display: flex;
     border-radius: 15px;
-    overflow-y: scroll;
+
     align-items: center;
     background-color: var(--dark-theme);
 }

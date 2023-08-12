@@ -44,14 +44,14 @@ import PostLoading from '../PostLoading/PostLoading';
 
 const cx = classNames.bind(styles);
 
-function Post({keyId}) {
+function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, hidePost } = useContext(PostContext);
-    const { userData, user, sendReport, fileDelete,updateUserPrefers } = UserAuth();
+    const { userData, user, sendReport, fileDelete, updateUserPrefers } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
     const navigate = useNavigate();
-    const post = useContext(PostContext);
+const post = useContext(PostContext);
     const [text, setText] = useState('');
     const [updatePost, setUpdatePost] = useState(false);
     const [like, setLike] = useState(post.data.react === 1 ? 1 : 0);
@@ -218,11 +218,11 @@ function Post({keyId}) {
         switch (item.type) {
             case 'hide':
                 hidePost(post.id);
-                updateUserPrefers('hide',post.data.tags)
+                updateUserPrefers('hide', post.data.tags);
                 break;
             case 'save':
                 savePost(post.id, post.data);
-                updateUserPrefers('save',post.data.tags)
+                updateUserPrefers('save', post.data.tags);
                 break;
             case 'delete':
                 deletePost(post.id, post.data.user.id);
@@ -378,8 +378,7 @@ function Post({keyId}) {
                         />
                     )}
                     {post.page ? (
-                        <div    
-                            
+                        <div
                             className={
                                 'sml-max:!min-w-[100%] sml-max:!max-w-[100%] ' +
                                 cx('wrapper', 'postpage', { dark: context.theme === 'dark' })
@@ -518,7 +517,6 @@ function Post({keyId}) {
                     ) : (
                         // Normal display
                         <div
-                            key={keyId}
                             className={
                                 cx('wrapper', { dark: context.theme === 'dark' }) +
                                 ' sml-max:!min-w-[100%] sml-max:!max-w-[100%] smu-max:!p-3'
@@ -733,7 +731,7 @@ function Post({keyId}) {
                                         </div>
                                         {user && (
                                             <div className={cx('input-section')}>
-                                                <MyComment  />
+                                                <MyComment />
                                             </div>
                                         )}
                                     </div>

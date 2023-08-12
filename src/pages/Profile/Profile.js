@@ -60,8 +60,8 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, userData, unbanUser, fileUpload, banUser } = UserAuth();
-    const { handleAccept, handleDecline, unFriend } = GlobalProps();
+    const { user, userData, unbanUser, fileUpload, banUser,sendReport } = UserAuth();
+    const { handleAccept, handleDecline, unFriend,handleAddfr } = GlobalProps();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
@@ -73,6 +73,7 @@ function Profile() {
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const [lastPost, setLastPost] = useState(null);
     const [refresh, setReFresh] = useState(false);
+    const [star,setStar] = useState(false)
     useEffect(() => {
         if (user?.uid !== id) {
             async function fetchPageUser() {
@@ -102,8 +103,12 @@ function Profile() {
                         setDisabled('Add Friend');
                     }
                 }
+                setStar((prev) => {return u.data().user_ratings.includes(user.uid)})
             }
-            fetchPageUser();
+            if(userData) {
+                fetchPageUser();
+            }
+       
         } else {
             setPageUser(userData);
         }
@@ -167,7 +172,9 @@ function Profile() {
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: arrayRemove(user.uid),
             });
+            setStar(false)
         } else {
+            setStar(true)
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: [...pageUser.user_ratings, user.uid],
             });
@@ -216,39 +223,14 @@ function Profile() {
             case 'unban':
                 unbanUser({ id });
                 break;
+            case 'report':
+                sendReport(menuItem.title, id, 'user');
+                break;
             default:
                 break;
         }
     };
-    const handleAddfr = async () => {
-        try {
-            await updateDoc(doc(db, 'users', id), {
-                user_friendRequests: arrayUnion({
-                    id: user.uid,
-                    name: userData.user_name,
-                    ava: userData.user_avatar,
-                }),
-            });
-
-            await addDoc(collection(db, 'users', id, 'notifications'), {
-                title: type.addfr,
-                url: routes.user + user.uid,
-                sender: {
-                    id: user.uid,
-                    name: userData.user_name,
-                    avatar: userData.user_avatar,
-                },
-                type: 'addfr',
-                time: serverTimestamp(),
-                read: false,
-            });
-
-            setDisabled('Requesting');
-        } catch (err) {
-            console.log(err);
-            alert(err);
-        }
-    };
+    
     const handleNavigateChat = async () => {
         const q = query(
             collection(db, 'chats'),
@@ -278,7 +260,7 @@ function Profile() {
         navigate(routes.chatroom + tmp);
     };
 
-    // console.log(getTimeDiff(pageUser?.user_banUntil.toMillis(),new Date()))
+    console.log(((pageUser?.user_status === 'ban' && !user?.isAdmin) || ban) || !user,'fefe')
     return (
         <>
             {!pageUser ? (
@@ -315,12 +297,12 @@ function Profile() {
                                     onClick={() => setPreviewAvatar(true)}
                                     className={cx('ava')}
                                 />
-                                <h4 className={cx('name')}>
+                                <h4 className={cx('name') + ' '}>
                                     {pageUser.user_name}{' '}
                                     {pageUser.user_gender === 'male' ? (
-                                        <FontAwesomeIcon icon={faMars} />
+                                        <FontAwesomeIcon icon={faMars} className='text-blue-500'/>
                                     ) : (
-                                        <FontAwesomeIcon icon={faVenus} />
+                                        <FontAwesomeIcon icon={faVenus} className='text-pink-500' />
                                     )}
                                 </h4>
                                 <p className={cx('bio')}>{pageUser.user_bio}</p>
@@ -332,9 +314,9 @@ function Profile() {
                                 </div>
                                 <div className={cx('stats_num')}>
                                     <FontAwesomeIcon
-                                        icon={pageUser.user_ratings.includes(user?.uid) ? solidStar : regularStar}
+                                        icon={star ? solidStar : regularStar}
                                         onClick={handleUpRatings}
-                                        className={cx('stars', { active: pageUser.user_ratings.includes(user?.uid) })}
+                                        className={cx('stars', { active: star   })}
                                     />
                                     <p className={cx('number')}>{pageUser.user_ratings.length}</p>
                                 </div>
@@ -384,7 +366,7 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     primary
                                                     xl
-                                                    disabled={pageUser.user_status === 'ban' || ban}
+                                                    disabled={pageUser.user_status === 'ban' || ban ||!user}
                                                     onClick={() => {
                                                         handleAccept({
                                                             id: id,
@@ -400,7 +382,7 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     outline
                                                     xl
-                                                    disabled={pageUser.user_status === 'ban' || ban}
+                                                    disabled={pageUser.user_status === 'ban' || ban || !user}
                                                     onClick={() => {
                                                         handleDecline({
                                                             id: id,
@@ -415,7 +397,7 @@ function Profile() {
                                         ) : (
                                             <>
                                                 <Button
-                                                    disabled={disabled === 'Friend' || disabled === 'Requesting' || ban}
+                                                    disabled={disabled === 'Friend' || disabled === 'Requesting' || ban || !user}
                                                     leftIcon={
                                                         (disabled === 'Friend' && (
                                                             <FontAwesomeIcon icon={faCheckCircle} />
@@ -427,14 +409,14 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     primary
                                                     small
-                                                    onClick={handleAddfr}
+                                                    onClick={() => {handleAddfr({id:id,setDisabled:setDisabled})}}
                                                 >
                                                     {disabled}
                                                 </Button>
                                                 <Button
                                                     xs
                                                     disabled={
-                                                        disabled !== 'Friend' || pageUser.user_status === 'ban' || ban
+                                                        disabled !== 'Friend' || pageUser.user_status === 'ban' || ban || !user
                                                     }
                                                     outline
                                                     dark={context.theme === 'dark'}
@@ -446,7 +428,8 @@ function Profile() {
 
                                                 <Menu
                                                     offset={[0, 30]}
-                                                    disabled={(pageUser.user_status === 'ban' && !user?.isAdmin) || ban}
+                                                    
+                                                    disabled={((pageUser.user_status === 'ban' && !user?.isAdmin) || ban) || !user}
                                                     // chinh ben trai / chieu cao so vs ban dau
                                                     placement="right"
                                                     item={
@@ -474,7 +457,7 @@ function Profile() {
                                                         className={cx('btn')}
                                                         dark={context.theme === 'dark'}
                                                         disabled={
-                                                            (pageUser.user_status === 'ban' && !user?.isAdmin) || ban
+                                                            (pageUser.user_status === 'ban' && !user?.isAdmin) || ban || !user
                                                         }
                                                     >
                                                         <i className="fa-solid fa-ellipsis"></i>

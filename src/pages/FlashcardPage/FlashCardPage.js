@@ -75,7 +75,7 @@ function FlashCardPage() {
     //fetch decks for page
     useEffect(() => {
         const fetchDecks = async () => {
-            const q = query(collection(db, 'flashcards'));
+            const q = query(collection(db, 'decks'));
             const full = await getDocs(q);
             const tmpfull = [];
             const tmpUser = [];
@@ -127,13 +127,11 @@ function FlashCardPage() {
             }
             return result.map((grDeck, ind) => {
                 return (
-                    <div className={cx('row')}>
+                    <div key={ind} className={cx('row')}>
                         {grDeck.map((d, ind) => {
                             return (
                                 <div key={ind} className={cx('deck')} onClick={() => navigate(routes.flashcard + d.id)}>
-                                    <div className={cx('name')} >
-                                        {d.data.name}
-                                    </div>
+                                    <div className={cx('name')}>{d.data.name}</div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{d.data.ratings.length}</span>
@@ -167,7 +165,7 @@ function FlashCardPage() {
             setInvalid(true);
         } else {
             setLoading(true);
-            await addDoc(collection(db, 'flashcards'), {
+            await addDoc(collection(db, 'decks'), {
                 name: title.current.value,
                 description: description.current.value,
                 contributor: {
@@ -186,9 +184,7 @@ function FlashCardPage() {
             setShowAddDeck(false);
         }
     };
-    const handleDeleteDeck = async (id) => {
-        await deleteDoc(doc(db, 'flashcards', id));
-    };
+   
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {user && userDecks?.length > 0 && (
@@ -201,11 +197,12 @@ function FlashCardPage() {
                         <div className={cx('row')}>
                             {userDecks?.map((deck, ind) => {
                                 return (
-                                    <div key={ind} className={cx('deck')}    onClick={() => navigate(routes.flashcard + deck.id)}>
-                                        <div
-                                            className={cx('name')}>
-                                            {deck.data.name}
-                                        </div>
+                                    <div
+                                        key={ind}
+                                        className={cx('deck')}
+                                        onClick={() => navigate(routes.flashcard + deck.id)}
+                                    >
+                                        <div className={cx('name')}>{deck.data.name}</div>
                                         <div className={cx('info')}>
                                             <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                             <span className={cx('num')}>{deck.data.ratings.length}</span>
@@ -322,11 +319,20 @@ function FlashCardPage() {
                 <div className={cx('all-decks')}>
                     {fullDecks?.display.map((deck, ind) => {
                         return (
-                            <div key={ind} className={cx('deck-full')} onClick={() => navigate(routes.flashcard + deck.id)}>
-                                <div className={cx('deck')} onClick={() => addDeckLearner(deck.id)}>
-                                    <div className={cx('name')} >
-                                        {deck.data.name}
-                                    </div>
+                            <div
+                                key={ind}
+                                className={cx('deck-full')}
+                                onClick={() => navigate(routes.flashcard + deck.id)}
+                            >
+                                <div
+                                    className={cx('deck')}
+                                    onClick={() => {
+                                        if (user) {
+                                            addDeckLearner(deck.id);
+                                        }
+                                    }}
+                                >
+                                    <div className={cx('name')}>{deck.data.name}</div>
                                     <div className={cx('info')}>
                                         <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
                                         <span className={cx('num')}>{deck.data.ratings.length}</span>
@@ -345,8 +351,6 @@ function FlashCardPage() {
                             </div>
                         );
                     })}
-             
-                    
                 </div>
             </div>
             {showAddDeck && (

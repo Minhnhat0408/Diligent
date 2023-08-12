@@ -129,7 +129,7 @@ function Stories({ stories }) {
                 </div>
                 {stories[activeStoryIndex].userId === user?.uid && (
                     <div className={cx('delete')} onClick={() => deleteStory(stories[activeStoryIndex].storyId)}>
-                        <i class="fa-light fa-trash"></i>
+                        <i className="fa-light fa-trash"></i>
                     </div>
                 )}
             </div>
@@ -161,11 +161,11 @@ function Stories({ stories }) {
             </div>
 
             <div className={cx('back')} onClick={() => handleBackClick()}>
-                <i class="fa-solid fa-left"></i>
+                <i className="fa-solid fa-left"></i>
             </div>
 
             <div className={cx('next')} onClick={() => handleNextClick()}>
-                <i class="fa-solid fa-right"></i>
+                <i className="fa-solid fa-right"></i>
             </div>
         </div>
     );

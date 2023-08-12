@@ -14,6 +14,7 @@ function Friend() {
     const [allFr, setAllFr] = useState([]);
     const [lastFr, setLastFr] = useState();
     const { user, userData } = UserAuth();
+
     useEffect(() => {
         const fetchAllFr = async () => {
             const q = query(collection(db, 'users'), where(documentId(), '!=', user.uid), limit(8));
@@ -25,7 +26,9 @@ function Friend() {
                     return { id: doc.id, data: { ...doc.data(), friend: 1,mutual:commonIds.length } };
                 } else if (userData.user_friendRequests.some((obj) => obj.id === doc.id)) {
                     return { id: doc.id, data: { ...doc.data(), friend: -1,mutual:commonIds.length } };
-                } else {
+                }else if( doc.data().user_friendRequests.some((obj) => obj.id === user.uid)) {
+                    return { id: doc.id, data: { ...doc.data(), friend: 2,mutual:commonIds.length } };
+                }else {
                     return { id: doc.id, data: { ...doc.data(), friend: 0,mutual:commonIds.length } };
                 }
             });
@@ -35,8 +38,10 @@ function Friend() {
                 setLastFr(docs.docs[docs.docs.length - 1]);
             }
         };
-        if(userData)
-        fetchAllFr();
+        if(userData) {
+            fetchAllFr();
+        }
+      
     }, [userData]);
 
     const fetchMoreFr = async () => {
@@ -57,8 +62,9 @@ function Friend() {
                     return { id: doc.id, data: { ...doc.data(), friend: 1,mutual:commonIds.length } };
                 } else if (userData.user_friendRequests.some((obj) => obj.id === doc.id)) {
                     return { id: doc.id, data: { ...doc.data(), friend: -1,mutual:commonIds.length } };
-                } else {
-                    
+                } else if( doc.data().user_friendRequests.some((obj) => obj.id === user.uid)) {
+                    return { id: doc.id, data: { ...doc.data(), friend: 2,mutual:commonIds.length } };
+                }else{
                     return { id: doc.id, data: { ...doc.data(), friend: 0,mutual:commonIds.length } };
                 }
             });

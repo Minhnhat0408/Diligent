@@ -22,30 +22,26 @@ function Home() {
     const { user,userData } = UserAuth();
     const [loading, setLoading] = useState(false);
     const { fetchMorePosts, lastPost, setPosts, posts, setReFreshPosts } = GlobalProps();
-    // useEffect(() =>{
-    //     async function deck() {
-    //         for (let i = 0; i < 5; i++) {
-    //             await addDoc(collection(db, 'decks'), {
-    //                 name: 'N3',
-    //                 description: 'description.current.value',
-    //                 contributor: {
-    //                     id: user.uid,
-    //                     name: userData.user_name,
-    //                     ava: userData.user_avatar,
-    //                 },
-    //                 ratings: [],
-    //                 cardNumber: 0,
-    //                 learners: [user.uid],
-    //                 createdAt: serverTimestamp(),
-    //             });
-    //           }
-           
-    //     }
-    //     if(user && userData) {
-    //         deck();
-    //     }
+    useEffect(() =>{
+        async function deck() {
+            for (let i = 0; i < 5; i++) {
+                await addDoc(collection(db, 'flashcards'), {
+                    front:'creative',
+                    back:{
+                        content:'Sáng tạo trong công việc',
+                        example:''
+                    },
+                    deckId:'mgpdo7LthVhECGKF9N5f',
+                    time:serverTimestamp()
+                }); 
+              }
+              
+        }
+        if(user && userData) {
+            deck();
+        }
      
-    // },[user,userData])
+    },[user,userData])
     return (
         <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:min-w-[80vw] md-max:!w-[93vw] '}>
             {/* Phần story  */}
@@ -73,7 +69,7 @@ function Home() {
                             setReFresh={setReFreshPosts}
                             setUpdate={setPosts}
                         >
-                            <Post keyId={id} />
+                            <Post key={id} />
                         </PostProvider>
                     ))}
                 </InfiniteScroll>

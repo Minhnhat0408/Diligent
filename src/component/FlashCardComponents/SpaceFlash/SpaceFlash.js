@@ -14,6 +14,9 @@ const SpaceFlash = ({ cards }) => {
     const [animation, setAnimation] = useState('');
     const context = useContext(ThemeContext);
     const [timers, setTimers] = useState([]);
+    const [showGuide,setShowGuide] = useState(false)
+    const [showSetting,setShowSetting] = useState(false)
+    const [graduated,setGraduated] = useState([])
     const good = useRef([]);
 
     //handle add or remove card when animation end
@@ -45,16 +48,11 @@ const SpaceFlash = ({ cards }) => {
             setAnimation('');
         }
     };
-    // useEffect(() =>{
-    //     const array = [1, 2, 3, 5, 6];
+    
+    const handleSaveProgress = async () => {
 
-    //     // Insert 4 behind element 5 (at index 3)
-    //     const index = -2;
-    //     const newItem = 4;
-    //     array.splice(index, 0, newItem);
-    //     console.log(array,'fhefhehfhefehse')
-    // },[])
-    //set the time for the card to be back to learn
+    }
+
     useEffect(() => {
         if (queueCards) {
             if (animation === 'left') {
@@ -125,7 +123,7 @@ const SpaceFlash = ({ cards }) => {
             {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
                     {displayCards.map((a, ind) => {
-                        console.log(a);
+            
                         return (
                             <div
                                 onAnimationEnd={onAnimationEnd}
@@ -185,13 +183,13 @@ const SpaceFlash = ({ cards }) => {
                 </h1>
             )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
-                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button onClick={handleSaveProgress} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faFloppyDisk} />
                 </button>
-                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6">
+                <button onClick={() => {setShowSetting(true)}} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faGear} />
                 </button>
-                <button className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button onClick={() => {setShowGuide(true)}} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
                     <FontAwesomeIcon icon={faInfoCircle} />
                 </button>
                 <p className="text-lime-500 text-center">{good.current.length}</p>

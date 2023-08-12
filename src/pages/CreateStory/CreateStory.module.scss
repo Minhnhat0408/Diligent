@@ -43,6 +43,8 @@
     margin: 20px 0;
     margin-left: 20px;
     padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
     .header {
         margin-top: 4px;
 
@@ -67,15 +69,14 @@
     }
 
     .options {
-        position: fixed;
-        bottom: 0;
-        width: 360px;
+      
+        width: 100%;
         height: 72px;
         display: flex;
         justify-content: space-evenly;
         align-items: center;
         box-shadow: 1px 1px 5px #ccc;
-
+        margin-top: auto    ;
         .cancel,
         .share {
             width: 120px;
@@ -102,9 +103,9 @@
     }
 
     .add-text {
-        width: 330px;
+        width: 100%;
         height: 165px;
-        margin-left: 15px;
+
         margin-top: 10px;
         margin-bottom: 5px;
         padding: 20px;
@@ -115,9 +116,8 @@
     }
 
     .color {
-        width: 330px;
+        width: 100%;
         height: 100px;
-        margin-left: 15px;
         margin-bottom: 10px;
         border: 1px solid #ccc;
         border-radius: 10px;

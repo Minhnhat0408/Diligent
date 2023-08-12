@@ -2,7 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './FlashCard.module.scss';
 import SideBarCard from '~/component/FlashCardComponents/SideBarCard';
 import SpaceFlash from '~/component/FlashCardComponents/SpaceFlash';
-import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs, orderBy, query, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
@@ -19,16 +19,16 @@ function FlashCard() {
     const context = useContext(ThemeContext);
     useEffect(() => {
         const fetchCards = async () => {
-            const a = await getDocs(collection(db, 'flashcards', id, 'cards'));
+            const a = await getDocs(query(collection(db, 'flashcards'), where('deckId','==',id), orderBy('time','desc')));
             const results = [];
-            a.docs.forEach((doc, ind) => {
-                results.push({ id: doc.id, front: doc.data().front, order: ind + 1, back: doc.data().back, pos: 0 });
+            a.docs.forEach((doc) => {
+                results.push({ id: doc.id, front: doc.data().front, back: doc.data().back });
             });
             setCards(results);
         };
 
         const fetchDeck = async () => {
-            const d = await getDoc(doc(db, 'flashcards', id));
+            const d = await getDoc(doc(db, 'decks', id));
 
             setDeck({ id: d.id, data: d.data() });
         };

@@ -39,7 +39,7 @@ function Comment({ data, id, react }) {
     const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
     const [preview, setPreview] = useState(false);
-    const { fileDelete } = UserAuth();
+    const { fileDelete, sendReport } = UserAuth();
     const [text, setText] = useState(
         data.text.replace(regex, (spc) => {
             const id = spc.match(getIdInMentions)[0].substring(1);
@@ -211,6 +211,8 @@ function Comment({ data, id, react }) {
             await updateDoc(doc(db, 'posts', post.id, 'comments', id), {
                 isCorrect: false,
             });
+        } else if (item.type === 'report') {
+            sendReport(item.title, post.id, 'post');
         }
     };
 
@@ -271,92 +273,94 @@ function Comment({ data, id, react }) {
                                     <Image src={data.image} className={cx('preview')} alt="preview" />
                                 </div>
                             )}
-                            <Menu
-                                // chinh ben trai / chieu cao so vs ban dau
-                                item={
-                                    user?.uid === post.data.user.id
-                                        ? data?.user.id === user?.uid
+                            {user && (
+                                <Menu
+                                    // chinh ben trai / chieu cao so vs ban dau
+                                    item={
+                                        user?.uid === post.data.user.id
+                                            ? data?.user.id === user?.uid
+                                                ? [
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                          title: 'Update',
+                                                          type: 'update',
+                                                      },
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faTrash} />,
+                                                          title: 'Delete',
+                                                          type: 'delete',
+                                                      },
+                                                      data?.isCorrect
+                                                          ? {
+                                                                icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                                title: 'Incorrect',
+                                                                type: 'incorrect',
+                                                            }
+                                                          : {
+                                                                icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                                title: 'Correct',
+                                                                type: 'correct',
+                                                            },
+                                                  ]
+                                                : [
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faTrash} />,
+                                                          title: 'Delete',
+                                                          type: 'delete',
+                                                      },
+                                                      data?.isCorrect
+                                                          ? {
+                                                                icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                                title: 'Incorrect',
+                                                                type: 'incorrect',
+                                                            }
+                                                          : {
+                                                                icon: <FontAwesomeIcon icon={faCircleCheck} />,
+                                                                title: 'Correct',
+                                                                type: 'correct',
+                                                            },
+                                                  ]
+                                            : user?.isAdmin
+                                            ? data?.user.id === user?.uid
+                                                ? [
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faFilePen} />,
+                                                          title: 'Update',
+                                                          type: 'update',
+                                                      },
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faTrash} />,
+                                                          title: 'Delete',
+                                                          type: 'delete',
+                                                      },
+                                                  ]
+                                                : [
+                                                      {
+                                                          icon: <FontAwesomeIcon icon={faTrash} />,
+                                                          title: 'Delete',
+                                                          type: 'delete',
+                                                      },
+                                                  ]
+                                            : data?.user.id === user?.uid
                                             ? [
                                                   {
                                                       icon: <FontAwesomeIcon icon={faFilePen} />,
                                                       title: 'Update',
                                                       type: 'update',
                                                   },
-                                                  {
-                                                      icon: <FontAwesomeIcon icon={faTrash} />,
-                                                      title: 'Delete',
-                                                      type: 'delete',
-                                                  },
-                                                  data?.isCorrect
-                                                      ? {
-                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
-                                                            title: 'Incorrect',
-                                                            type: 'incorrect',
-                                                        }
-                                                      : {
-                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
-                                                            title: 'Correct',
-                                                            type: 'correct',
-                                                        },
+                                                  report,
                                               ]
-                                            : [
-                                                  {
-                                                      icon: <FontAwesomeIcon icon={faTrash} />,
-                                                      title: 'Delete',
-                                                      type: 'delete',
-                                                  },
-                                                  data?.isCorrect
-                                                      ? {
-                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
-                                                            title: 'Incorrect',
-                                                            type: 'incorrect',
-                                                        }
-                                                      : {
-                                                            icon: <FontAwesomeIcon icon={faCircleCheck} />,
-                                                            title: 'Correct',
-                                                            type: 'correct',
-                                                        },
-                                              ]
-                                        : user?.isAdmin
-                                        ? data?.user.id === user?.uid
-                                            ? [
-                                                  {
-                                                      icon: <FontAwesomeIcon icon={faFilePen} />,
-                                                      title: 'Update',
-                                                      type: 'update',
-                                                  },
-                                                  {
-                                                      icon: <FontAwesomeIcon icon={faTrash} />,
-                                                      title: 'Delete',
-                                                      type: 'delete',
-                                                  },
-                                              ]
-                                            : [
-                                                  {
-                                                      icon: <FontAwesomeIcon icon={faTrash} />,
-                                                      title: 'Delete',
-                                                      type: 'delete',
-                                                  },
-                                              ]
-                                        : data?.user.id === user?.uid
-                                        ? [
-                                              {
-                                                  icon: <FontAwesomeIcon icon={faFilePen} />,
-                                                  title: 'Update',
-                                                  type: 'update',
-                                              },
-                                              report,
-                                          ]
-                                        : [report]
-                                }
-                                onClick={handleCommentOptions}
-                                small
-                                placement="right"
-                            >
-                                <div className={cx('options')}>
-                                    <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
-                                </div>
-                            </Menu>
+                                            : [report]
+                                    }
+                                    onClick={handleCommentOptions}
+                                    small
+                                    placement="right"
+                                >
+                                    <div className={cx('options')}>
+                                        <FontAwesomeIcon icon={faEllipsis} className={cx('icon')} />
+                                    </div>
+                                </Menu>
+                            )}
                         </div>
 
                         <div className={cx('actions')}>

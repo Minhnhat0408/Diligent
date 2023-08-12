@@ -304,6 +304,35 @@ export const GlobalContextProvider = ({ children }) => {
             }),
         });
     };
+    const handleAddfr = async ({id,setDisabled}) => {
+        try {
+            await updateDoc(doc(db, 'users', id), {
+                user_friendRequests: arrayUnion({
+                    id: user.uid,
+                    name: userData.user_name,
+                    ava: userData.user_avatar,
+                }),
+            });
+
+            await addDoc(collection(db, 'users', id, 'notifications'), {
+                title: type.addfr,
+                url: routes.user + user.uid,
+                sender: {
+                    id: user.uid,
+                    name: userData.user_name,
+                    avatar: userData.user_avatar,
+                },
+                type: 'addfr',
+                time: serverTimestamp(),
+                read: false,
+            });
+
+            setDisabled('Requesting');
+        } catch (err) {
+            console.log(err);
+            alert(err);
+        }
+    };
 
     const value = {
         lastPost,
@@ -320,6 +349,7 @@ export const GlobalContextProvider = ({ children }) => {
         handleAccept,
         handleDecline,
         handleReadNoti,
+        handleAddfr
     };
 
     return (

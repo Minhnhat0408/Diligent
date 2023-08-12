@@ -1,14 +1,21 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Image from '../Image';
 import { faCircleCheck, faMale, faMars, faStar, faUserFriends } from '@fortawesome/free-solid-svg-icons';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 
+import { GlobalProps } from '~/contexts/globalContext';
+
 function FriendBox({ data, id }) {
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
+    const [disabled, setDisabled] = useState(() => {
+        return data.friend === 1 ? 'Friend' : data.friend === -1 ? 'Accept' : data.friend === 2 ? 'Requesting' : 'Add';
+    });
+    const { handleAccept,handleAddfr } = GlobalProps();
+
     return (
         <div className=" rounded-2xl w-[22vw] min-w-[300px] mb-5 bg-[var(--dark-theme)] overflow-hidden text-[var(--text-color-dark)] flex flex-col">
             <div className="relative w-full h-[100px] ">
@@ -28,9 +35,26 @@ function FriendBox({ data, id }) {
                     </div>
                     <p className="italic">{data.user_bio}</p>
                 </div>
-                <button className={"h-8 w-[80px] rounded-lg bg-transparent border-[1px] ml-3 cursor-pointer hover:bg-[var(--primary-light)] border-solid border-[var(--primary)] text-[var(--primary)] " + (data.friend === 1 && ' hover:bg-transparent opacity-75')}>
-                    <FontAwesomeIcon className="mr-2" icon={data.friend === 1 ? faCircleCheck : faUserFriends} />
-                    {data.friend === 1 ? 'Friend' : data.friend === -1 ? 'Accept' : 'Add'}
+                <button
+                    onClick={() => {
+                        if (disabled === 'Add' ) {
+                            console.log('helloo')
+                            handleAddfr({id,setDisabled:setDisabled})
+                        }else if(disabled === 'Accept') {
+                            handleAccept({
+                                id:id,
+                                name:data.user_name,
+                                ava:data.user_avatar
+                            })
+                        }
+                    }}
+                    className={
+                        'h-8 w-[80px] rounded-lg bg-transparent border-[1px] ml-3 cursor-pointer hover:bg-[var(--primary-light)] border-solid border-[var(--primary)] text-[var(--primary)] ' +
+                        ((data.friend === 1 || disabled === 'Requesting') && ' hover:bg-transparent opacity-75')
+                    }
+                >
+                    {disabled !== 'Requesting' && <FontAwesomeIcon className="mr-2" icon={data.friend === 1 ? faCircleCheck : faUserFriends} />}
+                    {disabled}
                 </button>
             </div>
             <div className="flex px-4 pb-4   justify-between font-bold italic">

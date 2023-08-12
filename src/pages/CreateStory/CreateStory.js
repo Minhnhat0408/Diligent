@@ -290,10 +290,10 @@ function CreateStory() {
             <div className={cx('display')}>
                 {imagePreview == null && videoPreview == null && textPreview == false && (
                     <>
-                        <label for="upload-img-story">
+                        <label htmlFor="upload-img-story">
                             <div className={cx('image-story')}>
                                 <div className={cx('icon')}>
-                                    <i class="fa-regular fa-image"></i>
+                                    <i className="fa-regular fa-image"></i>
                                 </div>
                                 <h5 className={cx('title')}>Create image/video short</h5>
                             </div>
@@ -310,7 +310,7 @@ function CreateStory() {
 
                         <div className={cx('text-story')} onClick={handleClickTextPreview}>
                             <div className={cx('icon')}>
-                                <i class="fa-solid fa-font-case"></i>
+                                <i className="fa-solid fa-font-case"></i>
                             </div>
                             <h5 className={cx('title')}>Create text short</h5>
                         </div>

@@ -33,7 +33,7 @@ const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload, createPost,updateUserPrefers } = UserAuth();
+    const { userData, user, fileUpload, createPost, updateUserPrefers } = UserAuth();
 
     const handleClickCloseBox = () => {
         onXmark(false);
@@ -58,7 +58,6 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
     });
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];
-        console.log(newfile);
         if (!isImage(newfile) && !isVideo(newfile)) {
             const img = { file: newfile, url: URL.createObjectURL(newfile) };
             setOthersPreview((prev) => [...prev, img]);
@@ -72,7 +71,6 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const handleDeleteImage = (id) => {
         setImagePreview((prev) => prev.filter((_, index) => index !== id));
     };
-    console.log(imagePreview);
     const moveLeft = (index) => {
         // Make sure the index is not out of range
         if (index > 0 && index < imagePreview.length) {
@@ -143,7 +141,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
             return;
         }
         if (selectedCategories.length <= 0) {
-            setInvalid(true)
+            setInvalid(true);
             return;
         }
         setLoading(true);
@@ -174,7 +172,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                 await updateDoc(doc(db, 'users', user.uid), {
                     user_postNumber: userData.user_postNumber + 1,
                 });
-                await updateUserPrefers('upload',selectedCategories)
+                await updateUserPrefers('upload', selectedCategories);
             }
 
             const tagUser = [];
@@ -186,7 +184,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                     }
                 });
             }
-            
+
             const refPost = createPost(files, textFinal.title, textFinal?.text, selectedCategories, tagUser, update);
             if (tagUser.length !== 0) {
                 refPost.then(async (res) => {
@@ -249,16 +247,12 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                                             small
                                             onClick={handleAddCategory}
                                         >
-                                            <div
-                                                className={cx('category', { invalid: invalid })}
-                                            >
+                                            <div className={cx('category', { invalid: invalid })}>
                                                 <p>Choose category</p>
                                                 <i className="fa-solid fa-chevron-right"></i>
                                             </div>
                                         </Menu>
-                                        {invalid&& (
-                                            <p className="ml-1 text-[#f33a58]">Choose at least one category</p>
-                                        )}
+                                        {invalid && <p className="ml-1 text-[#f33a58]">Choose at least one category</p>}
                                     </div>
                                 </div>
                             </div>
@@ -281,7 +275,6 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                                 value={text}
                                 onBlur={(e) =>
                                     setTextFinal((prev) => {
-                                        console.log(text);
                                         return { ...prev, text: text };
                                     })
                                 }

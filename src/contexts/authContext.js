@@ -69,7 +69,7 @@ export const AuthContextProvider = ({ children }) => {
             user_decks: 0,
             user_theme: 'dark',
         });
-     
+
         return response;
     };
 
@@ -93,8 +93,6 @@ export const AuthContextProvider = ({ children }) => {
         }
 
         fetchStories();
-        
-        
     }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);
@@ -119,9 +117,7 @@ export const AuthContextProvider = ({ children }) => {
                 user_address: data.address.trimEnd(),
                 user_bio: data.bio.trimEnd(),
                 user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-                
             });
-            
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
                 user_dob: data.dob,
@@ -211,7 +207,6 @@ export const AuthContextProvider = ({ children }) => {
     };
     const fileDelete = async (path) => {
         const storageRef = ref(storage, path);
-        console.log(storageRef);
         await deleteObject(storageRef);
     };
     const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
@@ -223,7 +218,7 @@ export const AuthContextProvider = ({ children }) => {
                 'state_changed',
                 (snapshot) => {
                     const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    console.log('Upload is ' + progress + '% done');
+                    // console.log('Upload is ' + progress + '% done');
                     switch (snapshot.state) {
                         case 'paused':
                             break;
@@ -336,8 +331,6 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
 
-    // };
-    console.log(loading);
     useEffect(() => {
         // Subscribe to auth state changes to get the current user
         const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
@@ -411,6 +404,7 @@ export const AuthContextProvider = ({ children }) => {
 
             return () => {
                 // Clean up all the real-time listeners when the component unmounts or when the user changes
+
                 unsubscribeUserData();
                 unsubscribeStories();
                 unsubscribeStatus();

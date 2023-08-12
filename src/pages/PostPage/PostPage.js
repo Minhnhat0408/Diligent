@@ -30,7 +30,7 @@ function PostPage() {
     useEffect(() => {
         getDoc(doc(db, 'posts', id)).then((post) => {
             if (!post?.data()) {
-                    navigate(routes.notFound);
+                navigate(routes.notFound);
             } else {
                 if (user) {
                     if (
@@ -54,7 +54,7 @@ function PostPage() {
             }
         });
     }, [id]);
-    console.log(postData);
+
     return (
         <>
             {postData && (
