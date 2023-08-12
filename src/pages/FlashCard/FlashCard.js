@@ -8,6 +8,7 @@ import { useState, useEffect } from 'react';
 import { useParams } from 'react-router';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { UserAuth } from '~/contexts/authContext';
 const cx = classNames.bind(styles);
 
 // const page
@@ -16,15 +17,31 @@ function FlashCard() {
     const [deck, setDeck] = useState();
     const { id } = useParams();
     const [cards, setCards] = useState({});
+    const { user } = UserAuth();
     const context = useContext(ThemeContext);
     useEffect(() => {
         const fetchCards = async () => {
-            const a = await getDocs(query(collection(db, 'flashcards'), where('deckId','==',id), orderBy('time','desc')));
-            const results = [];
-            a.docs.forEach((doc) => {
-                results.push({ id: doc.id, front: doc.data().front, back: doc.data().back });
-            });
-            setCards(results);
+            const a = await getDocs(
+                query(collection(db, 'flashcards'), where('deckId', '==', id), orderBy('time', 'desc')),
+            );
+            const cardData = await Promise.all(a.docs.map(async (d) => {
+                const userProgress = await getDoc(doc(db, 'flashcards', d.id, 'progress', user.uid));
+                if (userProgress.data()) {
+                    return {
+                        id: d.id,
+                        front: d.data().front,
+                        back: d.data().back,
+                        progress: userProgress.data(),
+                    };
+                } else {
+                    return { id: d.id, front: d.data().front, back: d.data().back, progress: undefined };
+                }
+            }));
+        
+            const graduated = cardData.filter(item => item.progress !== undefined).sort((a, b) => a.progress.reviewTime - b.progress.reviewTime);
+            const learning = cardData.filter(item => item.progress === undefined);
+        
+            setCards([...learning, ...graduated]);
         };
 
         const fetchDeck = async () => {
@@ -35,7 +52,8 @@ function FlashCard() {
         fetchCards();
         fetchDeck();
     }, [id]);
-
+  
+    console.log(cards)
     return (
         <>
             {deck && (

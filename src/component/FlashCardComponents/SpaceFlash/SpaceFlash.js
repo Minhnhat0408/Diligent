@@ -3,27 +3,38 @@ import classNames from 'classnames/bind';
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight, faFloppyDisk, faGear, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
-
+import { Toaster } from 'react-hot-toast';
 import { ThemeContext } from '~/contexts/Context';
 import FlipCard from '~/component/FlipCard';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { db } from '~/firebase';
+import { UserAuth } from '~/contexts/authContext';
+import { toast } from 'react-hot-toast';
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
     const [displayCards, setDisplayCards] = useState(cards);
+    const allCards = useRef(cards);
     const [queueCards, setQueueCards] = useState();
     const [animation, setAnimation] = useState('');
     const context = useContext(ThemeContext);
+    const { user } = UserAuth();
     const [timers, setTimers] = useState([]);
-    const [showGuide,setShowGuide] = useState(false)
-    const [showSetting,setShowSetting] = useState(false)
-    const [graduated,setGraduated] = useState([])
+    const notify = () => toast('Here is your toast.');
+    const [showGuide, setShowGuide] = useState(false);
+    const [showSetting, setShowSetting] = useState(false);
+
+    const graduated = useRef([]);
     const good = useRef([]);
 
+    useEffect(() => {
+        setDisplayCards(cards);
+        allCards.current = cards;
+    }, [cards]);
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
         if (animation !== '') {
             if (displayCards.length > 1) {
-        
                 const a = displayCards.slice(0, -1);
 
                 setDisplayCards(a);
@@ -48,36 +59,138 @@ const SpaceFlash = ({ cards }) => {
             setAnimation('');
         }
     };
-    
-    const handleSaveProgress = async () => {
 
-    }
+    // const handleSaveProgress = async () => {
 
+    //     graduated.current.forEach(async (card) => {
+    //         allCards.current = allCards.current.filter((c) => c.id !== card.id);
+    //         if (card.progress) {
+    //             const interval = Math.round(card.progress.easeFactor * card.progress.interval);
+    //             card.currentTime.setDate(card.currentTime.getDate() + interval)
+
+    //             await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+    //                 easeFactor: card.progress.easeFactor,
+    //                 interval: interval,
+    //                 reviewTime: card.currentTime,
+
+    //             });
+    //             } else {
+    //                 const current = new Date();
+    //                 current.setDate(current.getDate() + 1)
+    //                 await setDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+    //                     easeFactor: 2.5,
+    //                     interval: 1,
+    //                 reviewTime:current,
+
+    //             });
+    //         }
+    //     });
+    //     allCards.current.forEach(async (card) => {
+    //         if(card.reset) {
+    //             card.currentTime.setDate(card.currentTime.getDate() + 1)
+    //             await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+    //                 easeFactor: card.progress.easeFactor,
+    //                 interval: 1,
+    //                 reviewTime: card.currentTime,
+
+    //             });
+    //         }
+    //     })
+
+    // };
+    const handleSaveProgress = () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                for (const card of graduated.current) {
+                    allCards.current = allCards.current.filter((c) => c.id !== card.id);
+                    if (card.progress) {
+                        const interval = Math.round(card.progress.easeFactor * card.progress.interval);
+                        card.reviewTime.setDate(card.reviewTime.getDate() + interval);
+
+                        await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+                            easeFactor: card.progress.easeFactor,
+                            interval: interval,
+                            reviewTime: card.reviewTime,
+                        });
+                    } else {
+                        const current = new Date();
+                        current.setDate(current.getDate() + 1);
+                        await setDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+                            easeFactor: 2.5,
+                            interval: 1,
+                            reviewTime: current,
+                        });
+                    }
+                }
+
+                for (const card of allCards.current) {
+                    if (card.reset) {
+                        card.reviewTime.setDate(card.reviewTime.getDate() + 1);
+                        await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
+                            easeFactor: card.progress.easeFactor,
+                            interval: 1,
+                            reviewTime: card.reviewTime,
+                        });
+                    }
+                }
+
+                resolve('Progress saved!');
+            } catch (error) {
+                console.log(error);
+            }
+        });
+    };
     useEffect(() => {
         if (queueCards) {
             if (animation === 'left') {
-                if (good.current.includes(queueCards)) {
-                    good.current = good.current.filter((q) => q !== queueCards);
-                }
-                const a = setTimeout(() => {
-                    // console.log(queueCards, 'queue');
-                  
-                    setDisplayCards(prev => {
-                        const newDCards = [...prev];
-                        newDCards.splice(-2, 0, queueCards);
-                        return newDCards;
+                if (queueCards.progress) {
+                    allCards.current.forEach((c) => {
+                        if (c.id === queueCards.id) {
+                            c.progress.easeFactor -= 0.2;
+                            c.progress.reviewTime = new Date();
+                            c.reset = true;
+                            return;
+                        }
                     });
-                    setTimers((prev) => prev.filter((p) => p.timerId !== a));
-                }, 60000);
-                setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
+                    const a = setTimeout(() => {
+                        setDisplayCards((prev) => {
+                            const newDCards = [...prev];
+                            newDCards.splice(-2, 0, queueCards);
+                            return newDCards;
+                        });
+                        setTimers((prev) => prev.filter((p) => p.timerId !== a));
+                    }, 600000);
+                    setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
+                } else {
+                    if (good.current.includes(queueCards)) {
+                        good.current = good.current.filter((q) => q !== queueCards);
+                    }
+                    const a = setTimeout(() => {
+                        // console.log(queueCards, 'queue');
+
+                        setDisplayCards((prev) => {
+                            const newDCards = [...prev];
+                            newDCards.splice(-2, 0, queueCards);
+                            return newDCards;
+                        });
+                        setTimers((prev) => prev.filter((p) => p.timerId !== a));
+                    }, 60000);
+                    setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
+                }
             } else if (animation === 'right') {
-                if (good.current.includes(queueCards)) {
-                    //graduatede
+                if (good.current.includes(queueCards) || queueCards.progress) {
+                    // graduatede
+                    if (queueCards.progress) {
+                        let a = queueCards;
+                        a.progress.reviewTime = new Date();
+                        graduated.current = [a, ...graduated.current];
+                    } else {
+                        graduated.current = [queueCards, ...graduated.current];
+                    }
                 } else {
                     good.current.push(queueCards);
                     const a = setTimeout(() => {
-
-                        setDisplayCards(prev => {
+                        setDisplayCards((prev) => {
                             const newDCards = [...prev];
                             newDCards.splice(-2, 0, queueCards);
                             return newDCards;
@@ -120,10 +233,10 @@ const SpaceFlash = ({ cards }) => {
                 (context.theme === 'dark')
             }
         >
+            <Toaster />
             {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
                     {displayCards.map((a, ind) => {
-            
                         return (
                             <div
                                 onAnimationEnd={onAnimationEnd}
@@ -183,13 +296,32 @@ const SpaceFlash = ({ cards }) => {
                 </h1>
             )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
-                <button onClick={handleSaveProgress} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button
+                    onClick={() => {
+                        console.log('hello');
+
+                        toast.promise(handleSaveProgress(), {
+                            loading: 'Saving...',
+                            success: <b>Progress saved!</b>,
+                            error: <b>Could not save.</b>,
+                        });
+                    }}
+                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
+                >
                     <FontAwesomeIcon icon={faFloppyDisk} />
                 </button>
-                <button onClick={() => {setShowSetting(true)}} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6">
+                <button
+                    onClick={() => {
+                        setShowSetting(true);
+                    }}
+                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6"
+                >
                     <FontAwesomeIcon icon={faGear} />
                 </button>
-                <button onClick={() => {setShowGuide(true)}} className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6">
+                <button
+                    onClick={notify}
+                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
+                >
                     <FontAwesomeIcon icon={faInfoCircle} />
                 </button>
                 <p className="text-lime-500 text-center">{good.current.length}</p>

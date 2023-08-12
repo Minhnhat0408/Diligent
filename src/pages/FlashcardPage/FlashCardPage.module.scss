@@ -26,11 +26,11 @@
 
 .user-decks {
     width: 60vw;
-    height: 25vh;
+    height: 235px;
     background-color: var(--light-theme);
     border-radius: 15px;
     margin-bottom: 1%;
-    padding:2vh 1vw;
+    padding:18px 1vw;
     box-shadow: 1px 1px 5px #888888;
     // display: flex;
     // overflow-x: scroll;
@@ -51,7 +51,7 @@
     background-color: var(--light-theme);
     border-radius: 15px;
     margin-bottom: 0;
-    padding:2vh 1vw;
+    padding:20px 1vw;
 
 }
 .all-decks{
@@ -68,23 +68,23 @@
 }
 .deck{
     background-color: bisque;
-    width: 16vh;
-    height: 21vh;  
+    width: 150px;
+    height: 190px;  
     flex-wrap: wrap;
     cursor:pointer;
     color:var(--text-color);
     display:flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
-    border-radius:1vh;
+    align-items: center;    
+    border-radius:10px;
     position: relative;
 }
 .info{
     display: flex;
     align-items: center;
     position: absolute;
-    bottom: 1vh;    
+    bottom: 10px;    
     
 }
 .delete{
@@ -94,7 +94,7 @@
     cursor: pointer;
 }
 .name{
-    font-size: 2vh;
+    font-size: 18px;
     font-weight: 600;
     cursor: pointer;
 }
@@ -114,6 +114,7 @@
     display: flex;
     justify-content: space-evenly;
     flex-basis: 20%;
+    height: 190px;  
     margin: 10px 0;
 }
 
@@ -124,7 +125,7 @@
   }
 
   .search {
-    height: 5vh;
+    height: 40px;
     background-color: #eee !important;
     border: 2px solid rgb(210, 211, 213);
     position: relative;
@@ -238,8 +239,8 @@
 .options{
     display: flex;
     align-items: center;
-    height: 6vh;
-    margin-bottom: 1vh;
+    height: 50px;
+
     justify-content: space-between;
 }
 .end{

@@ -24,11 +24,11 @@ function SideBarCard({ deck, cards }) {
     const [showWarning,setShowWarning] = useState(false)
     const handleUpRatings = async () => {
         if (deck.data.ratings.includes(user.uid)) {
-            await updateDoc(doc(db, 'flashcards', deck.id), {
+            await updateDoc(doc(db, 'decks', deck.id), {
                 ratings: arrayRemove(user.uid),
             });
         } else {
-            await updateDoc(doc(db, 'flashcards', deck.id), {
+            await updateDoc(doc(db, 'decks', deck.id), {
                 ratings: [...deck.data.ratings, user.uid],
             });
         }

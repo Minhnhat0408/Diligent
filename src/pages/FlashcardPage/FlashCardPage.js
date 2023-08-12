@@ -65,7 +65,7 @@ function FlashCardPage() {
     //add userid into deck's learners
     const addDeckLearner = async (id) => {
         try {
-            await updateDoc(doc(db, 'flashcards', id), {
+            await updateDoc(doc(db, 'decks', id), {
                 learners: arrayUnion(user.uid),
             });
         } catch (err) {
@@ -184,7 +184,7 @@ function FlashCardPage() {
             setShowAddDeck(false);
         }
     };
-   
+
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             {user && userDecks?.length > 0 && (
@@ -319,17 +319,14 @@ function FlashCardPage() {
                 <div className={cx('all-decks')}>
                     {fullDecks?.display.map((deck, ind) => {
                         return (
-                            <div
-                                key={ind}
-                                className={cx('deck-full')}
-                                onClick={() => navigate(routes.flashcard + deck.id)}
-                            >
+                            <div key={ind} className={cx('deck-full')}>
                                 <div
                                     className={cx('deck')}
                                     onClick={() => {
                                         if (user) {
                                             addDeckLearner(deck.id);
                                         }
+                                        navigate(routes.flashcard + deck.id);
                                     }}
                                 >
                                     <div className={cx('name')}>{deck.data.name}</div>
@@ -351,6 +348,91 @@ function FlashCardPage() {
                             </div>
                         );
                     })}
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>Haha</div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )} */}
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>Haha</div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )} */}
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>Haha</div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )} */}
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>Haha</div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )} */}
+                        </div>
+                    </div>
+                    <div className={cx('deck-full')}>
+                        <div className={cx('deck')}>
+                            <div className={cx('name')}>Haha</div>
+                            <div className={cx('info')}>
+                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
+                                <span className={cx('num')}></span>
+                                <div className={cx('time')}></div>
+                            </div>
+                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
+                                        <FontAwesomeIcon
+                                            icon={faXmark}
+                                            className={cx('delete')}
+                                            onClick={() => handleDeleteDeck(deck.id)}
+                                        />
+                                    )} */}
+                        </div>
+                    </div>
                 </div>
             </div>
             {showAddDeck && (

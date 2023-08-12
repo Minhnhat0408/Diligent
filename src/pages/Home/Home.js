@@ -8,19 +8,18 @@ import { useEffect } from 'react';
 import { PostProvider } from '~/contexts/Provider';
 import { useState } from 'react';
 import { memo } from 'react';
-import { addDoc, collection, documentId, getDocs, limit, or, orderBy, query, serverTimestamp, startAfter, where } from 'firebase/firestore';
+import { addDoc, collection,serverTimestamp,} from 'firebase/firestore';
 import { db } from '~/firebase';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
-import { useContext } from 'react';
 import { GlobalProps } from '~/contexts/globalContext';
-import { ScrollRestoration } from 'react-router-dom';
-
+import {toast} from 'react-hot-toast'
 const cx = classNames.bind(styles);
 
 function Home() {
     const { user,userData } = UserAuth();
     const [loading, setLoading] = useState(false);
+
     const { fetchMorePosts, lastPost, setPosts, posts, setReFreshPosts } = GlobalProps();
     useEffect(() =>{
         async function deck() {
@@ -43,7 +42,7 @@ function Home() {
      
     },[user,userData])
     return (
-        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:min-w-[80vw] md-max:!w-[93vw] '}>
+        <div className={cx('wrapper') + ' mdx-max:w-[34vw] mdl-max:min-w-[80vw] md-max:!w-[93vw] '}  >
             {/* Phần story  */}
             <Stories />
          
