@@ -24,23 +24,30 @@ function FlashCard() {
             const a = await getDocs(
                 query(collection(db, 'flashcards'), where('deckId', '==', id), orderBy('time', 'desc')),
             );
-            const cardData = await Promise.all(a.docs.map(async (d) => {
-                const userProgress = await getDoc(doc(db, 'flashcards', d.id, 'progress', user.uid));
-                if (userProgress.data()) {
-                    return {
-                        id: d.id,
-                        front: d.data().front,
-                        back: d.data().back,
-                        progress: userProgress.data(),
-                    };
-                } else {
-                    return { id: d.id, front: d.data().front, back: d.data().back, progress: undefined };
-                }
-            }));
-        
-            const graduated = cardData.filter(item => item.progress !== undefined).sort((a, b) => a.progress.reviewTime - b.progress.reviewTime);
-            const learning = cardData.filter(item => item.progress === undefined);
-        
+            const cardData = await Promise.all(
+                a.docs.map(async (d) => {
+                    const userProgress = await getDoc(doc(db, 'flashcards', d.id, 'progress', user.uid));
+                    if (userProgress.data()) {
+                  
+                            return {
+                                id: d.id,
+                                front: d.data().front,
+                                back: d.data().back,
+                                progress: userProgress.data(),
+                            };
+                       
+                    } else {
+                        return { id: d.id, front: d.data().front, back: d.data().back, progress: undefined };
+                    }
+                }),
+            );
+
+            const graduated = cardData
+                .filter((item) => item.progress !== undefined)
+                .filter((item) => new Date(item.progress.reviewTime.toMillis()) < new Date())
+                .sort((a, b) => a.progress.reviewTime - b.progress.reviewTime);
+            const learning = cardData.filter((item) => item.progress === undefined);
+
             setCards([...learning, ...graduated]);
         };
 
@@ -52,8 +59,8 @@ function FlashCard() {
         fetchCards();
         fetchDeck();
     }, [id]);
-  
-    console.log(cards)
+
+    console.log(cards);
     return (
         <>
             {deck && (
