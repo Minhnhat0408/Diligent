@@ -223,7 +223,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
                 <div className={cx('pop-up')}>
                     <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                         <div className={cx('header')}>
-                            <div></div>
+                            <div className='w-10 h-10'></div>
                             <h1 className={cx('title')}>{update ? 'Update Post' : 'Create post'}</h1>
                             <div className={cx('out')} onClick={handleClickCloseBox}>
                                 <FontAwesomeIcon icon={faXmark} />

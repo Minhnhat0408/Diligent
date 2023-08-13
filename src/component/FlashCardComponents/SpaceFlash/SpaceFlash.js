@@ -2,14 +2,25 @@ import { useContext, useEffect, useRef, useState } from 'react';
 import classNames from 'classnames/bind';
 import styles from './SpaceFlash.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faChevronLeft, faChevronRight, faFloppyDisk, faGear, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowRotateLeft,
+    faChevronLeft,
+    faChevronRight,
+    faFloppyDisk,
+    faGear,
+    faInfoCircle,
+} from '@fortawesome/free-solid-svg-icons';
+import history from 'history/browser';
 import { Toaster } from 'react-hot-toast';
 import { ThemeContext } from '~/contexts/Context';
 import FlipCard from '~/component/FlipCard';
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { toast } from 'react-hot-toast';
+import Guide from '../Guide';
+import Tippy from '@tippyjs/react';
+
 const cx = classNames.bind(styles);
 
 const SpaceFlash = ({ cards }) => {
@@ -20,9 +31,8 @@ const SpaceFlash = ({ cards }) => {
     const context = useContext(ThemeContext);
     const { user } = UserAuth();
     const [timers, setTimers] = useState([]);
-    const notify = () => toast('Here is your toast.');
+
     const [showGuide, setShowGuide] = useState(false);
-    const [showSetting, setShowSetting] = useState(false);
 
     const graduated = useRef([]);
     const good = useRef([]);
@@ -31,6 +41,7 @@ const SpaceFlash = ({ cards }) => {
         setDisplayCards(cards);
         allCards.current = cards;
     }, [cards]);
+
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
         if (animation !== '') {
@@ -60,44 +71,6 @@ const SpaceFlash = ({ cards }) => {
         }
     };
 
-    // const handleSaveProgress = async () => {
-
-    //     graduated.current.forEach(async (card) => {
-    //         allCards.current = allCards.current.filter((c) => c.id !== card.id);
-    //         if (card.progress) {
-    //             const interval = Math.round(card.progress.easeFactor * card.progress.interval);
-    //             card.currentTime.setDate(card.currentTime.getDate() + interval)
-
-    //             await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
-    //                 easeFactor: card.progress.easeFactor,
-    //                 interval: interval,
-    //                 reviewTime: card.currentTime,
-
-    //             });
-    //             } else {
-    //                 const current = new Date();
-    //                 current.setDate(current.getDate() + 1)
-    //                 await setDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
-    //                     easeFactor: 2.5,
-    //                     interval: 1,
-    //                 reviewTime:current,
-
-    //             });
-    //         }
-    //     });
-    //     allCards.current.forEach(async (card) => {
-    //         if(card.reset) {
-    //             card.currentTime.setDate(card.currentTime.getDate() + 1)
-    //             await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
-    //                 easeFactor: card.progress.easeFactor,
-    //                 interval: 1,
-    //                 reviewTime: card.currentTime,
-
-    //             });
-    //         }
-    //     })
-
-    // };
     const handleSaveProgress = () => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -137,6 +110,7 @@ const SpaceFlash = ({ cards }) => {
                 resolve('Progress saved!');
             } catch (error) {
                 console.log(error);
+                reject('Could not saved');
             }
         });
     };
@@ -163,7 +137,7 @@ const SpaceFlash = ({ cards }) => {
                     setTimers((prev) => [{ timerId: a, card: queueCards }, ...prev]);
                 } else {
                     if (good.current.includes(queueCards)) {
-                        good.current = good.current.filter((q) => q !== queueCards);
+                        good.current = good.current.filter((q) => q.id !== queueCards.id);
                     }
                     const a = setTimeout(() => {
                         // console.log(queueCards, 'queue');
@@ -216,6 +190,32 @@ const SpaceFlash = ({ cards }) => {
                     setAnimation('right');
                     setQueueCards(displayCards.at(-1));
                 }
+            } else if (e.keyCode === 90) {
+                if (queueCards) {
+                    setDisplayCards((prev) => {
+                        return [...prev, queueCards];
+                    });
+                    if (good.current.at(-1)?.id === queueCards.id) {
+                        good.current.pop();
+                    }
+                    if (graduated.current[0]?.id === queueCards.id) {
+                        graduated.current.shift();
+                    }
+                    if (timers[0].card.id === queueCards.id) {
+                        timers.shift();
+                    }
+                    setQueueCards(null);
+                } else {
+                    toast.error('Can not undo', {
+                        style: {
+                            minWidth: '250px',
+                            minHeight: '60px',
+                            fontSize: '20px',
+                            backgroundColor: 'var(--primary-light   )',
+                            color: 'red ',
+                        },
+                    });
+                }
             }
         }
 
@@ -224,7 +224,7 @@ const SpaceFlash = ({ cards }) => {
         return function cleanup() {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, []);
+    }, [animation, displayCards, queueCards, timers]);
 
     return (
         <div
@@ -233,7 +233,9 @@ const SpaceFlash = ({ cards }) => {
                 (context.theme === 'dark')
             }
         >
-            <Toaster />
+            <Toaster position="bottom-right" />
+            {showGuide && <Guide setShowGuide={setShowGuide} />}
+
             {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
                     {displayCards.map((a, ind) => {
@@ -252,7 +254,12 @@ const SpaceFlash = ({ cards }) => {
                                     })
                                 }
                             >
-                                <FlipCard id={a.front} backColor="bisque" frontColor="bisque">
+                                <FlipCard
+                                    id={a.front}
+                                    first={displayCards.length - 1 === ind}
+                                    backColor="bisque"
+                                    frontColor="bisque"
+                                >
                                     <h1 className="text-5xl">{a.front}</h1>
                                     <h1 className="text-5xl">{a.back.content}</h1>
                                 </FlipCard>
@@ -296,123 +303,95 @@ const SpaceFlash = ({ cards }) => {
                 </h1>
             )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
+            <Tippy content="Save" placement='right' theme={context.theme} animation={'scale'}>
                 <button
                     onClick={() => {
-                        console.log('hello');
-
-                        toast.promise(handleSaveProgress(), {
-                            loading: 'Saving...',
-                            success: <b>Progress saved!</b>,
-                            error: <b>Could not save.</b>,
-                        });
+                        toast.promise(
+                            handleSaveProgress(),
+                            {
+                                loading: 'Saving...',
+                                success: <b>Progress saved</b>,
+                                error: <b>Could not save</b>,
+                            },
+                            {
+                                style: {
+                                    minWidth: '250px',
+                                    minHeight: '60px',
+                                    fontSize: '20px',
+                                    backgroundColor: 'var(--primary)',
+                                    color: 'var(--primary-light) ',
+                                },
+                                success: {
+                                    duration: 3000,
+                                    icon: '🔥',
+                                },
+                                error: {
+                                    duration: 3000,
+                                    icon: '❌',
+                                    style: {
+                                        minWidth: '250px',
+                                        minHeight: '60px',
+                                        fontSize: '20px',
+                                        backgroundColor: 'var(--primary)',
+                                        color: 'red',
+                                    },
+                                },
+                            },
+                        );
                     }}
-                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
+                    className="w-12 h-12 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
                 >
                     <FontAwesomeIcon icon={faFloppyDisk} />
                 </button>
+                </Tippy>
+                <Tippy content="Undo" placement='right' theme={context.theme} animation={'scale'}>
                 <button
                     onClick={() => {
-                        setShowSetting(true);
+                        if (queueCards) {
+                            setDisplayCards((prev) => {
+                                return [...prev, queueCards];
+                            });
+                            if (good.current.at(-1)?.id === queueCards.id) {
+                                good.current.pop();
+                            }
+                            if (graduated.current[0]?.id === queueCards.id) {
+                                graduated.current.shift();
+                            }
+                            if (timers[0].card.id === queueCards.id) {
+                                timers.shift();
+                            }
+                            setQueueCards(null);
+                        } else {
+                            toast.error('Can not undo', {
+                                style: {
+                                    minWidth: '250px',
+                                    minHeight: '60px',
+                                    fontSize: '20px',
+                                    backgroundColor: 'var(--primary-light   )',
+                                    color: 'red ',
+                                },
+                            });
+                        }
                     }}
-                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6"
+                    className="w-12 h-12     cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6"
                 >
-                    <FontAwesomeIcon icon={faGear} />
-                </button>
-                <button
-                    onClick={notify}
-                    className="w-10 h-10 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
-                >
-                    <FontAwesomeIcon icon={faInfoCircle} />
-                </button>
-                <p className="text-lime-500 text-center">{good.current.length}</p>
-                <p className="text-blue-500 text-center">{1}</p>
-                <p className="text-red-500 text-center">{timers.length}</p>
-            </div>
-            {/* options
-            {def.length > 0 && <div className={cx('options')}>
-                <button className={cx('finish')} onClick={() => handleRemember(1)}>
-                    <FontAwesomeIcon icon={faCheck} />
-                </button>
-                <button className={cx('skip')} onClick={() => handleRemember(2)}>
-                    <FontAwesomeIcon icon={faXmark} />
-                </button>
-                <button className={cx('back')} onClick={() => getBack()}>
                     <FontAwesomeIcon icon={faArrowRotateLeft} />
                 </button>
-            </div>}
-
-            <div className={cx('flash')}>
-                {fp0.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
-                {fp1.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
-                {fp2.map((item, index) => {
-                    return (
-                        <>
-                            <CardFlip key={item.id} card={item} getOldPos0={getOldPos0} />
-                        </>
-                    );
-                })}
-
-                {showProgress && (
-                    <div
-                        className={cx('boxshowper', { show: animation, hide: !animation })}
-                        onAnimationEnd={onAnimationEnd}
+                </Tippy>
+                <Tippy content="How to use" placement='right' theme={context.theme} animation={'scale'}>
+                    <button
+                        onClick={() => {
+                            setShowGuide(true);
+                        }}
+                        className="w-12 h-12 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
                     >
-                        {!showPer ? (
-                            <div className={cx('showper')} onClick={() => handlePull()}>
-                                Congrats you have finished all your cards!!!
-                            </div>
-                        ) : (
-                            <div className={cx('progresscontain')}>
-                                <div className={cx('progressbox')}>
-                                    <CricleProgress percentage={(fp1.length / (fp1.length + fp2.length)) * 100} />
-                                </div>
-                                <div className={cx('emotion')}>
-                                    {(fp1.length / (fp1.length + fp2.length)) * 100 > 50 ? (
-                                        <FontAwesomeIcon
-                                            icon={faFaceSmile}
-                                            style={{ color: '#d4d049', height: '80px', width: '80px' }}
-                                        />
-                                    ) : (
-                                        <FontAwesomeIcon
-                                            icon={faFaceSadTear}
-                                            style={{ color: '#d4d049', height: '80px', width: '80px' }}
-                                        />
-                                    )}
-                                </div>
-                                <Link className={cx('buttonhoc')} to={routes.flashcard}>
-                                    Continue
-                                </Link>
-                            </div>
-                        )}
-                    </div>
-                )}
-            </div> */}
-
-            {/* rightside */}
-            {/* <div className={cx('rightside')}>
-                <div className={cx('finishbox')}>
-                    <div className={cx('text')}>REMEMBER</div>
-                    <div className={cx('shadowbox')}></div>
-                    <button className={cx('number')}>{virPos === 1 ? fp1.length - 1 : fp1.length}</button>
-                </div>
-                <div className={cx('skipbox')}>
-                    <div className={cx('text')}>FORGET</div>
-                    <div className={cx('shadowbox')}></div>
-                    <button className={cx('number')}>{virPos === 2 ? fp2.length - 1 : fp2.length}</button>
-                </div>
-            </div> */}
+                        <FontAwesomeIcon icon={faInfoCircle} />
+                    </button>
+                </Tippy>
+                {/* <p className="text-lime-500 text-center">{good.current.length}</p>
+                <p className="text-blue-500 text-center">{1}</p>
+                <p className="text-red-500 text-center">{timers.length}</p> */}
+            </div>
         </div>
     );
 };

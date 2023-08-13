@@ -61,7 +61,7 @@ function FlashCard() {
     }, [id]);
 
     console.log(cards);
-    return (
+    return (    
         <>
             {deck && (
                 <div className={cx('wrapper', { dark: context.theme === 'dark' })}>

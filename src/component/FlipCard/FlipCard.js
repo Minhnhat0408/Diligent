@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './FlipCard.module.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -10,12 +10,30 @@ function FlipCard({
     frontColor = 'transparent',
     backImg = '',
     frontImg = '',
+    first = false,
     children,   
     className = [],
     ...props
 }) {
     const [fl, setFl] = useState(false);
-
+    useEffect(() => {
+        
+        function handleKeyDown(e) {
+            console.log(e.keyCode)
+            if (e.keyCode === 32) {
+                setFl(!fl)
+            } 
+        }
+        if(first) {
+            document.addEventListener('keydown', handleKeyDown);
+            return function cleanup() {
+                document.removeEventListener('keydown', handleKeyDown);
+            };
+        }
+   
+        // Don't forget to clean up
+       
+    }, [first, fl]);
     return (
         <div
             className={cx('container', ...className)}

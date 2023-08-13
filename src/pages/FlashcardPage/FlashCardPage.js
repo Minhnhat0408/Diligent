@@ -52,6 +52,7 @@ function FlashCardPage() {
     const [animation, setAnimation] = useState(false);
     const [showAddDeck, setShowAddDeck] = useState(false);
     const [invalid, setInvalid] = useState(false);
+    const [reFetch,setReFetch] = useState(false)
     const title = useRef();
     const description = useRef();
     const navigate = useNavigate();
@@ -91,7 +92,7 @@ function FlashCardPage() {
             setUserDecks(tmpUser);
         };
         fetchDecks();
-    }, []);
+    }, [reFetch]);
 
     useEffect(() => {
         if (searchValue.trim()) {
@@ -182,6 +183,7 @@ function FlashCardPage() {
             title.current.value = '';
             description.current.value = '';
             setShowAddDeck(false);
+            setReFetch(!reFetch)
         }
     };
 
@@ -337,102 +339,10 @@ function FlashCardPage() {
                                             {new Date(deck.data.createdAt.toMillis()).toLocaleDateString('en-GB')}
                                         </div>
                                     </div>
-                                    {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
                                 </div>
                             </div>
                         );
                     })}
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>Haha</div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>Haha</div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>Haha</div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>Haha</div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
-                        </div>
-                    </div>
-                    <div className={cx('deck-full')}>
-                        <div className={cx('deck')}>
-                            <div className={cx('name')}>Haha</div>
-                            <div className={cx('info')}>
-                                <FontAwesomeIcon icon={faStar} className={cx('ratings')} />
-                                <span className={cx('num')}></span>
-                                <div className={cx('time')}></div>
-                            </div>
-                            {/* {(deck.data.contributor.id === user?.uid || user?.isAdmin) && (
-                                        <FontAwesomeIcon
-                                            icon={faXmark}
-                                            className={cx('delete')}
-                                            onClick={() => handleDeleteDeck(deck.id)}
-                                        />
-                                    )} */}
-                        </div>
-                    </div>
                 </div>
             </div>
             {showAddDeck && (
@@ -445,7 +355,7 @@ function FlashCardPage() {
 
                     <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                         <div className={cx('header')}>
-                            <div></div>
+                            <div className='w-10 h-10'></div>
                             <h1 className={cx('title')}>Add Deck</h1>
                             <div className={cx('out')} onClick={() => setShowAddDeck(false)}>
                                 <FontAwesomeIcon icon={faXmark} />

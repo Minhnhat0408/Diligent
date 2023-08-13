@@ -13,6 +13,7 @@ import Button from '~/component/Button/Button';
 import { ThemeContext } from '~/contexts/Context';
 import { useContext } from 'react';
 import PopUp from '../PopUp/PopUp';
+import Warning from '../Warning';
 const cx = classNames.bind(styles);
 
 function SideBarCard({ deck, cards }) {
@@ -34,7 +35,8 @@ function SideBarCard({ deck, cards }) {
         }
     };
     const handleDeleteDeck = async (id) => {
-        await deleteDoc(doc(db, 'flashcards', id));
+        await deleteDoc(doc(db, 'decks', id));
+     
     };
     const handleDeleteCards = async (id) => {
         await deleteDoc(doc(db, 'flashcards', deck.id, 'cards', id));
@@ -121,6 +123,7 @@ function SideBarCard({ deck, cards }) {
             )}
             {addCard && <PopUp setPopup={setAddCard} deck={deck} />}
             {updateCard && <PopUp setPopup={setUpdateCard} />}
+            {showWarning && <Warning setShowWarning={setShowWarning} handleDelete={handleDeleteDeck} id={deck.id}/>}
         </div>
     );
 }

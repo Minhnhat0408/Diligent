@@ -26,14 +26,16 @@ function PopUp({ setPopup, update, deck }) {
             setInvalid(true);
         } else {
             setLoading(true);
-            await addDoc(collection(db, 'flashcards', deck.id, 'cards'), {
+            await addDoc(collection(db, 'flashcards'), {
                 front: front.current.value,
                 back: {
                     content: back.current.value,
                     example: example.current.value,
                 },
+                deckId:deck.id,
+                time:serverTimestamp()
             });
-            await updateDoc(doc(db, 'flashcards', deck.id), {
+            await updateDoc(doc(db, 'decks', deck.id), {
                 cardNumber: deck.cardNumber + 1,
             });
             setLoading(false);
@@ -53,7 +55,7 @@ function PopUp({ setPopup, update, deck }) {
 
                 <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                     <div className={cx('header')}>
-                        <div></div>
+                        <div className='h-10 w-10'></div>
                         <h1 className={cx('title')}>Add Deck</h1>
                         <div className={cx('out')} onClick={() => setPopup(false)}>
                             <FontAwesomeIcon icon={faXmark} />
