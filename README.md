@@ -35,9 +35,7 @@
     <img src="./public/logo192.png" alt="Logo" width="60%" style="object-fit:cover">
   </a>
   <h3 align="center">
-    
-    <p style='font-style:italic; color:#102770;" >Social Media for self learning and fulfilling your potential</p>
-      
+   Social Media for self learning and fulfilling your potential
     <br />
     <a href="https://github.com/Minhnhat0408/Diligent/issues">Report Bug</a>
     ·
