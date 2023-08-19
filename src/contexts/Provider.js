@@ -1,26 +1,25 @@
 import { useState } from 'react';
 import { UserAuth } from './authContext';
 import { PostContext, ThemeContext } from './Context';
-import { FieldValue, addDoc, arrayUnion, collection, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
+import { arrayUnion, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
+import TodoList from '~/component/TodoList/TodoList';
 
 export function ThemeProvider({ children }) {
-    const { userData, user} = UserAuth();
-    const [theme, setTheme] = useState('dark');
 
+    const [theme, setTheme] = useState(() => {
+        return localStorage.getItem('theme') ? localStorage.getItem('theme') : 'dark'
+    });
+    const [todoList,setTodoList] = useState(false)
     const toggleTheme = async () => {
-        if (user) {
-            const userRef = doc(db, 'users', user.uid);
-            await updateDoc(userRef, {
-                user_theme: userData.user_theme === 'dark' ? 'light' : 'dark',
-            });
-        }
-
-        setTheme(theme === 'dark' ? 'light' : 'dark');
+        const newTheme = theme === 'light' ? 'dark' : 'light';
+        setTheme(newTheme);
+        localStorage.setItem('theme', newTheme);
     };
 
     return (
-        <ThemeContext.Provider value={{ theme: userData?.user_theme || theme, toggleTheme }}>
+        <ThemeContext.Provider value={{ theme:  theme, toggleTheme,todoList,setTodoList }}>
+            {todoList && <TodoList/>}
             {children}
         </ThemeContext.Provider>
     );

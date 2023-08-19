@@ -33,7 +33,7 @@ export const GlobalContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]);
     const [stories, setStories] = useState({});
     const [lastPost, setLastPost] = useState(null);
-    const { user, userData, getUserPrefers } = UserAuth();
+    const { user, userData, getUserPrefers,listFr } = UserAuth();
     const [contacts, setContacts] = useState([]);
     const [notifications, setNotifications] = useState();
     const suggestedFr = useRef([]);
@@ -48,7 +48,6 @@ export const GlobalContextProvider = ({ children }) => {
     useEffect(() => {
         if (user) {
             const fetchUserPosts = async () => {
-                if (userData) {
                     let listFr = userData.user_friends.map((d) => d.id);
                     const userPreferences = await getUserPrefers();
                     if (userPreferences.length === 0) {
@@ -95,9 +94,12 @@ export const GlobalContextProvider = ({ children }) => {
                     if (docs.docs.length > 0) {
                         setLastPost(docs.docs[docs.docs.length - 1]);
                     }
-                }
+                
             };
-            fetchUserPosts();
+            if(userData) {
+                fetchUserPosts();
+            }
+        
         } else {
             const fetchPosts = async () => {
                 const q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
@@ -111,8 +113,8 @@ export const GlobalContextProvider = ({ children }) => {
             };
             fetchPosts();
         }
-    }, [user, refreshPosts, userData]);
-    useEffect(() => {
+    }, [user, refreshPosts,userData]);
+    useEffect(() => {   
         async function fetchStories() {
             const q = query(collection(db, 'stories'), orderBy('time'));
             const querySnapshot = await getDocs(q);

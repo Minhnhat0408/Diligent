@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -32,7 +32,6 @@ export const AuthContextProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
     const [usersStatus, setUsersStatus] = useState();
-
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
@@ -167,9 +166,8 @@ export const AuthContextProvider = ({ children }) => {
         });
     };
 
-    
     //save post handle
-    
+
     const getUserPrefers = async () => {
         const pref = await getDoc(doc(db, 'preferences', user.uid));
 
@@ -200,14 +198,13 @@ export const AuthContextProvider = ({ children }) => {
             } else {
                 setUser(null);
             }
-            setLoading(false);
         });
 
         return () => {
             unsubscribeAuth();
         };
     }, []);
-
+    console.log('rerender')
     useEffect(() => {
         // Check if the user is logged in before setting up other real-time listeners
 
@@ -215,8 +212,9 @@ export const AuthContextProvider = ({ children }) => {
             // Subscribe to userData changes
             const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
                 setUserData(result.data());
+              
             });
-
+            setLoading(false);
             // Subscribe to usersStatus changes
             const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
                 const a = {};

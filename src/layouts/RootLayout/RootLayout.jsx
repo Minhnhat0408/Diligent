@@ -7,7 +7,7 @@ function RootLayout() {
     
     const context = useContext(ThemeContext)
     return ( 
-        <div className={'flex flex-col transition-all duration-[0.8s] '  +  (context.theme ==='dark' ? ' bg-[var(--bg-dark-theme)]' : ' bg-[var(--bg-light-theme)]')} >
+        <div className={'flex flex-col transition-colors duration-[0.8s]'  +  (context.theme ==='dark' ? ' bg-[var(--bg-dark-theme)]' : ' bg-[var(--bg-light-theme)]')} >
         <Header/>
         <Outlet/>
         </div>
