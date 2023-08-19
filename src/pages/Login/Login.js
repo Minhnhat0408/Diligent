@@ -21,7 +21,7 @@ function Login() {
                     <span>SIGN IN </span>
                     <span>SIGN UP</span>
                 </ToggleButton>
-                <div className='w-full h-fit pb-10'>
+                <div className="w-full h-fit pb-10">
                     <FlipCard
                         flip={flip}
                         backColor="#2a2b38"

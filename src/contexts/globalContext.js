@@ -16,27 +16,35 @@ import {
     addDoc,
     serverTimestamp,
     onSnapshot,
+    deleteDoc,
 } from 'firebase/firestore';
-
+import type from '~/config/typeNotification';
 import { db } from '../firebase';
 import { UserAuth } from './authContext';
 import { useContext } from 'react';
-import type from '~/config/typeNotification';
-import routes from '~/config/routes';
 
+import routes from '~/config/routes';
+import { adminId } from '~/utils/constantValue';
+import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+import toast from 'react-hot-toast';
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]);
+    const [stories, setStories] = useState({});
     const [lastPost, setLastPost] = useState(null);
     const { user, userData, getUserPrefers } = UserAuth();
     const [contacts, setContacts] = useState([]);
-    
+    const [notifications, setNotifications] = useState();
     const suggestedFr = useRef([]);
     const [lastFinalPost, setLastFinalPost] = useState(null);
     const relevantPosts = useRef([]);
     const [scrollPositions, setScrollPositions] = useState({});
     const [refreshPosts, setReFreshPosts] = useState(false);
+    const storage = getStorage();
+    const metadata = {
+        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
+    };
     useEffect(() => {
         if (user) {
             const fetchUserPosts = async () => {
@@ -104,15 +112,35 @@ export const GlobalContextProvider = ({ children }) => {
             fetchPosts();
         }
     }, [user, refreshPosts, userData]);
+    useEffect(() => {
+        async function fetchStories() {
+            const q = query(collection(db, 'stories'), orderBy('time'));
+            const querySnapshot = await getDocs(q);
+            const docs = querySnapshot.docs.map((doc) => ({
+                id: doc.id,
+                data: doc.data(),
+            }));
+            let tmp = {};
+            docs.forEach((doc) => {
+                if (tmp[doc.data.user.id]) {
+                    tmp[doc.data.user.id].push(doc);
+                } else {
+                    tmp[doc.data.user.id] = [doc];
+                }
+            });
+            setStories(tmp);
+        }
 
+        fetchStories();
+    }, []);
     useEffect(() => {
         if (user && userData) {
             async function fetchSuggestedFr() {
-                let fr = [user.uid]
+                let fr = [user.uid];
                 userData.user_friends.forEach((u) => {
-                        fr.push(u.id)
-                    })
-                fr.slice(0, 10);            
+                    fr.push(u.id);
+                });
+                fr.slice(0, 10);
                 const a = await getDocs(query(collection(db, 'users'), where(documentId(), 'not-in', fr), limit(5)));
                 const b = a.docs.map((d) => {
                     return {
@@ -127,7 +155,7 @@ export const GlobalContextProvider = ({ children }) => {
             fetchSuggestedFr();
 
             // chat realtime data
-            const unsubscribe = onSnapshot(
+            const unsubscribeMessagesIconming = onSnapshot(
                 query(
                     collection(db, 'chats'),
                     orderBy('lastView', 'desc'),
@@ -137,14 +165,45 @@ export const GlobalContextProvider = ({ children }) => {
                     let tmp = [];
                     docs.forEach((d) => {
                         tmp.push({ id: d.id, data: d.data() });
-                    });     
+                    });
                     setContacts(tmp);
                 },
             );
+            const unsubscribeNotifications = onSnapshot(
+                query(collection(db, 'users', user.uid, 'notifications'), orderBy('time', 'desc')),
+                (docs) => {
+                    let data1 = [];
+                    let readNoti = 0;
+                    docs.forEach((doc) => {
+                        data1.push(doc.data());
+                        if (!doc.data().read) {
+                            readNoti++;
+                        }
+                    });
+                    setNotifications({ data: data1, unread: readNoti });
+                },
+            );
 
-            return () => unsubscribe();
+            const unsubscribeStories = onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
+                let tmp = {};
+                docs.forEach((doc) => {
+                    if (tmp[doc.data().user.id]) {
+                        tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
+                    } else {
+                        tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
+                    }
+                });
+                setStories(tmp);
+            });
+                
+            return () => {
+                unsubscribeMessagesIconming();
+                unsubscribeNotifications();
+                unsubscribeStories();
+            };
         }
-    }, [user,userData]);
+    }, [user, userData]);
+
     const fetchMorePosts = async () => {
         if (lastPost) {
             let q = query(collection(db, 'posts'), orderBy('time', 'desc'), startAfter(lastPost), limit(5));
@@ -221,6 +280,105 @@ export const GlobalContextProvider = ({ children }) => {
             });
             setPosts((prevPosts) => [...prevPosts, ...newData]);
         }
+    };
+    const createPost = async (files, title, text, tags, mentions, update = null) => {
+        let docRef = null;
+        if (update) {
+            docRef = await updateDoc(doc(db, 'posts', update.id), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                updated: true,
+                hide: [],
+            });
+        } else {
+            docRef = await addDoc(collection(db, 'posts'), {
+                title: title,
+                text: text,
+                files: files,
+                tags: tags,
+                mentions: mentions,
+                user: {
+                    id: user.uid,
+                    avatar: userData.user_avatar,
+                    name: userData.user_name,
+                },
+                time: new Date(),
+                like: { count: 0, list: [] },
+                dislike: { count: 0, list: [] },
+                commentNumber: 0,
+                hide: [],
+                updated: false,
+            });
+        }
+
+        return docRef;
+    };
+    const fileDelete = async (path) => {
+        const storageRef = ref(storage, path);
+        await deleteObject(storageRef);
+    };
+    const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
+        return new Promise((resolve, reject) => {
+            const storageRef = ref(storage, `${location}/${name}`);
+            const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    // console.log('Upload is ' + progress + '% done');
+                    switch (snapshot.state) {
+                        case 'paused':
+                            break;
+                        case 'running':
+                            break;
+                        default:
+                            break;
+                    }
+                },
+                (error) => {
+                    reject(error);
+                },
+                async () => {
+                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
+                    if (bg_upload) {
+                        updateDoc(doc(db, 'users', user.uid), {
+                            user_bg: downloadURL,
+                        });
+                        resolve('succesful');
+                    } else {
+                        resolve({ url: downloadURL, name: name }); // resolve the Promise with the downloaded URL
+                    }
+                },
+            );
+        });
+    };
+    const sendReport = async (content, id, rtype) => {
+        const q = query(
+            collection(db, 'users', adminId, 'notifications'),
+            where('sender.id', '==', user.uid),
+            where('url', '==', routes.post + id),
+            where('title', '==', type.report + content),
+        );
+        getDocs(q).then(async (result) => {
+            if (result.docs.length === 0) {
+                await addDoc(collection(db, 'users', adminId, 'notifications'), {
+                    title: type.report + content,
+                    url: rtype === 'post' ? routes.post + id : routes.user + id,
+                    sender: {
+                        id: user.uid,
+                        name: userData.user_name,
+                        avatar: userData.user_avatar,
+                    },
+                    type: 'report',
+                    time: serverTimestamp(),
+                    read: false,
+                });
+            }
+        });
     };
     const handleReadNoti = async (data) => {
         if (data.read === false) {
@@ -304,7 +462,7 @@ export const GlobalContextProvider = ({ children }) => {
             }),
         });
     };
-    const handleAddfr = async ({id,setDisabled}) => {
+    const handleAddfr = async ({ id, setDisabled }) => {
         try {
             await updateDoc(doc(db, 'users', id), {
                 user_friendRequests: arrayUnion({
@@ -333,23 +491,33 @@ export const GlobalContextProvider = ({ children }) => {
             alert(err);
         }
     };
+    const deleteSavePost = async (id) => {
+        await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
+    };
 
     const value = {
         lastPost,
         posts,
+        notifications,
         refreshPosts,
+        stories,
         scrollPositions,
         suggestedFr,
         contacts,
         setPosts,
+        deleteSavePost,
+        createPost,
+        sendReport,
         setScrollPositions,
         setReFreshPosts,
         fetchMorePosts,
         unFriend,
+        fileDelete,
+        fileUpload,
         handleAccept,
         handleDecline,
         handleReadNoti,
-        handleAddfr
+        handleAddfr,
     };
 
     return (

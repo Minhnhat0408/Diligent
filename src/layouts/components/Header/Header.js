@@ -26,7 +26,7 @@ import Notification from '~/component/Notification';
 import getTimeDiff from '~/utils/timeDiff';
 import listLanguage from '~/config/languages';
 import { GlobalProps } from '~/contexts/globalContext';
-import { memo } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
 const cx = classNames.bind(styles);
 
 const MENU_ITEM = [
@@ -43,14 +43,29 @@ const MENU_ITEM = [
 let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
-    const { user, logOut, userData, notifications } = UserAuth();
-    const { handleReadNoti} = GlobalProps();
+    const { user, logOut, userData } = UserAuth();
+    const { handleReadNoti,notifications} = GlobalProps();
     const notif = useRef();
     const navigate = useNavigate()
-    const [notis, setNotis] = useState(notifications);
+    const [notis, setNotis] = useState();
     useEffect(() => {
         setNotis(notifications);
+        if(notifications && notifications?.unread !== 0) {
+            toast('You got unread notifications!', {
+                icon: '🔔',
+                style: {
+                    minWidth: '250px',
+                    minHeight: '60px',
+                    fontSize: '20px',
+                    backgroundColor: 'var(--primary)',
+                    color: 'var(--primary-light) ',
+                },  
+              });   
+        }
+      
+    
     }, [notifications]);
+
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,
@@ -97,12 +112,13 @@ function Header() {
         }
     };
     
-
+  
 
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' rounded-3xl sml-max:h-16'}>
+            <Toaster position='bottom-right'/>
             <div className={cx('inner') + ' smu-max:justify-between'}>
-                <div onClick={() => {
+                <div onClick={() => {   
                   if(window.location.pathname === routes.home){
                     window.scrollTo({ top: 0, behavior: "smooth" });
                   }else{
@@ -253,4 +269,4 @@ function Header() {
     );
 }
 
-export default memo(Header);
+export default Header;

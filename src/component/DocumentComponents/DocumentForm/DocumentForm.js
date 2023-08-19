@@ -24,11 +24,13 @@ import { useDropzone } from 'react-dropzone';
 import { useEffect } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function DocumentForm({ onXmark,setLoading }) {
     const context = useContext(ThemeContext);
-    const { user, userData, fileUpload } = UserAuth();
+    const { user, userData } = UserAuth();
+    const {fileUpload} = GlobalProps()
     const [selectedCategories, setSelectedCategories] = useState([]);
     const title = useRef();
     const [file, setFile] = useState();

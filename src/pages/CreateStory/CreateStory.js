@@ -10,6 +10,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
@@ -58,6 +59,9 @@ function CreateStory() {
     const [videoPreview, setVideoPreview] = useState(null);
     const [counter, setCounter] = useState(0);
     const [loading, setLoading] = useState(false);
+    const context = useContext(ThemeContext);
+    const { user, userData } = UserAuth();
+    const {fileUpload} = GlobalProps()
     const navigate = useNavigate();
     const handleFileInputChange = (event) => {
         const file = event.target.files[0];
@@ -221,9 +225,7 @@ function CreateStory() {
         return docRef;
     };
 
-    const context = useContext(ThemeContext);
-
-    const { user, userData, fileUpload } = UserAuth();
+  
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>

@@ -23,6 +23,7 @@ import { UserAuth } from '~/contexts/authContext';
 import { adminId } from '~/utils/constantValue';
 import { extractFilePathFromURL } from '~/utils/extractPath';
 import { memo } from 'react';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 const savePostData = [
@@ -38,7 +39,8 @@ const savePostData = [
 
 function DocumentItem({ id, data,updateDocuments }) {
     const context = useContext(ThemeContext);
-    const { user,fileDelete } = UserAuth();
+    const { user } = UserAuth();
+    const { fileDelete} = GlobalProps()
     const [downloads,setDownloads] = useState(data.downloads)
     const [icon, setIcon] = useState(() => {
         if (data.type === 'csv') {

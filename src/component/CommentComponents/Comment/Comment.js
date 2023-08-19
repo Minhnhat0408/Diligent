@@ -33,13 +33,14 @@ import { db } from '~/firebase';
 import type from '~/config/typeNotification';
 import { memo } from 'react';
 import { extractFilePathFromURL } from '~/utils/extractPath';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 function Comment({ data, id, react }) {
     const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
     const [preview, setPreview] = useState(false);
-    const { fileDelete, sendReport } = UserAuth();
+    const {sendReport,fileDelete} = GlobalProps()
     const [text, setText] = useState(
         data.text.replace(regex, (spc) => {
             const id = spc.match(getIdInMentions)[0].substring(1);

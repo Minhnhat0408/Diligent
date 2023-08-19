@@ -12,10 +12,10 @@ import { Fragment } from 'react';
 import PrivateRoute from './routes/PrivateRoute';
 import { UserAuth } from './contexts/authContext';
 import useUnload from './hooks/useUnload';
-import NotFounded from './pages/NotFounded';
+import RootLayout from './layouts/RootLayout/RootLayout';
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="/">
+        <Route path="/" element={<RootLayout/>}>
             {publicRoutes.map((route, index) => {
                 const Page = route.component;
                 let Layout = DefaultLayout;
@@ -78,7 +78,8 @@ function App() {
         await logOut();
     });
 
-    return <RouterProvider router={router} />;
+    return  <RouterProvider router={router} />
+     
 }
 
 export default App;

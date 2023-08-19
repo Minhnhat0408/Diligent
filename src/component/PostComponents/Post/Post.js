@@ -41,6 +41,7 @@ import { MyComment } from '../../CommentComponents/MyComment';
 import PostForm from '../PostForm/PostForm';
 import { extractFilePathFromURL } from '~/utils/extractPath';
 import PostLoading from '../PostLoading/PostLoading';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
@@ -48,8 +49,9 @@ function Post() {
     const [isCommentVisible, setIsCommentVisible] = useState(false);
     const context = useContext(ThemeContext);
     const { deletePost, savePost, hidePost } = useContext(PostContext);
-    const { userData, user, sendReport, fileDelete, updateUserPrefers } = UserAuth();
+    const { userData, user, updateUserPrefers } = UserAuth();
     const [focusPost, setFocusPost] = useState(false);
+    const {sendReport,fileDelete} = GlobalProps()
     const navigate = useNavigate();
 const post = useContext(PostContext);
     const [text, setText] = useState('');

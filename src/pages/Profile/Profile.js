@@ -60,8 +60,8 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, userData, unbanUser, fileUpload, banUser,sendReport } = UserAuth();
-    const { handleAccept, handleDecline, unFriend,handleAddfr } = GlobalProps();
+    const { user, userData, unbanUser, banUser } = UserAuth();
+    const { handleAccept, handleDecline, fileUpload, unFriend,handleAddfr,sendReport } = GlobalProps();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);

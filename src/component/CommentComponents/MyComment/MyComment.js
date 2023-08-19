@@ -15,14 +15,16 @@ import { getIdInMentions, regex } from '~/utils/constantValue';
 import { db } from '~/firebase';
 import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import Ban from '~/component/Ban/Ban';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function MyComment({ tag = null, update = null }) {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
-    const { userData, user, fileUpload,updateUserPrefers } = UserAuth();
+    const { userData, user,updateUserPrefers } = UserAuth();
     const [imagePreview, setImagePreview] = useState(update ? update.data.image : '');
     const [mentionData, setMentionData] = useState([]);
+    const {fileUpload} = GlobalProps()
     const post = useContext(PostContext);
     const [ban, setBan] = useState(false);
     const [text, setText] = useState(() => {

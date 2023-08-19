@@ -20,12 +20,14 @@ import { UserAuth } from '~/contexts/authContext';
 import { ThemeContext } from '~/contexts/Context';
 import { useContext } from 'react';
 import { memo } from 'react';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function ChatInput({ roomId, setLoading }) {
     const [filePreview, setFilePreview] = useState({ others: [], media: [] });
     const [text, setText] = useState('');
-    const { user, fileUpload } = UserAuth();
+    const { user } = UserAuth();
+    const {fileUpload} = GlobalProps()
     const context = useContext(ThemeContext);
     const handleFileChange = (e) => {
         const newfile = e.target.files[0];

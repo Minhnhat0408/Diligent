@@ -12,11 +12,13 @@ import validator from '~/utils/validator';
 import { faAddressBook } from '@fortawesome/free-regular-svg-icons';
 import routes from '~/config/routes';
 import { ThemeContext } from '~/contexts/Context';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
 function UpdateProfile() {
-    const { userData, user, fileUpload } = UserAuth();
+    const { userData, user } = UserAuth();
+    const {fileUpload} = GlobalProps()
 
     const defaultValidate = {
         fullname: false,

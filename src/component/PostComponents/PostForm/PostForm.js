@@ -29,12 +29,13 @@ import { db } from '~/firebase';
 import { isImageUrl } from '~/utils/checkFile';
 import { isVideoUrl } from '~/utils/checkFile';
 import Ban from '../../Ban/Ban';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const context = useContext(ThemeContext);
-    const { userData, user, fileUpload, createPost, updateUserPrefers } = UserAuth();
-
+    const { userData, user,  updateUserPrefers } = UserAuth();
+    const { fileUpload,createPost } = GlobalProps()
     const handleClickCloseBox = () => {
         onXmark(false);
         setSelectedCategories([]);

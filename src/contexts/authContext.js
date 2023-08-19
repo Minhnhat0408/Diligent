@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
     createUserWithEmailAndPassword,
     signInWithEmailAndPassword,
@@ -10,47 +10,29 @@ import {
     addDoc,
     collection,
     doc,
-    getDocs,
     setDoc,
     serverTimestamp,
-    query,
-    where,
     getDoc,
     onSnapshot,
-    orderBy,
     updateDoc,
-    arrayRemove,
-    arrayUnion,
     deleteDoc,
     deleteField,
-    or,
-    limit,
-    startAfter,
-    documentId,
 } from 'firebase/firestore';
 import { Fprovider, Gprovider, auth } from '../firebase';
 import { db } from '../firebase';
 import image from '~/assets/images';
-import type from '~/config/typeNotification';
-import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
+
 import routes from '~/config/routes';
 import { RingLoader } from 'react-spinners';
-import { actionPrefersValue, adminId } from '~/utils/constantValue';
+import { actionPrefersValue } from '~/utils/constantValue';
 const UserContext = createContext();
 
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState();
-    const [stories, setStories] = useState({});
     const [loading, setLoading] = useState(true);
     const [userData, setUserData] = useState();
-    const [notifications, setNotifications] = useState();
-    const userRef = collection(db, 'users');
-
     const [usersStatus, setUsersStatus] = useState();
-    const storage = getStorage();
-    const metadata = {
-        contentType: ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/svg+xml'],
-    };
+
     const createUser = async (email, password) => {
         const response = await createUserWithEmailAndPassword(auth, email, password);
         const user = response.user;
@@ -73,27 +55,6 @@ export const AuthContextProvider = ({ children }) => {
         return response;
     };
 
-    useEffect(() => {
-        async function fetchStories() {
-            const q = query(collection(db, 'stories'), orderBy('time'));
-            const querySnapshot = await getDocs(q);
-            const docs = querySnapshot.docs.map((doc) => ({
-                id: doc.id,
-                data: doc.data(),
-            }));
-            let tmp = {};
-            docs.forEach((doc) => {
-                if (tmp[doc.data.user.id]) {
-                    tmp[doc.data.user.id].push(doc);
-                } else {
-                    tmp[doc.data.user.id] = [doc];
-                }
-            });
-            setStories(tmp);
-        }
-
-        fetchStories();
-    }, []);
     const signIn = async (email, password) => {
         await signInWithEmailAndPassword(auth, email, password);
         // // Signed in
@@ -205,85 +166,10 @@ export const AuthContextProvider = ({ children }) => {
             user_banUntil: deleteField(),
         });
     };
-    const fileDelete = async (path) => {
-        const storageRef = ref(storage, path);
-        await deleteObject(storageRef);
-    };
-    const fileUpload = ({ file, name, location = 'images', bg_upload = false }) => {
-        return new Promise((resolve, reject) => {
-            const storageRef = ref(storage, `${location}/${name}`);
-            const uploadTask = uploadBytesResumable(storageRef, file, metadata.contentType);
 
-            uploadTask.on(
-                'state_changed',
-                (snapshot) => {
-                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                    // console.log('Upload is ' + progress + '% done');
-                    switch (snapshot.state) {
-                        case 'paused':
-                            break;
-                        case 'running':
-                            break;
-                        default:
-                            break;
-                    }
-                },
-                (error) => {
-                    reject(error);
-                },
-                async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    if (bg_upload) {
-                        updateDoc(doc(db, 'users', user.uid), {
-                            user_bg: downloadURL,
-                        });
-                        resolve('succesful');
-                    } else {
-                        resolve({ url: downloadURL, name: name }); // resolve the Promise with the downloaded URL
-                    }
-                },
-            );
-        });
-    };
-    const createPost = async (files, title, text, tags, mentions, update = null) => {
-        let docRef = null;
-        if (update) {
-            docRef = await updateDoc(doc(db, 'posts', update.id), {
-                title: title,
-                text: text,
-                files: files,
-                tags: tags,
-                mentions: mentions,
-                updated: true,
-                hide: [],
-            });
-        } else {
-            docRef = await addDoc(collection(db, 'posts'), {
-                title: title,
-                text: text,
-                files: files,
-                tags: tags,
-                mentions: mentions,
-                user: {
-                    id: user.uid,
-                    avatar: userData.user_avatar,
-                    name: userData.user_name,
-                },
-                time: new Date(),
-                like: { count: 0, list: [] },
-                dislike: { count: 0, list: [] },
-                commentNumber: 0,
-                hide: [],
-                updated: false,
-            });
-        }
-
-        return docRef;
-    };
+    
     //save post handle
-    const deleteSavePost = async (id) => {
-        await deleteDoc(doc(db, 'users', user.uid, 'saves', id));
-    };
+    
     const getUserPrefers = async () => {
         const pref = await getDoc(doc(db, 'preferences', user.uid));
 
@@ -304,31 +190,6 @@ export const AuthContextProvider = ({ children }) => {
             }
         });
         await updateDoc(doc(db, 'preferences', user.uid), newPref);
-    };
-    //send report
-    const sendReport = async (content, id, rtype) => {
-        const q = query(
-            collection(db, 'users', adminId, 'notifications'),
-            where('sender.id', '==', user.uid),
-            where('url', '==', routes.post + id),
-            where('title', '==', type.report + content),
-        );
-        getDocs(q).then(async (result) => {
-            if (result.docs.length === 0) {
-                await addDoc(collection(db, 'users', adminId, 'notifications'), {
-                    title: type.report + content,
-                    url: rtype === 'post' ? routes.post + id : routes.user + id,
-                    sender: {
-                        id: user.uid,
-                        name: userData.user_name,
-                        avatar: userData.user_avatar,
-                    },
-                    type: 'report',
-                    time: serverTimestamp(),
-                    read: false,
-                });
-            }
-        });
     };
 
     useEffect(() => {
@@ -356,19 +217,6 @@ export const AuthContextProvider = ({ children }) => {
                 setUserData(result.data());
             });
 
-            // Subscribe to stories changes
-            const unsubscribeStories = onSnapshot(query(collection(db, 'stories'), orderBy('time')), (docs) => {
-                let tmp = {};
-                docs.forEach((doc) => {
-                    if (tmp[doc.data().user.id]) {
-                        tmp[doc.data().user.id].push({ id: doc.id, data: doc.data() });
-                    } else {
-                        tmp[doc.data().user.id] = [{ id: doc.id, data: doc.data() }];
-                    }
-                });
-                setStories(tmp);
-            });
-
             // Subscribe to usersStatus changes
             const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
                 const a = {};
@@ -386,29 +234,11 @@ export const AuthContextProvider = ({ children }) => {
                 }
             });
 
-            // Subscribe to notifications changes
-            const unsubscribeNotifications = onSnapshot(
-                query(collection(db, 'users', user.uid, 'notifications'), orderBy('time', 'desc')),
-                (docs) => {
-                    let data1 = [];
-                    let readNoti = 0;
-                    docs.forEach((doc) => {
-                        data1.push(doc.data());
-                        if (!doc.data().read) {
-                            readNoti++;
-                        }
-                    });
-                    setNotifications({ id: doc.id, data: data1, unread: readNoti });
-                },
-            );
-
             return () => {
                 // Clean up all the real-time listeners when the component unmounts or when the user changes
 
                 unsubscribeUserData();
-                unsubscribeStories();
                 unsubscribeStatus();
-                unsubscribeNotifications();
             };
         }
     }, [user]);
@@ -416,14 +246,7 @@ export const AuthContextProvider = ({ children }) => {
     const value = {
         user,
         userData,
-        stories,
-        notifications,
         usersStatus,
-        fileUpload,
-        fileDelete,
-        sendReport,
-        createPost,
-        deleteSavePost,
         banUser,
         unbanUser,
         signIn,

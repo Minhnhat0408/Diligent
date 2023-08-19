@@ -10,6 +10,7 @@ import { UserAuth } from '~/contexts/authContext';
 import routes from '~/config/routes';
 import Image from '~/component/Image/Image';
 import image from '~/assets/images';
+import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
 
@@ -37,7 +38,7 @@ function Stories() {
     };
 
     //get stories
-    const { stories } = UserAuth();
+    const { stories } = GlobalProps();
 
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' }) + ' smu-max:!min-w-full'}>

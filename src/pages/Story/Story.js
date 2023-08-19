@@ -12,11 +12,12 @@ import getTimeDiff from '~/utils/timeDiff';
 import { useNavigate, useParams } from 'react-router-dom';
 import routes from '~/config/routes';
 import { extractFilePathFromURL } from '~/utils/extractPath';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function Story() {
     const context = useContext(ThemeContext);
-    const {stories,fileDelete } = UserAuth();
+    const {stories,fileDelete} = GlobalProps()
     const { id } = useParams();
     const [myStories, setMyStories] = useState(null);
     const navigate = useNavigate();

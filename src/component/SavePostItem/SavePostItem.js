@@ -5,14 +5,14 @@ import { useNavigate } from 'react-router-dom';
 import routes from '~/config/routes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
-import { UserAuth } from '~/contexts/authContext';
 import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
+import { GlobalProps } from '~/contexts/globalContext';
 const cx = classNames.bind(styles);
 
 function SavePostItem({ savePostId, savePostData }) {
     const navigate = useNavigate()
-    const { deleteSavePost} = UserAuth();
+    const { deleteSavePost} = GlobalProps();
     const context = useContext(ThemeContext)
     return (
         <div className={cx('wrapper',{dark: context.theme === 'dark'})} >
