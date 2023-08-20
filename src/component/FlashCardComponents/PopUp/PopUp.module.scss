@@ -17,8 +17,12 @@
         background-color: var(--bg-dark-theme);
         color: var(--text-color-dark);
     }
+    &.dark .header {
+        color: var(--primary);
+    }
     .header {
         display: flex;
+        color: var(--primary-light);
         justify-content: space-between;
         margin-bottom: 4px;
 
@@ -30,6 +34,7 @@
         .out {
             width: 40px;
             height: 40px;
+            font-size: 20px;
             border-radius: 50%;
             display: flex;
             justify-content: center;

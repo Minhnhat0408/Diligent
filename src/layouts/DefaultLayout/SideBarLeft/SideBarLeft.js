@@ -25,20 +25,16 @@ function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
     const { user } = UserAuth();
-    const highlightedDates = [
-        new Date('2023-07-17'),
-        new Date('2023-07-18'),
-        new Date('2023-07-19'),
-      ];
+    const highlightedDates = [new Date('2023-07-17'), new Date('2023-07-18'), new Date('2023-07-19')];
     const dateHasHighlight = (date) => {
         return highlightedDates.some((highlightedDate) => {
-          return (
-            date.getDate() === highlightedDate.getDate() &&
-            date.getMonth() === highlightedDate.getMonth() &&
-            date.getFullYear() === highlightedDate.getFullYear()
-          );
+            return (
+                date.getDate() === highlightedDate.getDate() &&
+                date.getMonth() === highlightedDate.getMonth() &&
+                date.getFullYear() === highlightedDate.getFullYear()
+            );
         });
-      };
+    };
     return (
         <aside
             className={
@@ -88,12 +84,12 @@ function SideBarLeft() {
                 />
 
                 <SidebarMenuItems
-                    icon={<FontAwesomeIcon icon={faClipboardList}/>}
+                    icon={<FontAwesomeIcon icon={faClipboardList} />}
                     title="To-do List"
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
                     onClick={() => {
-                        context.setTodoList(true)
+                        context.setTodoList(true);
                     }}
                 />
             </div>
@@ -101,8 +97,10 @@ function SideBarLeft() {
             {/* More pages */}
             <div className={cx('menu-wrapper')}>
                 <h4 className={cx('menu-header')}>Daily Learning</h4>
-                <Calendar tileClassName={({ date }) =>
-        dateHasHighlight(date) ? 'highlight' : null } className={context.theme === 'dark' && 'dark'} />
+                <Calendar
+                    tileClassName={({ date }) => (dateHasHighlight(date) ? 'highlight' : null)}
+                    className={context.theme === 'dark' ? 'dark' :''}
+                />
             </div>
         </aside>
     );

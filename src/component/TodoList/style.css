@@ -1,0 +1,36 @@
+.order-box,
+.item {
+  list-style: none;
+  font-weight: 600;
+  font-size: 24px;
+}
+
+.order-box::-webkit-scrollbar {
+  visibility:hidden;
+  display: none;
+}
+
+.item {
+  border-radius: 10px;
+  margin-bottom: 10px;
+  width: 100%;
+  padding: 15px 18px;
+  position: relative;
+  background: white;
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 300px;
+  background: #fff;
+}
+
+

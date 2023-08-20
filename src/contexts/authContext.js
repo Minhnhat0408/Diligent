@@ -198,13 +198,14 @@ export const AuthContextProvider = ({ children }) => {
             } else {
                 setUser(null);
             }
+            setLoading(false);
         });
-
+   
         return () => {
             unsubscribeAuth();
         };
     }, []);
-    console.log('rerender')
+   
     useEffect(() => {
         // Check if the user is logged in before setting up other real-time listeners
 
@@ -214,7 +215,7 @@ export const AuthContextProvider = ({ children }) => {
                 setUserData(result.data());
               
             });
-            setLoading(false);
+     
             // Subscribe to usersStatus changes
             const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
                 const a = {};

@@ -60,7 +60,7 @@ function FlashCard() {
         fetchDeck();
     }, [id]);
 
-    console.log(cards);
+
     return (    
         <>
             {deck && (

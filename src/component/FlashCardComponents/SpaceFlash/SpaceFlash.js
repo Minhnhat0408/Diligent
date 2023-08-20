@@ -10,7 +10,7 @@ import {
     faGear,
     faInfoCircle,
 } from '@fortawesome/free-solid-svg-icons';
-import history from 'history/browser';
+
 import { Toaster } from 'react-hot-toast';
 import { ThemeContext } from '~/contexts/Context';
 import FlipCard from '~/component/FlipCard';
@@ -28,7 +28,7 @@ const SpaceFlash = ({ cards }) => {
     const allCards = useRef(cards);
     const [queueCards, setQueueCards] = useState();
     const [animation, setAnimation] = useState('');
-    const context = useContext(ThemeContext);
+    const context = useContext( ThemeContext);
     const { user } = UserAuth();
     const [timers, setTimers] = useState([]);
 
@@ -41,7 +41,11 @@ const SpaceFlash = ({ cards }) => {
         setDisplayCards(cards);
         allCards.current = cards;
     }, [cards]);
-
+    useEffect(() => {
+        return () => {
+            handleSaveProgress()
+        }
+    },[])
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
         if (animation !== '') {
@@ -74,6 +78,7 @@ const SpaceFlash = ({ cards }) => {
     const handleSaveProgress = () => {
         return new Promise(async (resolve, reject) => {
             try {
+                console.log(graduated.current)
                 for (const card of graduated.current) {
                     allCards.current = allCards.current.filter((c) => c.id !== card.id);
                     if (card.progress) {
@@ -106,7 +111,7 @@ const SpaceFlash = ({ cards }) => {
                         });
                     }
                 }
-
+            
                 resolve('Progress saved!');
             } catch (error) {
                 console.log(error);

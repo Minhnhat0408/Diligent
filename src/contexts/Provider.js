@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UserAuth } from './authContext';
 import { PostContext, ThemeContext } from './Context';
 import { arrayUnion, deleteDoc, doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
@@ -11,12 +11,12 @@ export function ThemeProvider({ children }) {
         return localStorage.getItem('theme') ? localStorage.getItem('theme') : 'dark'
     });
     const [todoList,setTodoList] = useState(false)
+ 
     const toggleTheme = async () => {
         const newTheme = theme === 'light' ? 'dark' : 'light';
         setTheme(newTheme);
         localStorage.setItem('theme', newTheme);
     };
-
     return (
         <ThemeContext.Provider value={{ theme:  theme, toggleTheme,todoList,setTodoList }}>
             {todoList && <TodoList/>}

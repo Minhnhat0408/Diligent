@@ -104,15 +104,11 @@ const post = useContext(PostContext);
             let newPref = {};
             if (like === 1) {
                 lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
-
+                post.data.like.list = post.data.like.list.filter((p) => p.id !== user.uid)
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
-                        list: arrayRemove({
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }),
+                        list: post.data.like.list
                     },
                 });
             } else if (dislike === 1) {
@@ -125,6 +121,7 @@ const post = useContext(PostContext);
                         newPref[tag] = 100;
                     }
                 });
+                post.data.dislike.list = post.data.dislike.list.filter((p) => p.id !== user.uid)
                 await updateDoc(doc(db, 'posts', post.id), {
                     like: {
                         count: lik,
@@ -137,13 +134,10 @@ const post = useContext(PostContext);
                             },
                         ],
                     },
+                    
                     dislike: {
                         count: dis,
-                        list: arrayRemove({
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }),
+                        list: post.data.dislike.list
                     },
                 });
             } else if (like === 0 && dislike === 0) {
@@ -255,6 +249,7 @@ const post = useContext(PostContext);
             if (like === 1) {
                 lik = post.data.react === 1 ? post.data.like.count - 1 : post.data.like.count;
                 dis = post.data.react === -1 ? post.data.dislike.count : post.data.dislike.count + 1;
+                post.data.like.list = post.data.like.list.filter((p) => p.id !== user.uid)
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
@@ -269,11 +264,7 @@ const post = useContext(PostContext);
                     },
                     like: {
                         count: lik,
-                        list: arrayRemove({
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }),
+                        list: post.data.like.list
                     },
                 });
                 post.data.tags.forEach((tag) => {
@@ -285,14 +276,12 @@ const post = useContext(PostContext);
                 });
             } else if (dislike === 1) {
                 dis = post.data.react === -1 ? post.data.dislike.count - 1 : post.data.dislike.count;
+                post.data.dislike.list = post.data.dislike.list.filter((p) => p.id !== user.uid)
+                
                 await updateDoc(doc(db, 'posts', post.id), {
                     dislike: {
                         count: dis,
-                        list: arrayRemove({
-                            id: user.uid,
-                            name: userData.user_name,
-                            ava: userData.user_avatar,
-                        }),
+                        list:post.data.dislike.list
                     },
                 });
             } else {
@@ -469,7 +458,12 @@ const post = useContext(PostContext);
                                                     icon={faThumbsUp}
                                                     className={cx('icon', { active: like === 1 })} //tricky logic
                                                     onClick={() => {
-                                                        handleClickLike();
+                                                        if(user){
+                                                            handleClickLike();
+                                                        }else{
+                                                            navigate(routes.login)
+                                                        }
+                                                    
                                                     }}
                                                 />
                                                 <p className={cx('nums')}>
@@ -484,7 +478,12 @@ const post = useContext(PostContext);
                                                     icon={faThumbsDown}
                                                     className={cx('icon', { active: dislike === 1 })}
                                                     onClick={() => {
-                                                        handleClickDislike();
+                                                   
+                                                        if(user){
+                                                            handleClickDislike();
+                                                        }else{
+                                                            navigate(routes.login)
+                                                        }
                                                     }}
                                                 />
                                                 <p className={cx('nums')}>
@@ -696,7 +695,12 @@ const post = useContext(PostContext);
                                                                 icon={faThumbsUp}
                                                                 className={cx('icon', { active: like === 1 })} //tricky logic
                                                                 onClick={() => {
-                                                                    handleClickLike();
+                                                               
+                                                                    if(user){
+                                                                        handleClickLike();
+                                                                    }else{
+                                                                        navigate(routes.login)
+                                                                    }
                                                                 }}
                                                             />
                                                             <p className={cx('nums')}>
@@ -711,7 +715,12 @@ const post = useContext(PostContext);
                                                                 icon={faThumbsDown}
                                                                 className={cx('icon', { active: dislike === 1 })}
                                                                 onClick={() => {
-                                                                    handleClickDislike();
+                                                                    if(user){
+                                                            
+                                                                        handleClickDislike();
+                                                                    }else{
+                                                                        navigate(routes.login)
+                                                                    }
                                                                 }}
                                                             />
                                                             <p className={cx('nums')}>
@@ -877,7 +886,12 @@ const post = useContext(PostContext);
                                             icon={faThumbsUp}
                                             className={cx('icon', { active: like === 1 })} //tricky logic
                                             onClick={() => {
-                                                handleClickLike();
+                                             
+                                                if(user){
+                                                    handleClickLike();
+                                                }else{
+                                                    navigate(routes.login)
+                                                }
                                             }}
                                         />
                                         <p className={cx('nums')}>
@@ -892,7 +906,11 @@ const post = useContext(PostContext);
                                             icon={faThumbsDown}
                                             className={cx('icon', { active: dislike === 1 })}
                                             onClick={() => {
-                                                handleClickDislike();
+                                                if(user){
+                                                    handleClickDislike();
+                                                }else{
+                                                    navigate(routes.login)
+                                                }
                                             }}
                                         />
                                         <p className={cx('nums')}>

@@ -19,7 +19,7 @@ function FlipCard({
     useEffect(() => {
         
         function handleKeyDown(e) {
-            console.log(e.keyCode)
+      
             if (e.keyCode === 32) {
                 setFl(!fl)
             } 

@@ -260,7 +260,7 @@ function Profile() {
         navigate(routes.chatroom + tmp);
     };
 
-    console.log(((pageUser?.user_status === 'ban' && !user?.isAdmin) || ban) || !user,'fefe')
+    // console.log(((pageUser?.user_status === 'ban' && !user?.isAdmin) || ban) || !user,'fefe')
     return (
         <>
             {!pageUser ? (

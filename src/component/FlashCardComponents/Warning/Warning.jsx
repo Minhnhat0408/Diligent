@@ -13,8 +13,8 @@ function Warning({ setShowWarning,handleDelete,id }) {
         <div className="pop-up">
             <div
                 className={
-                    'bg-[var(--light-theme)] w-[30vw] flex flex-col rounded-[15px] items-center text-[var(--text-color)]' +
-                    (context.theme === 'dark' ? ' !bg-[var(--dark-theme)] !text-[var(--text-color-dark)] ' : '')
+                    'bg-[var(--light-theme)] w-[30vw] flex flex-col rounded-[15px] items-center text-[var(--primary-light)]' +
+                    (context.theme === 'dark' ? ' !bg-[var(--dark-theme)] !text-[var(--primary)] ' : '')
                 }
             >
                 <div className="flex w-full justify-between p-2 border-b-[1px] border-[var(--text-color-dark)]">

@@ -32,7 +32,6 @@ function Guide({ setShowGuide }) {
                     <p className='pb-2'> - Click on the right side of the card or (➡️ keyboard) when remember.</p>
                     <p className='pb-2'> - Click on the icon ↩️ or (Z keyboard) to undo.</p>
                     <p className='pb-2'> - Click save to save your progress.</p>
-                    <p className='text-center text-xl text-red-400 italic'> Don't forget to save the progress before you leave .</p>
                     <p className='text-center mt-2 text-sm italic'> - Power by SRS algorithm -</p>
            
 
