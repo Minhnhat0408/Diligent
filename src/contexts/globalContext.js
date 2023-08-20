@@ -17,6 +17,7 @@ import {
     serverTimestamp,
     onSnapshot,
     deleteDoc,
+    and,
 } from 'firebase/firestore';
 import type from '~/config/typeNotification';
 import { db } from '../firebase';
@@ -33,7 +34,7 @@ export const GlobalContextProvider = ({ children }) => {
     const [posts, setPosts] = useState([]);
     const [stories, setStories] = useState({});
     const [lastPost, setLastPost] = useState(null);
-    const { user, userData, getUserPrefers,listFr } = UserAuth();
+    const { user, userData, getUserPrefers, listFr } = UserAuth();
     const [contacts, setContacts] = useState([]);
     const [notifications, setNotifications] = useState();
     const suggestedFr = useRef([]);
@@ -48,58 +49,60 @@ export const GlobalContextProvider = ({ children }) => {
     useEffect(() => {
         if (user) {
             const fetchUserPosts = async () => {
-                    let listFr = userData.user_friends.map((d) => d.id);
-                    const userPreferences = await getUserPrefers();
-                    if (userPreferences.length === 0) {
-                        userPreferences.push('nothing');
-                    }
-                    if (listFr.length === 0) {
-                        listFr.push('nothing');
-                    }
-                    console.log(userPreferences);
-                    listFr.push(user.uid);
-                    let q = query(
-                        collection(db, 'posts'),
-                        or(where('user.id', 'in', listFr), where('tags', 'array-contains-any', userPreferences)),
-                        orderBy('time', 'desc'),
-                        limit(5),
-                    );
-                    let docs = await getDocs(q);
+                let listFr = userData.user_friends.map((d) => d.id);
+                const userPreferences = await getUserPrefers();
+                if (userPreferences.length === 0) {
+                    userPreferences.push('nothing');
+                }
+                if (listFr.length === 0) {
+                    listFr.push('nothing');
+                }
+                console.log(userPreferences);
+                listFr.push(user.uid);
+                let q = query(
+                    collection(db, 'posts'),
+                    or(where('user.id', 'in', listFr), where('tags', 'array-contains-any', userPreferences)),
+                    orderBy('time', 'desc'),
+                    limit(5),
+                );
+                let docs = await getDocs(q);
 
-                    if (docs.docs.length === 0) {
-                        q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
-                        docs = await getDocs(q);
-                    }
-                    const newData = docs.docs.map((doc) => {
+                if (docs.docs.length === 0) {
+                    q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
+                    docs = await getDocs(q);
+                }
+                let newData = [];
+                docs.docs.forEach((doc) => {
+                    if(!doc.data().hide.includes(user.uid)) {
                         if (
                             doc.data().like.list.some((u) => {
                                 return u.id === user.uid;
                             })
                         ) {
-                            return { id: doc.id, data: { ...doc.data(), react: 1 } }; // 1 mean like
+                            newData.push({ id: doc.id, data: { ...doc.data(), react: 1 } }); // 1 mean like
                         } else if (
                             doc.data().dislike.list.some((u) => {
                                 return u.id === user.uid;
                             })
                         ) {
-                            return { id: doc.id, data: { ...doc.data(), react: -1 } }; // -1 mean dislike
+                            newData.push({ id: doc.id, data: { ...doc.data(), react: -1 } }); // -1 mean dislike
                         } else {
-                            return { id: doc.id, data: { ...doc.data(), react: 0 } }; // 0 mean neutral
+                            newData.push({ id: doc.id, data: { ...doc.data(), react: 0 } }); // 0 mean neutral
                         }
-                    });
-
-                    setPosts(newData);
-
-                    // Update the last post for pagination
-                    if (docs.docs.length > 0) {
-                        setLastPost(docs.docs[docs.docs.length - 1]);
                     }
-                
+                    
+                });
+              
+                setPosts(newData);
+
+                // Update the last post for pagination
+                if (docs.docs.length > 0) {
+                    setLastPost(docs.docs[docs.docs.length - 1]);
+                }
             };
-            if(userData) {
+            if (userData) {
                 fetchUserPosts();
             }
-        
         } else {
             const fetchPosts = async () => {
                 const q = query(collection(db, 'posts'), orderBy('time', 'desc'), limit(5));
@@ -113,8 +116,8 @@ export const GlobalContextProvider = ({ children }) => {
             };
             fetchPosts();
         }
-    }, [user, refreshPosts,userData]);
-    useEffect(() => {   
+    }, [user, refreshPosts, userData]);
+    useEffect(() => {
         async function fetchStories() {
             const q = query(collection(db, 'stories'), orderBy('time'));
             const querySnapshot = await getDocs(q);
@@ -197,7 +200,7 @@ export const GlobalContextProvider = ({ children }) => {
                 });
                 setStories(tmp);
             });
-                
+
             return () => {
                 unsubscribeMessagesIconming();
                 unsubscribeNotifications();

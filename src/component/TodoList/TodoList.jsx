@@ -11,6 +11,7 @@ import {
     Timestamp,
     addDoc,
     collection,
+    deleteDoc,
     doc,
     getDocs,
     orderBy,
@@ -22,12 +23,11 @@ import {
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import toast from 'react-hot-toast';
-
-// const currentDate = new Date();
-
-// // Set the time of the current date to 00:00:00
-// currentDate.setHours(0, 0, 0, 0);
-// ,where('time','>=',Timestamp.fromDate(currentDate)),where('time','<',Timestamp.fromDate(new Date(currentDate.getTime() + 24 * 60 * 60 * 1000)))
+import StreakModal from '../StreakModal/StreakModal';
+const currentDate = new Date();
+console.log('hello')
+// Set the time of the current date to 00:00:00
+currentDate.setHours(0, 0, 0, 0);
 function TodoList() {
     const { theme, setTodoList } = useContext(ThemeContext);
     const [guide, setGuide] = useState(false);
@@ -35,9 +35,12 @@ function TodoList() {
     const td = useRef([]); // replica of todo for the unmount job
     const [archived, setArchived] = useState([]);
     const task = useRef();
+    const [streak,setStreak] = useState(false)
     const { user } = UserAuth();
+    const change = useRef(0);
     useEffect(() => {
         if (user) {
+            
             const fetchTasks = async () => {
                 const q = query(
                     collection(db, 'tasks'),
@@ -53,51 +56,57 @@ function TodoList() {
                     orderBy('time'),
                 );
                 const b = await getDocs(q2);
-                const td = [];
+                const tod = [];
                 const ar = [];
                 a.docs.forEach((d) => {
-                    td.push({ id: d.id, title: d.data().title, order: d.data().order });
+                    if(d.data().time.toMillis() < new Date(currentDate)) {
+                        deleteDoc(doc(db,'tasks',d.id))
+                    }   
+                    tod.push({ id: d.id, title: d.data().title, order: d.data().order });
                 });
                 b.docs.forEach((d) => {
                     ar.push({ id: d.id, title: d.data().title, order: d.data().order });
                 });
-                setTodo(td);
+            
+                setTodo(tod);
                 setArchived(ar);
             };
             fetchTasks();
             return () => {
-                toast.promise(
-                    saveTasks(),
-                    {
-                        loading: 'Saving...',
-                        success: <b>Todo List saved</b>,
-                        error: <b>Could not save</b>,
-                    },
-                    {
-                        style: {
-                            minWidth: '250px',
-                            minHeight: '60px',
-                            fontSize: '20px',
-                            backgroundColor: 'var(--primary)',
-                            color: 'var(--primary-light) ',
+                if (change.current > 2) {
+                    toast.promise(
+                        saveTasks(),
+                        {
+                            loading: 'Saving...',
+                            success: <b>Todo List saved</b>,
+                            error: <b>Could not save</b>,
                         },
-                        success: {
-                            duration: 3000,
-                            icon: '🔥',
-                        },
-                        error: {
-                            duration: 3000,
-                            icon: '❌',
+                        {
                             style: {
                                 minWidth: '250px',
                                 minHeight: '60px',
                                 fontSize: '20px',
                                 backgroundColor: 'var(--primary)',
-                                color: 'red',
+                                color: 'var(--primary-light) ',
+                            },
+                            success: {
+                                duration: 3000,
+                                icon: '🔥',
+                            },
+                            error: {
+                                duration: 3000,
+                                icon: '❌',
+                                style: {
+                                    minWidth: '250px',
+                                    minHeight: '60px',
+                                    fontSize: '20px',
+                                    backgroundColor: 'var(--primary)',
+                                    color: 'red',
+                                },
                             },
                         },
-                    },
-                );
+                    );
+                }
             };
         }
     }, [user]);
@@ -129,17 +138,24 @@ function TodoList() {
     };
     useEffect(() => {
         td.current = todo;
+        change.current++;
     }, [todo]);
-
+ 
     return (
         <div className="pop-up">
+            <StreakModal display={streak} />
             <div
                 className={
                     'w-[40vw] p-3 pb-5 flex flex-col items-center  bg-white shadow-[2px_2px_5px_#888] rounded-[20px] text-[var(--text-color)] max-h-[90vh] ' +
                     (theme === 'dark' ? ' !bg-[var(--dark-theme)] text-[var(--text-color-dark)] shadow-none' : '')
                 }
             >
-                <div className={'flex justify-between mb-1 w-full text-[var(--primary-light)] ' + (theme === 'dark' ? ' !text-[var(--primary)] ' : '')}>
+                <div
+                    className={
+                        'flex justify-between mb-1 w-full text-[var(--primary-light)] ' +
+                        (theme === 'dark' ? ' !text-[var(--primary)] ' : '')
+                    }
+                >
                     <div
                         onClick={() => {
                             setGuide(!guide);
@@ -169,12 +185,11 @@ function TodoList() {
                     />
                     <Button
                         onClick={() => {
-                            if(task.current.value) {
+                            if (task.current.value) {
                                 setTodo((prev) => {
                                     return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
                                 });
                             }
-                            
                         }}
                         primary
                         xl
@@ -198,10 +213,26 @@ function TodoList() {
                                 </p>
                                 <p className="flex items-center mb-2">
                                     <div className="bg-red-300 w-4 h-4 rounded-sm mr-2"> </div> The red section is where
-                                    the archived tasks (tasks that can be done in a day) is stored  
+                                    the archived tasks (tasks that can be done in a day) is stored
                                 </p>
-                                <p className={"font-bold italic text-[var(--primary-light)] "+ (theme === 'dark' ? ' !text-[var(--primary)] ' : '')}> Everyday you will add task and check it in here.</p>
-                                <p className={"font-bold italic text-[var(--primary-light)] " + (theme === 'dark' ? ' !text-[var(--primary)] ' : '')} > If you finish all todo tasks, that day will be a streak day.</p>
+                                <p
+                                    className={
+                                        'font-bold italic text-[var(--primary-light)] ' +
+                                        (theme === 'dark' ? ' !text-[var(--primary)] ' : '')
+                                    }
+                                >
+                                    {' '}
+                                    Everyday you will add task and check it in here.
+                                </p>
+                                <p
+                                    className={
+                                        'font-bold italic text-[var(--primary-light)] ' +
+                                        (theme === 'dark' ? ' !text-[var(--primary)] ' : '')
+                                    }
+                                >
+                                    {' '}
+                                    If you finish all todo tasks, that day will be a streak day.
+                                </p>
                                 <p className="text-center ">-- Hover on the button for more detail --</p>
                             </div>
                         </motion.div>
@@ -226,6 +257,7 @@ function TodoList() {
                                     item={item}
                                     status="todo"
                                     handleTodo={setTodo}
+                                    setStreak={setStreak}
                                     handleArchived={setArchived}
                                 />
                             ))}

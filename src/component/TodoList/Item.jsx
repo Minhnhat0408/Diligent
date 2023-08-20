@@ -8,12 +8,15 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
+import { UserAuth } from '~/contexts/authContext';
+import { formattedDate } from '~/utils/getStreak';
 
-export const Item = ({ item, handleTodo, handleArchived, status }) => {
+export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) => {
     const y = useMotionValue(0);
     const boxShadow = useRaisedShadow(y);
     const dragControls = useDragControls();
     const context = useContext(ThemeContext);
+    const { user, userData } = UserAuth();
     const handleSetArchived = async () => {
         if (item.id) {
             await updateDoc(doc(db, 'tasks', item.id), {
@@ -33,8 +36,13 @@ export const Item = ({ item, handleTodo, handleArchived, status }) => {
             await deleteDoc(doc(db, 'tasks', item.id));
         }
         if (status === 'todo') {
-            handleTodo((prev) => {
+            handleTodo(async (prev) => {
                 const newList = prev.filter((i) => i.order !== item.order);
+                if (newList.length === 0) {
+                    await handleAddStreak();
+                    setStreak(true);
+                }
+
                 return newList;
             });
         } else {
@@ -43,6 +51,13 @@ export const Item = ({ item, handleTodo, handleArchived, status }) => {
                 return newList;
             });
         }
+    };
+    const handleAddStreak = async () => {
+        
+        const newStreak = userData?.user_streak ? [...userData.user_streak, formattedDate()] : [formattedDate()];
+        await updateDoc(doc(db, 'users', user.uid), {
+            user_streak: newStreak,
+        });
     };
     const handleDelete = async () => {
         if (status === 'todo') {

@@ -25,7 +25,7 @@ function Notification({ data, time, ...props }) {
     useEffect(() => {
         if (data.type === 'comment'|| data.type === 'reply') {
             icon.current = faComment;
-        } else if (data.type === 'like') {
+        } else if (data.type === 'like' || data.type === 'likecmt') {
             icon.current = faThumbsUp;
         } else if (data.type === 'dislike') {
             icon.current = faThumbsDown;

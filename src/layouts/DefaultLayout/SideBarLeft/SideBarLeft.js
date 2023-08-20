@@ -24,16 +24,23 @@ const cx = classNames.bind(styles);
 function SideBarLeft() {
     const navigate = useNavigate();
     const context = useContext(ThemeContext);
-    const { user } = UserAuth();
-    const highlightedDates = [new Date('2023-07-17'), new Date('2023-07-18'), new Date('2023-07-19')];
+    const { user,userData } = UserAuth();
     const dateHasHighlight = (date) => {
-        return highlightedDates.some((highlightedDate) => {
+        let newDateArr =[]
+        if(userData?.user_streak) {
+            newDateArr = userData.user_streak.map((d) => {
+               return new Date(d)
+            })
+            
+        }
+        return newDateArr.some((highlightedDate) => {
             return (
                 date.getDate() === highlightedDate.getDate() &&
                 date.getMonth() === highlightedDate.getMonth() &&
                 date.getFullYear() === highlightedDate.getFullYear()
             );
         });
+       
     };
     return (
         <aside

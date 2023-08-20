@@ -134,7 +134,7 @@ $time-color: #adb5bd;
 
 .selected-category {
     display: flex;
-
+    flex-wrap:wrap;
     li {
         padding: 1px 8px;
         margin-right: 10px;
@@ -142,6 +142,7 @@ $time-color: #adb5bd;
         color: var(--primary-light);
         border-radius: 16px;
         list-style-type: none;
+        margin-bottom: 4px;
         font-size: 14px;
     }
 }

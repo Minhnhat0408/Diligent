@@ -122,7 +122,7 @@ function Comment({ data, id, react }) {
                     where('type', '==', 'likecmt'),
                 );
                 getDocs(q).then(async (result) => {
-                    if (result.docs.length === 0) {
+                    if (result.docs.length ===   0) {
                         await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
                             title: type.likecmt,
                             url: routes.post + post.id,

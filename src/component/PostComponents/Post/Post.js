@@ -53,7 +53,7 @@ function Post() {
     const [focusPost, setFocusPost] = useState(false);
     const {sendReport,fileDelete} = GlobalProps()
     const navigate = useNavigate();
-const post = useContext(PostContext);
+    const post = useContext(PostContext);
     const [text, setText] = useState('');
     const [updatePost, setUpdatePost] = useState(false);
     const [like, setLike] = useState(post.data.react === 1 ? 1 : 0);
@@ -215,6 +215,7 @@ const post = useContext(PostContext);
             case 'hide':
                 hidePost(post.id);
                 updateUserPrefers('hide', post.data.tags);
+                post.setUpdate((prev) => prev.filter((data) => data.id !== post.id));
                 break;
             case 'save':
                 savePost(post.id, post.data);

@@ -76,9 +76,9 @@ function Header() {
             title: userData?.user_name || 'View Profile',
             to: routes.user + user?.uid,
         },
+        { icon: <FontAwesomeIcon icon={faListCheck} />, title: 'Todo List', type: 'todo' },
         { icon: <FontAwesomeIcon icon={faAddressCard} />, title: 'Update profile', to: routes.userUpdate },
         { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
-        { icon: <FontAwesomeIcon icon={faListCheck} />, title: 'Todo List', type: 'todo' },
         ...MENU_ITEM,
         { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
     ];
