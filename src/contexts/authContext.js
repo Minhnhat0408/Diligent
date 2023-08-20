@@ -80,14 +80,14 @@ export const AuthContextProvider = ({ children }) => {
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
-                user_dob: data.dob,
-                user_name: data.fullname.trimEnd(),
-                user_gender: data.gender,
-                user_phone: data.phone.trimEnd(),
-                user_address: data.address.trimEnd(),
-                user_bio: data.bio.trimEnd(),
-                user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-            });
+                    user_dob: data.dob,
+                    user_name: data.fullname.trimEnd(),
+                    user_gender: data.gender,
+                    user_phone: data.phone.trimEnd(),
+                    user_address: data.address.trimEnd(),
+                    user_bio: data.bio.trimEnd(),
+                    user_avatar: data.avatar || user?.photoURL || image.userUndefined,
+                });
         }
     };
     const facebookSignIn = async () => {
@@ -114,11 +114,7 @@ export const AuthContextProvider = ({ children }) => {
 
             // navigate(routes.updateInfo)
             return false; // false means fresh account
-        } else {
-            await updateDoc(doc(db, 'status', repuser.uid), {
-                user_status: 'online',
-            });
-        }
+        } 
         return true;
     };
     const googleSignIn = async () => {
@@ -145,10 +141,6 @@ export const AuthContextProvider = ({ children }) => {
 
             // navigate(routes.updateInfo)
             return false; // false means fresh account
-        } else {
-            await updateDoc(doc(db, 'status', repuser.uid), {
-                user_status: 'online',
-            });
         }
         return true;
     };
@@ -200,12 +192,33 @@ export const AuthContextProvider = ({ children }) => {
             }
             setLoading(false);
         });
-   
+        const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
+            const a = {};
+            stats.forEach((s) => {
+                a[s.id] = s.data();
+            });
+            setUsersStatus(a);
+            if(user){
+                if (a[user.uid].user_status !== 'online') {
+                    if (a[user.uid]?.user_banUntil && a[user.uid].user_banUntil.toMillis() < new Date()) {
+                        console.log(a[user.uid]?.user_banUntil)
+                        console.log(a[user.uid].user_banUntil.toMillis() < new Date())
+                        await updateDoc(doc(db, 'users', user.uid), {
+                            user_status: 'online',
+                            user_banUntil: deleteField(),
+                        });
+                    }
+                }
+            }
+            
+        });
+
         return () => {
             unsubscribeAuth();
+            unsubscribeStatus();
         };
     }, []);
-   
+
     useEffect(() => {
         // Check if the user is logged in before setting up other real-time listeners
 
@@ -213,31 +226,14 @@ export const AuthContextProvider = ({ children }) => {
             // Subscribe to userData changes
             const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
                 setUserData(result.data());
-              
             });
-     
+
             // Subscribe to usersStatus changes
-            const unsubscribeStatus = onSnapshot(collection(db, 'status'), async (stats) => {
-                const a = {};
-                stats.forEach((s) => {
-                    a[s.id] = s.data();
-                });
-                setUsersStatus(a);
-                if (a[user.uid].user_status !== 'online') {
-                    if (a[user.uid]?.user_banUntil && a[user.uid].user_banUntil.toMillis() < new Date()) {
-                        await updateDoc(doc(db, 'users', user.uid), {
-                            user_status: 'online',
-                            user_banUntil: deleteField(),
-                        });
-                    }
-                }
-            });
 
             return () => {
                 // Clean up all the real-time listeners when the component unmounts or when the user changes
 
                 unsubscribeUserData();
-                unsubscribeStatus();
             };
         }
     }, [user]);

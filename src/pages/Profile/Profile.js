@@ -60,20 +60,20 @@ const cx = classNames.bind(styles);
 
 function Profile() {
     const { id } = useParams();
-    const { user, userData, unbanUser, banUser } = UserAuth();
-    const { handleAccept, handleDecline, fileUpload, unFriend,handleAddfr,sendReport } = GlobalProps();
+    const { user, userData, unbanUser, banUser, usersStatus } = UserAuth();
+    const { handleAccept, handleDecline, fileUpload, unFriend, handleAddfr, sendReport } = GlobalProps();
     const [disabled, setDisabled] = useState('Add friend');
     const [pageUser, setPageUser] = useState(undefined);
     const [previewAvatar, setPreviewAvatar] = useState(false);
     const [userPosts, setUserPosts] = useState([]);
-    const [ban, setBan] = useState(userData?.user_status === 'ban');
+    const [ban, setBan] = useState(false);
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const [lastPost, setLastPost] = useState(null);
     const [refresh, setReFresh] = useState(false);
-    const [star,setStar] = useState(false)
+    const [star, setStar] = useState(false);
     useEffect(() => {
         if (user?.uid !== id) {
             async function fetchPageUser() {
@@ -103,16 +103,22 @@ function Profile() {
                         setDisabled('Add Friend');
                     }
                 }
-                setStar((prev) => {return u.data().user_ratings.includes(user.uid)})
+                if (usersStatus && user) {
+                    setBan(usersStatus[user.uid] === 'ban');
+                }
+                if (user) {
+                    setStar((prev) => {
+                        return u.data().user_ratings.includes(user.uid);
+                    });
+                }
             }
-            if(userData) {
-                fetchPageUser();
-            }
-       
+
+            fetchPageUser();
         } else {
             setPageUser(userData);
         }
     }, [id, userData]);
+    console.log();
     useEffect(() => {
         const fetchUserPosts = async () => {
             const q = query(
@@ -172,9 +178,9 @@ function Profile() {
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: arrayRemove(user.uid),
             });
-            setStar(false)
+            setStar(false);
         } else {
-            setStar(true)
+            setStar(true);
             await updateDoc(doc(db, 'users', id), {
                 user_ratings: [...pageUser.user_ratings, user.uid],
             });
@@ -230,7 +236,7 @@ function Profile() {
                 break;
         }
     };
-    
+
     const handleNavigateChat = async () => {
         const q = query(
             collection(db, 'chats'),
@@ -300,9 +306,9 @@ function Profile() {
                                 <h4 className={cx('name') + ' '}>
                                     {pageUser.user_name}{' '}
                                     {pageUser.user_gender === 'male' ? (
-                                        <FontAwesomeIcon icon={faMars} className='text-blue-500'/>
+                                        <FontAwesomeIcon icon={faMars} className="text-blue-500" />
                                     ) : (
-                                        <FontAwesomeIcon icon={faVenus} className='text-pink-500' />
+                                        <FontAwesomeIcon icon={faVenus} className="text-pink-500" />
                                     )}
                                 </h4>
                                 <p className={cx('bio')}>{pageUser.user_bio}</p>
@@ -315,8 +321,14 @@ function Profile() {
                                 <div className={cx('stats_num')}>
                                     <FontAwesomeIcon
                                         icon={star ? solidStar : regularStar}
-                                        onClick={handleUpRatings}
-                                        className={cx('stars', { active: star   })}
+                                        onClick={() => {
+                                            if (user) {
+                                                handleUpRatings();
+                                            }else{
+                                                navigate(routes.login)
+                                            }
+                                        }}
+                                        className={cx('stars', { active: star })}
                                     />
                                     <p className={cx('number')}>{pageUser.user_ratings.length}</p>
                                 </div>
@@ -366,7 +378,7 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     primary
                                                     xl
-                                                    disabled={pageUser.user_status === 'ban' || ban ||!user}
+                                                    disabled={usersStatus[id].user_status === 'ban' || ban || !user}
                                                     onClick={() => {
                                                         handleAccept({
                                                             id: id,
@@ -382,7 +394,7 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     outline
                                                     xl
-                                                    disabled={pageUser.user_status === 'ban' || ban || !user}
+                                                    disabled={usersStatus[id].user_status === 'ban' || ban || !user}
                                                     onClick={() => {
                                                         handleDecline({
                                                             id: id,
@@ -397,7 +409,12 @@ function Profile() {
                                         ) : (
                                             <>
                                                 <Button
-                                                    disabled={disabled === 'Friend' || disabled === 'Requesting' || ban || !user}
+                                                    disabled={
+                                                        disabled === 'Friend' ||
+                                                        disabled === 'Requesting' ||
+                                                        ban ||
+                                                        !user
+                                                    }
                                                     leftIcon={
                                                         (disabled === 'Friend' && (
                                                             <FontAwesomeIcon icon={faCheckCircle} />
@@ -409,14 +426,19 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     primary
                                                     small
-                                                    onClick={() => {handleAddfr({id:id,setDisabled:setDisabled})}}
+                                                    onClick={() => {
+                                                        handleAddfr({ id: id, setDisabled: setDisabled });
+                                                    }}
                                                 >
                                                     {disabled}
                                                 </Button>
                                                 <Button
                                                     xs
                                                     disabled={
-                                                        disabled !== 'Friend' || pageUser.user_status === 'ban' || ban || !user
+                                                        disabled !== 'Friend' ||
+                                                        usersStatus[id].user_status === 'ban' ||
+                                                        ban ||
+                                                        !user
                                                     }
                                                     outline
                                                     dark={context.theme === 'dark'}
@@ -428,13 +450,16 @@ function Profile() {
 
                                                 <Menu
                                                     offset={[0, 30]}
-                                                    
-                                                    disabled={((pageUser.user_status === 'ban' && !user?.isAdmin) || ban) || !user}
+                                                    disabled={
+                                                        (usersStatus[id].user_status === 'ban' && !user?.isAdmin) ||
+                                                        ban ||
+                                                        !user
+                                                    }
                                                     // chinh ben trai / chieu cao so vs ban dau
                                                     placement="right"
                                                     item={
                                                         user?.isAdmin
-                                                            ? pageUser.user_status === 'ban'
+                                                            ? usersStatus[id].user_status === 'ban'
                                                                 ? [
                                                                       {
                                                                           type: 'unban',
@@ -457,7 +482,9 @@ function Profile() {
                                                         className={cx('btn')}
                                                         dark={context.theme === 'dark'}
                                                         disabled={
-                                                            (pageUser.user_status === 'ban' && !user?.isAdmin) || ban || !user
+                                                            (usersStatus[id].user_status === 'ban' && !user?.isAdmin) ||
+                                                            ban ||
+                                                            !user
                                                         }
                                                     >
                                                         <i className="fa-solid fa-ellipsis"></i>
@@ -503,7 +530,7 @@ function Profile() {
                         {/* Flash card recently used */}
                     </div>
 
-                    {pageUser.user_status === 'ban' ? (
+                    {usersStatus[id].user_status === 'ban' ? (
                         user?.uid !== id ? (
                             <div className={cx('ban')}>
                                 <FontAwesomeIcon icon={faBan} className={cx('ban-icon')} />

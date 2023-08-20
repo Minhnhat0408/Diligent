@@ -13,6 +13,8 @@ import {
     faGear,
     faSignOut,
     faAddressCard,
+    faListCheck,
+    faQuestionCircle,
 } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
 import Button from '~/component/Button';
@@ -38,19 +40,23 @@ const MENU_ITEM = [
             data: listLanguage,
         },
     },
+    {
+        icon: <FontAwesomeIcon icon={faQuestionCircle} />,
+        title: 'Policy and Support',
+    },
 ];
 
 let USER_MENU = [];
 function Header() {
     const context = useContext(ThemeContext);
     const { user, logOut, userData } = UserAuth();
-    const { handleReadNoti,notifications} = GlobalProps();
+    const { handleReadNoti, notifications } = GlobalProps();
     const notif = useRef();
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const [notis, setNotis] = useState();
     useEffect(() => {
         setNotis(notifications);
-        if(notifications && notifications?.unread !== 0) {
+        if (notifications && notifications?.unread !== 0) {
             toast('You got unread notifications!', {
                 icon: '🔔',
                 style: {
@@ -59,11 +65,9 @@ function Header() {
                     fontSize: '20px',
                     backgroundColor: 'var(--primary)',
                     color: 'var(--primary-light) ',
-                },  
-              });   
+                },
+            });
         }
-      
-    
     }, [notifications]);
 
     USER_MENU = [
@@ -74,6 +78,7 @@ function Header() {
         },
         { icon: <FontAwesomeIcon icon={faAddressCard} />, title: 'Update profile', to: routes.userUpdate },
         { icon: <FontAwesomeIcon icon={faGear} />, title: 'Settings', to: '/setting' },
+        { icon: <FontAwesomeIcon icon={faListCheck} />, title: 'Todo List', type: 'todo' },
         ...MENU_ITEM,
         { icon: <FontAwesomeIcon icon={faSignOut} />, title: 'Log out', separate: true, type: 'logOut' },
     ];
@@ -106,25 +111,34 @@ function Header() {
             case 'logOut':
                 logOut();
                 break;
+            case 'todo':
+                if(user) {
+                    context.setTodoList(true)
+                }else{
+                    navigate(routes.login)
+                }
+                
+                break;
 
             default:
                 break;
         }
     };
-    
-  
 
     return (
         <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' rounded-3xl sml-max:h-16'}>
-            <Toaster position='bottom-right'/>
+            <Toaster position="bottom-right" />
             <div className={cx('inner') + ' smu-max:justify-between'}>
-                <div onClick={() => {   
-                  if(window.location.pathname === routes.home){
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                  }else{
-                    navigate(routes.home)
-                  }
-                }} className={cx('start') + ' mdl-max:ml-3 smu-max:!ml-6'}>
+                <div
+                    onClick={() => {
+                        if (window.location.pathname === routes.home) {
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            navigate(routes.home);
+                        }
+                    }}
+                    className={cx('start') + ' mdl-max:ml-3 smu-max:!ml-6'}
+                >
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
                         className={cx('logo') + ' md-max:!w-full '}

@@ -21,6 +21,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
+import toast from 'react-hot-toast';
 
 // const currentDate = new Date();
 
@@ -65,7 +66,38 @@ function TodoList() {
             };
             fetchTasks();
             return () => {
-                saveTasks();
+                toast.promise(
+                    saveTasks(),
+                    {
+                        loading: 'Saving...',
+                        success: <b>Todo List saved</b>,
+                        error: <b>Could not save</b>,
+                    },
+                    {
+                        style: {
+                            minWidth: '250px',
+                            minHeight: '60px',
+                            fontSize: '20px',
+                            backgroundColor: 'var(--primary)',
+                            color: 'var(--primary-light) ',
+                        },
+                        success: {
+                            duration: 3000,
+                            icon: '🔥',
+                        },
+                        error: {
+                            duration: 3000,
+                            icon: '❌',
+                            style: {
+                                minWidth: '250px',
+                                minHeight: '60px',
+                                fontSize: '20px',
+                                backgroundColor: 'var(--primary)',
+                                color: 'red',
+                            },
+                        },
+                    },
+                );
             };
         }
     }, [user]);

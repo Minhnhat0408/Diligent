@@ -21,7 +21,7 @@ const cx = classNames.bind(styles);
 function MyComment({ tag = null, update = null }) {
     // Xử lí logic để hiện preview ảnh khi ấn thêm ảnh vào comment
     const [selectedFile, setSelectedFile] = useState(null);
-    const { userData, user,updateUserPrefers } = UserAuth();
+    const { userData, user,updateUserPrefers,usersStatus } = UserAuth();
     const [imagePreview, setImagePreview] = useState(update ? update.data.image : '');
     const [mentionData, setMentionData] = useState([]);
     const {fileUpload} = GlobalProps()
@@ -189,7 +189,7 @@ function MyComment({ tag = null, update = null }) {
             <div
                 className={cx('my-comment', { reply: tag, dark: context.theme === 'dark' })}
                 onClick={() => {
-                    if (userData.user_status === 'ban') {
+                    if (usersStatus[user.uid].user_status === 'ban') {
                         setBan(true);
                     }
                 }}
@@ -220,7 +220,7 @@ function MyComment({ tag = null, update = null }) {
                                 setText('');
                                 setSelectedFile(null);
                                 setImagePreview(null);
-                                if (userData.user_status !== 'ban') {
+                                if (usersStatus[user.uid].user_status !== 'ban') {
                                     if (update) {
                                         handleUpdate({
                                             text: text,

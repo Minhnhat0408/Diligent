@@ -8,8 +8,6 @@ import { ThemeContext } from '~/contexts/Context';
 import styles from './CreatePost.module.scss';
 import { UserAuth } from '~/contexts/authContext';
 import Image from '../../Image';
-
-import { RingLoader } from 'react-spinners';
 import PostForm from '../PostForm/PostForm';
 import PostLoading from '../PostLoading/PostLoading';
 

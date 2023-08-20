@@ -6,11 +6,11 @@ import { useContext } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faClock, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { useState } from 'react';
+
 const cx = classNames.bind(styles);
 
 function Ban({ children, onXmark, noPopup }) {
-    const { userData } = UserAuth();
+    const { user,usersStatus } = UserAuth();
 
     const context = useContext(ThemeContext);
     return (
@@ -20,7 +20,7 @@ function Ban({ children, onXmark, noPopup }) {
                     <div className={cx('row')}>
                         <FontAwesomeIcon icon={faClock} className={cx('ban-icon')} />
                         <span className={cx('timer')}>
-                            {getTimeDiff(userData?.user_banUntil.toMillis(), new Date())} left
+                            {getTimeDiff(usersStatus[user.uid]?.user_banUntil.toMillis(), new Date())} left
                         </span>
                     </div>
                     <span className={cx('text')}>{children}</span>
@@ -34,7 +34,7 @@ function Ban({ children, onXmark, noPopup }) {
                         <div className={cx('row')}>
                             <FontAwesomeIcon icon={faClock} className={cx('ban-icon')} />
                             <span className={cx('timer')}>
-                                {getTimeDiff(userData?.user_banUntil.toMillis(), new Date())} left
+                                {getTimeDiff(usersStatus[user.uid]?.user_banUntil.toMillis(), new Date())} left
                             </span>
                         </div>
                         <span className={cx('text')}>{children}</span>

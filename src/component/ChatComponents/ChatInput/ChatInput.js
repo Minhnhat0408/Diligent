@@ -46,6 +46,8 @@ function ChatInput({ roomId, setLoading }) {
         }));
     };
     const handleSendMessage = async (icon = undefined) => {
+        setFilePreview({ others: [], media: [] });
+        setText('');
         if (icon) {
             await addDoc(collection(db, 'chats', roomId, 'messages'), {
                 sender: user.uid,
@@ -94,8 +96,7 @@ function ChatInput({ roomId, setLoading }) {
             }
             setLoading(false);
         }
-        setFilePreview({ others: [], media: [] });
-        setText('');
+     
     };
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>

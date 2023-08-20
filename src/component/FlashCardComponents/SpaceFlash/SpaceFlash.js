@@ -43,7 +43,38 @@ const SpaceFlash = ({ cards }) => {
     }, [cards]);
     useEffect(() => {
         return () => {
-            handleSaveProgress()
+            toast.promise(
+                handleSaveProgress(),
+                {
+                    loading: 'Saving...',
+                    success: <b>Progress saved</b>,
+                    error: <b>Could not save</b>,
+                },
+                {
+                    style: {
+                        minWidth: '250px',
+                        minHeight: '60px',
+                        fontSize: '20px',
+                        backgroundColor: 'var(--primary)',
+                        color: 'var(--primary-light) ',
+                    },
+                    success: {
+                        duration: 3000,
+                        icon: '🔥',
+                    },
+                    error: {
+                        duration: 3000,
+                        icon: '❌',
+                        style: {
+                            minWidth: '250px',
+                            minHeight: '60px',
+                            fontSize: '20px',
+                            backgroundColor: 'var(--primary)',
+                            color: 'red',
+                        },
+                    },
+                },
+            );
         }
     },[])
     //handle add or remove card when animation end

@@ -89,7 +89,12 @@ function SideBarLeft() {
                     backGroundColor="linear-gradient(to right, #ee0979, #ff6a00)"
                     color="#fff"
                     onClick={() => {
-                        context.setTodoList(true);
+                        if(user) {
+                            context.setTodoList(true);
+                        }else{
+                            navigate(routes.login)
+                        }
+                       
                     }}
                 />
             </div>

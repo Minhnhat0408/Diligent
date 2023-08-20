@@ -25,12 +25,13 @@ import { useEffect } from 'react';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { GlobalProps } from '~/contexts/globalContext';
+import Ban from '~/component/Ban';
 const cx = classNames.bind(styles);
 
-function DocumentForm({ onXmark,setLoading }) {
+function DocumentForm({ onXmark, setLoading }) {
     const context = useContext(ThemeContext);
-    const { user, userData } = UserAuth();
-    const {fileUpload} = GlobalProps()
+    const { user, userData, usersStatus } = UserAuth();
+    const { fileUpload } = GlobalProps();
     const [selectedCategories, setSelectedCategories] = useState([]);
     const title = useRef();
     const [file, setFile] = useState();
@@ -38,7 +39,7 @@ function DocumentForm({ onXmark,setLoading }) {
     const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
         maxFiles: 1,
     });
-    
+
     useEffect(() => {
         acceptedFiles.forEach((file) => {
             let type = file.path.split('.').pop();
@@ -62,7 +63,6 @@ function DocumentForm({ onXmark,setLoading }) {
     }, [acceptedFiles]);
 
     const handleAddCategory = (value) => {
-
         if (!selectedCategories.includes(value.title)) {
             setSelectedCategories([...selectedCategories, value.title]);
         } else {
@@ -73,8 +73,8 @@ function DocumentForm({ onXmark,setLoading }) {
         setSelectedCategories(selectedCategories.filter((category) => category !== value));
     };
     const handleUpload = async () => {
-        let tmpfile = null; 
-      
+        let tmpfile = null;
+
         if (!file) {
             setInvalid(true);
             return;
@@ -104,78 +104,82 @@ function DocumentForm({ onXmark,setLoading }) {
             setSelectedCategories([]);
             setLoading(false);
         }
-        
-       
     };
     return (
-        <div className={cx('pop-up')}>
-            <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
-                <div className={cx('header')}>
-                    <div></div>
-                    <h1 className={cx('title')}>Upload</h1>
-                    <div className={cx('out')} onClick={() => onXmark(false)}>
-                        <FontAwesomeIcon icon={faXmark} />
-                    </div>
-                </div>
-                <hr />
-                <div className={cx('body', { dark: context.theme === 'dark' })}>
-                    <div className={cx('info')}>
-                        <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
-                        <Menu
-                            offset={[0, 30]}
-                            // chinh ben trai / chieu cao so vs ban dau
-                            placement="right"
-                            item={CATEGORY_OPTIONS}
-                            small
-                            onClick={handleAddCategory}
-                        >
-                            <div>
-                                <h5 className={cx('username')}>{userData.user_name}</h5>
-                                <div className={cx('category')}>
-                                    <p>Choose category</p>
-                                    <i className="fa-solid fa-chevron-right"></i>
-                                </div>
+        <>
+            {usersStatus[user.uid]?.user_status === 'ban' ? (
+                <Ban onXmark={onXmark}>You have been banned from posting because of your inappropriate behaviors</Ban>
+            ) : (
+                <div className={cx('pop-up')}>
+                    <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+                        <div className={cx('header')}>
+                            <div></div>
+                            <h1 className={cx('title')}>Upload</h1>
+                            <div className={cx('out')} onClick={() => onXmark(false)}>
+                                <FontAwesomeIcon icon={faXmark} />
                             </div>
-                        </Menu>
-                    </div>
-                    <textarea
-                        placeholder="Enter your file name or leave it default"
-                        ref={title}
-                        className={cx('input', 'inp-title')}
-                    />
-                    {selectedCategories.length !== 0 && (
-                        <ul className={cx('selected-category')}>
-                            {selectedCategories.map((category, index) => (
-                                <li key={index} onClick={() => handleDeleteCategory(category)}>
-                                    <p>{category}</p>
-                                    <FontAwesomeIcon icon={faXmark} />
-                                </li>
-                            ))}
-                        </ul>
-                    )}
-                    <div className={cx('file-container', { dark: context.theme === 'dark' })}>
-                        <div
-                            {...getRootProps({
-                                className: invalid ? `${styles.dropzone} ${styles.invalid}` : styles.dropzone,
-                            })}
-                        >
-                            <input {...getInputProps()} />
-                            {/* accept='.pdf,.doc,.docx,.xls,.xlsx,.pptx,.txt,.csv,.zip,.rar' */}
-                            <p>{file ? file.name : "Drag 'n' drop file here, or click to select file"}</p>
                         </div>
-                        {file && (
-                            <div className={cx('file-info')}>
-                                <span className={cx('file-type')}>File type: {file.type}</span>
-                                <FontAwesomeIcon icon={file.icon} className={cx('file-icon', file.type)} />
+                        <hr />
+                        <div className={cx('body', { dark: context.theme === 'dark' })}>
+                            <div className={cx('info')}>
+                                <Image className={cx('avatar')} alt="ava" src={userData?.user_avatar} />
+                                <Menu
+                                    offset={[0, 30]}
+                                    // chinh ben trai / chieu cao so vs ban dau
+                                    placement="right"
+                                    item={CATEGORY_OPTIONS}
+                                    small
+                                    onClick={handleAddCategory}
+                                >
+                                    <div>
+                                        <h5 className={cx('username')}>{userData.user_name}</h5>
+                                        <div className={cx('category')}>
+                                            <p>Choose category</p>
+                                            <i className="fa-solid fa-chevron-right"></i>
+                                        </div>
+                                    </div>
+                                </Menu>
                             </div>
-                        )}
+                            <textarea
+                                placeholder="Enter your file name or leave it default"
+                                ref={title}
+                                className={cx('input', 'inp-title')}
+                            />
+                            {selectedCategories.length !== 0 && (
+                                <ul className={cx('selected-category')}>
+                                    {selectedCategories.map((category, index) => (
+                                        <li key={index} onClick={() => handleDeleteCategory(category)}>
+                                            <p>{category}</p>
+                                            <FontAwesomeIcon icon={faXmark} />
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                            <div className={cx('file-container', { dark: context.theme === 'dark' })}>
+                                <div
+                                    {...getRootProps({
+                                        className: invalid ? `${styles.dropzone} ${styles.invalid}` : styles.dropzone,
+                                    })}
+                                >
+                                    <input {...getInputProps()} />
+                                    {/* accept='.pdf,.doc,.docx,.xls,.xlsx,.pptx,.txt,.csv,.zip,.rar' */}
+                                    <p>{file ? file.name : "Drag 'n' drop file here, or click to select file"}</p>
+                                </div>
+                                {file && (
+                                    <div className={cx('file-info')}>
+                                        <span className={cx('file-type')}>File type: {file.type}</span>
+                                        <FontAwesomeIcon icon={file.icon} className={cx('file-icon', file.type)} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                        <Button primary dark={context.theme === 'dark'} onClick={handleUpload} className={cx('upload')}>
+                            Upload
+                        </Button>
                     </div>
                 </div>
-                <Button primary dark={context.theme === 'dark'} onClick={handleUpload} className={cx('upload')}>
-                    Upload
-                </Button>
-            </div>
-        </div>
+            )}
+        </>
     );
 }
 

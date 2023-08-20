@@ -23,7 +23,6 @@ import { useState, useRef, useEffect } from 'react';
 import { CATEGORY_OPTIONS, getIdInMentions, regex } from '~/utils/constantValue';
 import { UserAuth } from '~/contexts/authContext';
 import { isImage, isNotEmpty, isVideo } from '~/utils/validator';
-import { RingLoader } from 'react-spinners';
 import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { isImageUrl } from '~/utils/checkFile';
@@ -34,7 +33,7 @@ const cx = classNames.bind(styles);
 
 function PostForm({ onXmark, update, setReFresh, setLoading }) {
     const context = useContext(ThemeContext);
-    const { userData, user,  updateUserPrefers } = UserAuth();
+    const { userData, user,  updateUserPrefers,usersStatus } = UserAuth();
     const { fileUpload,createPost } = GlobalProps()
     const handleClickCloseBox = () => {
         onXmark(false);
@@ -216,9 +215,10 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
             console.error('Upload failed!', error);
         }
     };
+    console.log(usersStatus[user.uid]?.user_status)
     return (
         <>
-            {userData?.user_status === 'ban' ? (
+            {(usersStatus[user.uid]?.user_status === 'ban') ? (
                 <Ban onXmark={onXmark}>You have been banned from posting because of your inappropriate behaviors</Ban>
             ) : (
                 <div className={cx('pop-up')}>
