@@ -52,7 +52,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#my_role">My Role</a></li>
+    <li><a href="#my-role">My Role</a></li>
     <li><a href="#feature">Feature</a></li>
     <li><a href="#roadmap">Clone and Installation</a></li>
     <li><a href="#contributing">Contributing</a></li>
