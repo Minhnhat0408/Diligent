@@ -340,7 +340,7 @@ function Profile() {
                                     <p>Decks</p>
                                 </div>
                             </div>
-                            <div className={cx('options') + ' xl-max:!px-2'}>
+                            <div className={cx('options')}>
                                 {id === user?.uid ? (
                                     <>
                                         <Button
@@ -379,7 +379,7 @@ function Profile() {
                                                     leftIcon={<FontAwesomeIcon icon={faCheck} />}
                                                     dark={context.theme === 'dark'}
                                                     primary
-                                                    xl
+                                                    className='!w-[45%] 2xl-max:text-xs'
                                                     disabled={usersStatus[id].user_status === 'ban' || ban || !user}
                                                     onClick={() => {
                                                         handleAccept({
@@ -395,7 +395,7 @@ function Profile() {
                                                     leftIcon={<FontAwesomeIcon icon={faXmark} />}
                                                     dark={context.theme === 'dark'}
                                                     outline
-                                                    xl
+                                                    className='!w-[45%] 2xl-max:text-xs'
                                                     disabled={usersStatus[id].user_status === 'ban' || ban || !user}
                                                     onClick={() => {
                                                         handleDecline({
@@ -427,7 +427,8 @@ function Profile() {
                                                     }
                                                     dark={context.theme === 'dark'}
                                                     primary
-                                                    small
+                                                    
+                                                    className="w-[45%] text-sm py-0 3xl-max:w-[100%] 3xl-max:mb-2 "
                                                     onClick={() => {
                                                         handleAddfr({ id: id, setDisabled: setDisabled });
                                                     }}
@@ -435,17 +436,18 @@ function Profile() {
                                                     {disabled}
                                                 </Button>
                                                 <Button
-                                                    xs
+                                                    
                                                     disabled={
                                                         disabled !== 'Friend' ||
                                                         usersStatus[id].user_status === 'ban' ||
                                                         ban ||
                                                         !user
                                                     }
+                                  
                                                     outline
                                                     dark={context.theme === 'dark'}
                                                     onClick={handleNavigateChat}
-                                                    className={cx('btn')}
+                                                    className={cx('btn') + ' w-[50px] h-[50px] 3xl-max:!w-[60px] 3xl-max:h-[36px]' }
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>
@@ -474,14 +476,14 @@ function Profile() {
                                                             ? PROFILE_FRIEND_OPTIONS
                                                             : PROFILE_OPTIONS
                                                     }
-                                                    small
+                                                 
                                                     onChange={handleMenuChange}
                                                 >
                                                     <Button
-                                                        xs
+                                                       
                                                         ml
                                                         outline
-                                                        className={cx('btn')}
+                                                        className={cx('btn') +  ' w-[50px] h-[50px] 3xl-max:!w-[80px] 3xl-max:h-[36px]'}
                                                         dark={context.theme === 'dark'}
                                                         disabled={
                                                             (usersStatus[id].user_status === 'ban' && !user?.isAdmin) ||

@@ -152,10 +152,11 @@
     }
 }
 .options {
-    padding: 0 26px 20px 26px;
+    padding: 0 8px 20px 8px;
     display: flex;
     text-align: center;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
     & .btn {
         padding: 0;
         font-size: 16px;

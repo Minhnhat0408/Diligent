@@ -19,8 +19,9 @@ module.exports = {
                 'lgbw-max': { max: '1109px', min: '1024px' },
                 'lg-between': { max: '1050px', min: '940px' },
                 'xl-between': { max: '1279px', min: '1024px' },
+                '2xl-max': { max: '1400px' },
+                '3xl-max': { max: '1560px' },
             },
-            
         },
     },
     plugins: [],
