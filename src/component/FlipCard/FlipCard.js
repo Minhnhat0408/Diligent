@@ -34,6 +34,7 @@ function FlipCard({
         // Don't forget to clean up
        
     }, [first, fl]);
+   
     return (
         <div
             className={cx('container', ...className)}
@@ -59,7 +60,8 @@ function FlipCard({
                         backgroundImage: `url(${backImg})`,
                     }}
                 >
-                    {children[1]}
+                    <h1 className='text-4xl'>{children[1].props.children.content}</h1>
+                    {children[1].props.children.example && <p className='text-2xl mt-10'>{children[1].props.children.example}</p>}
                 </div>
             </div>
         </div>

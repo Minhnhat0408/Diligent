@@ -208,6 +208,29 @@ function MyComment({ tag = null, update = null }) {
                             onChange={(e) => {
                                 setText(e.target.value);
                             }}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    setText('');
+                                    setSelectedFile(null);
+                                    setImagePreview(null);
+                                    if (usersStatus[user.uid].user_status !== 'ban') {
+                                        if (update) {
+                                            handleUpdate({
+                                                text: text,
+                                                image: selectedFile,
+                                                cmtId: update?.id,
+                                            });
+                                        } else {
+                                            handleSubmit({
+                                                text: text,
+                                                image: selectedFile,
+                                                father: tag?.father,
+                                            });
+                                        }
+                                    }
+                                }
+                            }}
                         />
                         <label htmlFor={!ban && 'upload'}>
                             <FontAwesomeIcon icon={faCamera} className={cx('upload-icon')} />

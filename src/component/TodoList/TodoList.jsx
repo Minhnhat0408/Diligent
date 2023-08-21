@@ -140,7 +140,7 @@ function TodoList() {
         td.current = todo;
         change.current++;
     }, [todo]);
- 
+ console.log(todo,td.current)
     return (
         <div className="pop-up">
             <StreakModal display={streak} />
@@ -182,13 +182,26 @@ function TodoList() {
                         className="text-xl py-2 px-4 rounded-xl w-full mr-6"
                         ref={task}
                         placeholder="🖼️ Add new task with icon here..."
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter' && !e.shiftKey) {
+                                e.preventDefault();
+                                if (task.current.value) {
+                                    setTodo((prev) => {
+                                        return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
+                                    });
+                                    task.current.value = ''
+                                }
+                            }
+                        }}
                     />
                     <Button
                         onClick={() => {
                             if (task.current.value) {
                                 setTodo((prev) => {
                                     return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
+                                    
                                 });
+                                task.current.value = ''
                             }
                         }}
                         primary

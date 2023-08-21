@@ -32,14 +32,21 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
         }
     };
     const handleCheck = async () => {
-        if (item.id) {
-            await deleteDoc(doc(db, 'tasks', item.id));
-        }
+       
         if (status === 'todo') {
-            handleTodo(async (prev) => {
-                const newList = prev.filter((i) => i.order !== item.order);
+            handleTodo((prev) => {
+                const newList = [];
+                let c = 1;
+                prev.forEach((t) => {
+                    if(t.order !== item.order)
+                    {   
+                        t.order = c
+                        newList.push(t)
+                        c++
+                    }
+                })
                 if (newList.length === 0) {
-                    await handleAddStreak();
+                    handleAddStreak();
                     setStreak(true);
                 }
 
@@ -51,9 +58,11 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
                 return newList;
             });
         }
+        if (item.id) {
+            await deleteDoc(doc(db, 'tasks', item.id));
+        }
     };
     const handleAddStreak = async () => {
-        
         const newStreak = userData?.user_streak ? [...userData.user_streak, formattedDate()] : [formattedDate()];
         await updateDoc(doc(db, 'users', user.uid), {
             user_streak: newStreak,
@@ -62,7 +71,16 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
     const handleDelete = async () => {
         if (status === 'todo') {
             handleTodo((prev) => {
-                const newList = prev.filter((i) => i.order !== item.order);
+                const newList = [];
+                let c = 1;
+                prev.forEach((t) => {
+                    if(t.order !== item.order)
+                    {   
+                        t.order = c
+                        newList.push(t)
+                        c++
+                    }
+                })
                 return newList;
             });
 
@@ -125,11 +143,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
                     <FontAwesomeIcon icon={faTrashCan} />
                 </button>
             </Tippy>
-            {status === 'todo' && (
-                <Tippy content="Drag to move the task" delay={1000} theme={context.theme} animation={'scale'}>
-                    <ReorderIcon dragControls={dragControls} />
-                </Tippy>
-            )}
+            {status === 'todo' && <ReorderIcon dragControls={dragControls} />}
         </Reorder.Item>
     );
 };

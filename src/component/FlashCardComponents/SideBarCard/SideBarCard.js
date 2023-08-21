@@ -39,8 +39,8 @@ function SideBarCard({ deck, cards }) {
      
     };
     const handleDeleteCards = async (id) => {
-        await deleteDoc(doc(db, 'flashcards', deck.id, 'cards', id));
-        await updateDoc(doc(db, 'flashcards', deck.id), {
+        await deleteDoc(doc(db, 'flashcards',id));
+        await updateDoc(doc(db, 'decks', deck.id), {
             cardNumber: deck.data.cardNumber - 1,
         });
     };

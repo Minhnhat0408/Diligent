@@ -28,10 +28,10 @@ const SpaceFlash = ({ cards }) => {
     const allCards = useRef(cards);
     const [queueCards, setQueueCards] = useState();
     const [animation, setAnimation] = useState('');
-    const context = useContext( ThemeContext);
+    const context = useContext(ThemeContext);
     const { user } = UserAuth();
     const [timers, setTimers] = useState([]);
-
+    const change = useRef();
     const [showGuide, setShowGuide] = useState(false);
 
     const graduated = useRef([]);
@@ -43,40 +43,43 @@ const SpaceFlash = ({ cards }) => {
     }, [cards]);
     useEffect(() => {
         return () => {
-            toast.promise(
-                handleSaveProgress(),
-                {
-                    loading: 'Saving...',
-                    success: <b>Progress saved</b>,
-                    error: <b>Could not save</b>,
-                },
-                {
-                    style: {
-                        minWidth: '250px',
-                        minHeight: '60px',
-                        fontSize: '20px',
-                        backgroundColor: 'var(--primary)',
-                        color: 'var(--primary-light) ',
+            if (change.current > 2) {
+                toast.promise(
+                    handleSaveProgress(),
+                    {
+                        loading: 'Saving...',
+                        success: <b>Progress saved</b>,
+                        error: <b>Could not save</b>,
                     },
-                    success: {
-                        duration: 3000,
-                        icon: '🔥',
-                    },
-                    error: {
-                        duration: 3000,
-                        icon: '❌',
+                    {
                         style: {
                             minWidth: '250px',
                             minHeight: '60px',
                             fontSize: '20px',
                             backgroundColor: 'var(--primary)',
-                            color: 'red',
+                            color: 'var(--primary-light) ',
+                        },
+                        success: {
+                            duration: 3000,
+                            icon: '🔥',
+                        },
+                        error: {
+                            duration: 3000,
+                            icon: '❌',
+                            style: {
+                                minWidth: '250px',
+                                minHeight: '60px',
+                                fontSize: '20px',
+                                backgroundColor: 'var(--primary)',
+                                color: 'red',
+                            },
                         },
                     },
-                },
-            );
-        }
-    },[])
+                );
+            }
+        };
+    }, []);
+ 
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
         if (animation !== '') {
@@ -109,7 +112,6 @@ const SpaceFlash = ({ cards }) => {
     const handleSaveProgress = () => {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log(graduated.current)
                 for (const card of graduated.current) {
                     allCards.current = allCards.current.filter((c) => c.id !== card.id);
                     if (card.progress) {
@@ -142,7 +144,7 @@ const SpaceFlash = ({ cards }) => {
                         });
                     }
                 }
-            
+
                 resolve('Progress saved!');
             } catch (error) {
                 console.log(error);
@@ -211,6 +213,7 @@ const SpaceFlash = ({ cards }) => {
                 }
             }
         }
+        change.current++;
     }, [queueCards]);
 
     //handle keyboard
@@ -274,64 +277,67 @@ const SpaceFlash = ({ cards }) => {
 
             {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
-                    {displayCards.map((a, ind) => {
-                        return (
-                            <div
-                                onAnimationEnd={onAnimationEnd}
-                                key={ind}
-                                className={
-                                    'absolute top-0 left-0 right-0 bottom-0 cursor-pointer ' +
-                                    (displayCards.length - 1 !== ind ? ' hidden ' : '') +
-                                    cx({
-                                        dark: context.theme === 'dark',
-                                        // show: twoCards.length - 1 === ind,
-                                        left: animation === 'left' && displayCards.length - 1 === ind,
-                                        right: animation === 'right' && displayCards.length - 1 === ind,
-                                    })
+                    <Tippy content="remember" placement="right" delay={1000} theme={context.theme} animation={'scale'}>
+                        <button //right button
+                            className={
+                                cx('gradient-r') +
+                                ' absolute top-0 bottom-0 w-32 right-0 z-10  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
+                            }
+                            onClick={() => {
+                                if (animation !== 'right') {
+                                    setAnimation('right');
+                                    setQueueCards(displayCards.at(-1));
                                 }
-                            >
-                                <FlipCard
-                                    id={a.front}
-                                    first={displayCards.length - 1 === ind}
-                                    backColor="bisque"
-                                    frontColor="bisque"
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faChevronRight} className="text-3xl" />
+                        </button>
+                    </Tippy>
+                    <Tippy content="forgot" placement="left" delay={1000} theme={context.theme} animation={'scale'}>
+                        <button //left button
+                            className={
+                                cx('gradient-l') +
+                                ' absolute top-0 bottom-0 w-32 left-0 z-10  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
+                            }
+                            onClick={() => {
+                                if (animation !== 'left') {
+                                    setAnimation('left');
+                                    setQueueCards(displayCards.at(-1));
+                                }
+                            }}
+                        >
+                            <FontAwesomeIcon icon={faChevronLeft} className="text-3xl" />
+                        </button>
+                    </Tippy>
+                        {displayCards.map((a, ind) => {
+                            return (
+                                <div
+                                    onAnimationEnd={onAnimationEnd}
+                                    key={ind}
+                                    className={
+                                        'absolute top-0 left-0 right-0 bottom-0 cursor-pointer ' +
+                                        (displayCards.length - 1 !== ind ? ' hidden ' : '') +
+                                        cx({
+                                            dark: context.theme === 'dark',
+                                            // show: twoCards.length - 1 === ind,
+                                            left: animation === 'left' && displayCards.length - 1 === ind,
+                                            right: animation === 'right' && displayCards.length - 1 === ind,
+                                        })
+                                    }
                                 >
-                                    <h1 className="text-5xl">{a.front}</h1>
-                                    <h1 className="text-5xl">{a.back.content}</h1>
-                                </FlipCard>
-                            </div>
-                        );
-                    })}
-
-                    <button //;eft button
-                        className={
-                            cx('gradient-l') +
-                            ' absolute top-0 bottom-0 w-32  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
-                        }
-                        onClick={() => {
-                            if (animation !== 'left') {
-                                setAnimation('left');
-                                setQueueCards(displayCards.at(-1));
-                            }
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faChevronLeft} className="text-3xl" />
-                    </button>
-                    <button //right button
-                        className={
-                            cx('gradient-r') +
-                            ' absolute top-0 bottom-0 w-32 right-0  rounded-2xl cursor-pointer opacity-0 hover:opacity-100 transition-opacity duration-500 '
-                        }
-                        onClick={() => {
-                            console.log('to right');
-                            if (animation !== 'right') {
-                                setAnimation('right');
-                                setQueueCards(displayCards.at(-1));
-                            }
-                        }}
-                    >
-                        <FontAwesomeIcon icon={faChevronRight} className="text-3xl" />
-                    </button>
+                                    <FlipCard
+                                        id={a.front}
+                                        first={displayCards.length - 1 === ind}
+                                        backColor="bisque"
+                                        frontColor="bisque"
+                                    >
+                                        <h1 className="text-5xl">{a.front}</h1>
+                                        <h1 className="text-5xl">{a.back}</h1>
+                                    </FlipCard>
+                                </div>
+                            );
+                        })}
+                
                 </div>
             ) : (
                 <h1 className="w-[70%] h-[70%] rounded-2xl flex  justify-center items-center relative text-[var(--text-color-dark)]">
@@ -339,82 +345,82 @@ const SpaceFlash = ({ cards }) => {
                 </h1>
             )}
             <div className="w-fit bg-transparent self-start mt-[calc((100vh-var(--defaultLayout-header-height))*15/100)] ml-10 h-fit flex flex-col">
-            <Tippy content="Save" placement='right' theme={context.theme} animation={'scale'}>
-                <button
-                    onClick={() => {
-                        toast.promise(
-                            handleSaveProgress(),
-                            {
-                                loading: 'Saving...',
-                                success: <b>Progress saved</b>,
-                                error: <b>Could not save</b>,
-                            },
-                            {
-                                style: {
-                                    minWidth: '250px',
-                                    minHeight: '60px',
-                                    fontSize: '20px',
-                                    backgroundColor: 'var(--primary)',
-                                    color: 'var(--primary-light) ',
+                <Tippy content="Save" placement="right" theme={context.theme} animation={'scale'}>
+                    <button
+                        onClick={() => {
+                            toast.promise(
+                                handleSaveProgress(),
+                                {
+                                    loading: 'Saving...',
+                                    success: <b>Progress saved</b>,
+                                    error: <b>Could not save</b>,
                                 },
-                                success: {
-                                    duration: 3000,
-                                    icon: '🔥',
-                                },
-                                error: {
-                                    duration: 3000,
-                                    icon: '❌',
+                                {
                                     style: {
                                         minWidth: '250px',
                                         minHeight: '60px',
                                         fontSize: '20px',
                                         backgroundColor: 'var(--primary)',
-                                        color: 'red',
+                                        color: 'var(--primary-light) ',
+                                    },
+                                    success: {
+                                        duration: 3000,
+                                        icon: '🔥',
+                                    },
+                                    error: {
+                                        duration: 3000,
+                                        icon: '❌',
+                                        style: {
+                                            minWidth: '250px',
+                                            minHeight: '60px',
+                                            fontSize: '20px',
+                                            backgroundColor: 'var(--primary)',
+                                            color: 'red',
+                                        },
                                     },
                                 },
-                            },
-                        );
-                    }}
-                    className="w-12 h-12 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
-                >
-                    <FontAwesomeIcon icon={faFloppyDisk} />
-                </button>
+                            );
+                        }}
+                        className="w-12 h-12 cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl flex justify-center items-center rounded-full mb-6"
+                    >
+                        <FontAwesomeIcon icon={faFloppyDisk} />
+                    </button>
                 </Tippy>
-                <Tippy content="Undo" placement='right' theme={context.theme} animation={'scale'}>
-                <button
-                    onClick={() => {
-                        if (queueCards) {
-                            setDisplayCards((prev) => {
-                                return [...prev, queueCards];
-                            });
-                            if (good.current.at(-1)?.id === queueCards.id) {
-                                good.current.pop();
+                <Tippy content="Undo" placement="right" theme={context.theme} animation={'scale'}>
+                    <button
+                        onClick={() => {
+                            if (queueCards) {
+                                setDisplayCards((prev) => {
+                                    return [...prev, queueCards];
+                                });
+                                if (good.current.at(-1)?.id === queueCards.id) {
+                                    good.current.pop();
+                                }
+                                if (graduated.current[0]?.id === queueCards.id) {
+                                    graduated.current.shift();
+                                }
+                                if (timers[0].card.id === queueCards.id) {
+                                    timers.shift();
+                                }
+                                setQueueCards(null);
+                            } else {
+                                toast.error('Can not undo', {
+                                    style: {
+                                        minWidth: '250px',
+                                        minHeight: '60px',
+                                        fontSize: '20px',
+                                        backgroundColor: 'var(--primary-light   )',
+                                        color: 'red ',
+                                    },
+                                });
                             }
-                            if (graduated.current[0]?.id === queueCards.id) {
-                                graduated.current.shift();
-                            }
-                            if (timers[0].card.id === queueCards.id) {
-                                timers.shift();
-                            }
-                            setQueueCards(null);
-                        } else {
-                            toast.error('Can not undo', {
-                                style: {
-                                    minWidth: '250px',
-                                    minHeight: '60px',
-                                    fontSize: '20px',
-                                    backgroundColor: 'var(--primary-light   )',
-                                    color: 'red ',
-                                },
-                            });
-                        }
-                    }}
-                    className="w-12 h-12     cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6"
-                >
-                    <FontAwesomeIcon icon={faArrowRotateLeft} />
-                </button>
+                        }}
+                        className="w-12 h-12     cursor-pointer bg-[var(--primary)] text-[var(--primary-light)] text-2xl  flex justify-center items-center rounded-full mb-6"
+                    >
+                        <FontAwesomeIcon icon={faArrowRotateLeft} />
+                    </button>
                 </Tippy>
-                <Tippy content="How to use" placement='right' theme={context.theme} animation={'scale'}>
+                <Tippy content="How to use" placement="right" theme={context.theme} animation={'scale'}>
                     <button
                         onClick={() => {
                             setShowGuide(true);
@@ -424,9 +430,6 @@ const SpaceFlash = ({ cards }) => {
                         <FontAwesomeIcon icon={faInfoCircle} />
                     </button>
                 </Tippy>
-                {/* <p className="text-lime-500 text-center">{good.current.length}</p>
-                <p className="text-blue-500 text-center">{1}</p>
-                <p className="text-red-500 text-center">{timers.length}</p> */}
             </div>
         </div>
     );

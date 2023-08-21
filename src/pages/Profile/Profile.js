@@ -551,7 +551,7 @@ function Profile() {
                                     setReFresh={setReFresh}
                                     setLoading={setLoadingPost}
                                 />
-                            )}
+                            )}  
                             {user && <CreatePost setLoading={setLoadingPost} setReFresh={setReFresh} />}
                             {loadingPost && <PostLoading />}
                             {userPosts ? (
