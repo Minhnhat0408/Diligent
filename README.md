@@ -52,7 +52,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#my_role">My Role</a></li>
+    <li><a href="#my-role">My Role</a></li>
     <li><a href="#feature">Feature</a></li>
     <li><a href="#roadmap">Clone and Installation</a></li>
     <li><a href="#contributing">Contributing</a></li>
@@ -164,8 +164,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 -   Chat page just like messenger and a chat shortcut for recent contact and notify if there is a messsage comming.
 <div style="display:flex;justify-content:space-evenly;">
-<img src="./public/chat.png" alt="project image" width="50%" style="object-fit:cover">
-<img src="./public/incoming.png" alt="project image" width="50%" style="object-fit:cover">
+<img src="./public/chat.png" alt="project image" width="45%" style="object-fit:cover">
+<img src="./public/incoming.png" alt="project image" width="45%" style="object-fit:cover">
 </div>
 
 **6. Document's Storage:**
@@ -192,8 +192,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -   Note that all shorts is expired after 24hr.
 
 <div style="display:flex;justify-content:space-evenly;">
-<img src="./public/shorts.png" alt="project image" width="50%" style="object-fit:cover">
-<img src="./public/short.png" alt="project image" width="50%" style="object-fit:cover">
+<img src="./public/shorts.png" alt="project image" width="45%" style="object-fit:cover">
+<img src="./public/short.png" alt="project image" width="45%" style="object-fit:cover">
 </div>
 
 **9. Todo List:**
@@ -212,7 +212,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 -   It will show your streak on the calendar.
 
-    <img src="./public/calendar.png" alt="project image" width="100%" style="object-fit:cover">
+<p align="center"><img src="./public/calendar.png" alt="project image" width="60%" style="object-fit:cover"></p>
 
 
  <p align="right">(<a href="#readme-top">back to top</a>)</p>
