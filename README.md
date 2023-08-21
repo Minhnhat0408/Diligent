@@ -54,7 +54,8 @@
     </li>
     <li><a href="#my-role">My Role</a></li>
     <li><a href="#feature">Feature</a></li>
-    <li><a href="#roadmap">Clone and Installation</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#clone-and-installation">Clone And Installation</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -231,6 +232,13 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
+## Clone And Installation
+
+1. Clone the project with Git Desktop or command.
+2. Go into the folder ('cd (path)/diligent')
+3. Open terminal and install the package ('npm i') or ('yarn')
+4. Then run and enjoy the app ('npm start') 
 
 ## Contributing
 
