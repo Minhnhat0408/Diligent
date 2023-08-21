@@ -10,6 +10,7 @@ import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { UserAuth } from '~/contexts/authContext';
 import { formattedDate } from '~/utils/getStreak';
+import toast from 'react-hot-toast';
 
 export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) => {
     const y = useMotionValue(0);
@@ -28,6 +29,19 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             handleTodo((prev) => {
                 const newList = prev.filter((i) => i.order !== item.order);
                 return newList;
+            });
+        }else{
+            // toast('Click out to save the list first')
+            toast('Click out to save the list before archive', {
+                icon: '⚠️',
+                style: {
+                    minWidth: '250px',
+                    minHeight: '60px',
+                    fontSize: '20px',
+                    backgroundColor: 'var(--primary)',
+                    color: 'var(--primary-light) ',
+                    
+                },
             });
         }
     };

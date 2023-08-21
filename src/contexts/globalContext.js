@@ -27,7 +27,7 @@ import { useContext } from 'react';
 import routes from '~/config/routes';
 import { adminId } from '~/utils/constantValue';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL, deleteObject } from 'firebase/storage';
-import toast from 'react-hot-toast';
+
 const GlobalContext = createContext();
 
 export const GlobalContextProvider = ({ children }) => {
