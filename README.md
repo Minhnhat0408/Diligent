@@ -236,9 +236,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 ## Clone And Installation
 
 1. Clone the project with Git Desktop or command.
-2. Go into the folder ('cd (path)/diligent')
-3. Open terminal and install the package ('npm i') or ('yarn')
-4. Then run and enjoy the app ('npm start') 
+2. Go into the folder (`cd (path)/diligent`)
+3. Open terminal and install the package (`npm install`) or (`yarn`)
+4. Then run and enjoy the app (`npm start`) or (`yarn start`)
 
 ## Contributing
 
