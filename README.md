@@ -201,7 +201,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -   List of tasks you will do today. You can add and reposition them for the priority. Note that all tasks will be delete after a day.
 -   If the tasks can't be finish within that day, you can archived it until you finish or delete it.
 
-<p align="center"><img src="./public/todolist.png" alt="project image" width="60%" style="object-fit:cover"></p>
+<img src="./public/todolist.png" alt="project image" width="100%" style="object-fit:cover">
 
 
 **10. Streak record:**
@@ -212,7 +212,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 -   It will show your streak on the calendar.
 
-    <img src="./public/calendar.png" alt="project image" width="100%" style="object-fit:cover">
+<p align="center"><img src="./public/calendar.png" alt="project image" width="60%" style="object-fit:cover"></p>
 
 
  <p align="right">(<a href="#readme-top">back to top</a>)</p>
