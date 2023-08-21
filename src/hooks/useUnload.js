@@ -2,10 +2,10 @@ import { useEffect } from "react";
 
 function useUnload(handler) {
     useEffect(() => {
-      window.addEventListener('unload', handler);
-  
+      window.addEventListener('beforeunload', handler);
+      
       return () => {
-        window.removeEventListener('unload', handler);
+        window.removeEventListener('beforeunload', handler);
       };
     }, [handler]);
   }

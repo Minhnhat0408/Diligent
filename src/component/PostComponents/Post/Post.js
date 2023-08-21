@@ -59,6 +59,7 @@ function Post() {
     const [like, setLike] = useState(post.data.react === 1 ? 1 : 0);
     const [dislike, setDisLike] = useState(post.data.react === -1 ? 1 : 0);
     const timer = useRef();
+    const box = useRef()
     const userLink = (id) => {
         navigate(routes.user + id);
     };
@@ -377,7 +378,7 @@ function Post() {
                             }
                         >
                             {/* Page display */}
-                            <div className={cx('scroll-box')}>
+                            <div  className={cx('scroll-box')}>
                                 <div className={cx('post-wrapper')}>
                                     <div className={cx('header')}>
                                         <div className={cx('info')}>
@@ -547,7 +548,7 @@ function Post() {
                                             />
                                         </div>
 
-                                        <div className={cx('scroll-box')}>
+                                        <div ref={box} className={cx('scroll-box')}>
                                             <div className={cx('post-wrapper')}>
                                                 <div className={cx('header')}>
                                                     <div className={cx('info')}>
@@ -739,7 +740,7 @@ function Post() {
                                                 </div>
                                             </div>
 
-                                            {isCommentVisible && <CommentBox />}
+                                            {isCommentVisible && <CommentBox box={box} />}
                                         </div>
                                         {user && (
                                             <div className={cx('input-section')}>

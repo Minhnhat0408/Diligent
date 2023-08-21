@@ -1,5 +1,5 @@
 import classNames from 'classnames/bind';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import styles from './Comment.module.scss';
 import { MyComment } from '../MyComment';
 import Image from '~/component/Image/Image';
@@ -36,11 +36,12 @@ import { extractFilePathFromURL } from '~/utils/extractPath';
 import { GlobalProps } from '~/contexts/globalContext';
 
 const cx = classNames.bind(styles);
-function Comment({ data, id, react }) {
+function Comment({ data, id, react, box }) {
     const [like, setLike] = useState(react === 1);
     const [isReply, setIsReply] = useState(false);
     const [preview, setPreview] = useState(false);
-    const {sendReport,fileDelete} = GlobalProps()
+    const { sendReport, fileDelete } = GlobalProps();
+
     const [text, setText] = useState(
         data.text.replace(regex, (spc) => {
             const id = spc.match(getIdInMentions)[0].substring(1);
@@ -54,6 +55,16 @@ function Comment({ data, id, react }) {
     const [update, setUpdate] = useState(false);
     const [subComments, setSubComments] = useState([]);
     const post = useContext(PostContext);
+    const cmt = useRef();
+    useEffect(() => {
+        if (isReply) {
+            // console.log(cmt.current)
+            // cmt.current.scrollTop = cmt.current.scrollHeight;
+            console.log(box.current.scrollTop);
+            box.current.scrollTop += cmt.current.scrollHeight -80;
+            console.log(box.current.scrollTop);
+        }
+    }, [isReply]);
     useEffect(() => {
         const q = query(collection(db, 'posts', post.id, 'comments'), where('fatherCmt', '==', id));
         const unsubscribe = onSnapshot(q, (docs) => {
@@ -122,7 +133,7 @@ function Comment({ data, id, react }) {
                     where('type', '==', 'likecmt'),
                 );
                 getDocs(q).then(async (result) => {
-                    if (result.docs.length ===   0) {
+                    if (result.docs.length === 0) {
                         await addDoc(collection(db, 'users', data.user.id, 'notifications'), {
                             title: type.likecmt,
                             url: routes.post + post.id,
@@ -237,7 +248,7 @@ function Comment({ data, id, react }) {
                             </div>
                         )}
                     </div>
-                    <div className={cx('comment')}>
+                    <div ref={cmt} className={cx('comment')}>
                         <h5
                             className={cx('username')}
                             onClick={() => {

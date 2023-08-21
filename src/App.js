@@ -15,7 +15,7 @@ import useUnload from './hooks/useUnload';
 import RootLayout from './layouts/RootLayout/RootLayout';
 const router = createBrowserRouter(
     createRoutesFromElements(
-        <Route path="/" element={<RootLayout/>}>
+        <Route path="/" element={<RootLayout />}>
             {publicRoutes.map((route, index) => {
                 const Page = route.component;
                 let Layout = DefaultLayout;
@@ -66,20 +66,17 @@ const router = createBrowserRouter(
                     );
                 })}
             </Route>
-
         </Route>,
     ),
 );
 function App() {
     const { logOut } = UserAuth();
-    useUnload(async (e) => {
+    useUnload((e) => {
         e.preventDefault();
-
-        await logOut();
+        logOut();
     });
 
-    return  <RouterProvider router={router} />
-     
+    return <RouterProvider router={router} />;
 }
 
 export default App;

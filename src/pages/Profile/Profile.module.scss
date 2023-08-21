@@ -30,7 +30,6 @@
         & .icon {
             color: var(--primary);
         }
-     
     }
 }
 
@@ -72,10 +71,9 @@
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
     object-fit: cover;
-    object-position:center;
+    object-position: center;
     padding-bottom: 10px;
     background-color: var(--bg-light-theme);
-
 }
 
 .bg-btn {
@@ -120,7 +118,6 @@
     padding-top: 30px;
     font-size: 20px;
     font-weight: 700;
-  
 }
 .bio {
     font-size: 14px;
@@ -132,19 +129,18 @@
     & .stats_num {
         flex: 1;
     }
-    & .stats_num .stars{
+    & .stats_num .stars {
         font-size: 18px;
         height: 20px;
         cursor: pointer;
-        &.active{
+        &.active {
             color: var(--primary);
         }
-        &:hover{
+        &:hover {
             color: var(--primary);
         }
-
     }
-    & .stats_num .number{
+    & .stats_num .number {
         font-size: 14px;
     }
     & .stats_num h4 {
@@ -153,7 +149,6 @@
     }
     & .stats_num p {
         font-size: 10px;
-    
     }
 }
 .options {
@@ -185,6 +180,11 @@
     display: flex;
     align-items: center;
 }
+.col {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
 .about_title {
     font-size: 16px;
     font-weight: 600;
@@ -194,8 +194,8 @@
 .about_info {
     font-size: 14px;
     text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .icon {
     font-size: 25px;

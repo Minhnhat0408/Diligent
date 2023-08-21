@@ -65,9 +65,12 @@ function Chat() {
                     });
                 });
                 setMessages(tmp);
-                if (tmp.at(-1).data.sender === user.uid) {
-                    lastView.current++;
+                if(tmp.length > 0) {
+                    if (tmp.at(-1).data.sender === user.uid) {
+                        lastView.current++;
+                    }
                 }
+                
 
                 if (lastView.current === 2) {
             

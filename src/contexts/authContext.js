@@ -48,15 +48,15 @@ export const AuthContextProvider = ({ children }) => {
             user_postNumber: 0,
             user_ratings: [],
             user_decks: 0,
-            user_theme: 'dark',
         });
 
         return response;
     };
 
     const signIn = async (email, password) => {
-        await signInWithEmailAndPassword(auth, email, password);
-        // // Signed in
+       await signInWithEmailAndPassword(auth, email, password);
+
+        // // Signed in 
     };
 
     const logOut = async () => {
@@ -80,14 +80,14 @@ export const AuthContextProvider = ({ children }) => {
             });
         } else {
             await updateDoc(doc(db, 'users', user.uid), {
-                    user_dob: data.dob,
-                    user_name: data.fullname.trimEnd(),
-                    user_gender: data.gender,
-                    user_phone: data.phone.trimEnd(),
-                    user_address: data.address.trimEnd(),
-                    user_bio: data.bio.trimEnd(),
-                    user_avatar: data.avatar || user?.photoURL || image.userUndefined,
-                });
+                user_dob: data.dob,
+                user_name: data.fullname.trimEnd(),
+                user_gender: data.gender,
+                user_phone: data.phone.trimEnd(),
+                user_address: data.address.trimEnd(),
+                user_bio: data.bio.trimEnd(),
+                user_avatar: data.avatar || user?.photoURL || image.userUndefined,
+            });
         }
     };
     const facebookSignIn = async () => {
@@ -109,12 +109,11 @@ export const AuthContextProvider = ({ children }) => {
                 user_postNumber: 0,
                 user_ratings: [],
                 user_decks: 0,
-                user_theme: 'dark',
             });
 
             // navigate(routes.updateInfo)
             return false; // false means fresh account
-        } 
+        }
         return true;
     };
     const googleSignIn = async () => {
@@ -136,12 +135,12 @@ export const AuthContextProvider = ({ children }) => {
                 user_postNumber: 0,
                 user_ratings: [],
                 user_decks: 0,
-                user_theme: 'dark',
             });
 
             // navigate(routes.updateInfo)
             return false; // false means fresh account
         }
+
         return true;
     };
 
@@ -184,9 +183,24 @@ export const AuthContextProvider = ({ children }) => {
 
     useEffect(() => {
         // Subscribe to auth state changes to get the current user
-        const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
+        const unsubscribeAuth = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
                 setUser({ ...currentUser, isAdmin: currentUser.uid === 'rFB2DyO43uTTjubLtoi8BhPQcNu1' });
+                const status = await getDoc(doc(db, 'status', currentUser.uid));
+                if (status.data().user_status !== 'online') {
+                    if (status.data()?.user_banUntil) {
+                        if (status.data().user_banUntil.toMillis() < new Date()) {
+                            await updateDoc(doc(db, 'status', currentUser.uid), {
+                                user_status: 'online',
+                                user_banUntil: deleteField(),
+                            });
+                        }
+                    } else {
+                        await updateDoc(doc(db, 'status', currentUser.uid), {
+                            user_status: 'online',
+                        });
+                    }
+                }
             } else {
                 setUser(null);
             }
@@ -198,19 +212,6 @@ export const AuthContextProvider = ({ children }) => {
                 a[s.id] = s.data();
             });
             setUsersStatus(a);
-            if(user){
-                if (a[user.uid].user_status !== 'online') {
-                    if (a[user.uid]?.user_banUntil && a[user.uid].user_banUntil.toMillis() < new Date()) {
-                        console.log(a[user.uid]?.user_banUntil)
-                        console.log(a[user.uid].user_banUntil.toMillis() < new Date())
-                        await updateDoc(doc(db, 'users', user.uid), {
-                            user_status: 'online',
-                            user_banUntil: deleteField(),
-                        });
-                    }
-                }
-            }
-            
         });
 
         return () => {

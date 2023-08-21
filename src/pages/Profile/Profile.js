@@ -55,6 +55,7 @@ import { faStar as regularStar } from '@fortawesome/free-regular-svg-icons';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import PostLoading from '~/component/PostComponents/PostLoading/PostLoading';
 import { GlobalProps } from '~/contexts/globalContext';
+import PostForm from '~/component/PostComponents/PostForm';
 
 const cx = classNames.bind(styles);
 
@@ -69,6 +70,7 @@ function Profile() {
     const [ban, setBan] = useState(false);
     const context = useContext(ThemeContext);
     const navigate = useNavigate();
+    const [loadingPost, setLoadingPost] = useState(false);
     const [loading, setLoading] = useState(false);
     const [createBoxVisible, setCreateBoxVisible] = useState(false);
     const [lastPost, setLastPost] = useState(null);
@@ -141,7 +143,7 @@ function Profile() {
             }
         };
         fetchUserPosts();
-    }, [id]);
+    }, [id, refresh]);
     const fetchMorePosts = async () => {
         if (lastPost) {
             let q = query(
@@ -324,8 +326,8 @@ function Profile() {
                                         onClick={() => {
                                             if (user) {
                                                 handleUpRatings();
-                                            }else{
-                                                navigate(routes.login)
+                                            } else {
+                                                navigate(routes.login);
                                             }
                                         }}
                                         className={cx('stars', { active: star })}
@@ -338,7 +340,7 @@ function Profile() {
                                     <p>Decks</p>
                                 </div>
                             </div>
-                            <div className={cx('options')}>
+                            <div className={cx('options') + ' xl-max:!px-2'}>
                                 {id === user?.uid ? (
                                     <>
                                         <Button
@@ -500,28 +502,28 @@ function Profile() {
                             <h4 className={cx('title')}>About</h4>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faCalendar} />
-                                <div>
+                                <div className={cx('col')}>
                                     <p className={cx('about_title')}>Date of Birth</p>
                                     <p className={cx('about_info')}>{pageUser.user_dob} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faAt} />
-                                <div>
+                                <div className={cx('col')}>
                                     <p className={cx('about_title')}>Email</p>
                                     <p className={cx('about_info')}>{pageUser.user_email} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faPhone} />
-                                <div>
+                                <div className={cx('col')}>
                                     <p className={cx('about_title')}>Phone</p>
                                     <p className={cx('about_info')}>{pageUser.user_phone} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faAddressCard} />
-                                <div>
+                                <div className={cx('col')}>
                                     <p className={cx('about_title')}>Address</p>
                                     <p className={cx('about_info')}>{pageUser.user_address} </p>
                                 </div>
@@ -543,14 +545,15 @@ function Profile() {
                         )
                     ) : (
                         <div className={cx('content')}>
-                            {user && (
-                                <CreatePost
-                                    show={createBoxVisible}
-                                    setShow={setCreateBoxVisible}
+                            {createBoxVisible && (
+                                <PostForm
+                                    onXmark={setCreateBoxVisible}
                                     setReFresh={setReFresh}
+                                    setLoading={setLoadingPost}
                                 />
                             )}
-
+                            {user && <CreatePost setLoading={setLoadingPost} setReFresh={setReFresh} />}
+                            {loadingPost && <PostLoading />}
                             {userPosts ? (
                                 <InfiniteScroll
                                     dataLength={userPosts.length}

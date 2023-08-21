@@ -53,10 +53,11 @@ function Header() {
     const { handleReadNoti, notifications } = GlobalProps();
     const notif = useRef();
     const navigate = useNavigate();
+    const change = useRef(0);
     const [notis, setNotis] = useState();
     useEffect(() => {
         setNotis(notifications);
-        if (notifications && notifications?.unread !== 0) {
+        if (notifications && notifications?.unread !== 0 && change.current > 2) {
             toast('You got unread notifications!', {
                 icon: '🔔',
                 style: {
@@ -68,8 +69,10 @@ function Header() {
                 },
             });
         }
+        change.current++
+   
     }, [notifications]);
-
+    
     USER_MENU = [
         {
             icon: <FontAwesomeIcon icon={faUser} />,

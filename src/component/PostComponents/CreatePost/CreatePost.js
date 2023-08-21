@@ -18,7 +18,6 @@ function CreatePost({ setReFresh, setLoading }) {
     const [showForm, setShowForm] = useState(false);
     const context = useContext(ThemeContext);
     const handleClickCreateBox = () => {
-        console.log('hlelele');
         setShowForm(true);
     };
 
@@ -27,7 +26,13 @@ function CreatePost({ setReFresh, setLoading }) {
         <>
             {userData ? (
                 <>
-                    {showForm && <PostForm onXmark={setShowForm} setReFresh={setReFresh} setLoading={setLoading} />}
+                    {(showForm) && (
+                        <PostForm
+                            onXmark={setShowForm}
+                            setReFresh={setReFresh}
+                            setLoading={setLoading}
+                        />
+                    )}
                     <div
                         className={
                             cx('wrapper', { dark: context.theme === 'dark' }) +

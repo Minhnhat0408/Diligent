@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './CommentBox.module.scss';
 import Comment from '~/component/CommentComponents/Comment/Comment';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
     collection,
     onSnapshot,
@@ -19,13 +19,12 @@ import CommentLoading from '../CommentLoading/CommentLoading';
 
 const cx = classNames.bind(styles);
 
-function CommentBox() {
+function CommentBox({box}) {
     const [comments, setComments] = useState([]);
     const { user } = UserAuth();
     const [filter, setFilter] = useState('');
     const [showFilter, setShowFilter] = useState(false);
     const [animation, setAnimation] = useState(false);
-    
     const post = useContext(PostContext);
     const context = useContext(ThemeContext);
     useEffect(() => {
@@ -58,10 +57,10 @@ function CommentBox() {
     }, [animation]);
     return (
         <>
-            <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+            <div  className={cx('wrapper', { dark: context.theme === 'dark' })}>
                 {comments.length !== 0 ? (
                     comments.map((comment) => {
-                        return <Comment key={comment.id} data={comment.data} react={comment.react} id={comment.id} />;
+                        return <Comment box={box} key={comment.id} data={comment.data} react={comment.react} id={comment.id} />;
                     })
                 ) : (
                     <div className={cx('nothing')}>

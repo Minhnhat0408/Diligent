@@ -215,7 +215,7 @@ function PostForm({ onXmark, update, setReFresh, setLoading }) {
             console.error('Upload failed!', error);
         }
     };
-    console.log(usersStatus[user.uid]?.user_status)
+
     return (
         <>
             {(usersStatus[user.uid]?.user_status === 'ban') ? (
