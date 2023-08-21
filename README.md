@@ -55,7 +55,7 @@
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Feature</a></li>
+    <li><a href="#feature">Feature</a></li>
     <li><a href="#roadmap">Clone and Installation</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -89,6 +89,7 @@ Benefits:
 - ![SASS](https://img.shields.io/badge/SASS-hotpink.svg?style=for-the-badge&logo=SASS&logoColor=white)
 - ![CSS3](https://img.shields.io/badge/css3-%231572B6.svg?style=for-the-badge&logo=css3&logoColor=white)
 - ![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)
+- ![Framer](https://img.shields.io/badge/Framer-black?style=for-the-badge&logo=framer&logoColor=blue)
 - ![React Router](https://img.shields.io/badge/React_Router-CA4245?style=for-the-badge&logo=react-router&logoColor=white)
 - ![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
 
@@ -141,7 +142,10 @@ _For more examples, please refer to the [Documentation](https://example.com)_
  -->
 
 <!-- FEATURE -->
-## FEATURE
+## Feature
+
+1. Sign in/Sign up with Google, Facebook or traditionally:
+ <img src="./public/home.png" alt="project image" width="100%" style="object-fit:cover">
 
  <img src="./public/home.png" alt="project image" width="100%" style="object-fit:cover">
 

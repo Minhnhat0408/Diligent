@@ -58,12 +58,12 @@ function FlipCard({
                     }}
                 >
                     {flashcard ? (
-                        <>
-                            <h1 className="text-4xl">{children[1].props.children.content}</h1>
+                        <div className='flex flex-col items-center justify-center'>
+                            <h1 className="text-4xl mx-10">{children[1].props.children.content}</h1>
                             {children[1].props.children.example && (
-                                <p className="text-2xl mt-10">{children[1].props.children.example}</p>
+                                <p className="text-2xl mt-10 mx-10">{children[1].props.children.example}</p>
                             )}
-                        </>
+                        </div>
                     ) : (
                         children[1]
                     )}
