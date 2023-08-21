@@ -330,6 +330,7 @@ const SpaceFlash = ({ cards }) => {
                                         first={displayCards.length - 1 === ind}
                                         backColor="bisque"
                                         frontColor="bisque"
+                                        flashcard
                                     >
                                         <h1 className="text-5xl">{a.front}</h1>
                                         <h1 className="text-5xl">{a.back}</h1>
