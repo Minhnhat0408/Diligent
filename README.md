@@ -164,8 +164,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 
 -   Chat page just like messenger and a chat shortcut for recent contact and notify if there is a messsage comming.
 <div style="display:flex;justify-content:space-evenly;">
-<img src="./public/chat.png" alt="project image" width="50%" style="object-fit:cover">
-<img src="./public/incoming.png" alt="project image" width="50%" style="object-fit:cover">
+<img src="./public/chat.png" alt="project image" width="45%" style="object-fit:cover">
+<img src="./public/incoming.png" alt="project image" width="45%" style="object-fit:cover">
 </div>
 
 **6. Document's Storage:**
@@ -192,8 +192,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -   Note that all shorts is expired after 24hr.
 
 <div style="display:flex;justify-content:space-evenly;">
-<img src="./public/shorts.png" alt="project image" width="50%" style="object-fit:cover">
-<img src="./public/short.png" alt="project image" width="50%" style="object-fit:cover">
+<img src="./public/shorts.png" alt="project image" width="45%" style="object-fit:cover">
+<img src="./public/short.png" alt="project image" width="45%" style="object-fit:cover">
 </div>
 
 **9. Todo List:**
@@ -201,7 +201,7 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 -   List of tasks you will do today. You can add and reposition them for the priority. Note that all tasks will be delete after a day.
 -   If the tasks can't be finish within that day, you can archived it until you finish or delete it.
 
-<img src="./public/todolist.png" alt="project image" width="100%" style="object-fit:cover">
+<p align="center"><img src="./public/todolist.png" alt="project image" width="60%" style="object-fit:cover"></p>
 
 
 **10. Streak record:**
