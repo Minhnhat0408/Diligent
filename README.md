@@ -54,7 +54,8 @@
     </li>
     <li><a href="#my-role">My Role</a></li>
     <li><a href="#feature">Feature</a></li>
-    <li><a href="#roadmap">Clone and Installation</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#clone-and-installation">Clone And Installation</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -146,7 +147,9 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 **3. Posting question and idea:**
 
 -   All basic function: post,delete , update, like, comment, save, hide, post.
--   The post will be suggested based on user preference (Category points). Hence your post will be seen by all the users who interests or have skill related. Also we suggested some friends in case you feel lonely :)
+  
+-   **The post will be suggested based on user preference (Category points). Hence your post will be seen by all the users who interests or have skill related. Also we suggested some friends in case you feel lonely :)**
+-   
     <img src="./public/home.png" alt="project image" width="100%" style="object-fit:cover">
 
 -   You can also mention a specific person in your post.
@@ -181,7 +184,8 @@ _For more examples, please refer to the [Documentation](https://example.com)_
     <img src="./public/decks.png" alt="project image" width="100%" style="object-fit:cover">
 
 -   Learning space with minimal distraction and user friendly UI.
--   The SRS algorithm (Anki's algo) is implemented to make sure you remember all the information with better UI than Anki.
+
+-   **The SRS algorithm (Anki's algo) is implemented to make sure you remember all the information with better UI than Anki.**
 
     <img src="./public/flashcard.png" alt="project image" width="100%" style="object-fit:cover">
 
@@ -231,6 +235,45 @@ _For more examples, please refer to the [Documentation](https://example.com)_
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- CONTRIBUTING -->
+
+## Clone And Installation
+
+Clone the project
+
+```bash
+  git clone https://github.com/Minhnhat0408/Diligent
+```
+
+Go to the project directory
+
+```bash
+  cd Diligent
+```
+
+Install dependencies
+
+```bash
+  npm install
+  yarn
+```
+
+Start the server
+
+```bash
+  npm start
+  yarn start
+```
+## Environment Variables
+
+To run this project, you will need to add the following environment variables to your .env file 
+All keys in firebase and setup a proper database for it.
+`REACT_APP_API_KEY`
+`REACT_APP_AUTH_DOMAIN`
+`REACT_APP_PROJECT_ID`
+`REACT_APP_STORAGE_BUCKET`
+`REACT_APP_MESSAGING_RENDER_ID`
+`REACT_APP_APP_ID`
+`REACT_APP_MEASUREMENT_ID`
 
 ## Contributing
 
