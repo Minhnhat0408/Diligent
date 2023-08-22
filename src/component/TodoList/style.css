@@ -24,6 +24,10 @@
   flex-shrink: 0;
 }
 
+.scroll-none::-webkit-scrollbar{
+  display: none;
+
+}
 .background {
   position: absolute;
   top: 0;

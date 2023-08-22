@@ -13,6 +13,7 @@
     &.dark {
       background-color: var(--dark-theme);
       color:var(--text-color-dark);
+      box-shadow: none;
     }
 
     &.dark .user-info {

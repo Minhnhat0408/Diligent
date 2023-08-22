@@ -17,7 +17,7 @@ function FriendBox({ data, id }) {
     const { handleAccept,handleAddfr } = GlobalProps();
 
     return (
-        <div className=" rounded-2xl w-[22vw] min-w-[300px] mb-5 bg-[var(--dark-theme)] overflow-hidden text-[var(--text-color-dark)] flex flex-col">
+        <div className=" rounded-2xl w-[22vw] min-w-[300px]  mb-5 bg-[var(--dark-theme)] overflow-hidden text-[var(--text-color-dark)] flex flex-col">
             <div className="relative w-full h-[100px] ">
                 <Image src={data?.user_bg || ''} alt="ava" className="absolute left-0 w-full h-full object-cover" />
                 <Image
@@ -49,7 +49,7 @@ function FriendBox({ data, id }) {
                         }
                     }}
                     className={
-                        'h-8 w-[80px] rounded-lg bg-transparent border-[1px] ml-3 cursor-pointer hover:bg-[var(--primary-light)] border-solid border-[var(--primary)] text-[var(--primary)] ' +
+                        'h-8 w-[80px] 3xl-max:hidden  rounded-lg bg-transparent border-[1px] ml-3 cursor-pointer hover:bg-[var(--primary-light)] border-solid border-[var(--primary)] text-[var(--primary)] ' +
                         ((data.friend === 1 || disabled === 'Requesting') && ' hover:bg-transparent opacity-75')
                     }
                 >

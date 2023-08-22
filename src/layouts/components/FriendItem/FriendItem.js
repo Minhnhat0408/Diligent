@@ -18,15 +18,15 @@ function FriendItem({ data }) {
     const {handleAccept,handleDecline } = GlobalProps();
     const navigate = useNavigate()  
     return (
-        <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
+        <div className={cx('wrapper', { dark: context.theme === 'dark' }) }>
             <div className={cx('body')} onClick={() => navigate(routes.user + data.id)}>
                 <Image src={data?.ava} className={cx('avatar')}  alt="avatar" />
                 <div className={cx('info')}>
-                    <h4 className={cx('name')}>{data?.name}</h4>
+                    <h4 className={cx('name') }>{data?.name}</h4>
                     <span className={cx('mutual')}>18 mutual friend</span>
                 </div>
             </div>
-            <div className={cx('btn')}>
+            <div className={cx('btn') }>
                 <Button onClick={() => {handleAccept(data)}} small rounded primary dark={context.theme === 'dark'}>
                     Confirm
                 </Button>

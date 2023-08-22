@@ -129,7 +129,7 @@ function Header() {
     };
 
     return (
-        <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' rounded-3xl sml-max:h-16'}>
+        <header className={cx('wrapper', { [context.theme]: context.theme === 'dark' }) + ' sml-max:h-16'}>
             <Toaster position="bottom-right" />
             <div className={cx('inner') + ' smu-max:justify-between'}>
                 <div
@@ -140,7 +140,7 @@ function Header() {
                             navigate(routes.home);
                         }
                     }}
-                    className={cx('start') + ' mdl-max:ml-3 smu-max:!ml-6'}
+                    className={cx('start') + ' relative mdl-max:ml-3 smu-max:!ml-6'}
                 >
                     <img
                         src={context.theme === 'dark' ? image.logo : image.logoLight}
@@ -240,7 +240,7 @@ function Header() {
                     ) : (
                         <>
                             <Button
-                                className={cx('login-btn') + ' smu-max:mr-0'}
+                                className={cx('login-btn') + ' mr-0 h-10 !w-16'}
                                 dark={context.theme === 'dark'}
                                 primary
                                 large

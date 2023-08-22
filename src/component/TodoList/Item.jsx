@@ -114,7 +114,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
     };
     return (
         <Reorder.Item
-            className="select-none touch-pan-x mb-4 rounded-lg  w-full px-4 py-5 relative bg-[var(--primary)] items-center flex"
+            className="select-none touch-pan-x mb-4 rounded-lg text-lg w-full px-4 py-3 relative bg-[var(--primary)] items-center flex"
             value={item}
             id={status === 'todo' ? item.order : item.id}
             style={{ boxShadow, y }}
@@ -127,7 +127,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             <span className="flex-1">{item.title}</span>
             <Tippy content="Check to finish the task" delay={1000} theme={context.theme} animation={'scale'}>
                 <button
-                    className=" w-9 h-9 hover:bg-green-500 hover:text-[var(--primary)] cursor-pointer bg-transparent rounded-lg border-solid border-1  border-green-500 text-lg text-green-500 font-bold mr-4 "
+                    className=" w-9 h-9 hover:bg-green-500 hover:text-[var(--primary)] cursor-pointer bg-transparent rounded-lg border-solid border-1  border-green-500 text-base text-green-500 font-bold mr-4 "
                     onClick={() => {
                         handleCheck();
                     }}
@@ -138,7 +138,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             {status === 'todo' && (
                 <Tippy content="Archive this task to other day" delay={1000} theme={context.theme} animation={'scale'}>
                     <button
-                        className=" w-9 h-9 cursor-pointer  rounded-lg bg-blue-300 text-lg font-bold mr-4 "
+                        className=" w-9 h-9 cursor-pointer  rounded-lg bg-blue-300 text-base font-bold mr-4 "
                         onClick={() => {
                             handleSetArchived();
                         }}
@@ -149,7 +149,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             )}
             <Tippy content="Delete this task" delay={1000} theme={context.theme} animation={'scale'}>
                 <button
-                    className=" w-9 h-9 cursor-pointer  rounded-lg bg-red-400 text-lg font-bold mr-4 "
+                    className=" w-9 h-9 cursor-pointer  rounded-lg bg-red-400 text-base font-bold mr-4 "
                     onClick={() => {
                         handleDelete();
                     }}

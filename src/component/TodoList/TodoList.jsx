@@ -146,7 +146,7 @@ function TodoList() {
             <StreakModal display={streak} />
             <div
                 className={
-                    'w-[40vw] p-3 pb-5 flex flex-col items-center  bg-white shadow-[2px_2px_5px_#888] rounded-[20px] text-[var(--text-color)] max-h-[90vh] ' +
+                    'w-[40vw] p-3 pb-5 flex flex-col items-center  bg-white shadow-[2px_2px_5px_#888] rounded-[20px] text-[var(--text-color)] max-h-[90vh] scroll-none overflow-y-scroll ' +
                     (theme === 'dark' ? ' !bg-[var(--dark-theme)] text-[var(--text-color-dark)] shadow-none' : '')
                 }
             >
@@ -164,7 +164,7 @@ function TodoList() {
                     >
                         <FontAwesomeIcon icon={faInfoCircle} />
                     </div>
-                    <h1 className={'text-[32px] '}>Today's Todo-List</h1>
+                    <h1 className={'text-[28px] '}>Today's Todo-List</h1>
                     <div
                         className={
                             'w-10 h-10 rounded-full text-xl cursor-pointer hover:bg-[#00000026] flex justify-center items-center'
@@ -179,7 +179,7 @@ function TodoList() {
 
                 <div className="flex items-center w-full mt-6 pr-2">
                     <input
-                        className="text-xl py-2 px-4 rounded-xl w-full mr-6"
+                        className="text-base py-2 px-4 rounded-xl w-full mr-6"
                         ref={task}
                         placeholder="🖼️ Add new task with icon here..."
                         onKeyDown={(e) => {
@@ -205,8 +205,8 @@ function TodoList() {
                             }
                         }}
                         primary
-                        xl
-                        className="text-xl rounded-xl"
+                        
+                        className="text-base rounded-xl"
                         dark={theme === 'dark'}
                     >
                         Add
@@ -218,8 +218,9 @@ function TodoList() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'fit-content ', dur: 1000 }}
                             exit={{ opacity: 0, height: '0px', dur: 1000 }}
+                            className='w-full'
                         >
-                            <div className="w-full p-3">
+                            <div className="w-full p-3 text-[14px]">
                                 <p className="flex items-center">
                                     <div className="bg-green-300 w-4 h-4 rounded-sm mr-2"> </div> The red section is
                                     where the todo tasks (tasks that yet to be done in a day) is stored

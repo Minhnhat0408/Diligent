@@ -2,7 +2,7 @@
     width: 100%;
     height:calc(100vh - var(--defaultLayout-header-height)); 
     display: flex;
-    padding: 20px 10%;
+    padding: 40px 12%;
     justify-content: center;
     overflow: hidden;
     background-color:var(--bg-light-theme);
@@ -25,7 +25,7 @@
     justify-content: center;
     object-fit: contain;
     width: 100%;
-    height: calc(100vh - 40px - var(--defaultLayout-header-height));
+    height: calc(100vh - 80px - var(--defaultLayout-header-height));
 
   }
   
@@ -48,7 +48,7 @@
     }
 }
 .image-display{
-    width: 65%;
+    width: 57%;
     border-radius: 15px;
     background-color: black;
     height: 100%;
