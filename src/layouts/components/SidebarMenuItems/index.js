@@ -13,10 +13,10 @@ function SidebarMenuItems({onClick,icon, title, backGroundColor, color, numsNoti
     return ( 
         <div  onClick={onClick} className={cx('wrapper',{dark:context.theme === 'dark'})}>
             <div className={cx('row')}>
-                <div className={cx('icon-wrapper') + ' xl-max:text-[14px]'} style={{background: backGroundColor, color: color}}>
+                <div className={cx('icon-wrapper') + ' 2xl-max:text-[14px]'} style={{background: backGroundColor, color: color}}>
                     {icon}
                 </div>
-                <span className={cx('title') + " xl-max:text-[14px]"}>{title}</span>
+                <span className={cx('title') + " 2xl-max:text-[14px]"}>{title}</span>
             </div >
 
             { numsNotify > 0 && <div className={cx('notification')}>{numsNotify}</div>}

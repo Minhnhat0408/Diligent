@@ -120,8 +120,8 @@ function FormSignIn() {
                 </div>
             ) : (
                 <form ref={form} className={cx('form') + ' xl-max:w-90% lgs-max:py-3'}>
-                    <h2 className={cx('heading')}>Sign in</h2>
-                    <p className={cx('desc')}>Your next generation of education</p>
+                    <h2 className={cx('heading') + " 2xl-max:!text-[26px]"}>Sign in</h2>
+                    <p className={cx('desc') + " 2xl-max:!text-[18px]"}>Your next generation of education</p>
                     {/* css this error */}
                     {error && (
                         <div className={cx('error')}>
@@ -132,7 +132,7 @@ function FormSignIn() {
                         return <FormInput invalid={validated[input.name]} key={id} {...input} />;
                     })}
                     <div className={cx('gg-btn')}>
-                        <span className={cx('gg-signup')}>Or sign in with </span>
+                        <span className={cx('gg-signup') + " 2xl-max:!text-[18px]"}>Or sign in with </span>
                         <Image
                             onClick={handleGoogleSignIn}
                             src={image.google}

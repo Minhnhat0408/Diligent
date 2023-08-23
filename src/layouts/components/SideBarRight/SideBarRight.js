@@ -44,8 +44,8 @@ function SideBarRight() {
                         ) : (
                             <div className={cx('menu-wrapper')}>
                                 <div className={cx('options')}>
-                                    <h4 className={cx('menu-header') + ' text-[12px]'}>Suggested friends</h4>
-                                    <Link to={routes.friend} className={cx('more') + ' lg-max:hidden lgbw-max:hidden  text-[12px]'}>
+                                    <h4 className={cx('menu-header')}>Suggested friends</h4>
+                                    <Link to={routes.friend} className={cx('more') + ' lg-max:hidden lgbw-max:hidden text-[12px]'}>
                                         See all
                                     </Link>
                                 </div>

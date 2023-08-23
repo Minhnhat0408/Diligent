@@ -81,18 +81,18 @@ function DocumentItem({ id, data,updateDocuments }) {
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('content')}>
                 <h4
-                    className={cx('title')}
+                    className={cx('title') +  " 2xl-max:text-[18px] 2xl-max:mr-2"}
                 >
                     {data.title}
                 </h4>
-                <FontAwesomeIcon icon={icon} className={cx('file-preview', data.type)} />
+                <FontAwesomeIcon icon={icon} className={cx('file-preview', data.type) +  " 2xl-max:text-[18px]"} />
             </div>
-            <ul className={cx('selected-category')}>
+            <ul className={cx('selected-category') }>
                 {data.tag.map((tag, index) => {
-                    return <li key={index}>{tag}</li>;
+                    return <li key={index} className=" 2xl-max:!text-[12px] 2xl-max:!mb-2" >{tag}</li>;
                 })}
             </ul>
-            <div className={cx('contributor')}>
+            <div className={cx('contributor') +  " 2xl-max:text-[14px]"}>
                 <div className={cx('upload-wrapper')}>
                     <FontAwesomeIcon icon={faUser} />
                     <p>Uploaded by: </p>
@@ -100,7 +100,7 @@ function DocumentItem({ id, data,updateDocuments }) {
                         {data.user.name}
                     </Link>
                 </div>
-                <div className={cx('time-wrapper')}>
+                <div className={cx('time-wrapper') }>
                     <FontAwesomeIcon icon={faClock} />
                     <p>
                         Created:

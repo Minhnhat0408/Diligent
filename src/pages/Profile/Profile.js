@@ -305,15 +305,15 @@ function Profile() {
                                     onClick={() => setPreviewAvatar(true)}
                                     className={cx('ava')}
                                 />
-                                <h4 className={cx('name') + ' '}>
-                                    {pageUser.user_name}{' '}
+                                <h4 className={cx('name') + ' 3xl-max:text-[16px]'}>
+                                    {pageUser.user_name}{" "}
                                     {pageUser.user_gender === 'male' ? (
-                                        <FontAwesomeIcon icon={faMars} className="text-blue-500" />
+                                        <FontAwesomeIcon icon={faMars} className="text-blue-500 "  />
                                     ) : (
                                         <FontAwesomeIcon icon={faVenus} className="text-pink-500" />
                                     )}
                                 </h4>
-                                <p className={cx('bio')}>{pageUser.user_bio}</p>
+                                <p className={cx('bio') + " 3xl-max:text-[12px]"}>{pageUser.user_bio}</p>
                             </div>
                             <div className={cx('stats')}>
                                 <div className={cx('stats_num')}>
@@ -447,7 +447,7 @@ function Profile() {
                                                     outline
                                                     dark={context.theme === 'dark'}
                                                     onClick={handleNavigateChat}
-                                                    className={cx('btn') + ' w-[50px] h-[50px] 3xl-max:!w-[60px] 3xl-max:h-[36px]' }
+                                                    className={cx('btn') + ' w-[50px] h-[50px] 3xl-max:!ml-0 3xl-max:!w-[60px] 3xl-max:h-[36px]' }
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>
@@ -500,33 +500,33 @@ function Profile() {
                                 )}
                             </div>
                         </div>
-                        <div className={cx('section')}>
+                        <div className={cx('section') }>
                             <h4 className={cx('title')}>About</h4>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faCalendar} />
                                 <div className={cx('col')}>
-                                    <p className={cx('about_title')}>Date of Birth</p>
+                                    <p className={cx('about_title')  + " 2xl-max:text-[14px]"}>Date of Birth</p>
                                     <p className={cx('about_info')}>{pageUser.user_dob} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faAt} />
                                 <div className={cx('col')}>
-                                    <p className={cx('about_title')}>Email</p>
-                                    <p className={cx('about_info')}>{pageUser.user_email} </p>
+                                    <p className={cx('about_title')  + " 2xl-max:text-[14px]"}>Email</p>
+                                    <p className={cx('about_info')  + " 2xl-max:text-[14px]"}>{pageUser.user_email} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faPhone} />
                                 <div className={cx('col')}>
-                                    <p className={cx('about_title')}>Phone</p>
+                                    <p className={cx('about_title') + " 2xl-max:text-[14px]"}>Phone</p>
                                     <p className={cx('about_info')}>{pageUser.user_phone} </p>
                                 </div>
                             </div>
                             <div className={cx('about')}>
                                 <FontAwesomeIcon className={cx('icon')} icon={faAddressCard} />
                                 <div className={cx('col')}>
-                                    <p className={cx('about_title')}>Address</p>
+                                    <p className={cx('about_title')  + " 2xl-max:text-[14px]"}>Address</p>
                                     <p className={cx('about_info')}>{pageUser.user_address} </p>
                                 </div>
                             </div>

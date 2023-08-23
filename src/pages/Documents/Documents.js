@@ -196,18 +196,18 @@ function Documents() {
     return (
         <div className={cx('wrapper', { dark: context.theme === 'dark' })}>
             <div className={cx('user-options')}>
-                <h4 className={cx('title')}>Document</h4>
-                <p className={cx('description')}>"Constructive and helpful files from all around the globe"</p>
+                <h4 className={cx('title') +  " 2xl-max:text-[24px]"}>Document</h4>
+                <p className={cx('description') +  " 2xl-max:text-[14px]"}>"Constructive and helpful files from all around the globe"</p>
                 <div className={cx('row')}>
                     <Button
                         dark={context.theme === 'dark'}
                         onClick={() => (user ? setUploadFileBox(true) : navigate(routes.login))}
                         outline
                     >
-                        <FontAwesomeIcon icon={faFilePen} className={cx('icon')} />
+                        <FontAwesomeIcon icon={faFilePen} className={cx('icon') + " 2xl-max:text-[16px]"} />
                     </Button>
                     <Button dark={context.theme === 'dark'} onClick={() => setAnimation(!animation)} outline>
-                        <FontAwesomeIcon icon={faSearch} className={cx('icon')} />
+                        <FontAwesomeIcon icon={faSearch} className={cx('icon') + " 2xl-max:text-[16px]"} />
                     </Button>
                 </div>
                 <div className={cx('row')}>
@@ -220,7 +220,7 @@ function Documents() {
                         onClick={handleFilter}
                     >
                         <Button dark={context.theme === 'dark'} outline>
-                            <FontAwesomeIcon icon={faFilter} className={cx('icon')} />
+                            <FontAwesomeIcon icon={faFilter} className={cx('icon') + " 2xl-max:text-[16px]"} />
                         </Button>
                     </Menu>
                     <Menu
@@ -232,7 +232,7 @@ function Documents() {
                         onClick={handleAddCategory}
                     >
                         <Button dark={context.theme === 'dark'} outline>
-                            <FontAwesomeIcon icon={faBars} className={cx('icon')} />
+                            <FontAwesomeIcon icon={faBars} className={cx('icon') + " 2xl-max:text-[16px]"} />
                         </Button>
                     </Menu>
                 </div>
@@ -282,7 +282,7 @@ function Documents() {
                 <InfiniteScroll
                     dataLength={documents.display.length}
                     next={fetchMoreDocs}
-                    style={{ minWidth: 550, overflow: null }}
+                    style={{ minWidth: 400, overflow: null }}
                     hasMore={lastDoc !== null && documents.display.length > 0}
                     loader={<DocumentLoading />}
                 >

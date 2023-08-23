@@ -40,13 +40,13 @@ function AccountItem({ room, acc, search = false, chat = false, dark, ...props }
                     to={(search && `/user/${acc.id}`) || (chat && routes.chatroom + room.id)}
                     className={cx('wrapper', { dark: dark })}
                 >
-                    <Image src={acc.data.user_avatar} alt="user" className={cx('avatar') + ' xl-max:h-8 xl-max:w-8'} />
+                    <Image src={acc.data.user_avatar} alt="user" className={cx('avatar') + ' 2xl-max:h-8 2xl-max:w-8'} />
                     <div className={cx('info') + ' lg-max:overflow-visible lgbw-max:!overflow-visible'}>
-                        <h4 className={cx('name') + '   xl-max:text-[14px]'}>{acc.data.user_name}</h4>
+                        <h4 className={cx('name') + '   2xl-max:text-[14px]'}>{acc.data.user_name}</h4>
                         {chat && noti > 0 ? (
                             <div className={cx('msg-noti')}>{noti}</div>
                         ) : (
-                            <span className={cx('icon', { [usersStatus[acc.id]?.user_status]: true }) + ' xl-max:text-[8px]'}>
+                            <span className={cx('icon', { [usersStatus[acc.id]?.user_status]: true }) + ' 2xl-max:text-[8px]'}>
                                 <FontAwesomeIcon icon={faCircle} />
                             </span>
                         )}

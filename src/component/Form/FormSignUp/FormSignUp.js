@@ -134,8 +134,8 @@ function FormSignUp({ classes = [] }) {
                 </div>
             ) : (
                 <form className={cx('form', ...classes) + ' lgs-max:!py-3'}>
-                    <h3 className={cx('heading')}>Sign up</h3>
-                    <p className={cx('desc')}>Sign up to improve your learning journey</p>
+                    <h3 className={cx('heading') + " 2xl-max:!text-[26px]"}>Sign up</h3>
+                    <p className={cx('desc') + " 2xl-max:!text-[18px]"}>Sign up to improve your learning journey</p>
                     {error && (
                         <div className={cx('error')}>
                             <span>{error}</span>
@@ -146,7 +146,7 @@ function FormSignUp({ classes = [] }) {
                     })}
 
                     <div className={cx('gg-btn')}>
-                        <span className={cx('gg-signup')}>Or sign up with google account ?</span>
+                        <span className={cx('gg-signup') + " 2xl-max:!text-[18px]"}>Or sign up with</span>
                         <Image
                             onClick={handleGoogleSignUp}
                             src={image.google}
