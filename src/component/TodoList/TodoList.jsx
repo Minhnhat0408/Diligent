@@ -25,8 +25,6 @@ import { UserAuth } from '~/contexts/authContext';
 import toast from 'react-hot-toast';
 import StreakModal from '../StreakModal/StreakModal';
 const currentDate = new Date();
-console.log('hello')
-// Set the time of the current date to 00:00:00
 currentDate.setHours(0, 0, 0, 0);
 function TodoList() {
     const { theme, setTodoList } = useContext(ThemeContext);
@@ -35,12 +33,11 @@ function TodoList() {
     const td = useRef([]); // replica of todo for the unmount job
     const [archived, setArchived] = useState([]);
     const task = useRef();
-    const [streak,setStreak] = useState(false)
+    const [streak, setStreak] = useState(false);
     const { user } = UserAuth();
     const change = useRef(0);
     useEffect(() => {
         if (user) {
-            
             const fetchTasks = async () => {
                 const q = query(
                     collection(db, 'tasks'),
@@ -55,19 +52,20 @@ function TodoList() {
                     where('status', '==', 'archived'),
                     orderBy('time'),
                 );
+             
                 const b = await getDocs(q2);
                 const tod = [];
                 const ar = [];
-                a.docs.forEach((d) => {
-                    if(d.data().time.toMillis() < new Date(currentDate)) {
-                        deleteDoc(doc(db,'tasks',d.id))
-                    }   
+                a.docs.forEach(async (d) => {
+                    if (d.data().time.toMillis() < new Date(currentDate)) {
+                        await deleteDoc(doc(db, 'tasks', d.id));
+                    }
                     tod.push({ id: d.id, title: d.data().title, order: d.data().order });
                 });
                 b.docs.forEach((d) => {
                     ar.push({ id: d.id, title: d.data().title, order: d.data().order });
                 });
-            
+
                 setTodo(tod);
                 setArchived(ar);
             };
@@ -140,7 +138,7 @@ function TodoList() {
         td.current = todo;
         change.current++;
     }, [todo]);
- console.log(todo,td.current)
+    console.log(todo, td.current);
     return (
         <div className="pop-up">
             <StreakModal display={streak} />
@@ -187,9 +185,12 @@ function TodoList() {
                                 e.preventDefault();
                                 if (task.current.value) {
                                     setTodo((prev) => {
-                                        return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
+                                        return [
+                                            ...prev,
+                                            { id: null, title: task.current.value, order: prev.length + 1 },
+                                        ];
                                     });
-                                    task.current.value = ''
+                                    task.current.value = '';
                                 }
                             }
                         }}
@@ -199,13 +200,11 @@ function TodoList() {
                             if (task.current.value) {
                                 setTodo((prev) => {
                                     return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
-                                    
                                 });
-                                task.current.value = ''
+                                task.current.value = '';
                             }
                         }}
                         primary
-                        
                         className="text-base rounded-xl"
                         dark={theme === 'dark'}
                     >
@@ -218,7 +217,7 @@ function TodoList() {
                             initial={{ opacity: 0, height: 0 }}
                             animate={{ opacity: 1, height: 'fit-content ', dur: 1000 }}
                             exit={{ opacity: 0, height: '0px', dur: 1000 }}
-                            className='w-full'
+                            className="w-full"
                         >
                             <div className="w-full p-3 text-[14px]">
                                 <p className="flex items-center">
