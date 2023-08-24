@@ -23,7 +23,7 @@ import Tippy from '@tippyjs/react';
 
 const cx = classNames.bind(styles);
 
-const SpaceFlash = ({ cards }) => {
+const SpaceFlash = ({ cards,popUp }) => {
     const [displayCards, setDisplayCards] = useState(cards);
     const allCards = useRef(cards);
     const [queueCards, setQueueCards] = useState();
@@ -79,7 +79,7 @@ const SpaceFlash = ({ cards }) => {
             }
         };
     }, []);
- 
+    
     //handle add or remove card when animation end
     const onAnimationEnd = () => {
         if (animation !== '') {
@@ -218,52 +218,60 @@ const SpaceFlash = ({ cards }) => {
 
     //handle keyboard
     useEffect(() => {
+     
         function handleKeyDown(e) {
-            if (e.keyCode === 37) {
-                if (animation !== 'left') {
-                    setAnimation('left');
-                    setQueueCards(displayCards.at(-1));
-                }
-            } else if (e.keyCode === 39) {
-                if (animation !== 'right') {
-                    setAnimation('right');
-                    setQueueCards(displayCards.at(-1));
-                }
-            } else if (e.keyCode === 90) {
-                if (queueCards) {
-                    setDisplayCards((prev) => {
-                        return [...prev, queueCards];
-                    });
-                    if (good.current.at(-1)?.id === queueCards.id) {
-                        good.current.pop();
+            
+          
+                if (e.keyCode === 37) {
+                    if (animation !== 'left') {
+                        setAnimation('left');
+                        setQueueCards(displayCards.at(-1));
                     }
-                    if (graduated.current[0]?.id === queueCards.id) {
-                        graduated.current.shift();
+                } else if (e.keyCode === 39) {
+                    if (animation !== 'right') {
+                        setAnimation('right');
+                        setQueueCards(displayCards.at(-1));
                     }
-                    if (timers[0].card.id === queueCards.id) {
-                        timers.shift();
+                } else if (e.keyCode === 90) {
+                    if (queueCards) {
+                        setDisplayCards((prev) => {
+                            return [...prev, queueCards];
+                        });
+                        if (good.current.at(-1)?.id === queueCards.id) {
+                            good.current.pop();
+                        }
+                        if (graduated.current[0]?.id === queueCards.id) {
+                            graduated.current.shift();
+                        }
+                        if (timers[0].card.id === queueCards.id) {
+                            timers.shift();
+                        }
+                        setQueueCards(null);
+                    } else {
+                        toast.error('Can not undo', {
+                            style: {
+                                minWidth: '250px',
+                                minHeight: '60px',
+                                fontSize: '20px',
+                                backgroundColor: 'var(--primary-light   )',
+                                color: 'red ',
+                            },
+                        });
                     }
-                    setQueueCards(null);
-                } else {
-                    toast.error('Can not undo', {
-                        style: {
-                            minWidth: '250px',
-                            minHeight: '60px',
-                            fontSize: '20px',
-                            backgroundColor: 'var(--primary-light   )',
-                            color: 'red ',
-                        },
-                    });
                 }
-            }
+            
+          
         }
 
-        document.addEventListener('keydown', handleKeyDown);
+        if(!popUp) {
+            document.addEventListener('keydown', handleKeyDown);
+
+        }
         // Don't forget to clean up
         return function cleanup() {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [animation, displayCards, queueCards, timers]);
+    }, [animation, displayCards, popUp, queueCards, timers]);
 
     return (
         <div
@@ -327,6 +335,7 @@ const SpaceFlash = ({ cards }) => {
                                 >
                                     <FlipCard
                                         id={a.front}
+                                        pop={popUp}
                                         first={displayCards.length - 1 === ind}
                                         backColor="bisque"
                                         frontColor="bisque"

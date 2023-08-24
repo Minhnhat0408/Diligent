@@ -16,12 +16,10 @@ import PopUp from '../PopUp/PopUp';
 import Warning from '../Warning';
 const cx = classNames.bind(styles);
 
-function SideBarCard({ deck, cards }) {
+function SideBarCard({ deck, cards,setAddCard,setUpdateCard }) {
     const [showList, setShowList] = useState(false);
     const { user } = UserAuth();
     const context = useContext(ThemeContext);
-    const [updateCard, setUpdateCard] = useState(false);
-    const [addCard, setAddCard] = useState(false);
     const [showWarning,setShowWarning] = useState(false)
     const handleUpRatings = async () => {
         if (deck.data.ratings.includes(user.uid)) {
@@ -105,7 +103,7 @@ function SideBarCard({ deck, cards }) {
                     {cards.map((card, id) => {
                         return (
                             <div className={cx('card')} key={id}>
-                                <div className={cx('card-content')} onClick={() => setUpdateCard(true)}>
+                                <div className={cx('card-content')} onClick={() => setUpdateCard(card)}>
                                     <span className={cx('front')}>{card.front}</span>
                                     <span className={cx('back')}>{card.back.content}</span>
                                 </div>
@@ -121,8 +119,7 @@ function SideBarCard({ deck, cards }) {
                     })}
                 </div>
             )}
-            {addCard && <PopUp setPopup={setAddCard} deck={deck} />}
-            {updateCard && <PopUp setPopup={setUpdateCard} />}
+     
             {showWarning && <Warning setShowWarning={setShowWarning} handleDelete={handleDeleteDeck} id={deck.id}/>}
         </div>
     );

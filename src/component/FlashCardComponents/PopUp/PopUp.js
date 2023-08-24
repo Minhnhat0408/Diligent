@@ -12,14 +12,14 @@ import { addDoc, collection, doc, serverTimestamp, updateDoc } from 'firebase/fi
 import { db } from '~/firebase';
 const cx = classNames.bind(styles);
 
-function PopUp({ setPopup, update, deck }) {
+function PopUp({ setPopup, update, setReFresh, deck }) {
     const [loading, setLoading] = useState(false);
     const context = useContext(ThemeContext);
     const { userData, user } = UserAuth();
     const [invalid, setInvalid] = useState(false);
-    const front = useRef();
-    const back = useRef();
-    const example = useRef();
+    const front = useRef(update ? update.front : '');
+    const back = useRef(update ? update.back.content : '');
+    const example = useRef(update ? update.back.example : '');
 
     const handleAddCard = async () => {
         if (front.current.value === '' || back.current.value === '') {
@@ -32,15 +32,47 @@ function PopUp({ setPopup, update, deck }) {
                     content: back.current.value,
                     example: example.current.value,
                 },
-                deckId:deck.id,
-                time:serverTimestamp()
+                deckId: deck.id,
+                time: serverTimestamp(),
             });
             await updateDoc(doc(db, 'decks', deck.id), {
                 cardNumber: deck.cardNumber + 1,
             });
             setLoading(false);
+            setReFresh((prev) => {
+                return !prev;
+            });
             front.current.value = '';
             back.current.value = '';
+            example.current.value = '';
+            setPopup(false);
+        }
+    };
+    const handleUpdateCard = async () => {
+        if (front.current.value === '' || back.current.value === '') {
+            setInvalid(true);
+        } else if (
+            front.current.value === update.front &&
+            back.current.value === update.back.content &&
+            example.current.value === update.back.example
+        ) {
+            return;
+        } else {
+            setLoading(true);
+            await updateDoc(doc(db, 'flashcards', update.id), {
+                front: front.current.value,
+                back: {
+                    content: back.current.value,
+                    example: example.current.value,
+                },
+            });
+            setLoading(false);
+            setReFresh((prev) => {
+                return !prev;
+            });
+            front.current.value = '';
+            back.current.value = '';
+            example.current.value = '';
             setPopup(false);
         }
     };
@@ -55,8 +87,8 @@ function PopUp({ setPopup, update, deck }) {
 
                 <div className={cx('create-box', { dark: context.theme === 'dark' })}>
                     <div className={cx('header')}>
-                        <div className='h-10 w-10'></div>
-                        <h1 className={cx('title')}>Add Deck</h1>
+                        <div className="h-10 w-10"></div>
+                        <h1 className={cx('title')}>{update ? 'Update Card' : 'Add Deck'} </h1>
                         <div className={cx('out')} onClick={() => setPopup(false)}>
                             <FontAwesomeIcon icon={faXmark} />
                         </div>
@@ -104,7 +136,13 @@ function PopUp({ setPopup, update, deck }) {
                         //     imagePreview.length === 0 && others.length === 0 && !titleContent.current?.value
                         // }
                         dark={context.theme === 'dark'}
-                        onClick={handleAddCard}
+                        onClick={() => {
+                            if (update) {
+                                handleUpdateCard();
+                            } else {
+                                handleAddCard();
+                            }
+                        }}
                         className={cx('upload')}
                     >
                         Upload

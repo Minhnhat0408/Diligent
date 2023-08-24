@@ -12,6 +12,7 @@ function FlipCard({
     frontImg = '',
     first = false,
     children,
+    pop = false,
     flashcard = false,
     className = [],
     ...props
@@ -23,7 +24,7 @@ function FlipCard({
                 setFl(!fl);
             }
         }
-        if (first) {
+        if (first && !pop) {
             document.addEventListener('keydown', handleKeyDown);
             return function cleanup() {
                 document.removeEventListener('keydown', handleKeyDown);
@@ -31,7 +32,7 @@ function FlipCard({
         }
 
         // Don't forget to clean up
-    }, [first, fl]);
+    }, [first, fl,pop]);
 
     return (
         <div
