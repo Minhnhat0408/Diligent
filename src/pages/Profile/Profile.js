@@ -428,7 +428,7 @@ function Profile() {
                                                     dark={context.theme === 'dark'}
                                                     primary
                                                     
-                                                    className="w-[45%] text-sm py-0 3xl-max:w-[100%] 3xl-max:mb-2 "
+                                                    className="w-[45%] text-sm py-0 3xl-max:leading-4 "
                                                     onClick={() => {
                                                         handleAddfr({ id: id, setDisabled: setDisabled });
                                                     }}
@@ -447,7 +447,7 @@ function Profile() {
                                                     outline
                                                     dark={context.theme === 'dark'}
                                                     onClick={handleNavigateChat}
-                                                    className={cx('btn') + ' w-[50px] h-[50px] 3xl-max:!ml-0 3xl-max:!w-[60px] 3xl-max:h-[36px]' }
+                                                    className={cx('btn') + ' w-[50px] h-[50px] 3xl-max:!w-[50px] 3xl-max:h-[36px]' }
                                                 >
                                                     <FontAwesomeIcon icon={faMessage} />
                                                 </Button>
@@ -483,7 +483,7 @@ function Profile() {
                                                        
                                                         ml
                                                         outline
-                                                        className={cx('btn') +  ' w-[50px] h-[50px] 3xl-max:!w-[80px] 3xl-max:h-[36px]'}
+                                                        className={cx('btn') +  ' w-[50px] h-[50px] 3xl-max:!w-[50px] 3xl-max:h-[36px]'}
                                                         dark={context.theme === 'dark'}
                                                         disabled={
                                                             (usersStatus[id].user_status === 'ban' && !user?.isAdmin) ||
