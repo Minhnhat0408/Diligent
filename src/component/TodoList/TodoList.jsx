@@ -52,15 +52,19 @@ function TodoList() {
                     where('status', '==', 'archived'),
                     orderBy('time'),
                 );
-             
+
                 const b = await getDocs(q2);
                 const tod = [];
                 const ar = [];
+                let ind = 1;
                 a.docs.forEach(async (d) => {
                     if (d.data().time.toMillis() < new Date(currentDate)) {
                         await deleteDoc(doc(db, 'tasks', d.id));
+                        
+                    } else {
+                        tod.push({ id: d.id, title: d.data().title, order: ind });
+                        ind++;
                     }
-                    tod.push({ id: d.id, title: d.data().title, order: d.data().order });
                 });
                 b.docs.forEach((d) => {
                     ar.push({ id: d.id, title: d.data().title, order: d.data().order });
@@ -138,7 +142,6 @@ function TodoList() {
         td.current = todo;
         change.current++;
     }, [todo]);
-    console.log(todo, td.current);
     return (
         <div className="pop-up">
             <StreakModal display={streak} />
