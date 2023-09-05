@@ -186,11 +186,12 @@ function TodoList() {
                         onKeyDown={(e) => {
                             if (e.key === 'Enter' && !e.shiftKey) {
                                 e.preventDefault();
-                                if (task.current.value) {
+                                const a = task.current.value
+                                if (task.current.value !== '') {
                                     setTodo((prev) => {
                                         return [
                                             ...prev,
-                                            { id: null, title: task.current.value, order: prev.length + 1 },
+                                            { id: null, title: a, order: prev.length + 1 },
                                         ];
                                     });
                                     task.current.value = '';
@@ -201,6 +202,7 @@ function TodoList() {
                     <Button
                         onClick={() => {
                             if (task.current.value) {
+                                
                                 setTodo((prev) => {
                                     return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
                                 });
