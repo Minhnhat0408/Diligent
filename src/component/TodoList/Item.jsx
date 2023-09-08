@@ -163,7 +163,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             <Tippy content="Check to finish the task" delay={1000} theme={context.theme} animation={'scale'}>
                 <button
                     className={
-                        (status === 'done' ? 'bg-green-500 !text-[var(--primary)] ' : '') +
+                        (status === 'done' ? '!bg-green-500 !text-[var(--primary)] ' : '') +
                         ' w-9 h-9 hover:bg-green-500 hover:text-[var(--primary)] cursor-pointer bg-transparent rounded-lg border-solid border-1  border-green-500 text-base text-green-500 font-bold mr-4 '
                     }
                     onClick={() => {
