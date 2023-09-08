@@ -114,14 +114,15 @@ const SpaceFlash = ({ cards,popUp }) => {
             try {
                 for (const card of graduated.current) {
                     allCards.current = allCards.current.filter((c) => c.id !== card.id);
+                    console.log(card)
                     if (card.progress) {
                         const interval = Math.round(card.progress.easeFactor * card.progress.interval);
-                        card.reviewTime.setDate(card.reviewTime.getDate() + interval);
+                        card.progress.reviewTime.setDate(card.progress.reviewTime.getDate() + interval);
 
                         await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
                             easeFactor: card.progress.easeFactor,
                             interval: interval,
-                            reviewTime: card.reviewTime,
+                            reviewTime: card.progress.reviewTime,
                         });
                     } else {
                         const current = new Date();
@@ -136,11 +137,11 @@ const SpaceFlash = ({ cards,popUp }) => {
 
                 for (const card of allCards.current) {
                     if (card.reset) {
-                        card.reviewTime.setDate(card.reviewTime.getDate() + 1);
+                        card.progress.reviewTime.setDate(card.progress.reviewTime.getDate() + 1);
                         await updateDoc(doc(db, 'flashcards', card.id, 'progress', user.uid), {
                             easeFactor: card.progress.easeFactor,
                             interval: 1,
-                            reviewTime: card.reviewTime,
+                            reviewTime: card.progress.reviewTime,
                         });
                     }
                 }
@@ -285,7 +286,7 @@ const SpaceFlash = ({ cards,popUp }) => {
 
             {displayCards.length > 0 ? (
                 <div className="w-[70%] h-[70%] rounded-2xl flex relative">
-                    <Tippy content="remember" placement="right" delay={1000} theme={context.theme} animation={'scale'}>
+                    <Tippy content="remember" placement="right" hideOnClick  theme={context.theme} animation={'scale'}>
                         <button //right button
                             className={
                                 cx('gradient-r') +
@@ -301,7 +302,7 @@ const SpaceFlash = ({ cards,popUp }) => {
                             <FontAwesomeIcon icon={faChevronRight} className="text-3xl" />
                         </button>
                     </Tippy>
-                    <Tippy content="forgot" placement="left" delay={1000} theme={context.theme} animation={'scale'}>
+                    <Tippy content="forgot" placement="left" hideOnClick theme={context.theme} animation={'scale'}>
                         <button //left button
                             className={
                                 cx('gradient-l') +

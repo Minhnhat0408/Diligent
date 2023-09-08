@@ -4,7 +4,7 @@ import { useRaisedShadow } from '~/hooks/useRaisedBoxShadow';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive, faCheck, faPenAlt, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import Tippy from '@tippyjs/react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { ThemeContext } from '~/contexts/Context';
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
@@ -16,8 +16,10 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
     const y = useMotionValue(0);
     const boxShadow = useRaisedShadow(y);
     const dragControls = useDragControls();
+    const [done, setDone] = useState(false);
     const context = useContext(ThemeContext);
     const { user, userData } = UserAuth();
+    // console.log(item);
     const handleSetArchived = async () => {
         if (item.id) {
             await updateDoc(doc(db, 'tasks', item.id), {
@@ -30,7 +32,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
                 const newList = prev.filter((i) => i.order !== item.order);
                 return newList;
             });
-        }else{
+        } else {
             // toast('Click out to save the list first')
             toast('Click out to save the list before archive', {
                 icon: '⚠️',
@@ -40,61 +42,89 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
                     fontSize: '20px',
                     backgroundColor: 'var(--primary)',
                     color: 'var(--primary-light) ',
-                    
                 },
             });
         }
     };
     const handleCheck = async () => {
-       
         if (status === 'todo') {
             handleTodo((prev) => {
                 const newList = [];
-                let c = 1;
+                let c = 0;
                 prev.forEach((t) => {
-                    if(t.order !== item.order)
-                    {   
-                        t.order = c
-                        newList.push(t)
-                        c++
+                    if (t.order === item.order) {
+                        t.status = 'done';
                     }
-                })
-                if (newList.length === 0) {
-                    handleAddStreak();
-                    setStreak(true);
+                    if (t.status === 'done') {
+                        c++;
+                    }
+                    newList.push(t);
+                });
+                if (newList.length === c) {
+                    handleAddStreak()
+                        
+                    
                 }
 
                 return newList;
             });
-        } else {
+        } else if (status === 'archived') {
             handleArchived((prev) => {
                 const newList = prev.filter((i) => i.order !== item.order);
                 return newList;
             });
-        }
-        if (item.id) {
-            await deleteDoc(doc(db, 'tasks', item.id));
+            if (item.id) {
+                await deleteDoc(doc(db, 'tasks', item.id));
+            }
+        } else {
+            handleTodo((prev) => {
+                const newList = [];
+
+                prev.forEach((t) => {
+                    if (t.order === item.order) {
+                        t.status = 'todo';
+                    }
+                    newList.push(t);
+                });
+                return newList;
+            });
         }
     };
     const handleAddStreak = async () => {
-        const newStreak = userData?.user_streak ? [...userData.user_streak, formattedDate()] : [formattedDate()];
-        await updateDoc(doc(db, 'users', user.uid), {
-            user_streak: newStreak,
-        });
+        if (userData?.user_streak) {
+            // console.log(userData.user_streak.at(-1),formattedDate() )
+            if (userData.user_streak.at(-1) === formattedDate()) {
+                
+            } else {
+                console.log('hello')
+                const newStreak = [...userData.user_streak, formattedDate()];
+                await updateDoc(doc(db, 'users', user.uid), {
+                    user_streak: newStreak,
+                });
+                setStreak(true);
+
+            }
+        } else {
+            const newStreak = [formattedDate()];
+            await updateDoc(doc(db, 'users', user.uid), {
+                user_streak: newStreak,
+            });
+            setStreak(true);
+
+        }
     };
     const handleDelete = async () => {
-        if (status === 'todo') {
+        if (status !== 'archived') {
             handleTodo((prev) => {
                 const newList = [];
                 let c = 1;
                 prev.forEach((t) => {
-                    if(t.order !== item.order)
-                    {   
-                        t.order = c
-                        newList.push(t)
-                        c++
+                    if (t.order !== item.order) {
+                        t.order = c;
+                        newList.push(t);
+                        c++;
                     }
-                })
+                });
                 return newList;
             });
 
@@ -124,10 +154,18 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
             dragListener={false}
             dragControls={dragControls}
         >
-            <span className="flex-1">{item.title}</span>
+            <span className={'flex-1 relative mr-3'}>
+                {item.title}
+                {status === 'done' && (
+                    <div className="absolute left-0 right-0 h-[2px] bg-black top-[50%] -translate-y-[50%]"></div>
+                )}
+            </span>
             <Tippy content="Check to finish the task" delay={1000} theme={context.theme} animation={'scale'}>
                 <button
-                    className=" w-9 h-9 hover:bg-green-500 hover:text-[var(--primary)] cursor-pointer bg-transparent rounded-lg border-solid border-1  border-green-500 text-base text-green-500 font-bold mr-4 "
+                    className={
+                        (status === 'done' ? 'bg-green-500 !text-[var(--primary)] ' : '') +
+                        ' w-9 h-9 hover:bg-green-500 hover:text-[var(--primary)] cursor-pointer bg-transparent rounded-lg border-solid border-1  border-green-500 text-base text-green-500 font-bold mr-4 '
+                    }
                     onClick={() => {
                         handleCheck();
                     }}
@@ -157,7 +195,7 @@ export const Item = ({ item, handleTodo, setStreak, handleArchived, status }) =>
                     <FontAwesomeIcon icon={faTrashCan} />
                 </button>
             </Tippy>
-            {status === 'todo' && <ReorderIcon dragControls={dragControls} />}
+            {status !== 'archived' && <ReorderIcon dragControls={dragControls} />}
         </Reorder.Item>
     );
 };

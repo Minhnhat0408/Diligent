@@ -42,7 +42,7 @@ function TodoList() {
                 const q = query(
                     collection(db, 'tasks'),
                     where('user_id', '==', user.uid),
-                    where('status', '==', 'todo'),
+                    where('status', 'in', ['todo','done']),
                     orderBy('order'),
                 );
                 const a = await getDocs(q);
@@ -62,7 +62,7 @@ function TodoList() {
                         await deleteDoc(doc(db, 'tasks', d.id));
                         
                     } else {
-                        tod.push({ id: d.id, title: d.data().title, order: ind });
+                        tod.push({ id: d.id, title: d.data().title, order: ind,status:d.data().status });
                         ind++;
                     }
                 });
@@ -116,10 +116,12 @@ function TodoList() {
     const saveTasks = async () => {
         return new Promise(async (resolve, reject) => {
             try {
+                console.log(td.current)
                 td.current.forEach(async (t, ind) => {
                     if (t.id) {
                         await updateDoc(doc(db, 'tasks', t.id), {
                             order: ind + 1,
+                            status:t.status
                         });
                     } else {
                         await addDoc(collection(db, 'tasks'), {
@@ -127,7 +129,7 @@ function TodoList() {
                             order: ind + 1,
                             time: serverTimestamp(),
                             user_id: user.uid,
-                            status: 'todo',
+                            status: t.status,
                         });
                     }
                 });
@@ -142,6 +144,7 @@ function TodoList() {
         td.current = todo;
         change.current++;
     }, [todo]);
+    console.log(todo)
     return (
         <div className="pop-up">
             <StreakModal display={streak} />
@@ -191,7 +194,7 @@ function TodoList() {
                                     setTodo((prev) => {
                                         return [
                                             ...prev,
-                                            { id: null, title: a, order: prev.length + 1 },
+                                            { id: null, title: a, order: prev.length + 1,status:'todo' },
                                         ];
                                     });
                                     task.current.value = '';
@@ -204,7 +207,7 @@ function TodoList() {
                             if (task.current.value) {
                                 
                                 setTodo((prev) => {
-                                    return [...prev, { id: null, title: task.current.value, order: prev.length + 1 }];
+                                    return [...prev, { id: null, title: task.current.value, order: prev.length + 1,status:'todo' }];
                                 });
                                 task.current.value = '';
                             }
@@ -273,7 +276,7 @@ function TodoList() {
                                 <Item
                                     key={item.order}
                                     item={item}
-                                    status="todo"
+                                    status={item.status}
                                     handleTodo={setTodo}
                                     setStreak={setStreak}
                                     handleArchived={setArchived}
