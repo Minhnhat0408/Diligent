@@ -13,9 +13,11 @@ import PrivateRoute from './routes/PrivateRoute';
 import { UserAuth } from './contexts/authContext';
 import useUnload from './hooks/useUnload';
 import RootLayout from './layouts/RootLayout/RootLayout';
+import PublicRoute from './routes/PublicRoute';
 const router = createBrowserRouter(
     createRoutesFromElements(
         <Route path="/" element={<RootLayout />}>
+            
             {publicRoutes.map((route, index) => {
                 const Page = route.component;
                 let Layout = DefaultLayout;
@@ -33,7 +35,7 @@ const router = createBrowserRouter(
                             <>
                                 <Layout>
                                     <Page />
-                                </Layout>
+                                </Layout>   
                                 <ScrollRestoration
                                     getKey={(location, matches) => {
                                         return location.key;
@@ -44,6 +46,7 @@ const router = createBrowserRouter(
                     />
                 );
             })}
+            
             <Route element={<PrivateRoute />}>
                 {privateRoutes.map((route, index) => {
                     const Page = route.component;

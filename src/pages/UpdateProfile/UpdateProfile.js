@@ -128,6 +128,7 @@ function UpdateProfile() {
             <div className={cx('form')} style={loading ? { display: 'none' } : {}}>
                 <h3 className={cx('heading')}>Account Information</h3>
                 <p className={cx('desc')}>Please type the correct Information for best experience</p>
+                <p className=' text-red-300 mb-4'>You must field this before continue</p>
                 {error && (
                     <div>
                         <span>{error}</span>

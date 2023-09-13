@@ -1,13 +1,13 @@
 import { Navigate,Outlet } from "react-router-dom";
 import { UserAuth } from "~/contexts/authContext";
 
-function PrivateRoute() {
-       const {user} = UserAuth();
-
+function PublicRoute() {
+       const {userData} = UserAuth();
+       
     return ( 
-                user ? <Outlet/>: 
+                userData?.user_name ? <Outlet/>: 
               <Navigate to="/login" replace={true} />
        );
 }
 
-export default PrivateRoute;
+export default PublicRoute;

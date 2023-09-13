@@ -226,6 +226,9 @@ export const AuthContextProvider = ({ children }) => {
         if (user) {
             // Subscribe to userData changes
             const unsubscribeUserData = onSnapshot(doc(db, 'users', user.uid), (result) => {
+                if(result.data()?.user_name === undefined && window.location.pathname !== routes.updateInfo){
+                    window.location.href = routes.updateInfo;
+                }
                 setUserData(result.data());
             });
 
