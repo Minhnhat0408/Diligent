@@ -47,11 +47,13 @@
 
     .body {
         margin-top: 8px;
-
+        overflow-y: scroll;
+        max-height: 460px;
+        height: fit-content;
         .info {
             display: flex;
             align-items: center;
-
+            
             .avatar {
                 width: 40px;
                 height: 40px;
